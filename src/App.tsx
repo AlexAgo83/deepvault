@@ -1,246 +1,26 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
-import { fetchLiveCorpus, getMockCorpusBundle, normalizeRequestedCorpusMode, type CorpusBundle } from './data/corpus'
-import {
-  buildExplorerRows,
-  buildSiteSummaries,
-  buildSyncOverview,
-  formatUpdatedAt,
-  resolveSharePointFileUrl,
-  summarizeCorpus,
-  type ChatMessage,
-  type CorpusDocument,
-  type ProviderId,
-  type UserRole,
-  type SiteSummary,
-} from './lib/deepvault'
-import { orchestrateBishopAnswer } from './lib/bishop'
+import { useEffect, useMemo, useState } from 'react'
+import { buildExplorerRows, buildSiteSummaries, buildSyncOverview, formatUpdatedAt, resolveSharePointFileUrl, summarizeCorpus, type CorpusDocument, type ProviderId, type UserRole, type SiteSummary } from './lib/deepvault'
+import { useLiveCorpus } from './hooks/useLiveCorpus'
+import { useBishopConversation } from './hooks/useBishopConversation'
+import { CompactDateTime, CompactPathText, FileTypePill, Message, PathLabel, Pill, SectionHeading, SourceCard, StatCard } from './components/app-ui'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'Explorer' },
   { id: 'bishop', label: 'Bishop' },
   { id: 'sync', label: 'Sync status' },
 ] as const
-
-type PillTone = 'neutral' | 'accent' | 'success' | 'danger'
-
-function Pill({
-  children,
-  tone = 'neutral',
-  title,
-}: {
-  children: ReactNode
-  tone?: PillTone
-  title?: string
-}) {
-  return (
-    <span className={`pill pill-${tone}`} title={title}>
-      {children}
-    </span>
-  )
-}
-
-function formatInlinePath(value: string): string {
-  const cleaned = value.replace(/\/+$/, '')
-  const segments = cleaned.split('/').filter(Boolean)
-  return segments[segments.length - 1] || value
-}
-
-function PathLabel({ value, href }: { value: string; href?: string | null }) {
-  const displayValue = formatInlinePath(value)
-
-  if (href) {
-    return (
-      <a className="path-inline path-inline-link" title={`Open file in SharePoint: ${value}`} href={href} target="_blank" rel="noreferrer">
-        {displayValue}
-      </a>
-    )
-  }
-
-  const copyPath = async () => {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(value)
-    }
-  }
-
-  return (
-    <button
-      type="button"
-      className="path-inline"
-      title={value}
-      aria-label={`Copy full path ${value}`}
-      onClick={() => {
-        void copyPath()
-      }}
-    >
-      {displayValue}
-    </button>
-  )
-}
-
-function CompactPathText({ value, href }: { value: string; href?: string | null }) {
-  const marker = 'Path:'
-  const markerIndex = value.indexOf(marker)
-
-  if (markerIndex < 0) {
-    return <>{value}</>
-  }
-
-  const prefix = value.slice(0, markerIndex + marker.length)
-  const pathText = value.slice(markerIndex + marker.length).trim().replace(/[.]+$/, '')
-
-  return (
-    <>
-      {prefix}{' '}
-      <PathLabel value={pathText} href={href} />
-    </>
-  )
-}
-
-function CompactDateTime({ value }: { value: string }) {
-  const date = new Intl.DateTimeFormat('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(value))
-  const time = new Intl.DateTimeFormat('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(new Date(value))
-
-  return (
-    <span className="stat-datetime">
-      <span>{date}</span>
-      <span>{time}</span>
-    </span>
-  )
-}
-
-function StatCard({
-  label,
-  value,
-  note,
-  valueClassName,
-}: {
-  label: string
-  value: ReactNode
-  note: string
-  valueClassName?: string
-}) {
-  return (
-    <article className="stat-card" title={note}>
-      <div className="stat-label">{label}</div>
-      <div className={`stat-value ${valueClassName || ''}`.trim()}>{value}</div>
-      <div className="stat-note">{note}</div>
-    </article>
-  )
-}
-
-function SectionHeading({ title, subtitle }: { title: string; subtitle?: ReactNode }) {
-  return (
-    <div className="section-heading">
-      <div>
-        <h2>{title}</h2>
-        {subtitle ? <p>{subtitle}</p> : null}
-      </div>
-    </div>
-  )
-}
-
 type ExplorerRow = CorpusDocument & { score: number; siteName: string }
-type ResolveFileHref = (_siteId: string, _path: string, _webUrl?: string | null) => string | null
-
-function FileTypePill({ value }: { value: string }) {
-  return <span className="file-type-pill">{value}</span>
-}
-
-function SourceCard({
-  source,
-  href,
-}: {
-  source: ChatMessage['sources'][number]
-  href?: string | null
-}) {
-  return (
-    <article className="source-card">
-      <div className="source-card-top">
-        <strong>{source.title}</strong>
-        <Pill tone="accent">{String(source.score)}</Pill>
-      </div>
-      <div className="source-meta">
-        <span>{source.siteName}</span>
-        <span>{source.author}</span>
-        <span>{formatUpdatedAt(source.updatedAt)}</span>
-      </div>
-      <p>{source.snippet}</p>
-      <div className="source-path">
-        <PathLabel value={source.path} href={href} />
-      </div>
-    </article>
-  )
-}
-
-function Message({
-  message,
-  resolveFileHref,
-}: {
-  message: ChatMessage
-  resolveFileHref: ResolveFileHref
-}) {
-  return (
-    <article className={`message message-${message.role}`}>
-      <div className="message-meta">
-        <strong>{message.role === 'assistant' ? 'Bishop' : 'You'}</strong>
-        <span>{message.status ? message.status : ''}</span>
-      </div>
-      <p>{message.text}</p>
-      {message.sources?.length ? (
-        <div className="message-sources">
-          {message.sources.map((source) => (
-            <div key={source.id} className="message-source">
-              <strong>{source.title}</strong>
-              <PathLabel value={source.path} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
-            </div>
-          ))}
-        </div>
-      ) : null}
-    </article>
-  )
-}
-
 export default function App() {
-  const requestedCorpusMode = normalizeRequestedCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE)
-  const [corpusBundle, setCorpusBundle] = useState<CorpusBundle>(() => getMockCorpusBundle())
-  const [liveState, setLiveState] = useState<{
-    label: string
-    detail: string
-    tone: PillTone
-  }>(() =>
-    requestedCorpusMode === 'live'
-      ? { label: 'Live', detail: 'Waiting for live corpus', tone: 'neutral' }
-      : { label: 'Mock data', detail: 'Mock corpus selected', tone: 'neutral' },
-  )
+  const { corpusBundle, liveState } = useLiveCorpus(import.meta.env.VITE_DEEPVAULT_DATA_MODE)
   const corpus = corpusBundle.corpus
-  const resolveFileHref = (siteId: string, path: string, webUrl?: string | null) =>
-    resolveSharePointFileUrl(corpus, siteId, path, webUrl)
   const [activeTab, setActiveTab] = useState<(typeof NAV_ITEMS)[number]['id']>('explorer')
   const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
   const [provider, setProvider] = useState<ProviderId>(corpus.providers[0].id)
   const [siteFilter, setSiteFilter] = useState<string>('all')
   const [search, setSearch] = useState<string>('')
   const [selectedDocId, setSelectedDocId] = useState<string>(corpus.documents[0].id)
-  const [question, setQuestion] = useState<string>('')
-  const [isAsking, setIsAsking] = useState(false)
-  const answerTimers = useRef<number[]>([])
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'seed',
-      role: 'assistant',
-      text: 'Ask a question about the pilot corpus, or switch to the explorer to inspect a source directly.',
-      status: 'ready',
-      sources: [],
-    },
-  ])
+  const resolveFileHref = (siteId: string, path: string, webUrl?: string | null): string | null =>
+    resolveSharePointFileUrl(corpus, siteId, path, webUrl)
 
   const siteSummaries = useMemo<SiteSummary[]>(() => buildSiteSummaries(corpus, role), [corpus, role])
   const syncOverview = useMemo(() => buildSyncOverview(corpus, role), [corpus, role])
@@ -250,6 +30,20 @@ export default function App() {
   )
   const selectedExplorerDoc =
     explorerRows.find((document) => document.id === selectedDocId) || explorerRows[0] || null
+  const {
+    question,
+    setQuestion,
+    isAsking,
+    messages,
+    selectedMessage,
+    handleAsk,
+  } = useBishopConversation({
+    corpus,
+    role,
+    provider,
+    endpoint: import.meta.env.VITE_BISHOP_LLM_ENDPOINT,
+    onActivateTab: () => setActiveTab('bishop'),
+  })
 
   useEffect(() => {
     if (explorerRows.length === 0) {
@@ -264,134 +58,9 @@ export default function App() {
     }
   }, [explorerRows, selectedDocId])
 
-  const handleAsk = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const trimmed = question.trim()
-    if (!trimmed || isAsking) {
-      return
-    }
-
-    const assistantId = `${Date.now()}-assistant`
-    const startedAt = Date.now()
-    setIsAsking(true)
-    setMessages((current) => [
-      ...current,
-      { id: `${Date.now()}-user`, role: 'user', text: trimmed, status: '', sources: [] },
-      {
-        id: assistantId,
-        role: 'assistant',
-        text: 'Bishop is drafting the answer from grounded sources.',
-        status: 'draft',
-        sources: [],
-      },
-    ])
-    setQuestion('')
-    setActiveTab('bishop')
-
-    const answerDelay = window.setTimeout(() => {
-      setMessages((current) =>
-        current.map((message) =>
-          message.id === assistantId
-            ? {
-                ...message,
-                text: 'Bishop is thinking through the grounded sources.',
-                status: 'answering',
-              }
-            : message,
-        ),
-      )
-    }, 220)
-
-    answerTimers.current.push(answerDelay)
-
-    try {
-      const result = await orchestrateBishopAnswer(corpus, trimmed, {
-        role,
-        provider,
-        limit: 3,
-        endpoint: import.meta.env.VITE_BISHOP_LLM_ENDPOINT,
-      })
-
-      const elapsed = Date.now() - startedAt
-      const remaining = Math.max(0, 560 - elapsed)
-      if (remaining > 0) {
-        await new Promise<void>((resolve) => {
-          const finishDelay = window.setTimeout(resolve, remaining)
-          answerTimers.current.push(finishDelay)
-        })
-      }
-
-      window.clearTimeout(answerDelay)
-      setMessages((current) =>
-        current.map((message) =>
-          message.id === assistantId
-            ? {
-                ...message,
-                text: result.answer,
-                status: result.status,
-                sources: result.sources,
-                provider: result.provider,
-                orchestrationMode: result.mode,
-                chunkCount: result.chunkCount,
-                tokenCount: result.tokenCount,
-                latencyMs: result.latencyMs,
-              }
-            : message,
-        ),
-      )
-    } finally {
-      setIsAsking(false)
-      answerTimers.current = answerTimers.current.filter((timer) => timer !== answerDelay)
-    }
-  }
-
-  const selectedMessage = messages[messages.length - 1]
-
   useEffect(() => {
     document.title = 'Nexus'
   }, [])
-
-  useEffect(
-    () => () => {
-      for (const timer of answerTimers.current) {
-        window.clearTimeout(timer)
-      }
-      answerTimers.current = []
-    },
-    [],
-  )
-
-  useEffect(() => {
-    let active = true
-    if (requestedCorpusMode !== 'live') {
-      setCorpusBundle(getMockCorpusBundle())
-      setLiveState({ label: 'Mock data', detail: 'Mock corpus selected', tone: 'neutral' })
-      return () => {
-        active = false
-      }
-    }
-
-    void fetchLiveCorpus().then((result) => {
-      if (!active) {
-        return
-      }
-      if (result.status === 'loaded') {
-        setCorpusBundle({ corpus: result.corpus, mode: 'live' })
-        setLiveState({ label: 'Live', detail: result.detail, tone: 'success' })
-        return
-      }
-      setCorpusBundle(getMockCorpusBundle())
-      setLiveState({
-        label: result.status === 'missing' ? 'Live fallback' : 'Live error',
-        detail: result.detail,
-        tone: result.status === 'missing' ? 'accent' : 'danger',
-      })
-    })
-
-    return () => {
-      active = false
-    }
-  }, [requestedCorpusMode])
 
   return (
     <div className="app-shell">
