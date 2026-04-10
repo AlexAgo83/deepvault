@@ -1,10 +1,10 @@
 ## task_015_sharepoint_file_link_and_file_type_ui_delivery - SharePoint file link and file type UI delivery
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In progress
 > Understanding: 84%
 > Confidence: 80%
-> Progress: 0%
+> Progress: 50%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -34,7 +34,7 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Deliver the inline file type pill and compact title row polish.
+- [x] 1. Deliver the inline file type pill and compact title row polish.
 - [ ] 2. Deliver native SharePoint file URLs, fallback resolution, and link coverage.
 - [ ] 3. Checkpoint each wave in a commit-ready state, validate it, and update the linked Logics docs.
 - [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
@@ -88,3 +88,4 @@ stateDiagram-v2
 - [ ] Status is `Done` and progress is `100%`.
 
 # Report
+- Wave 1 completed: Explorer file type pill now sits inline with the title, and the row is more compact.

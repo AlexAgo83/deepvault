@@ -1,10 +1,10 @@
 ## item_034_inline_file_type_pill_in_explorer_title_row - Inline file type pill in Explorer title row
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 78%
-> Confidence: 72%
-> Progress: 0%
+> Status: Done
+> Understanding: 92%
+> Confidence: 90%
+> Progress: 100%
 > Complexity: Low
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -67,11 +67,12 @@ flowchart TD
 - `logics/skills/logics-ui-steering/SKILL.md`
 
 # Priority
-- Impact:
-- Urgency:
+- Impact: High
+- Urgency: High
 
 # Notes
 - Derived from request `req_009_explorer_file_type_pill_inline_with_title`.
 - Source file: `logics/request/req_009_explorer_file_type_pill_inline_with_title.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
 - Request context seeded into this backlog item from `logics/request/req_009_explorer_file_type_pill_inline_with_title.md`.
+- Completed in wave 1 of `task_015_sharepoint_file_link_and_file_type_ui_delivery`.

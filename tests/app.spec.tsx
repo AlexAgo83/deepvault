@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from '../src/App'
@@ -36,6 +36,9 @@ describe('DeepVault app', () => {
     render(<App />)
 
     expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
+    const firstDocumentRow = screen.getByRole('button', { name: /Q3 2025 budget approval/i })
+    expect(firstDocumentRow).toHaveTextContent('document')
+    expect(within(firstDocumentRow).getByText('document')).toHaveClass('file-type-pill')
     const pathLinks = screen.getAllByRole('link')
     expect(pathLinks.length).toBeGreaterThan(0)
     expect(pathLinks.some((link) => link.getAttribute('href')?.startsWith('http'))).toBe(true)
