@@ -1,10 +1,10 @@
 ## task_016_orchestrate_technical_debt_cleanup_waves - Orchestrate technical debt cleanup waves
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In progress
 > Understanding: 95%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 20%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -39,7 +39,7 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirm the five sibling backlog items, their boundaries, and their execution order.
+- [x] 1. Confirm the five sibling backlog items, their boundaries, and their execution order.
 - [ ] 2. Orchestrate the UI and shell wave first, then the retrieval and Bishop waves, then the export and workflow hygiene waves.
 - [ ] 3. Keep each wave commit-ready, validate it, and update the linked Logics docs before moving on.
 - [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
@@ -93,3 +93,4 @@ stateDiagram-v2
 - [ ] Status is `Done` and progress is `100%`.
 
 # Report
+- Wave 1 completed: cleaned Logics workflow hygiene and reference hygiene, regenerated `logics/RELATIONSHIPS.md`, and refreshed the duplicate-review notes in `item_042`.
