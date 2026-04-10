@@ -208,15 +208,29 @@ The current V1 schema is version 1. Every structural change (add column, rename 
 | Change column type | No — breaking | Add new column with new type, migrate data, remove old column. |
 | Add index | Yes | Non-blocking. Apply as a separate migration. |
 
+## Partial migration rollback
+
+If a migration script fails mid-execution (e.g., crashes after adding a column but before backfilling data):
+
+1. **Do not re-run the migration directly.** A partially-applied migration may have left the schema in an inconsistent state.
+2. Check `schema_migrations` — if the failed migration's version row was not inserted, the migration is considered un-applied.
+3. If the version row was not inserted: fix the script, then re-run it. The migration is idempotent for this step.
+4. If the version row was inserted but data is inconsistent: run the corresponding rollback script (each migration must ship with a paired `down` script that reverses the change). Then re-apply the fixed migration.
+5. If no rollback script exists and data is inconsistent: restore from the most recent backup taken before the migration run. Every migration run must be preceded by a backup.
+
+**Backup rule**: before running any migration (V1 or V2), take a SQLite backup (`sqlite3 db.sqlite ".backup db_pre_migration_{version}.sqlite"`). For Azure SQL, take a point-in-time snapshot before migration. Never run a migration without a restorable backup.
+
 ## V1 → V2 migration contract
 
 The SQLite schema exported for Azure SQL migration must be at the same version as the local schema at migration time. Before running the migration:
 
-1. Record the current `MAX(version)` from `schema_migrations`.
-2. Apply all pending migrations to the local SQLite database first.
-3. Export the schema and data at that version.
-4. Import into Azure SQL using the same migration scripts — do not use SQLite dumps directly (type compatibility differs).
-5. After import, run `SELECT MAX(version) FROM schema_migrations` on Azure SQL and confirm it matches the local value.
+1. Take a full SQLite backup.
+2. Record the current `MAX(version)` from `schema_migrations`.
+3. Apply all pending migrations to the local SQLite database first.
+4. Export the schema and data at that version.
+5. Import into Azure SQL using the same migration scripts — do not use SQLite dumps directly (type compatibility differs).
+6. After import, run `SELECT MAX(version) FROM schema_migrations` on Azure SQL and confirm it matches the local value.
+7. If counts mismatch: do not proceed. Restore from the Azure SQL snapshot and diagnose before retrying.
 
 If a new field is needed that does not exist in the V1 schema, add it as a nullable column with a default before migration. Never add a required field during migration.
 

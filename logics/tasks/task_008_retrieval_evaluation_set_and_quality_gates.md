@@ -33,13 +33,21 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirm the pilot corpus is fully ingested and indexed before running any queries.
-- [ ] 2. Run the 20 evaluation queries below against the local Bishop chat surface.
-- [ ] 3. Score each answer against the pass/fail criteria.
-- [ ] 4. If fewer than 16 of 20 queries pass, investigate ranking or ingestion issues before advancing.
-- [ ] 5. Record the baseline metrics for each passing query (score, chunk count, token count, latency).
-- [ ] 6. Re-run after any ranking weight or threshold change to confirm no regression.
-- [ ] GATE: do not close V1 or advance to V2 until the evaluation set passes at 80% or above.
+- [ ] 1. Confirm the pilot corpus is fully ingested and indexed before running any queries (pre-evaluation checklist below).
+- [ ] 2. **Fix the baseline provider before running.** All 20 queries must run on OpenAI (`LLM_PROVIDER=openai`) for the V1 baseline. Do not mix providers in the baseline run — a mixed run cannot be used for regression comparison. If Gemini evaluation is desired, run it as a separate named set (`v1_baseline_gemini_{date}.json`) after the OpenAI baseline is complete.
+- [ ] 3. Run the 20 evaluation queries against the local Bishop chat surface with `LLM_PROVIDER=openai`.
+- [ ] 4. Score each answer against the pass/fail criteria.
+- [ ] 5. If fewer than 16 of 20 queries pass, investigate ranking or ingestion issues before advancing.
+- [ ] 6. Record the baseline metrics for each query (score, chunk count, token count, latency, provider).
+- [ ] 7. Re-run after any ranking weight or threshold change to confirm no regression — always on the same provider (OpenAI) for comparability.
+- [ ] GATE: do not close V1 or advance to V2 until the evaluation set passes at 80% or above on OpenAI.
+
+## Pre-evaluation checklist (must pass before starting)
+- [ ] All configured sites show `sync_status = "synced"` in `sync_state` — no site in `pending` or `sync_failed`.
+- [ ] No site has `sync_failed_count > 0`.
+- [ ] The retrieval index has at least 100 chunks from at least 5 distinct sources (verify via index stats).
+- [ ] `LLM_PROVIDER=openai` is set and the OpenAI key resolves correctly (smoke test: run one query and confirm provider in the response).
+- [ ] `LLM_FALLBACK_ENABLED=false` — auto-fallback must be disabled during evaluation to prevent provider mixing.
 
 # Evaluation queries
 

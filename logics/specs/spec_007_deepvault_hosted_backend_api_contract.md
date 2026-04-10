@@ -30,6 +30,32 @@ The access token is the delegated user token obtained via MSAL (device code flow
 
 The backend uses the identity in the token for permission checks. It does not accept service tokens or anonymous requests on any chat or retrieval endpoint.
 
+## Entra app registration requirements
+
+The hosted backend requires one app registration in Entra with the following configuration:
+
+| Setting | Value |
+|---|---|
+| Application type | Web API |
+| Display name | `DeepVault Backend` |
+| Supported account types | Accounts in this organizational directory only (single tenant) |
+| API permissions (delegated) | `Sites.Read.All`, `Files.Read.All`, `User.Read` |
+| Exposed API scope | `DeepVault.Chat` — granted to Navy and Gordon client apps |
+| Exposed API role | `DeepVault.Operator` — assigned to operators via Entra group or direct role assignment |
+
+## DeepVault.Operator scope
+
+`DeepVault.Operator` is an **app role** (not a delegated scope) defined on the `DeepVault Backend` app registration. It gates access to the `POST /sync/trigger` endpoint.
+
+To assign the Operator role to a user:
+1. Go to Entra ID → Enterprise Applications → `DeepVault Backend`.
+2. Select "Users and groups" → "Add user/group".
+3. Assign the `DeepVault.Operator` role to the operator's user account or Entra security group.
+
+When an operator authenticates, their token contains the role claim `roles: ["DeepVault.Operator"]`. The backend checks for this claim before processing any `/sync/trigger` request.
+
+Users without the role assignment receive `403 insufficient_scope` on `/sync/trigger` even with a valid token.
+
 ---
 
 # Endpoints

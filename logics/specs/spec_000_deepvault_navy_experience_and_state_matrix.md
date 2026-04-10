@@ -36,8 +36,11 @@ The spec covers the navigation states, detail states, and operational states tha
 - The access token and refresh token are stored in the OS native credential store (macOS Keychain on Mac, Windows Credential Manager on Windows). Tokens are never written to plain files or environment variables.
 - Subsequent launches reuse the stored refresh token silently. The user is only re-prompted if the refresh token expires or is revoked.
 - Token expiry: access tokens expire after 1 hour (Entra default). Refresh tokens are valid for 90 days of inactivity.
+- Token refresh on expiry: Navy must attempt a silent refresh (using MSAL `acquire_token_silent`) before every API call. If the silent refresh succeeds, the user sees no interruption. If it fails (refresh token expired, revoked, or tenant policy changed), Navy must immediately show a re-authentication prompt — not a generic error. The user must be able to re-authenticate without restarting the app.
+- Mid-session expiry handling: if a token expires while the user is actively browsing (e.g., during a long session), the next API call receives a 401. Navy must catch this 401, trigger the MSAL device code flow, and retry the original request after successful re-auth. Do not propagate the 401 as a "permission denied" error to the user.
 - Local Navy does not support unauthenticated access. The explorer cannot show any SharePoint content without a valid token.
 - The identity resolved at login is the same identity used by the retrieval layer for permission checks. No separate service account is used for local exploration.
+- Permission cache: the retrieval layer maintains a short-lived permission cache (5 minutes TTL) per user session and site, as defined in spec_005. Navy does not manage the permission cache directly — it is the backend's responsibility. Navy only needs to pass the current access token on every request.
 
 # Requirements
 - `DeepVault - Navy` must let a user move from site to library to folder to list to document detail.

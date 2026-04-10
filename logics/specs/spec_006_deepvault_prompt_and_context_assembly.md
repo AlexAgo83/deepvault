@@ -76,6 +76,21 @@ Rules:
 Total prompt size sent to the LLM: system prompt + source context + user question.
 The 8,000-token context ceiling applies only to the source context block, not the full prompt.
 
+## Tokenizer reference
+
+All token counts in this spec use the **`cl100k_base` tokenizer** (the tokenizer used by OpenAI's GPT-4 family, via the `tiktoken` library). This is the canonical tokenizer for budget enforcement regardless of which provider handles the request.
+
+Rationale: Gemini's tokenizer produces slightly different counts for the same text, but the difference is under 5% for typical SharePoint prose. Using a single deterministic tokenizer keeps the budget logic provider-agnostic and testable without an API call.
+
+Implementation:
+```python
+import tiktoken
+enc = tiktoken.get_encoding("cl100k_base")
+token_count = len(enc.encode(text))
+```
+
+The `token_count` field in chunk files (spec_004) is computed with this tokenizer at chunking time. Budget enforcement at query time uses the same tokenizer to re-count the assembled context block. The two counts must match within ±2 tokens (rounding from overlap boundaries).
+
 # Chunk selection and ordering
 
 After permission filtering and scoring (per ADR 014), the top-ranked chunks are selected for context assembly:

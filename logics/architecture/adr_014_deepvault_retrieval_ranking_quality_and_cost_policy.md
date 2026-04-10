@@ -42,6 +42,53 @@ Tie-break: when two chunks have the same composite score, prefer the one with th
 
 Permission gate always runs before scoring. Chunks from sources the user cannot access are removed from the candidate set entirely before weights are applied.
 
+# Composite score formula
+
+The composite score for each chunk is computed as a weighted sum of four normalized sub-scores, each in the range [0.0, 1.0]:
+
+```
+composite_score = (0.40 * semantic_score)
+                + (0.30 * structural_score)
+                + (0.20 * freshness_score)
+                + (0.10 * traceability_score)
+```
+
+## Sub-score definitions
+
+**semantic_score** — cosine similarity between the query embedding and the chunk embedding. Returned directly by the vector index (already in [0, 1] for normalized embeddings). Do not clip negative values — if cosine similarity is negative, the chunk should have been excluded by the minimum threshold before scoring.
+
+**structural_score** — discrete value from `chunk.source_type_weight` (stored in the chunk file per spec_004):
+
+| source_type | structural_score |
+|---|---|
+| `document` | 1.0 |
+| `page` | 0.8 |
+| `list` | 0.6 |
+| metadata-only / unknown | 0.3 |
+
+**freshness_score** — derived from `chunk.last_modified` relative to the current UTC time at query time:
+
+| Age of last_modified | freshness_score |
+|---|---|
+| ≤ 7 days | 1.0 |
+| 8–30 days | 0.75 |
+| 31–90 days | 0.5 |
+| > 90 days | 0.25 |
+
+**traceability_score** — counts how many of the four traceability fields are non-null in the chunk:
+
+| Non-null fields (author, library_path, content_type, display_name) | traceability_score |
+|---|---|
+| 4 of 4 | 1.0 |
+| 3 of 4 | 0.75 |
+| 2 of 4 | 0.5 |
+| 1 of 4 | 0.25 |
+| 0 of 4 | 0.0 |
+
+## Minimum threshold
+
+After computing `composite_score`, exclude any chunk where `composite_score < 0.35`. Apply this filter before the 20-chunk cap.
+
 # Context assembly budget (V1 defaults)
 
 | Parameter | Default value | Purpose |

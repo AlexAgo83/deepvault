@@ -70,10 +70,34 @@ After the pilot, use `SYNC_CADENCE_HOURS` to tune cadence before adding broader 
 # Decision defaults
 - Default policy: incremental sync.
 - Default cadence: daily (every 24 hours). Fixed in V1, configurable via `SYNC_CADENCE_HOURS` in V2.
-- Manual trigger: yes, always available.
+- Manual trigger: yes, always available via `POST /sync/trigger` (spec_007).
 - Retry policy: exponential backoff, max 3 retries, mark `sync_failed` on exhaustion.
 - Scheduler: Azure Functions timer trigger for hosted refresh jobs.
 - CI/CD: GitHub Actions only for build and deployment automation, not for scheduled sync.
+
+# Azure Functions timer trigger configuration
+
+The daily sync is implemented as an Azure Functions timer trigger. The configuration is:
+
+```json
+{
+  "schedule": "0 0 2 * * *"
+}
+```
+
+This is a CRON expression meaning "02:00:00 UTC every day." The Azure Functions runtime always interprets CRON schedules in **UTC**. There is no tenant-specific timezone adjustment — UTC is the fixed reference for all environments.
+
+For V2, `SYNC_CADENCE_HOURS` overrides the default schedule. The override is applied as an Azure Functions **application setting** (not an environment variable in the traditional sense):
+
+| Setting name | Example value | Effect |
+|---|---|---|
+| `SYNC_CADENCE_HOURS` | `24` | Daily sync (default — same as the hardcoded CRON) |
+| `SYNC_CADENCE_HOURS` | `12` | Twice-daily sync (02:00 UTC and 14:00 UTC) |
+| `SYNC_CADENCE_HOURS` | `6` | Four times daily |
+
+When `SYNC_CADENCE_HOURS` is set, the backend generates the CRON expression dynamically at startup and registers it with the Azure Functions host. If `SYNC_CADENCE_HOURS` is not set, the hardcoded default (`0 0 2 * * *`) is used.
+
+`SYNC_CADENCE_HOURS` must be a positive integer divisor of 24 (1, 2, 3, 4, 6, 8, 12, 24). Values that do not divide 24 evenly are rejected at startup with a configuration error.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
