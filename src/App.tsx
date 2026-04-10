@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { fetchLiveCorpus, getMockCorpusBundle, normalizeRequestedCorpusMode, type CorpusBundle } from './data/corpus'
 import {
-  answerQuestion,
   buildExplorerRows,
   buildSiteSummaries,
   buildSyncOverview,
@@ -13,6 +12,7 @@ import {
   type UserRole,
   type SiteSummary,
 } from './lib/deepvault'
+import { orchestrateBishopAnswer } from './lib/bishop'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'Explorer' },
@@ -214,15 +214,15 @@ export default function App() {
     }
   }, [explorerRows, selectedDocId])
 
-  const handleAsk = (event: FormEvent<HTMLFormElement>) => {
+  const handleAsk = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = question.trim()
     if (!trimmed || isAsking) {
       return
     }
 
-    const result = answerQuestion(corpus, trimmed, { role, provider, limit: 3 })
     const assistantId = `${Date.now()}-assistant`
+    const startedAt = Date.now()
     setIsAsking(true)
     setMessages((current) => [
       ...current,
@@ -252,7 +252,26 @@ export default function App() {
       )
     }, 220)
 
-    const finishDelay = window.setTimeout(() => {
+    answerTimers.current.push(answerDelay)
+
+    try {
+      const result = await orchestrateBishopAnswer(corpus, trimmed, {
+        role,
+        provider,
+        limit: 3,
+        endpoint: import.meta.env.VITE_BISHOP_LLM_ENDPOINT,
+      })
+
+      const elapsed = Date.now() - startedAt
+      const remaining = Math.max(0, 560 - elapsed)
+      if (remaining > 0) {
+        await new Promise<void>((resolve) => {
+          const finishDelay = window.setTimeout(resolve, remaining)
+          answerTimers.current.push(finishDelay)
+        })
+      }
+
+      window.clearTimeout(answerDelay)
       setMessages((current) =>
         current.map((message) =>
           message.id === assistantId
@@ -269,11 +288,10 @@ export default function App() {
             : message,
         ),
       )
+    } finally {
       setIsAsking(false)
-      answerTimers.current = []
-    }, 560)
-
-    answerTimers.current.push(answerDelay, finishDelay)
+      answerTimers.current = answerTimers.current.filter((timer) => timer !== answerDelay)
+    }
   }
 
   const selectedMessage = messages[messages.length - 1]

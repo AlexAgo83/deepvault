@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { getMockCorpusBundle } from '../src/data/corpus'
-import { buildBishopPrompt, groundQuestion } from '../src/lib/bishop'
+import { buildBishopPrompt, groundQuestion, orchestrateBishopAnswer } from '../src/lib/bishop'
 
 const corpus = getMockCorpusBundle().corpus
 
@@ -45,5 +45,41 @@ describe('bishop orchestration helpers', () => {
     expect(grounding.status).toBe('no_permitted_sources')
     expect(grounding.deniedSources).not.toHaveLength(0)
     expect(grounding.localAnswer).toContain('current role cannot access')
+  })
+
+  it('falls back locally when no remote endpoint is configured', async () => {
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    expect(result.mode).toBe('fallback')
+    expect(result.answer).toContain('Q3 2025 budget')
+  })
+
+  it('uses a remote orchestration endpoint when it is available', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        answer: 'Remote answer from Bishop orchestration.',
+        chunkCount: 42,
+        tokenCount: 420,
+        latencyMs: 84,
+      }),
+    })
+
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+      endpoint: 'https://example.test/bishop',
+      fetchImpl: fetchMock as typeof fetch,
+    })
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(result.mode).toBe('remote')
+    expect(result.answer).toBe('Remote answer from Bishop orchestration.')
+    expect(result.chunkCount).toBe(42)
+    expect(result.tokenCount).toBe(420)
+    expect(result.latencyMs).toBe(84)
   })
 })
