@@ -18,6 +18,7 @@ You can also switch to a live corpus file for local testing when you have one.
 - A deterministic evaluation script for the V1 baseline
 - A sync snapshot generator for local ingestion validation
 - A mock/live corpus switch for local testing and future tenant-backed data
+- A live export command that reads SharePoint through Microsoft Graph and writes a browser-ready JSON corpus
 
 ## Prerequisites
 
@@ -69,7 +70,7 @@ To switch the app to live data mode, set:
 VITE_DEEPVAULT_DATA_MODE=live
 ```
 
-If `data/live-corpus.json` exists locally, the app will use it. Otherwise it falls back to the bundled mock corpus.
+If `public/live-corpus.json` exists locally, the app will use it. Otherwise it falls back to the bundled mock corpus.
 
 ## Ingestion
 
@@ -106,6 +107,22 @@ npm run evaluate:live -- --input /absolute/path/to/live-corpus.json
 ```
 
 The live baseline is written to `data/eval/v1_baseline_YYYY-MM-DD.live.json`.
+
+## Exporting live data
+
+Generate the browser-ready live corpus from the configured SharePoint sites:
+
+```bash
+npm run export:live
+```
+
+This reads the Graph / Entra settings from `.env.local`, crawls the configured `DEEPVAULT_ENTRA_SITES`, and writes `public/live-corpus.json`.
+
+If you want to validate the pipeline without hitting Graph, you can run:
+
+```bash
+npm run export:live -- --mode mock
+```
 
 ## Validation
 
