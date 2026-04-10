@@ -45,10 +45,24 @@ function formatInlinePath(value: string): string {
 }
 
 function PathLabel({ value }: { value: string }) {
+  const copyPath = async () => {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value)
+    }
+  }
+
   return (
-    <span className="path-inline" title={value}>
+    <button
+      type="button"
+      className="path-inline"
+      title={value}
+      aria-label={`Copy full path ${value}`}
+      onClick={() => {
+        void copyPath()
+      }}
+    >
       {formatInlinePath(value)}
-    </span>
+    </button>
   )
 }
 

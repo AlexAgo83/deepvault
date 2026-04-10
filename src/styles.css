@@ -516,13 +516,19 @@ th {
 
 .path-inline {
   display: inline-block;
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
   max-width: 100%;
   color: var(--muted);
   font-size: 0.86rem;
+  font-family: inherit;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: help;
+  cursor: copy;
+  text-align: left;
 }
 
 .pill {
