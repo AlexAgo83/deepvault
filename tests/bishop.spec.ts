@@ -57,6 +57,16 @@ describe('bishop orchestration helpers', () => {
     expect(result.answer).toContain('Q3 2025 budget')
   })
 
+  it('keeps grounded-only answers explicit when the query has no answerable sources', async () => {
+    const result = await orchestrateBishopAnswer(corpus, 'What SharePoint sites are available for the Finance team?', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    expect(result.mode).toBe('grounded-only')
+    expect(result.status).toBe('no_answer')
+  })
+
   it('uses a remote orchestration endpoint when it is available', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

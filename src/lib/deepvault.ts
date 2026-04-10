@@ -81,7 +81,7 @@ export interface ChatMessage {
   status: string
   sources: SourceRecord[]
   provider?: ProviderId
-  orchestrationMode?: 'remote' | 'fallback' | 'grounded'
+  orchestrationMode?: 'remote' | 'fallback' | 'grounded-only'
   chunkCount?: number
   tokenCount?: number
   latencyMs?: number
