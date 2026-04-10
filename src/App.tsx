@@ -417,9 +417,7 @@ export default function App() {
 
       <main className="main-content">
         <header className="topbar">
-          <div>
-            <p>A product-ready workspace for exploring content, validating grounded answers, and reviewing sync health before release.</p>
-          </div>
+          <div />
           <div className="topbar-badges">
             <Pill tone={liveState.tone} title={liveState.detail}>
               {liveState.label}
