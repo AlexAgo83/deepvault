@@ -3,7 +3,7 @@
 > Schema version: 1.0
 > Status: Draft
 > Understanding: 100%
-> Confidence: 97%
+> Confidence: 98%
 > Complexity: High
 > Theme: General
 > Reminder: Keep the scope focused on SharePoint ingestion, knowledge storage, and LLM-ready retrieval. Update links, indicators, and DeepVault/Nexus naming as the project evolves.
@@ -171,6 +171,13 @@ flowchart TD
 - `item_010_local_sync_status_and_operational_view`
 - `item_011_hosted_backend_core`
 - `item_012_teams_bot_channel_and_permissions`
+- `item_013_v2_operations_runbook_and_release_readiness`
+
+# Specs
+- `spec_000_deepvault_navy_experience_and_state_matrix`
+- `spec_001_deepvault_gordon_teams_channel_experience_and_rollout`
+- `spec_002_deepvault_bishop_chat_flow_and_answer_quality`
+- `spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality`
 
 # Delivery children
 ## V1 local validation
@@ -181,3 +188,4 @@ flowchart TD
 ## V2 hosted industrialization
 - `task_003_hosted_backend_core_delivery`
 - `task_004_teams_channel_and_permissions_delivery`
+- `task_007_v2_operations_runbook_and_release_readiness`

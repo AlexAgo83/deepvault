@@ -1,10 +1,10 @@
 ## prod_001_local_first_development_and_test_strategy - DeepVault - Navy local-first development and test strategy
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Active
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
-> Related architecture: `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
+> Related architecture: `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, open questions, and DeepVault/Navy/Bishop naming when you edit this doc. Default local validation is explorer first, then chat, then sync. For any UX/UI or frontend work tied to this strategy, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Overview
@@ -86,11 +86,15 @@ flowchart LR
 - `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
 - `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`
 - `logics/backlog/item_010_local_sync_status_and_operational_view.md`
+- `logics/specs/spec_000_deepvault_navy_experience_and_state_matrix.md`
+- `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`
+- `logics/specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md`
 - `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`
 - `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`
 - `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`
 - `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
 - `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
+- `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
 
 # Open questions
 - Which local validation path should be the default for daily engineering work: explorer, chat, or sync checks?
