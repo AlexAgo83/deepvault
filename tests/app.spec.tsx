@@ -21,6 +21,7 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    expect(screen.queryByLabelText('Explorer search')).not.toBeInTheDocument()
     await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
     await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
 
@@ -29,6 +30,21 @@ describe('DeepVault app', () => {
     expect(await screen.findByText('Orchestration')).toBeInTheDocument()
     expect(await screen.findByText('fallback')).toBeInTheDocument()
     expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
+  })
+
+  it('keeps explorer search hidden while bishop is active', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByLabelText('Explorer search')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+
+    expect(screen.queryByLabelText('Explorer search')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Explorer' }))
+
+    expect(screen.getByLabelText('Explorer search')).toBeInTheDocument()
   })
 
   it('keeps the explorer detail pane within the selected site scope', async () => {
