@@ -195,15 +195,17 @@ async function acquireDelegatedToken(config: DeepVaultExportConfig): Promise<str
 
   while (Date.now() < deadline) {
     await new Promise((resolve) => setTimeout(resolve, pollInterval))
+    const tokenForm = new URLSearchParams()
+    tokenForm.set('grant_type', 'urn:ietf:params:oauth:grant-type:device_code')
+    tokenForm.set('client_id', config.appId)
+    tokenForm.set('device_code', deviceCode.device_code)
+    if (config.secretValue) {
+      tokenForm.set('client_secret', config.secretValue)
+    }
     const tokenResponse = await fetch(`${base}/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
-        client_id: config.appId,
-        device_code: deviceCode.device_code,
-        ...(config.secretValue ? { client_secret: config.secretValue } : {}),
-      }),
+      body: tokenForm,
     })
     const payload = (await tokenResponse.json()) as { access_token?: string; error?: string; error_description?: string }
     if (payload.access_token) {
@@ -224,12 +226,12 @@ async function acquireDelegatedToken(config: DeepVaultExportConfig): Promise<str
 
 async function acquireClientCredentialsToken(config: DeepVaultExportConfig): Promise<string> {
   const base = `https://login.microsoftonline.com/${config.tenantId}/oauth2/v2.0`
-  const token = await postForm<{ access_token: string }>(`${base}/token`, new URLSearchParams({
-    client_id: config.appId,
-    client_secret: config.secretValue,
-    grant_type: 'client_credentials',
-    scope: 'https://graph.microsoft.com/.default',
-  }))
+  const tokenForm = new URLSearchParams()
+  tokenForm.set('client_id', config.appId)
+  tokenForm.set('client_secret', config.secretValue)
+  tokenForm.set('grant_type', 'client_credentials')
+  tokenForm.set('scope', 'https://graph.microsoft.com/.default')
+  const token = await postForm<{ access_token: string }>(`${base}/token`, tokenForm)
   return token.access_token
 }
 
