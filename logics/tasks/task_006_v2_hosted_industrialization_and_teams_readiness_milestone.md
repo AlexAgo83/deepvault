@@ -2,9 +2,9 @@
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 95%
-> Confidence: 92%
-> Progress: 1%
+> Understanding: 96%
+> Confidence: 93%
+> Progress: 2%
 > Complexity: High
 > Theme: General
 > Reminder: Keep this milestone focused on Azure, Teams, scheduling, and production readiness. It should start only after V1 is stable and the external platform prerequisites are in place. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -36,7 +36,7 @@ stateDiagram-v2
 # Launch checklist
 - [ ] Azure subscription and access are confirmed.
 - [ ] Resource group, naming, and environment split are decided.
-- [ ] Compute, storage, Key Vault, and monitoring targets are provisioned or ready to provision.
+- [ ] Compute, storage, retrieval index, Key Vault, and monitoring targets are provisioned or ready to provision.
 - [ ] Managed identity or service principal strategy is defined.
 - [ ] GitHub Actions permissions and secrets are ready for build and deploy automation.
 - [ ] Azure Functions timer trigger plan is approved for hosted refresh jobs.
@@ -75,7 +75,7 @@ stateDiagram-v2
 
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
-- Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
+- Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
 - Related task(s): `logics/tasks/task_003_hosted_backend_core_delivery.md`, `logics/tasks/task_004_teams_channel_and_permissions_delivery.md`
 - Request(s): `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 
