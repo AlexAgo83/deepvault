@@ -34,4 +34,21 @@ describe('DeepVault app', () => {
     expect(screen.queryAllByText('Q3 2025 budget approval')).toHaveLength(0)
     expect(screen.getAllByText('Remote access security requirements').length).toBeGreaterThan(0)
   })
+
+  it('shows the sync tab and the empty explorer state for an impossible filter', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+
+    expect(screen.getByText('Synced sites')).toBeInTheDocument()
+    expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'DeepVault - Navy' }))
+    await user.click(screen.getByRole('button', { name: 'Stealth Lab' }))
+    await user.type(screen.getByLabelText('Explorer search'), 'budget')
+
+    expect(screen.getByText('No visible document')).toBeInTheDocument()
+    expect(screen.getByText('No permitted sources match the current site filter.')).toBeInTheDocument()
+  })
 })

@@ -127,6 +127,12 @@ npm run check
 
 That runs lint, typecheck, tests, build, and the mock evaluation.
 
+If you want the coverage report and threshold check:
+
+```bash
+npm run test:coverage
+```
+
 ## Live Data Workflow
 
 Live mode is for testing against real SharePoint content exported through Microsoft Graph.
