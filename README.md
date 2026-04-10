@@ -1,31 +1,49 @@
 # DeepVault Nexus
 
-DeepVault Nexus is the local V1 workspace for the DeepVault product family.
-It ships a grounded local surface for:
+<p align="center">
+  <img src="./public/icon.svg" alt="DeepVault Nexus icon" width="120" height="120" />
+</p>
 
-- `DeepVault - Navy` for exploration and source inspection
-- `DeepVault - Bishop` for permission-aware chat and citations
-- `DeepVault - Gordon` as the future Teams channel surface
-- sync visibility for ingestion, refresh state, and provenance
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4C8BF5" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript Strict" />
+  <img src="https://img.shields.io/badge/local--first-deepvault-0F766E" alt="Local first" />
+  <img src="https://img.shields.io/badge/live%20corpus-graph%20export-F97316" alt="Live corpus" />
+</p>
 
-The app runs on a bundled pilot corpus by default so V1 can be validated without a hosted backend.
-You can also switch to a live corpus file for local testing when you have one.
+DeepVault Nexus is the local command center for the DeepVault product family.
+It is designed to help you validate the experience end to end before a hosted backend exists.
 
-## What is included
+It gives you:
 
-- A React + Vite local app
-- A local retrieval engine with permission filtering
-- A deterministic evaluation script for the V1 baseline
-- A sync snapshot generator for local ingestion validation
-- A mock/live corpus switch for local testing and future tenant-backed data
-- A live export command that reads SharePoint through Microsoft Graph and writes a browser-ready JSON corpus
+- `DeepVault - Navy` for browsing sources and inspecting documents
+- `DeepVault - Bishop` for permission-aware grounded Q&A
+- sync visibility for ingestion state, refresh timing, and provenance
+- a mock corpus for fast local work
+- a live corpus path for testing against real SharePoint exports
 
-## Prerequisites
+This repo is intentionally local-first:
+
+- mock mode runs without Microsoft Graph
+- live mode uses a browser-ready JSON export from your SharePoint sites
+- the live export is generated from the Microsoft Graph / Entra settings in `.env.local`
+
+## What You Can Test
+
+- document discovery and source inspection
+- grounded retrieval with source traces
+- role-based visibility
+- local ingestion snapshots
+- live SharePoint export generation
+- live corpus loading in the browser
+
+## Requirements
 
 - Node 22
 - npm
 
-## Setup
+## Install
 
 1. Install dependencies:
 
@@ -33,96 +51,138 @@ You can also switch to a live corpus file for local testing when you have one.
    npm install
    ```
 
-2. Start the local app:
+2. Create your local environment file:
 
    ```bash
-   npm run dev
+   cp .env.exemple .env.local
    ```
 
-3. Open the app at the Vite URL shown in the terminal.
+3. Edit `.env.local` with your own values.
 
-## Local workflow
+Keep real credentials and tenant data local. Do not commit `.env.local`.
 
-### Explorer
+## Quick Start
 
-Use the explorer to browse pilot sites, inspect documents, and confirm source metadata.
-
-### Bishop
-
-Use Bishop to ask grounded questions against the same local corpus.
-The answer trace shows the provider, chunk count, token estimate, and cited sources.
-
-### Sync
-
-Use the sync view to inspect the latest refresh state and ingestion metrics.
-
-## Environment variables
-
-The repository keeps the current local Microsoft and AI secrets in `.env.local`.
-That file is ignored by Git and should remain local.
-
-The provided environment block is intended for future Graph, Entra, and LLM wiring.
-The current V1 app does not require those variables to run because it uses the bundled pilot corpus.
-
-To switch the app to live data mode, set:
+Run the local app with the bundled mock corpus:
 
 ```bash
-VITE_DEEPVAULT_DATA_MODE=live
+npm run dev
 ```
 
-If `public/live-corpus.json` exists locally, the app will use it. Otherwise it falls back to the bundled mock corpus.
+Open the Vite URL shown in the terminal.
 
-## Ingestion
+If you want to use the live corpus file in the browser:
 
-Run the local ingestion snapshot generator:
+```bash
+VITE_DEEPVAULT_DATA_MODE=live npm run dev
+```
+
+That makes the app try to load `public/live-corpus.json`.
+If the file is missing, the app falls back to the bundled mock corpus.
+
+## Local Testing Guide
+
+This is the fastest path for validating the product locally.
+
+### 1. Start the app
+
+```bash
+npm run dev
+```
+
+Use this when you want to work with the bundled mock corpus.
+
+### 2. Inspect sources in Navy
+
+- use the site filter to narrow the corpus
+- search for titles, tags, or keywords
+- click a document card to inspect its metadata, summary, and excerpt
+
+### 3. Ask Bishop
+
+- switch to `DeepVault - Bishop`
+- ask a grounded question about the corpus
+- check the answer trace for sources, chunk count, token count, and latency
+
+### 4. Check sync status
+
+- switch to `Sync status`
+- verify site counts, visible docs, and refresh metadata
+
+### 5. Run the local snapshot generators
 
 ```bash
 npm run ingest
-```
-
-This writes `data/runtime/sync-state.json`.
-
-Run the live variant against a real exported corpus file:
-
-```bash
-npm run ingest:live -- --input /absolute/path/to/live-corpus.json
-```
-
-The live snapshot is written to `data/runtime/sync-state.live.json`.
-
-## Evaluation
-
-Run the V1 retrieval baseline:
-
-```bash
 npm run evaluate
 ```
 
-This writes `data/eval/v1_baseline_YYYY-MM-DD.json`.
+These commands validate the local mock corpus pipeline and the deterministic baseline.
 
-Run the live variant with a real corpus file:
+### 6. Run the full local check
 
 ```bash
-npm run evaluate:live -- --input /absolute/path/to/live-corpus.json
+npm run check
 ```
 
-The live baseline is written to `data/eval/v1_baseline_YYYY-MM-DD.live.json`.
+That runs lint, typecheck, tests, build, and the mock evaluation.
 
-## Exporting live data
+## Live Data Workflow
 
-Generate the browser-ready live corpus from the configured SharePoint sites:
+Live mode is for testing against real SharePoint content exported through Microsoft Graph.
+
+### 1. Configure `.env.local`
+
+The live exporter reads these settings from `.env.local`:
+
+- `DEEPVAULT_ENTRA_AUTH_MODE`
+- `DEEPVAULT_ENTRA_BASE_URL`
+- `DEEPVAULT_ENTRA_TIMEOUT_SECONDS`
+- `DEEPVAULT_ENTRA_SCOPES`
+- `DEEPVAULT_ENTRA_SITES`
+- `DEEPVAULT_PILOT_SITE_NAMES`
+- `DEEPVAULT_ENTRA_APP_ID`
+- `DEEPVAULT_ENTRA_TENANT_ID`
+- `DEEPVAULT_ENTRA_SECRET_ID`
+- `DEEPVAULT_ENTRA_SECRET_VALUE`
+- `OPENAI_API_KEY`
+- `GEMINI_API_KEY`
+
+You can use [`.env.exemple`](./.env.exemple) as the starting point.
+
+### 2. Generate the live corpus
 
 ```bash
 npm run export:live
 ```
 
-This reads the Graph / Entra settings from `.env.local`, crawls the configured `DEEPVAULT_ENTRA_SITES`, and writes `public/live-corpus.json`.
+This:
 
-If you want to validate the pipeline without hitting Graph, you can run:
+- reads the Microsoft Graph and Entra settings from `.env.local`
+- crawls the configured SharePoint sites
+- writes `public/live-corpus.json`
+
+If you want to validate the pipeline without hitting Graph:
 
 ```bash
 npm run export:live -- --mode mock
 ```
+
+### 3. Load the live corpus in the browser
+
+```bash
+VITE_DEEPVAULT_DATA_MODE=live npm run dev
+```
+
+The app loads `public/live-corpus.json` at runtime and shows the live corpus in the same UI.
+
+### 4. Validate the live snapshot locally
+
+```bash
+npm run ingest:live -- --input public/live-corpus.json
+npm run evaluate:live -- --input public/live-corpus.json
+```
+
+Those commands validate the generated live JSON as an input artifact.
 
 ## Validation
 
@@ -130,13 +190,42 @@ Recommended validation sequence:
 
 ```bash
 npm run lint
+npm run typecheck
 npm run test
 npm run build
 npm run evaluate
+npm run e2e
 ```
+
+For live-data validation:
+
+```bash
+npm run export:live
+npm run ingest:live -- --input public/live-corpus.json
+npm run evaluate:live -- --input public/live-corpus.json
+VITE_DEEPVAULT_DATA_MODE=live npm run dev
+```
+
+## Data Files
+
+Generated local artifacts are ignored by Git:
+
+- `public/live-corpus.json`
+- `data/runtime/`
+- `data/eval/*.live.json`
+
+These files can contain exported business content and should remain local.
 
 ## Notes
 
-- The local provider abstraction currently routes to deterministic retrieval logic for both OpenAI and Gemini labels.
-- The corpus includes a restricted site so permission-aware retrieval can be exercised locally.
-- Mock mode is the default. Live mode is an explicit opt-in for local testing against a real corpus export.
+- The app uses a deterministic retrieval abstraction in V1.
+- Mock mode is the default.
+- Live mode is opt-in and requires the exported corpus file.
+- The repo keeps business content outside `.env`, so treat exported JSON as sensitive operational data.
+
+## Troubleshooting
+
+- If `npm run export:live` is slow, the current SharePoint crawl may be large.
+- If the browser still shows the mock corpus in live mode, confirm that `public/live-corpus.json` exists.
+- If the app does not switch to live data, make sure you started it with `VITE_DEEPVAULT_DATA_MODE=live`.
+- If you want to reset the browser-side Playwright artifacts, delete `.playwright-cli/` locally. It is ignored by Git.
