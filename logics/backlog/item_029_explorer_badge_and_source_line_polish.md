@@ -1,10 +1,10 @@
 ## item_029_explorer_badge_and_source_line_polish - Explorer badge and source line polish
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 93%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -80,3 +80,4 @@ flowchart TD
 - Source file: `logics/request/req_006_explorer_card_hierarchy_and_visual_polish.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
 - Request context seeded into this backlog item from `logics/request/req_006_explorer_card_hierarchy_and_visual_polish.md`.
+- Implemented in task `task_013_coverage_and_explorer_polish_orchestration` wave 2.

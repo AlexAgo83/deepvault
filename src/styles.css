@@ -374,11 +374,15 @@ p {
 .document-row {
   width: 100%;
   text-align: left;
-  padding: 14px;
+  padding: 18px 16px;
+  display: grid;
+  gap: 8px;
+  transition: border-color 120ms ease, transform 120ms ease, background-color 120ms ease;
 }
 
 .document-row-active {
   border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(185, 106, 67, 0.04), rgba(255, 253, 249, 1));
 }
 
 .document-row-top,
@@ -387,7 +391,29 @@ p {
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 0;
+}
+
+.document-row-top strong {
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.document-row .pill {
+  padding: 2px 7px;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+}
+
+.document-row p {
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 68ch;
+}
+
+.document-row-meta {
+  color: var(--muted);
+  font-size: 0.88rem;
 }
 
 .document-row p,
