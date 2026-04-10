@@ -1,10 +1,10 @@
 ## item_041_harden_live_export_and_checkpoint_handling - Harden live export and checkpoint handling
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 95%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Operations
 > Reminder: Update status, understanding, confidence, progress, and linked request or task references when you edit this doc.
@@ -76,3 +76,4 @@ flowchart TD
 - Derived from request `req_011_audit_de_dette_technique_et_cleanup_structurel`.
 - Source file: `logics/request/req_011_audit_de_dette_technique_et_cleanup_structurel.md`.
 - Keep this slice focused on export orchestration and checkpoint resilience.
+- Completed with a dedicated runtime-state split in `scripts/live-export-state.ts`, a checkpoint corpus builder, and unit coverage for CLI parsing and checkpoint recovery.

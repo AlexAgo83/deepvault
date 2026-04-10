@@ -1,10 +1,10 @@
 ## task_016_orchestrate_technical_debt_cleanup_waves - Orchestrate technical debt cleanup waves
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: In progress
+> Status: Done
 > Understanding: 95%
 > Confidence: 90%
-> Progress: 80%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -43,9 +43,9 @@ stateDiagram-v2
 - [x] 2. Orchestrate the UI and shell wave first, then the retrieval and Bishop waves, then the export and workflow hygiene waves.
 - [x] 3. Keep each wave commit-ready, validate it, and update the linked Logics docs before moving on.
 - [x] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
-- [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
-- [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
-- [ ] FINAL: update the request, backlog, and task docs once all waves are closed.
+- [x] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
+- [x] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
+- [x] FINAL: update the request, backlog, and task docs once all waves are closed.
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -97,3 +97,4 @@ stateDiagram-v2
 - Wave 2 completed: split the app shell into smaller UI primitives and hooks while keeping the current explorer, Bishop, and sync flows intact.
 - Wave 3 completed: split evaluation and formatting helpers into a dedicated module and kept the public deepvault surface stable.
 - Wave 4 completed: clarified the Bishop orchestration contract by making the grounded-only path explicit, aligning the shared chat message type, and validating the hook/tests against the new mode.
+- Wave 5 completed: split live export CLI/runtime state from checkpoint persistence, added checkpoint snapshot helpers and replayable state tests, and kept the live export workflow observable.

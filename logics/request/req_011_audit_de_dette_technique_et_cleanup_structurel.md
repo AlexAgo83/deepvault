@@ -1,9 +1,9 @@
 ## req_011_audit_de_dette_technique_et_cleanup_structurel - Technical debt and structural cleanup audit
-> From version: 1.0.0
+> From version: 1.0.1
 > Schema version: 1.0
-> Status: Draft
-> Understanding: 95%
-> Confidence: 90%
+> Status: Done
+> Understanding: 99%
+> Confidence: 99%
 > Complexity: High
 > Theme: General
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -70,3 +70,6 @@ flowchart TD
 - `item_040_clarify_bishop_orchestration_contract`
 - `item_041_harden_live_export_and_checkpoint_handling`
 - `item_042_clean_logics_workflow_hygiene_and_references`
+
+# Outcome
+- Completed via `task_016_orchestrate_technical_debt_cleanup_waves` and its five bounded waves.
