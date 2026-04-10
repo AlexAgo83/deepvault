@@ -2,6 +2,7 @@
 > From version: 0.0.2
 > Understanding: 93%
 > Confidence: 90%
+> Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 
 # Overview
 The pilot needs a repeatable way to add adjacent SharePoint sites and judge whether the retrieval path is still good.

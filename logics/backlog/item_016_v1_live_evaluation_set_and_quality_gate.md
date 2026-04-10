@@ -1,9 +1,9 @@
-## item_016_live_evaluation_set_and_quality_gate - Live evaluation set and quality gate
-> From version: 1.0.0
+## item_016_v1_live_evaluation_set_and_quality_gate - V1 — Live evaluation set and quality gate
+> From version: 1.0.2
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 95%
-> Confidence: 92%
+> Understanding: 96%
+> Confidence: 93%
 > Progress: 0%
 > Complexity: High
 > Theme: Operations
@@ -20,12 +20,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|live-evaluation-set-and-quality-gate|req-001-live-corpus-hardening-and-pre-v2|the-current-evaluation-flow-is-not|ac1-the-evaluation-set-uses-live
-flowchart LR
-    Request[req_001_live_corpus_hardening_and_pre_v2_cleanup] --> Problem[Live evaluation set and quality gate]
-    Problem --> Set[Live eval set]
-    Set --> Score[Quality gate]
-    Score --> Baseline[Live baseline]
+%% logics-signature: backlog|v1-live-evaluation-set-and-quality-gate|req-001-v1-local-hardening-and-scope-evo|the-current-evaluation-flow-is-not|ac1-the-evaluation-set-uses-live
+flowchart TD
+    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The current evaluation flow is not]
+    Problem --> Scope[Live evaluation set and quality gate]
+    Scope --> Acceptance[AC1: The evaluation set uses live]
+    Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
 ```
 
 # Acceptance criteria
@@ -51,7 +51,7 @@ flowchart LR
 # Links
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
-- Request: `logics/request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md`
+- Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 - Primary task(s): `logics/tasks/task_009_pre_v2_live_hardening_milestone.md`
 
 # AI Context
@@ -65,6 +65,6 @@ flowchart LR
 - Urgency: Medium
 
 # Notes
-- Derived from request `req_001_live_corpus_hardening_and_pre_v2_cleanup`.
-- Source file: `logics/request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md`.
+- Derived from request `req_001_v1_local_hardening_and_scope_evolution`.
+- Source file: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`.
 - Keep this backlog item bounded to evaluation and gating only.

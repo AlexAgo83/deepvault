@@ -1,10 +1,10 @@
-## item_011_hosted_backend_core - Hosted backend core
-> From version: 0.0.0
+## item_011_v2_hosted_backend_core - V2 — Hosted backend core
+> From version: 0.0.1
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 0%
 > Complexity: High
 > Theme: General
 > Reminder: Keep this slice focused on the hosted backend core.
@@ -20,9 +20,9 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|hosted-backend-core|req-000-sharepoint-knowledge-graph-kicko|the-hosted-backend-centralizes-ingestion|ac1-the-hosted-backend-exposes-a
+%% logics-signature: backlog|v2-hosted-backend-core|req-000-v0-bootstrap-and-initial-foundat|the-hosted-backend-centralizes-ingestion|ac1-the-hosted-backend-exposes-a
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[The hosted backend centralizes ingestion r]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[The hosted backend centralizes ingestion r]
     Problem --> Scope[Hosted backend core]
     Scope --> Acceptance[AC1: The hosted backend exposes a]
     Acceptance --> Tasks[Execution task]
@@ -50,7 +50,7 @@ flowchart TD
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - Architecture decision(s): `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
 - Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`
-- Request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): (none yet)
 
 # AI Context
@@ -64,6 +64,6 @@ flowchart TD
 - Urgency: High
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item bounded to the shared backend core; split client surfaces into separate items.

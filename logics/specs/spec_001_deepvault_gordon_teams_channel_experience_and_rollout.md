@@ -2,6 +2,7 @@
 > From version: 0.0.2
 > Understanding: 92%
 > Confidence: 90%
+> Related request: `logics/request/req_002_v2_azure_and_teams_foundation.md`
 
 # Overview
 `DeepVault - Gordon` is the governed Teams delivery surface for the hosted product.

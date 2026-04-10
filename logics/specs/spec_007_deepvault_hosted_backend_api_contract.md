@@ -2,6 +2,7 @@
 > From version: 0.0.1
 > Understanding: 95%
 > Confidence: 93%
+> Related request: `logics/request/req_002_v2_azure_and_teams_foundation.md`
 
 # Overview
 This spec defines the HTTP API contract for the DeepVault hosted backend.

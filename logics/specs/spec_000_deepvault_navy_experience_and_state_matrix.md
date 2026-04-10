@@ -2,6 +2,7 @@
 > From version: 0.0.2
 > Understanding: 94%
 > Confidence: 92%
+> Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # Overview
 `DeepVault - Navy` is the local browsing surface for SharePoint content.

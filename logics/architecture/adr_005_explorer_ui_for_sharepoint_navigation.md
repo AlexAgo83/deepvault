@@ -2,7 +2,7 @@
 > Date: 2026-04-10
 > Status: Proposed
 > Drivers: Give users a lightweight way to browse sites and content while validating ingestion quality.
-> Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+> Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `item_003_explorer_ui_for_sharepoint_navigation`
 > Related task: (none yet)
 > Reminder: Keep the explorer small, navigable, and aligned with the current data model. Default to a site tree plus previews before admin or deep search work. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`. Reviewed during the 2026-04-10 release/doc sync.

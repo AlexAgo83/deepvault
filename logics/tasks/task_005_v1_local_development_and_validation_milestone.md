@@ -1,5 +1,5 @@
-## task_005_v1_local_development_and_validation_milestone - V1 local development and validation milestone
-> From version: 0.0.0
+## task_005_v1_local_development_and_validation_milestone - V1 — Local development and validation milestone
+> From version: 1.0.1
 > Schema version: 1.0
 > Status: Done
 > Understanding: 97%
@@ -68,7 +68,7 @@ stateDiagram-v2
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
 - Related task(s): `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_001_local_companion_vertical_slice.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
-- Request(s): `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request(s): `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # AI Context
 - Summary: V1 local development and validation milestone for DeepVault

@@ -1,10 +1,10 @@
-## item_001_sharepoint_ingestion_and_sync_pipeline - SharePoint ingestion and sync pipeline
-> From version: 0.0.0
+## item_002_v1_hybrid_knowledge_store_and_retrieval - V1 — Hybrid knowledge store and retrieval
+> From version: 0.0.1
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 99%
-> Confidence: 95%
-> Progress: 1%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -25,10 +25,10 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|sharepoint-ingestion-and-sync-pipeline|req-000-sharepoint-knowledge-graph-kicko|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
+%% logics-signature: backlog|v1-hybrid-knowledge-store-and-retrieval|req-000-v0-bootstrap-and-initial-foundat|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Connect to Microsoft Graph and discover]
-    Problem --> Scope[SharePoint ingestion and sync pipeline]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Connect to Microsoft Graph and discover]
+    Problem --> Scope[Hybrid knowledge store and retrieval]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```
@@ -67,8 +67,8 @@ flowchart TD
 
 # Links
 - Product brief(s): `prod_000_sharepoint_knowledge_graph_product_vision`
-- Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`, `adr_010_sharepoint_sync_orchestration_and_refresh_policy`
-- Request: `req_000_sharepoint_knowledge_graph_kickoff`
+- Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`, `adr_009_permission_aware_retrieval_and_source_filtering`
+- Request: `req_000_v0_bootstrap_and_initial_foundations`
 - Primary task(s): `task_XXX_example`
 
 # AI Context
@@ -84,7 +84,7 @@ flowchart TD
 - Urgency:
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
-- Request context seeded into this backlog item from `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Request context seeded into this backlog item from `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.

@@ -1,9 +1,9 @@
-## item_017_crawl_resilience_and_artifact_governance - Crawl resilience and artifact governance
-> From version: 1.0.0
+## item_017_v1_crawl_resilience_and_artifact_governance - V1 — Crawl resilience and artifact governance
+> From version: 1.0.2
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 95%
-> Confidence: 92%
+> Understanding: 96%
+> Confidence: 93%
 > Progress: 0%
 > Complexity: High
 > Theme: Operations
@@ -20,12 +20,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|crawl-resilience-and-artifact-governance|req-001-live-corpus-hardening-and-pre-v2|large-sharepoint-sites-need-more-resilie|ac1-large-crawls-emit-enough-progress
-flowchart LR
-    Request[req_001_live_corpus_hardening_and_pre_v2_cleanup] --> Problem[Crawl resilience and artifact governance]
-    Problem --> Crawl[Crawl checkpoints]
-    Crawl --> Logs[Progress logs]
-    Logs --> Governance[Artifact governance]
+%% logics-signature: backlog|v1-crawl-resilience-and-artifact-governa|req-001-v1-local-hardening-and-scope-evo|large-sharepoint-sites-need-more-resilie|ac1-large-crawls-emit-enough-progress
+flowchart TD
+    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[Large SharePoint sites need more resilienc]
+    Problem --> Scope[Crawl resilience and artifact governance]
+    Scope --> Acceptance[AC1: Large crawls emit enough progress]
+    Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
 ```
 
 # Acceptance criteria
@@ -51,7 +51,7 @@ flowchart LR
 # Links
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
-- Request: `logics/request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md`
+- Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 - Primary task(s): `logics/tasks/task_009_pre_v2_live_hardening_milestone.md`
 
 # AI Context
@@ -65,6 +65,6 @@ flowchart LR
 - Urgency: High
 
 # Notes
-- Derived from request `req_001_live_corpus_hardening_and_pre_v2_cleanup`.
-- Source file: `logics/request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md`.
+- Derived from request `req_001_v1_local_hardening_and_scope_evolution`.
+- Source file: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`.
 - Keep this backlog item bounded to crawl resilience and artifact governance only.

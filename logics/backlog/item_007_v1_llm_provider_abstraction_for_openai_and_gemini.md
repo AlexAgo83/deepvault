@@ -1,10 +1,10 @@
-## item_007_llm_provider_abstraction_for_openai_and_gemini - DeepVault - Bishop LLM provider abstraction for OpenAI and Gemini
-> From version: 0.0.0
+## item_007_v1_llm_provider_abstraction_for_openai_and_gemini - V1 — DeepVault - Bishop LLM provider abstraction for OpenAI and Gemini
+> From version: 0.0.1
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 92%
-> Progress: 2%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Keep this slice focused on the backend provider contract and do not hard-code a single vendor into `DeepVault - Bishop`.
@@ -21,9 +21,9 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deepvault-bishop-llm-provider-abstractio|req-000-sharepoint-knowledge-graph-kicko|deliver-a-provider-agnostic-llm-backend-|ac1-the-provider-agnostic-llm-backend-no
+%% logics-signature: backlog|v1-deepvault-bishop-llm-provider-abstrac|req-000-v0-bootstrap-and-initial-foundat|deliver-a-provider-agnostic-llm-backend-|ac1-the-provider-agnostic-llm-backend-no
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver a provider-agnostic LLM backend so]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Deliver a provider-agnostic LLM backend so]
     Problem --> Scope[DeepVault - Bishop LLM provider abstractio]
     Scope --> Acceptance[AC1: The provider-agnostic LLM backend nor]
     Acceptance --> Tasks[Execution task]
@@ -50,7 +50,7 @@ flowchart TD
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - Architecture decision(s): `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`
-- Request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): (none yet)
 
 # AI Context
@@ -63,7 +63,7 @@ flowchart TD
 - Urgency: High
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for remaining request coverage instead of widening this doc.
-- Request context seeded into this backlog item from `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Request context seeded into this backlog item from `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.

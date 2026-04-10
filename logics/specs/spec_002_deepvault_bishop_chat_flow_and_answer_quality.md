@@ -2,6 +2,7 @@
 > From version: 0.0.2
 > Understanding: 95%
 > Confidence: 92%
+> Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # Overview
 `DeepVault - Bishop` is the local question-answering surface for DeepVault.

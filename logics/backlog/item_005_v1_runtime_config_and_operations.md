@@ -1,31 +1,34 @@
-## item_004_teams_bot_chat_and_permissions - DeepVault - Gordon chat and permissions
-> From version: 0.0.2
+## item_005_v1_runtime_config_and_operations - V1 — Runtime config and operations
+> From version: 0.0.1
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 99%
-> Confidence: 95%
-> Progress: 2%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: High
 > Theme: General
-> Reminder: Update status/understanding/confidence/progress, linked request/task references, and DeepVault/Gordon naming when you edit this doc. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
+> Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
 
 # Problem
-- Define the `DeepVault - Gordon` channel governance and permission model after the backend is hosted.
-- Keep the enterprise chat surface governed through Microsoft identity and the shared retrieval model.
-- Separate the policy and channel rules from the concrete bot packaging work.
+- Connect to Microsoft Graph and discover the initial SharePoint sites, libraries, and lists.
+- Navigate SharePoint content and extract useful metadata and documents from selected spaces.
+- Build a durable knowledge store from collected SharePoint content.
+- Prepare the data layer so an LLM agent can answer questions from the indexed knowledge base.
+- Define how the system should sync, refresh, and filter content as SharePoint changes.
+- Allow the pilot site list to be updated through environment configuration.
+- This project starts from a working Microsoft Graph connection against the tenant and a verified SharePoint site structure.
+- Validated context so far:
 
 # Scope
-- In: channel policy, identity mapping, and permission rules for `DeepVault - Gordon`.
-- In: the hosted backend integration contract that `DeepVault - Gordon` must respect.
-- In: the requirements that keep Teams aligned with the permission-aware retrieval model.
-- Out: Teams bot packaging, tenant distribution, and local runtime work.
+- In: one coherent delivery slice from the source request.
+- Out: unrelated sibling slices that should stay in separate backlog items instead of widening this doc.
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deepvault-gordon-chat-and-permissions|req-000-sharepoint-knowledge-graph-kicko|define-the-deepvault-gordon-channel|ac1-the-request-clearly-defines-the
+%% logics-signature: backlog|v1-runtime-config-and-operations|req-000-v0-bootstrap-and-initial-foundat|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define the DeepVault - Gordon channel]
-    Problem --> Scope[DeepVault - Gordon chat and permissions]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Connect to Microsoft Graph and discover]
+    Problem --> Scope[Runtime config and operations]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```
@@ -56,24 +59,23 @@ flowchart TD
 
 # Decision framing
 - Product framing: Required
-- Product signals: enterprise channel, governed chatbot, user permissions
-- Product follow-up: Keep the product brief aligned with the hosted backend and Teams channel direction.
+- Product signals: navigation and discoverability, experience scope
+- Product follow-up: Create or link a product brief before implementation moves deeper into delivery.
 - Architecture framing: Required
-- Architecture signals: bot auth, hosted backend contract, permission-aware retrieval
-- Architecture follow-up: Keep the hosted backend and Teams ADR current as the channel matures.
+- Architecture signals: data model and persistence, state and sync, security and identity
+- Architecture follow-up: Create or link an architecture decision before irreversible implementation work starts.
 
 # Links
 - Product brief(s): `prod_000_sharepoint_knowledge_graph_product_vision`
-- Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`, `adr_009_permission_aware_retrieval_and_source_filtering`, `adr_013_hosted_backend_and_teams_chat_channel`
-- Related backlog: `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
-- Request: `req_000_sharepoint_knowledge_graph_kickoff`
+- Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`, `adr_010_sharepoint_sync_orchestration_and_refresh_policy`, `adr_011_observability_audit_and_answer_traceability`
+- Request: `req_000_v0_bootstrap_and_initial_foundations`
 - Primary task(s): `task_XXX_example`
 
 # AI Context
-- Summary: DeepVault - Gordon channel governance and permission model for the chatbot.
-- Keywords: teams, permissions, identity, governance, chatbot, hosted backend
-- Use when: Use when defining the `DeepVault - Gordon` policy and channel rules.
-- Skip when: Skip when the work is about packaging or implementation details.
+- Summary: Kickoff request for a SharePoint knowledge graph and retrieval tool built on Microsoft Graph.
+- Keywords: microsoft graph, sharepoint, knowledge graph, ingestion, retrieval, llm
+- Use when: Use when framing the first delivery slice for SharePoint discovery, indexing, and question answering.
+- Skip when: Skip when the work is about unrelated app features or a later delivery stage.
 # References
 - `logics/skills/logics-ui-steering/SKILL.md`
 
@@ -82,7 +84,7 @@ flowchart TD
 - Urgency:
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
-- Request context seeded into this backlog item from `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Request context seeded into this backlog item from `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.

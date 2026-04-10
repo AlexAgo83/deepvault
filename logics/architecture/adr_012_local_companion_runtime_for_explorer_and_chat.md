@@ -2,7 +2,7 @@
 > Date: 2026-04-10
 > Status: Proposed
 > Drivers: Ship a fast local-only validation surface for the first pilot, avoid hosting and channel complexity, and keep the chatbot usable while the backend is still in development.
-> Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+> Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: (none yet)
 > Reminder: Keep `DeepVault - Navy` self-contained so it can be replaced cleanly by the hosted backend later. Default to a single local web runtime with minimal local auth and storage. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`. Reviewed during the 2026-04-10 release/doc sync.

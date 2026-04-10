@@ -1,10 +1,10 @@
-## item_012_teams_bot_channel_and_permissions - DeepVault - Gordon channel and permissions
-> From version: 0.0.0
+## item_012_v2_teams_bot_channel_and_permissions - V2 — DeepVault - Gordon channel and permissions
+> From version: 0.0.1
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 2%
+> Progress: 0%
 > Complexity: High
 > Theme: General
 > Reminder: Keep this slice focused on `DeepVault - Gordon` and its permissions. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -22,9 +22,9 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deepvault-gordon-channel-and-permissions|req-000-sharepoint-knowledge-graph-kicko|implement-the-governed-deepvault-gordon|ac1-deepvault-gordon-can-route
+%% logics-signature: backlog|v2-deepvault-gordon-channel-and-permissi|req-000-v0-bootstrap-and-initial-foundat|implement-the-governed-deepvault-gordon|ac1-deepvault-gordon-can-route
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Implement the governed DeepVault - Gordon]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Implement the governed DeepVault - Gordon]
     Problem --> Scope[DeepVault - Gordon channel and permissions]
     Scope --> Acceptance[AC1: DeepVault - Gordon can route]
     Acceptance --> Tasks[Execution task]
@@ -52,7 +52,7 @@ flowchart TD
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
 - Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`
-- Request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): (none yet)
 
 # AI Context
@@ -66,6 +66,6 @@ flowchart TD
 - Urgency: High
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item bounded to the Teams channel; keep local runtime work in the local items.

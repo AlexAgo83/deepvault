@@ -1,10 +1,10 @@
-## item_010_local_sync_status_and_operational_view - DeepVault - Navy sync status and operational view
-> From version: 0.0.0
+## item_010_v1_local_sync_status_and_operational_view - V1 — DeepVault - Navy sync status and operational view
+> From version: 0.0.1
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 92%
-> Progress: 2%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Keep this slice focused on `DeepVault - Navy` and its operational view. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -20,9 +20,9 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deepvault-navy-sync-status-and-operation|req-000-sharepoint-knowledge-graph-kicko|the-deepvault-navy-operational-view|ac1-deepvault-navy-shows-crawl
+%% logics-signature: backlog|v1-deepvault-navy-sync-status-and-operat|req-000-v0-bootstrap-and-initial-foundat|the-deepvault-navy-operational-view|ac1-deepvault-navy-shows-crawl
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[The DeepVault - Navy operational view]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[The DeepVault - Navy operational view]
     Problem --> Scope[DeepVault - Navy sync status and]
     Scope --> Acceptance[AC1: DeepVault - Navy shows crawl]
     Acceptance --> Tasks[Execution task]
@@ -50,7 +50,7 @@ flowchart TD
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - Architecture decision(s): `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
 - Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-- Request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): (none yet)
 
 # AI Context
@@ -64,6 +64,6 @@ flowchart TD
 - Urgency: Medium
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item bounded to local operational visibility; move hosted dashboards to later work.

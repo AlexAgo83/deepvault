@@ -1,9 +1,9 @@
-## item_015_live_explorer_site_filter_alignment - Live explorer site filter alignment
-> From version: 1.0.0
+## item_015_v1_live_explorer_site_filter_alignment - V1 — Live explorer site filter alignment
+> From version: 1.0.2
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 95%
-> Confidence: 92%
+> Understanding: 96%
+> Confidence: 93%
 > Progress: 0%
 > Complexity: Medium
 > Theme: UI
@@ -20,12 +20,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|live-explorer-site-filter-alignment|req-001-live-corpus-hardening-and-pre-v2|the-live-explorer-can-surface-documents|ac1-selecting-a-site-constrains-the
-flowchart LR
-    Request[req_001_live_corpus_hardening_and_pre_v2_cleanup] --> Problem[Live explorer site filter alignment]
-    Problem --> Filter[Selected site filter]
-    Filter --> Results[Visible results]
-    Results --> Detail[Detail pane]
+%% logics-signature: backlog|v1-live-explorer-site-filter-alignment|req-001-v1-local-hardening-and-scope-evo|the-live-explorer-can-surface-documents|ac1-selecting-a-site-constrains-the
+flowchart TD
+    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The live explorer can surface documents]
+    Problem --> Scope[Live explorer site filter alignment]
+    Scope --> Acceptance[AC1: Selecting a site constrains the]
+    Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
 ```
 
 # Acceptance criteria
@@ -51,7 +51,7 @@ flowchart LR
 # Links
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-- Request: `logics/request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md`
+- Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 - Primary task(s): `logics/tasks/task_009_pre_v2_live_hardening_milestone.md`
 
 # AI Context
@@ -65,6 +65,6 @@ flowchart LR
 - Urgency: Medium
 
 # Notes
-- Derived from request `req_001_live_corpus_hardening_and_pre_v2_cleanup`.
-- Source file: `logics/request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md`.
+- Derived from request `req_001_v1_local_hardening_and_scope_evolution`.
+- Source file: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`.
 - Keep this backlog item bounded to explorer scope behavior only.
