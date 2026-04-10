@@ -1,7 +1,7 @@
 ## req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up - Nexus V1.1 remaining polish and Bishop UX follow-up
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 93%
 > Confidence: 91%
 > Complexity: High

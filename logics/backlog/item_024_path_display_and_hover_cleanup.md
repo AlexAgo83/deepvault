@@ -1,10 +1,10 @@
 ## item_024_path_display_and_hover_cleanup - Path display and hover cleanup
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 93%
 > Confidence: 91%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -102,3 +102,4 @@ flowchart TD
 - Source file: `logics/request/req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
 - Request context seeded into this backlog item from `logics/request/req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up.md`.
+- Implemented in task `task_012_nexus_v1_1_remaining_polish_orchestration` wave 4.

@@ -34,6 +34,10 @@ describe('DeepVault app', () => {
     render(<App />)
 
     expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
+    expect(screen.getAllByTitle(/\/.+/).length).toBeGreaterThan(0)
+    for (const pathLabel of screen.getAllByTitle(/\/.+/)) {
+      expect(pathLabel.textContent).not.toContain('/')
+    }
 
     await user.click(screen.getByRole('button', { name: 'Pilot Site Beta' }))
 

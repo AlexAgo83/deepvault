@@ -512,8 +512,17 @@ th {
 
 .source-path {
   margin-top: 10px;
+}
+
+.path-inline {
+  display: inline-block;
+  max-width: 100%;
   color: var(--muted);
   font-size: 0.86rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: help;
 }
 
 .pill {
