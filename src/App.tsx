@@ -66,6 +66,25 @@ function PathLabel({ value }: { value: string }) {
   )
 }
 
+function CompactPathText({ value }: { value: string }) {
+  const marker = 'Path:'
+  const markerIndex = value.indexOf(marker)
+
+  if (markerIndex < 0) {
+    return <>{value}</>
+  }
+
+  const prefix = value.slice(0, markerIndex + marker.length)
+  const pathText = value.slice(markerIndex + marker.length).trim().replace(/[.]+$/, '')
+
+  return (
+    <>
+      {prefix}{' '}
+      <PathLabel value={pathText} />
+    </>
+  )
+}
+
 function StatCard({
   label,
   value,
@@ -504,9 +523,13 @@ export default function App() {
                   </div>
                   <div className="document-content">
                     <h3>Answer-ready summary</h3>
-                    <p>{selectedExplorerDoc.directAnswer || selectedExplorerDoc.summary}</p>
+                    <p>
+                      <CompactPathText value={selectedExplorerDoc.directAnswer || selectedExplorerDoc.summary} />
+                    </p>
                     <h3>Source excerpt</h3>
-                    <p>{selectedExplorerDoc.content}</p>
+                    <p>
+                      <CompactPathText value={selectedExplorerDoc.content} />
+                    </p>
                   </div>
                 </>
               ) : (

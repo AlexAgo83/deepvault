@@ -1,10 +1,10 @@
 ## item_030_compact_paths_in_explorer_excerpts_and_summaries - Compact paths in explorer excerpts and summaries
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 93%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
