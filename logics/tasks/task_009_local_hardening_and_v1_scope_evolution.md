@@ -1,10 +1,10 @@
 ## task_009_local_hardening_and_v1_scope_evolution - V1 scope evolution — local hardening and live delivery
 > From version: 1.0.1
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 97%
 > Confidence: 95%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog/task references when you edit this doc. This task contains everything that can be executed locally without Azure or Teams. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -44,12 +44,12 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] **Wave 1 — Incremental live sync and crawl resilience** (`item_014` + `item_017`): implement incremental live sync, resumable export, crawl checkpoints, progress visibility, memory guards, and artifact governance.
-- [ ] **Wave 2 — Live explorer site filter alignment** (`item_015`): make the selected site actually bound live explorer results; keep list, detail, and navigation state aligned.
-- [ ] **Wave 3 — Live evaluation set and quality gate** (`item_016`): build the live evaluation set, wire the deterministic quality gate, and record a live baseline that reflects exported SharePoint content.
-- [ ] **Wave 4 — V1 backlog and doc cleanup** (`item_018`): split any remaining broad items, clean the doc framing, and keep the V1 scope clearly separated from V2 delivery.
-- [ ] After each wave: run the relevant validation commands, update the linked Logics docs, and leave a reviewed commit checkpoint before starting the next wave.
-- [ ] Close the task only after all waves are complete, the live validation path is green, and the V1 scope is cleanly closed.
+- [x] **Wave 1 — Incremental live sync and crawl resilience** (`item_014` + `item_017`): implement incremental live sync, resumable export, crawl checkpoints, progress visibility, memory guards, and artifact governance.
+- [x] **Wave 2 — Live explorer site filter alignment** (`item_015`): make the selected site actually bound live explorer results; keep list, detail, and navigation state aligned.
+- [x] **Wave 3 — Live evaluation set and quality gate** (`item_016`): build the live evaluation set, wire the deterministic quality gate, and record a live baseline that reflects exported SharePoint content.
+- [x] **Wave 4 — V1 backlog and doc cleanup** (`item_018`): split any remaining broad items, clean the doc framing, and keep the V1 scope clearly separated from V2 delivery.
+- [x] After each wave: run the relevant validation commands, update the linked Logics docs, and leave a reviewed commit checkpoint before starting the next wave.
+- [x] Close the task only after all waves are complete, the live validation path is green, and the V1 scope is cleanly closed.
 
 # Delivery checkpoints
 - Each wave must end in a coherent, commit-ready repository state.
@@ -100,14 +100,28 @@ stateDiagram-v2
 - `npm run e2e`
 
 # Definition of Done (DoD)
-- [ ] All four waves complete and their backlog items linked back to this task.
-- [ ] Each wave passed its relevant validation before the next wave started.
-- [ ] The live export, ingest, evaluation, and UI checks are green in the final state.
-- [ ] The V1 scope is cleanly closed and clearly separated from V2 delivery in docs and roadmap views.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] All four waves complete and their backlog items linked back to this task.
+- [x] Each wave passed its relevant validation before the next wave started.
+- [x] The live export, ingest, evaluation, and UI checks are green in the final state.
+- [x] The V1 scope is cleanly closed and clearly separated from V2 delivery in docs and roadmap views.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report
-- Pending execution.
+- Completed:
+  - Live export checkpointing was added so reruns can reuse completed site exports.
+  - Live explorer site filtering keeps the detail pane within the selected site scope.
+  - Live evaluation reports an explicit quality gate and supports strict failure mode.
+  - The README documents checkpointing and strict live evaluation runs.
+  - Wave 4 cleanup normalized the V1 closure docs and marked the cleanup backlog item complete.
+- Validation completed:
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run test`
+  - `npm run export:live -- --mode mock`
+  - `npm run ingest:live -- --input public/live-corpus.json`
+  - `npm run evaluate:live -- --input public/live-corpus.json --strict --min-pass-rate 1`
+  - `python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status`
 
 # Notes
 - All Azure, Teams, and hosted backend work has been deliberately moved to `task_010_v2_azure_and_teams_delivery.md`.

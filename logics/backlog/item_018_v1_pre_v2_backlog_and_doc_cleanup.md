@@ -1,10 +1,10 @@
 ## item_018_v1_pre_v2_backlog_and_doc_cleanup - V1 — Pre-V2 backlog and doc cleanup
 > From version: 1.0.2
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 96%
 > Confidence: 93%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Use this slice to separate the remaining pre-V2 work from hosted backend and Teams delivery.
