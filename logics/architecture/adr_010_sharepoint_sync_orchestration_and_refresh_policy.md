@@ -2,7 +2,7 @@
 > Date: 2026-04-10
 > Status: Proposed
 > Drivers: Keep pilot sites current without overloading Graph, support manual and scheduled refreshes, and make source changes observable.
-> Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+> Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
 > Related task: (none yet)
 > Reminder: Prefer incremental refreshes and stable change markers over repeated full crawls, using version-neutral wording. Default to daily incremental refresh plus manual refresh, driven by Azure Functions timer triggers. Reviewed during the 2026-04-10 release/doc sync.

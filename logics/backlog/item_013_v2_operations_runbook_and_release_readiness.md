@@ -1,5 +1,5 @@
-## item_013_v2_operations_runbook_and_release_readiness - V2 operations runbook and release readiness
-> From version: 0.0.2
+## item_013_v2_operations_runbook_and_release_readiness - V2 — Operations runbook and release readiness
+> From version: 0.0.4
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 94%
@@ -20,9 +20,9 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|v2-operations-runbook-and-release-readin|req-000-sharepoint-knowledge-graph-kicko|define-the-v2-operations-runbook-and|ac1-the-runbook-covers-deployment-rollba
+%% logics-signature: backlog|v2-operations-runbook-and-release-readin|req-000-v0-bootstrap-and-initial-foundat|define-the-v2-operations-runbook-and|ac1-the-runbook-covers-deployment-rollba
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define the V2 operations runbook and]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Define the V2 operations runbook and]
     Problem --> Scope[V2 operations runbook and release readines]
     Scope --> Acceptance[AC1: The runbook covers deployment rollbac]
     Acceptance --> Tasks[task_007_v2_operations_runbook_and_release]
@@ -49,7 +49,7 @@ flowchart TD
 # Links
 - Product brief(s): `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
 - Architecture decision(s): `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
-- Request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
 
 # AI Context
@@ -62,6 +62,6 @@ flowchart TD
 - Urgency: High
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item bounded to the V2 operations slice; keep product and UI work in the sibling product and UI docs.

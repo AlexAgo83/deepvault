@@ -2,7 +2,7 @@
 > Date: 2026-04-10
 > Status: Proposed
 > Drivers: Keep retrieval permission-safe, make answer quality measurable, and keep token and inference cost under control as the corpus grows.
-> Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+> Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 > Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
 > Related task: `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
 > Reminder: Keep the ranking policy, cost guardrails, and quality thresholds aligned with the current retrieval design and pilot scope. Reviewed during the 2026-04-10 release/doc sync.

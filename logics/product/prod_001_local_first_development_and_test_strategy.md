@@ -1,7 +1,7 @@
 ## prod_001_local_first_development_and_test_strategy - DeepVault - Navy local-first development and test strategy
 > Date: 2026-04-10
 > Status: Active
-> Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+> Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
 > Related architecture: `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`

@@ -2,7 +2,7 @@
 > Date: 2026-04-10
 > Status: Proposed
 > Drivers: Make ingestion and chat behavior inspectable, preserve source provenance, and support debugging and governance.
-> Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+> Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
 > Related task: (none yet)
 > Reminder: Keep observability useful but lightweight. Default to user-visible summary signals plus backend-only sensitive traces. Reviewed during the 2026-04-10 release/doc sync.

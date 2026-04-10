@@ -1,4 +1,4 @@
-## task_008_retrieval_evaluation_set_and_quality_gates - Retrieval evaluation set and quality gates
+## task_008_v1_retrieval_evaluation_set_and_quality_gates - V1 — Retrieval evaluation set and quality gates
 > From version: 0.0.2
 > Schema version: 1.0
 > Status: Done
@@ -15,7 +15,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|retrieval-evaluation-set-and-quality-gat|item-002-hybrid-knowledge-store-and-retr|1-confirm-the-pilot-corpus-is|run-python3-logics-skills-logics-doc-lin
+%% logics-signature: task|v1-retrieval-evaluation-set-and-quality-|item-002-hybrid-knowledge-store-and-retr|1-confirm-the-pilot-corpus-is|run-python3-logics-skills-logics-doc-lin
 stateDiagram-v2
     state "item_002_hybrid_knowledge_store_and_retrie" as Backlog
     state "1. Confirm the pilot corpus is" as Scope
@@ -127,7 +127,7 @@ Store these results in `data/eval/v1_baseline_{YYYY-MM-DD}.json` for future regr
 - Architecture decision(s): `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
 - Spec(s): `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`, `logics/specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md`, `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
 - Backlog item: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
-- Request(s): `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request(s): `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # AI Context
 - Summary: V1 retrieval evaluation set and quality gates for DeepVault

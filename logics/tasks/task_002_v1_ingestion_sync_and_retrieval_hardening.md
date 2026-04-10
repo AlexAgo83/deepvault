@@ -1,4 +1,4 @@
-## task_002_ingestion_sync_and_retrieval_hardening - Ingestion, sync, and retrieval hardening
+## task_002_v1_ingestion_sync_and_retrieval_hardening - V1 — Ingestion, sync, and retrieval hardening
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Done
@@ -16,7 +16,7 @@ The goal is to make the data layer reliable before the hosted backend and Teams 
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|ingestion-sync-and-retrieval-hardening|item-000-graph-discovery-and-pilot-scope|implement-or-finalize-the-sharepoint-ing|python3-logics-skills-logics-doc-linter-
+%% logics-signature: task|v1-ingestion-sync-and-retrieval-hardenin|item-000-graph-discovery-and-pilot-scope|implement-or-finalize-the-sharepoint-ing|python3-logics-skills-logics-doc-linter-
 stateDiagram-v2
     state "item_000_graph_discovery_and_pilot_scope" as Backlog
     state "Implement or finalize the SharePoint inges" as Scope
@@ -64,7 +64,7 @@ stateDiagram-v2
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
 - Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
 - Backlog item(s): `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
-- Request(s): `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request(s): `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # AI Context
 - Summary: SharePoint ingestion, sync, storage, and retrieval hardening

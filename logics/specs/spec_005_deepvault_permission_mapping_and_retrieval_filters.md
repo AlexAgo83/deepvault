@@ -2,6 +2,7 @@
 > From version: 0.0.1
 > Understanding: 95%
 > Confidence: 93%
+> Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # Overview
 This spec defines how SharePoint permissions are translated into retrieval filters at query time.

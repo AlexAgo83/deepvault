@@ -1,10 +1,10 @@
-## item_009_local_chat_surface_and_answer_flow - DeepVault - Bishop chat surface and answer flow
-> From version: 0.0.0
+## item_009_v1_local_chat_surface_and_answer_flow - V1 — DeepVault - Bishop chat surface and answer flow
+> From version: 0.0.1
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 92%
-> Progress: 2%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Keep this slice focused on `DeepVault - Bishop` and avoid drifting into `DeepVault - Gordon` or hosted backend work. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -20,9 +20,9 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deepvault-bishop-chat-surface-and-answer|req-000-sharepoint-knowledge-graph-kicko|deepvault-bishop-lets-users-ask|ac1-deepvault-bishop-can-ask
+%% logics-signature: backlog|v1-deepvault-bishop-chat-surface-and-ans|req-000-v0-bootstrap-and-initial-foundat|deepvault-bishop-lets-users-ask|ac1-deepvault-bishop-can-ask
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault - Bishop lets users ask]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[DeepVault - Bishop lets users ask]
     Problem --> Scope[DeepVault - Bishop chat surface and]
     Scope --> Acceptance[AC1: DeepVault - Bishop can ask]
     Acceptance --> Tasks[Execution task]
@@ -50,7 +50,7 @@ flowchart TD
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - Architecture decision(s): `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
 - Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-- Request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): (none yet)
 
 # AI Context
@@ -64,6 +64,6 @@ flowchart TD
 - Urgency: High
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item bounded to the local chat flow; create sibling backlog items for other chat channels.

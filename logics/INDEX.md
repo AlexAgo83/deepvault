@@ -33,44 +33,41 @@
 
 | Doc | Title | Status | Progress | Path |
 |---|---|---|---|---|
-| [req_000_sharepoint_knowledge_graph_kickoff](request/req_000_sharepoint_knowledge_graph_kickoff.md) | V2 milestone: hosted industrialization and Teams readiness | Draft |  | request/req_000_sharepoint_knowledge_graph_kickoff.md |
-| [req_001_live_corpus_hardening_and_pre_v2_cleanup](request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md) | Live corpus hardening and pre-V2 cleanup | Draft |  | request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md |
+| [req_000_v0_bootstrap_and_initial_foundations](request/req_000_v0_bootstrap_and_initial_foundations.md) | V0 — Bootstrap and initial foundations | Done |  | request/req_000_v0_bootstrap_and_initial_foundations.md |
+| [req_001_v1_local_hardening_and_scope_evolution](request/req_001_v1_local_hardening_and_scope_evolution.md) | V1 — Local hardening and scope evolution | Ready |  | request/req_001_v1_local_hardening_and_scope_evolution.md |
+| [req_002_v2_azure_and_teams_foundation](request/req_002_v2_azure_and_teams_foundation.md) | V2 — Azure and Teams foundation | Draft |  | request/req_002_v2_azure_and_teams_foundation.md |
 
 ## Backlog
 
 | Doc | Title | Status | Progress | Path |
 |---|---|---|---|---|
-| [item_000_graph_discovery_and_pilot_scope](backlog/item_000_graph_discovery_and_pilot_scope.md) | Graph discovery and pilot scope | Ready | 1% | backlog/item_000_graph_discovery_and_pilot_scope.md |
-| [item_001_sharepoint_ingestion_and_sync_pipeline](backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md) | SharePoint ingestion and sync pipeline | Ready | 1% | backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md |
-| [item_002_hybrid_knowledge_store_and_retrieval](backlog/item_002_hybrid_knowledge_store_and_retrieval.md) | Hybrid knowledge store and retrieval | Ready | 1% | backlog/item_002_hybrid_knowledge_store_and_retrieval.md |
-| [item_003_explorer_ui_for_sharepoint_navigation](backlog/item_003_explorer_ui_for_sharepoint_navigation.md) | DeepVault - Navy explorer UI for SharePoint navigation | Ready | 2% | backlog/item_003_explorer_ui_for_sharepoint_navigation.md |
-| [item_004_teams_bot_chat_and_permissions](backlog/item_004_teams_bot_chat_and_permissions.md) | DeepVault - Gordon chat and permissions | Ready | 2% | backlog/item_004_teams_bot_chat_and_permissions.md |
-| [item_005_runtime_config_and_operations](backlog/item_005_runtime_config_and_operations.md) | Runtime config and operations | Ready | 1% | backlog/item_005_runtime_config_and_operations.md |
-| [item_006_local_companion_app_for_explorer_and_chat](backlog/item_006_local_companion_app_for_explorer_and_chat.md) | DeepVault - Navy app for explorer and chat | Ready | 2% | backlog/item_006_local_companion_app_for_explorer_and_chat.md |
-| [item_007_llm_provider_abstraction_for_openai_and_gemini](backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md) | DeepVault - Bishop LLM provider abstraction for OpenAI and Gemini | Ready | 2% | backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md |
-| [item_008_local_explorer_shell_and_navigation](backlog/item_008_local_explorer_shell_and_navigation.md) | DeepVault - Navy explorer shell and navigation | Ready | 2% | backlog/item_008_local_explorer_shell_and_navigation.md |
-| [item_009_local_chat_surface_and_answer_flow](backlog/item_009_local_chat_surface_and_answer_flow.md) | DeepVault - Bishop chat surface and answer flow | Ready | 2% | backlog/item_009_local_chat_surface_and_answer_flow.md |
-| [item_010_local_sync_status_and_operational_view](backlog/item_010_local_sync_status_and_operational_view.md) | DeepVault - Navy sync status and operational view | Ready | 2% | backlog/item_010_local_sync_status_and_operational_view.md |
-| [item_011_hosted_backend_core](backlog/item_011_hosted_backend_core.md) | Hosted backend core | Ready | 1% | backlog/item_011_hosted_backend_core.md |
-| [item_012_teams_bot_channel_and_permissions](backlog/item_012_teams_bot_channel_and_permissions.md) | DeepVault - Gordon channel and permissions | Ready | 2% | backlog/item_012_teams_bot_channel_and_permissions.md |
-| [item_013_v2_operations_runbook_and_release_readiness](backlog/item_013_v2_operations_runbook_and_release_readiness.md) | V2 operations runbook and release readiness | Ready | 0% | backlog/item_013_v2_operations_runbook_and_release_readiness.md |
-| [item_014_incremental_live_sync_and_resumable_export](backlog/item_014_incremental_live_sync_and_resumable_export.md) | Incremental live sync and resumable export | Ready | 0% | backlog/item_014_incremental_live_sync_and_resumable_export.md |
-| [item_015_live_explorer_site_filter_alignment](backlog/item_015_live_explorer_site_filter_alignment.md) | Live explorer site filter alignment | Ready | 0% | backlog/item_015_live_explorer_site_filter_alignment.md |
-| [item_016_live_evaluation_set_and_quality_gate](backlog/item_016_live_evaluation_set_and_quality_gate.md) | Live evaluation set and quality gate | Ready | 0% | backlog/item_016_live_evaluation_set_and_quality_gate.md |
-| [item_017_crawl_resilience_and_artifact_governance](backlog/item_017_crawl_resilience_and_artifact_governance.md) | Crawl resilience and artifact governance | Ready | 0% | backlog/item_017_crawl_resilience_and_artifact_governance.md |
-| [item_018_pre_v2_backlog_and_doc_cleanup](backlog/item_018_pre_v2_backlog_and_doc_cleanup.md) | Pre-V2 backlog and doc cleanup | Ready | 0% | backlog/item_018_pre_v2_backlog_and_doc_cleanup.md |
+| [item_000_v1_graph_discovery_and_pilot_scope](backlog/item_000_v1_graph_discovery_and_pilot_scope.md) | V1 — Graph discovery and pilot scope | Done | 100% | backlog/item_000_v1_graph_discovery_and_pilot_scope.md |
+| [item_001_v1_sharepoint_ingestion_and_sync_pipeline](backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md) | V1 — SharePoint ingestion and sync pipeline | Done | 100% | backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md |
+| [item_002_v1_hybrid_knowledge_store_and_retrieval](backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md) | V1 — Hybrid knowledge store and retrieval | Done | 100% | backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md |
+| [item_003_v1_explorer_ui_for_sharepoint_navigation](backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md) | V1 — DeepVault - Navy explorer UI for SharePoint navigation | Done | 100% | backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md |
+| [item_004_v2_teams_bot_chat_and_permissions](backlog/item_004_v2_teams_bot_chat_and_permissions.md) | V2 — DeepVault - Gordon chat and permissions | Ready | 0% | backlog/item_004_v2_teams_bot_chat_and_permissions.md |
+| [item_005_v1_runtime_config_and_operations](backlog/item_005_v1_runtime_config_and_operations.md) | V1 — Runtime config and operations | Done | 100% | backlog/item_005_v1_runtime_config_and_operations.md |
+| [item_006_v1_local_companion_app_for_explorer_and_chat](backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md) | V1 — DeepVault - Navy app for explorer and chat | Done | 100% | backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md |
+| [item_007_v1_llm_provider_abstraction_for_openai_and_gemini](backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md) | V1 — DeepVault - Bishop LLM provider abstraction for OpenAI and Gemini | Done | 100% | backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md |
+| [item_008_v1_local_explorer_shell_and_navigation](backlog/item_008_v1_local_explorer_shell_and_navigation.md) | V1 — DeepVault - Navy explorer shell and navigation | Done | 100% | backlog/item_008_v1_local_explorer_shell_and_navigation.md |
+| [item_009_v1_local_chat_surface_and_answer_flow](backlog/item_009_v1_local_chat_surface_and_answer_flow.md) | V1 — DeepVault - Bishop chat surface and answer flow | Done | 100% | backlog/item_009_v1_local_chat_surface_and_answer_flow.md |
+| [item_010_v1_local_sync_status_and_operational_view](backlog/item_010_v1_local_sync_status_and_operational_view.md) | V1 — DeepVault - Navy sync status and operational view | Done | 100% | backlog/item_010_v1_local_sync_status_and_operational_view.md |
+| [item_011_v2_hosted_backend_core](backlog/item_011_v2_hosted_backend_core.md) | V2 — Hosted backend core | Ready | 0% | backlog/item_011_v2_hosted_backend_core.md |
+| [item_012_v2_teams_bot_channel_and_permissions](backlog/item_012_v2_teams_bot_channel_and_permissions.md) | V2 — DeepVault - Gordon channel and permissions | Ready | 0% | backlog/item_012_v2_teams_bot_channel_and_permissions.md |
+| [item_013_v2_operations_runbook_and_release_readiness](backlog/item_013_v2_operations_runbook_and_release_readiness.md) | V2 — Operations runbook and release readiness | Ready | 0% | backlog/item_013_v2_operations_runbook_and_release_readiness.md |
+| [item_014_v1_incremental_live_sync_and_resumable_export](backlog/item_014_v1_incremental_live_sync_and_resumable_export.md) | V1 — Incremental live sync and resumable export | Ready | 0% | backlog/item_014_v1_incremental_live_sync_and_resumable_export.md |
+| [item_015_v1_live_explorer_site_filter_alignment](backlog/item_015_v1_live_explorer_site_filter_alignment.md) | V1 — Live explorer site filter alignment | Ready | 0% | backlog/item_015_v1_live_explorer_site_filter_alignment.md |
+| [item_016_v1_live_evaluation_set_and_quality_gate](backlog/item_016_v1_live_evaluation_set_and_quality_gate.md) | V1 — Live evaluation set and quality gate | Ready | 0% | backlog/item_016_v1_live_evaluation_set_and_quality_gate.md |
+| [item_017_v1_crawl_resilience_and_artifact_governance](backlog/item_017_v1_crawl_resilience_and_artifact_governance.md) | V1 — Crawl resilience and artifact governance | Ready | 0% | backlog/item_017_v1_crawl_resilience_and_artifact_governance.md |
+| [item_018_v1_pre_v2_backlog_and_doc_cleanup](backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md) | V1 — Pre-V2 backlog and doc cleanup | Ready | 0% | backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md |
 
 ## Tasks
 
 | Doc | Title | Status | Progress | Path |
 |---|---|---|---|---|
-| [task_000_sharepoint_foundations_and_shared_contracts](tasks/task_000_sharepoint_foundations_and_shared_contracts.md) | SharePoint foundations and shared contracts | Ready | 0% | tasks/task_000_sharepoint_foundations_and_shared_contracts.md |
-| [task_001_local_companion_vertical_slice](tasks/task_001_local_companion_vertical_slice.md) | DeepVault - Navy vertical slice | Done | 100% | tasks/task_001_local_companion_vertical_slice.md |
-| [task_002_ingestion_sync_and_retrieval_hardening](tasks/task_002_ingestion_sync_and_retrieval_hardening.md) | Ingestion, sync, and retrieval hardening | Done | 100% | tasks/task_002_ingestion_sync_and_retrieval_hardening.md |
-| [task_003_hosted_backend_core_delivery](tasks/task_003_hosted_backend_core_delivery.md) | Hosted backend core delivery | Ready | 0% | tasks/task_003_hosted_backend_core_delivery.md |
-| [task_004_teams_channel_and_permissions_delivery](tasks/task_004_teams_channel_and_permissions_delivery.md) | DeepVault - Gordon channel and permissions delivery | Ready | 0% | tasks/task_004_teams_channel_and_permissions_delivery.md |
-| [task_005_v1_local_development_and_validation_milestone](tasks/task_005_v1_local_development_and_validation_milestone.md) | V1 local development and validation milestone | Done | 100% | tasks/task_005_v1_local_development_and_validation_milestone.md |
-| [task_006_v2_hosted_industrialization_and_teams_readiness_milestone](tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md) | V2 hosted industrialization and Teams readiness milestone | Ready | 0% | tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md |
-| [task_007_v2_operations_runbook_and_release_readiness](tasks/task_007_v2_operations_runbook_and_release_readiness.md) | Cost control guardrails | Ready | 0% | tasks/task_007_v2_operations_runbook_and_release_readiness.md |
-| [Pre](tasks/task_008_retrieval_evaluation_set_and_quality_gates.md) | evaluation checklist (must pass before starting) | Done | 100% | tasks/task_008_retrieval_evaluation_set_and_quality_gates.md |
-| [task_009_pre_v2_live_hardening_milestone](tasks/task_009_pre_v2_live_hardening_milestone.md) | Pre-V2 live hardening milestone | Ready | 0% | tasks/task_009_pre_v2_live_hardening_milestone.md |
+| [task_001_v1_local_companion_vertical_slice](tasks/task_001_v1_local_companion_vertical_slice.md) | V1 — DeepVault - Navy vertical slice | Done | 100% | tasks/task_001_v1_local_companion_vertical_slice.md |
+| [task_002_v1_ingestion_sync_and_retrieval_hardening](tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md) | V1 — Ingestion, sync, and retrieval hardening | Done | 100% | tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md |
+| [task_005_v1_local_development_and_validation_milestone](tasks/task_005_v1_local_development_and_validation_milestone.md) | V1 — Local development and validation milestone | Done | 100% | tasks/task_005_v1_local_development_and_validation_milestone.md |
+| [Pre](tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md) | evaluation checklist (must pass before starting) | Done | 100% | tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md |
+| [task_009_local_hardening_and_v1_scope_evolution](tasks/task_009_local_hardening_and_v1_scope_evolution.md) | What is already done in V1 (do not re-implement) | Ready | 0% | tasks/task_009_local_hardening_and_v1_scope_evolution.md |
+| [task_010_v2_azure_and_teams_delivery](tasks/task_010_v2_azure_and_teams_delivery.md) | V2 Azure and Teams delivery | Draft | 0% | tasks/task_010_v2_azure_and_teams_delivery.md |

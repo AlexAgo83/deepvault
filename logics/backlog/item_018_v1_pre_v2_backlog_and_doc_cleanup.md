@@ -1,9 +1,9 @@
-## item_018_pre_v2_backlog_and_doc_cleanup - Pre-V2 backlog and doc cleanup
-> From version: 1.0.0
+## item_018_v1_pre_v2_backlog_and_doc_cleanup - V1 — Pre-V2 backlog and doc cleanup
+> From version: 1.0.2
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 95%
-> Confidence: 92%
+> Understanding: 96%
+> Confidence: 93%
 > Progress: 0%
 > Complexity: Medium
 > Theme: General
@@ -20,12 +20,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|pre-v2-backlog-and-doc-cleanup|req-001-live-corpus-hardening-and-pre-v2|the-remaining-pre-v2-backlog-still-mixes|ac1-remaining-pre-v2-work-is-split
-flowchart LR
-    Request[req_001_live_corpus_hardening_and_pre_v2_cleanup] --> Problem[Pre-V2 backlog and doc cleanup]
-    Problem --> Slice[Separate slices]
-    Slice --> Roadmap[Clear roadmap]
-    Roadmap --> Cleanup[Doc cleanup]
+%% logics-signature: backlog|v1-pre-v2-backlog-and-doc-cleanup|req-001-v1-local-hardening-and-scope-evo|the-remaining-pre-v2-backlog-still-mixes|ac1-remaining-pre-v2-work-is-split
+flowchart TD
+    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The remaining pre-V2 backlog still mixes]
+    Problem --> Scope[Pre-V2 backlog and doc cleanup]
+    Scope --> Acceptance[AC1: Remaining pre-V2 work is split]
+    Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
 ```
 
 # Acceptance criteria
@@ -51,7 +51,7 @@ flowchart LR
 # Links
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
-- Request: `logics/request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md`
+- Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 - Primary task(s): `logics/tasks/task_009_pre_v2_live_hardening_milestone.md`
 
 # AI Context
@@ -65,6 +65,6 @@ flowchart LR
 - Urgency: Medium
 
 # Notes
-- Derived from request `req_001_live_corpus_hardening_and_pre_v2_cleanup`.
-- Source file: `logics/request/req_001_live_corpus_hardening_and_pre_v2_cleanup.md`.
+- Derived from request `req_001_v1_local_hardening_and_scope_evolution`.
+- Source file: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`.
 - Keep this backlog item limited to hygiene and routing of remaining work.

@@ -2,7 +2,7 @@
 > Date: 2026-04-10
 > Status: Proposed
 > Drivers: Preserve trust and debuggability without leaking secrets, personal data, or unnecessary content into logs and traces.
-> Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+> Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 > Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`, `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
 > Related task: `logics/tasks/task_003_hosted_backend_core_delivery.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
 > Reminder: Keep audit boundaries, retention policy, and redaction rules aligned across the local and hosted runtimes. Reviewed during the 2026-04-10 release/doc sync.

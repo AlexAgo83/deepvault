@@ -1,10 +1,10 @@
-## item_006_local_companion_app_for_explorer_and_chat - DeepVault - Navy app for explorer and chat
-> From version: 0.0.2
+## item_006_v1_local_companion_app_for_explorer_and_chat - V1 — DeepVault - Navy app for explorer and chat
+> From version: 0.0.3
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 92%
-> Progress: 2%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Keep this slice focused on `DeepVault - Navy` and avoid drifting into later `DeepVault - Gordon` integration work. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -20,9 +20,9 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deepvault-navy-app-for-explorer-and-chat|req-000-sharepoint-knowledge-graph-kicko|deliver-the-deepvault-navy-shell|ac1-the-deepvault-navy-shell
+%% logics-signature: backlog|v1-deepvault-navy-app-for-explorer-and-c|req-000-v0-bootstrap-and-initial-foundat|deliver-the-deepvault-navy-shell|ac1-the-deepvault-navy-shell
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver the DeepVault - Navy shell]
+    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Deliver the DeepVault - Navy shell]
     Problem --> Scope[DeepVault - Navy app for explorer]
     Scope --> Acceptance[AC1: The DeepVault - Navy shell]
     Acceptance --> Tasks[Execution task]
@@ -49,7 +49,7 @@ flowchart TD
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - Architecture decision(s): `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-- Request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): (none yet)
 
 # AI Context
@@ -62,7 +62,7 @@ flowchart TD
 - Urgency: High
 
 # Notes
-- Derived from request `req_000_sharepoint_knowledge_graph_kickoff`.
-- Source file: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Derived from request `req_000_v0_bootstrap_and_initial_foundations`.
+- Source file: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for remaining request coverage instead of widening this doc.
-- Request context seeded into this backlog item from `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`.
+- Request context seeded into this backlog item from `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`.
