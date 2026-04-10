@@ -65,6 +65,7 @@ stateDiagram-v2
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
 - Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
+- Spec(s): `logics/specs/spec_007_deepvault_hosted_backend_api_contract.md`
 - Backlog item(s): `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
 - Request(s): `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 

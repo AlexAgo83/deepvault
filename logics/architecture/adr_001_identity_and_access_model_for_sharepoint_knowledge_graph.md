@@ -4,7 +4,7 @@
 > Drivers: Separate autonomous ingestion from user-aware chat access, preserve auditability, and keep future Teams integration governed.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
-> Related task: (none yet)
+> Related task: `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_003_hosted_backend_core_delivery.md`, `logics/tasks/task_004_teams_channel_and_permissions_delivery.md`
 > Reminder: Keep the chat identity, ingestion identity, and permission checks aligned when the runtime model changes. Default to service identity for ingestion and user identity for chat.
 
 # Overview

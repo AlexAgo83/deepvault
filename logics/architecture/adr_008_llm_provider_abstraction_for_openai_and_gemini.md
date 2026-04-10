@@ -4,7 +4,7 @@
 > Drivers: Keep the chat backend provider-agnostic, use the keys already configured in the environment, and allow quality or cost trade-offs without changing the UI.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
-> Related task: (none yet)
+> Related task: `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
 > Reminder: Keep the provider contract stable so the local app can switch models without changing product behavior, using version-neutral wording. Default to OpenAI primary with Gemini fallback routing.
 
 # Overview

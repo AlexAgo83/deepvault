@@ -181,6 +181,7 @@ flowchart TD
 - `spec_004_deepvault_data_schema_and_storage_contracts` — `logics/specs/spec_004_deepvault_data_schema_and_storage_contracts.md`
 - `spec_005_deepvault_permission_mapping_and_retrieval_filters` — `logics/specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md`
 - `spec_006_deepvault_prompt_and_context_assembly` — `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
+- `spec_007_deepvault_hosted_backend_api_contract` — `logics/specs/spec_007_deepvault_hosted_backend_api_contract.md`
 
 # Delivery children
 
@@ -195,7 +196,7 @@ Each task should trace back to this request. No task should be added to the deli
 - `task_008_retrieval_evaluation_set_and_quality_gates` — `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md` *(quality gate — must pass before V2 starts)*
 
 ## V2 milestone: hosted industrialization and Teams readiness
-- `task_003_hosted_backend_core_delivery` — `logics/tasks/task_003_hosted_backend_core_delivery.md`
+- `task_003_hosted_backend_core_delivery` — `logics/tasks/task_003_hosted_backend_core_delivery.md` *(requires spec_007 as API contract)*
 - `task_004_teams_channel_and_permissions_delivery` — `logics/tasks/task_004_teams_channel_and_permissions_delivery.md`
 - `task_006_v2_hosted_industrialization_and_teams_readiness_milestone` — `logics/tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md`
 - `task_007_v2_operations_runbook_and_release_readiness` — `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`

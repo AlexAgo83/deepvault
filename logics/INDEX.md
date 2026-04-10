@@ -39,7 +39,8 @@
 | [spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality](specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md) | DeepVault pilot site onboarding and retrieval quality | Active |  | specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md |
 | [spec_004_deepvault_data_schema_and_storage_contracts](specs/spec_004_deepvault_data_schema_and_storage_contracts.md) | DeepVault data schema and storage contracts | Active |  | specs/spec_004_deepvault_data_schema_and_storage_contracts.md |
 | [spec_005_deepvault_permission_mapping_and_retrieval_filters](specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md) | DeepVault permission mapping and retrieval filters | Active |  | specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md |
-| [spec_006_deepvault_prompt_and_context_assembly](specs/spec_006_deepvault_prompt_and_context_assembly.md) | DeepVault prompt and context assembly | Active |  | specs/spec_006_deepvault_prompt_and_context_assembly.md |
+| [spec_006_deepvault_prompt_and_context_assembly](specs/spec_006_deepvault_prompt_and_context_assembly.md) | DeepVault prompt and context assembly — prompt injection mitigations added | Active |  | specs/spec_006_deepvault_prompt_and_context_assembly.md |
+| [spec_007_deepvault_hosted_backend_api_contract](specs/spec_007_deepvault_hosted_backend_api_contract.md) | DeepVault hosted backend API contract | Active |  | specs/spec_007_deepvault_hosted_backend_api_contract.md |
 
 ## Requests
 
