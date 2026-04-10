@@ -33,6 +33,7 @@
 | [prod_000_sharepoint_knowledge_graph_product_vision](product/prod_000_sharepoint_knowledge_graph_product_vision.md) | V2: Hosted industrialization and Teams readiness | Proposed |  | product/prod_000_sharepoint_knowledge_graph_product_vision.md |
 | [prod_001_local_first_development_and_test_strategy](product/prod_001_local_first_development_and_test_strategy.md) | DeepVault - Navy local-first development and test strategy | Active |  | product/prod_001_local_first_development_and_test_strategy.md |
 | [prod_002_hosted_production_strategy_with_teams_at_the_end](product/prod_002_hosted_production_strategy_with_teams_at_the_end.md) | DeepVault - Gordon hosted production strategy | Proposed |  | product/prod_002_hosted_production_strategy_with_teams_at_the_end.md |
+| [prod_003_navigation_and_runtime_control_clarity](product/prod_003_navigation_and_runtime_control_clarity.md) | Navigation and runtime control clarity | Proposed |  | product/prod_003_navigation_and_runtime_control_clarity.md |
 
 ## Requests
 
@@ -50,6 +51,9 @@
 | [req_009_explorer_file_type_pill_inline_with_title](request/req_009_explorer_file_type_pill_inline_with_title.md) | Explorer file type pill inline with document title | Done |  | request/req_009_explorer_file_type_pill_inline_with_title.md |
 | [req_010_fix_sharepoint_file_links_in_explorer](request/req_010_fix_sharepoint_file_links_in_explorer.md) | Fix SharePoint file links in Explorer | Done |  | request/req_010_fix_sharepoint_file_links_in_explorer.md |
 | [req_011_audit_de_dette_technique_et_cleanup_structurel](request/req_011_audit_de_dette_technique_et_cleanup_structurel.md) | Technical debt and structural cleanup audit | Done |  | request/req_011_audit_de_dette_technique_et_cleanup_structurel.md |
+| [req_012_ajouter_des_ic_nes_dans_la_navigation](request/req_012_ajouter_des_ic_nes_dans_la_navigation.md) | Ajouter des icônes dans la navigation | Draft |  | request/req_012_ajouter_des_ic_nes_dans_la_navigation.md |
+| [req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime](request/req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md) | Déplacer le sélecteur de sites dans le runtime | Draft |  | request/req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md |
+| [req_014_d_placer_runtime_sous_sync_status](request/req_014_d_placer_runtime_sous_sync_status.md) | Déplacer Runtime sous Sync status | Draft |  | request/req_014_d_placer_runtime_sous_sync_status.md |
 
 ## Backlog
 
@@ -98,6 +102,9 @@
 | [item_040_clarify_bishop_orchestration_contract](backlog/item_040_clarify_bishop_orchestration_contract.md) | Clarify Bishop orchestration contract | Ready | 0% | backlog/item_040_clarify_bishop_orchestration_contract.md |
 | [item_041_harden_live_export_and_checkpoint_handling](backlog/item_041_harden_live_export_and_checkpoint_handling.md) | Harden live export and checkpoint handling | Done | 100% | backlog/item_041_harden_live_export_and_checkpoint_handling.md |
 | [item_042_clean_logics_workflow_hygiene_and_references](backlog/item_042_clean_logics_workflow_hygiene_and_references.md) | Clean Logics workflow hygiene and references | Ready | 10% | backlog/item_042_clean_logics_workflow_hygiene_and_references.md |
+| [item_043_ajouter_des_ic_nes_dans_la_navigation](backlog/item_043_ajouter_des_ic_nes_dans_la_navigation.md) | Ajouter des icônes dans la navigation | Ready | 0% | backlog/item_043_ajouter_des_ic_nes_dans_la_navigation.md |
+| [item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime](backlog/item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md) | Déplacer le sélecteur de sites dans le runtime | Ready | 0% | backlog/item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md |
+| [item_045_d_placer_runtime_sous_sync_status](backlog/item_045_d_placer_runtime_sous_sync_status.md) | Déplacer Runtime sous Sync status | Ready | 0% | backlog/item_045_d_placer_runtime_sous_sync_status.md |
 
 ## Tasks
 
@@ -115,3 +122,4 @@
 | [task_014_bishop_llm_orchestration_delivery](tasks/task_014_bishop_llm_orchestration_delivery.md) | Bishop LLM orchestration delivery | Done | 100% | tasks/task_014_bishop_llm_orchestration_delivery.md |
 | [task_015_sharepoint_file_link_and_file_type_ui_delivery](tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md) | SharePoint file link and file type UI delivery | Done | 100% | tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md |
 | [task_016_orchestrate_technical_debt_cleanup_waves](tasks/task_016_orchestrate_technical_debt_cleanup_waves.md) | Orchestrate technical debt cleanup waves | Done | 100% | tasks/task_016_orchestrate_technical_debt_cleanup_waves.md |
+| [task_017_orchestrate_navigation_and_runtime_ui_changes](tasks/task_017_orchestrate_navigation_and_runtime_ui_changes.md) | Orchestrate navigation and runtime UI changes | Ready | 0% | tasks/task_017_orchestrate_navigation_and_runtime_ui_changes.md |
