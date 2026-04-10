@@ -14,7 +14,6 @@ import {
   type UserRole,
   type SiteSummary,
 } from './lib/deepvault'
-import { describeCorpusMode } from './lib/corpus-mode'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'Explorer' },
@@ -24,13 +23,27 @@ const NAV_ITEMS = [
 
 const APP_VERSION = versionText.trim()
 
-function Pill({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'accent' | 'success' }) {
-  return <span className={`pill pill-${tone}`}>{children}</span>
+type PillTone = 'neutral' | 'accent' | 'success' | 'danger'
+
+function Pill({
+  children,
+  tone = 'neutral',
+  title,
+}: {
+  children: ReactNode
+  tone?: PillTone
+  title?: string
+}) {
+  return (
+    <span className={`pill pill-${tone}`} title={title}>
+      {children}
+    </span>
+  )
 }
 
 function StatCard({ label, value, note }: { label: string; value: string | number; note: string }) {
   return (
-    <article className="stat-card">
+    <article className="stat-card" title={note}>
       <div className="stat-label">{label}</div>
       <div className="stat-value">{value}</div>
       <div className="stat-note">{note}</div>
@@ -94,8 +107,16 @@ function Message({ message }: { message: ChatMessage }) {
 export default function App() {
   const requestedCorpusMode = normalizeRequestedCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE)
   const [corpusBundle, setCorpusBundle] = useState<CorpusBundle>(() => getMockCorpusBundle())
+  const [liveState, setLiveState] = useState<{
+    label: string
+    detail: string
+    tone: PillTone
+  }>(() =>
+    requestedCorpusMode === 'live'
+      ? { label: 'Live data', detail: 'Waiting for live corpus', tone: 'neutral' }
+      : { label: 'Mock data', detail: 'Mock corpus selected', tone: 'neutral' },
+  )
   const corpus = corpusBundle.corpus
-  const corpusMode = corpusBundle.mode
   const [activeTab, setActiveTab] = useState<(typeof NAV_ITEMS)[number]['id']>('explorer')
   const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
   const [provider, setProvider] = useState<ProviderId>(corpus.providers[0].id)
@@ -172,20 +193,27 @@ export default function App() {
     let active = true
     if (requestedCorpusMode !== 'live') {
       setCorpusBundle(getMockCorpusBundle())
+      setLiveState({ label: 'Mock data', detail: 'Mock corpus selected', tone: 'neutral' })
       return () => {
         active = false
       }
     }
 
-    void fetchLiveCorpus().then((liveCorpus) => {
+    void fetchLiveCorpus().then((result) => {
       if (!active) {
         return
       }
-      if (liveCorpus) {
-        setCorpusBundle({ corpus: liveCorpus, mode: 'live' })
-      } else {
-        setCorpusBundle(getMockCorpusBundle())
+      if (result.status === 'loaded') {
+        setCorpusBundle({ corpus: result.corpus, mode: 'live' })
+        setLiveState({ label: 'Live data', detail: result.detail, tone: 'success' })
+        return
       }
+      setCorpusBundle(getMockCorpusBundle())
+      setLiveState({
+        label: result.status === 'missing' ? 'Live fallback' : 'Live error',
+        detail: result.detail,
+        tone: result.status === 'missing' ? 'accent' : 'danger',
+      })
     })
 
     return () => {
@@ -285,7 +313,9 @@ export default function App() {
             <p>A focused local workspace for exploring content, validating grounded answers, and reviewing sync health before release.</p>
           </div>
           <div className="topbar-badges">
-            <Pill tone={corpusMode === 'live' ? 'success' : 'neutral'}>{describeCorpusMode(corpusMode)}</Pill>
+            <Pill tone={liveState.tone} title={liveState.detail}>
+              {liveState.label}
+            </Pill>
             <Pill tone="success">Synced</Pill>
             <Pill tone="neutral">{provider}</Pill>
             <Pill tone="accent">{role}</Pill>
@@ -545,10 +575,10 @@ export default function App() {
             </article>
 
             <aside className="panel">
-              <SectionHeading title="Recent sync runs" subtitle="The local runtime keeps refreshes simple and inspectable." />
+              <SectionHeading title="Recent sync runs" subtitle="Hover each run for the full note." />
               <div className="sync-list">
                 {corpus.syncRuns.map((run) => (
-                  <article key={run.id} className="sync-card">
+                  <article key={run.id} className="sync-card" title={run.notes}>
                     <div className="source-card-top">
                       <strong>{run.status}</strong>
                       <Pill tone={run.status === 'synced' ? 'success' : 'neutral'}>{run.scope}</Pill>
