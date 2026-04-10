@@ -1,10 +1,10 @@
 ## item_019_shell_rebrand_and_split_layout - Shell rebrand and split layout
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 92%
-> Progress: 0%
+> Status: Done
+> Understanding: 96%
+> Confidence: 94%
+> Progress: 100%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
-import deepvaultLogo from '../deepvault-logo.png'
+import versionText from '../VERSION?raw'
 import { fetchLiveCorpus, getMockCorpusBundle, normalizeRequestedCorpusMode, type CorpusBundle } from './data/corpus'
 import {
   answerQuestion,
@@ -17,10 +17,12 @@ import {
 import { describeCorpusMode } from './lib/corpus-mode'
 
 const NAV_ITEMS = [
-  { id: 'explorer', label: 'DeepVault - Navy' },
-  { id: 'bishop', label: 'DeepVault - Bishop' },
+  { id: 'explorer', label: 'Explorer' },
+  { id: 'bishop', label: 'Bishop' },
   { id: 'sync', label: 'Sync status' },
 ] as const
+
+const APP_VERSION = versionText.trim()
 
 function Pill({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'accent' | 'success' }) {
   return <span className={`pill pill-${tone}`}>{children}</span>
@@ -163,6 +165,10 @@ export default function App() {
   const selectedMessage = messages[messages.length - 1]
 
   useEffect(() => {
+    document.title = 'Nexus'
+  }, [])
+
+  useEffect(() => {
     let active = true
     if (requestedCorpusMode !== 'live') {
       setCorpusBundle(getMockCorpusBundle())
@@ -190,15 +196,9 @@ export default function App() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="brand-block">
-          <div className="brand-header">
-            <img className="brand-logo" src={deepvaultLogo} alt="DeepVault logo" />
-            <div>
-              <div className="brand-mark">DeepVault</div>
-              <h1>Local validation workspace</h1>
-              <p>Explorer, grounded chat, and sync status in one local surface.</p>
-            </div>
-          </div>
+        <div className="sidebar-brandline">
+          <span>Nexus</span>
+          <span>{APP_VERSION ? `Version ${APP_VERSION}` : 'Version 1.0.0'}</span>
         </div>
 
         <div className="sidebar-section">
@@ -280,12 +280,9 @@ export default function App() {
       <main className="main-content">
         <header className="topbar">
           <div>
-            <div className="topbar-kicker">V1 local build</div>
-            <h1>DeepVault - Navy, Bishop, and sync</h1>
-            <p>
-              Grounded local surfaces for SharePoint exploration, permission-aware retrieval, and
-              operational visibility.
-            </p>
+            <div className="topbar-kicker">{APP_VERSION ? `Version ${APP_VERSION}` : 'Version 1.0.0'}</div>
+            <h1>Nexus</h1>
+            <p>A focused local workspace for exploring content, validating grounded answers, and reviewing sync health before release.</p>
           </div>
           <div className="topbar-badges">
             <Pill tone={corpusMode === 'live' ? 'success' : 'neutral'}>{describeCorpusMode(corpusMode)}</Pill>
