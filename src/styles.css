@@ -256,6 +256,14 @@ p {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+.stat-card:hover,
+.sync-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 20px rgba(42, 36, 31, 0.08);
+  transform: translateY(-1px);
 }
 
 .stat-label,
@@ -269,6 +277,19 @@ p {
 .stat-value {
   font-size: 1.8rem;
   line-height: 1;
+}
+
+.stat-note {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 160ms ease, opacity 160ms ease;
+}
+
+.stat-card:hover .stat-note,
+.stat-card:focus-within .stat-note {
+  max-height: 3rem;
+  opacity: 1;
 }
 
 .panel {
@@ -462,6 +483,14 @@ th {
   padding: 14px;
 }
 
+.sync-card {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
 .source-path {
   margin-top: 10px;
   color: var(--muted);
@@ -495,6 +524,12 @@ th {
   color: var(--success);
 }
 
+.pill-danger {
+  background: rgba(176, 48, 48, 0.1);
+  border-color: rgba(176, 48, 48, 0.22);
+  color: #b03030;
+}
+
 .empty-state {
   padding: 18px;
   border: 1px dashed var(--border);
@@ -516,6 +551,21 @@ th {
   padding-left: 18px;
   display: grid;
   gap: 8px;
+}
+
+.sync-card p {
+  max-height: 0;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 160ms ease, opacity 160ms ease, margin-top 160ms ease;
+}
+
+.sync-card:hover p,
+.sync-card:focus-within p {
+  max-height: 5rem;
+  margin-top: 10px;
+  opacity: 1;
 }
 
 code {

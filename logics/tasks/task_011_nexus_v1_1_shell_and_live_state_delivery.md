@@ -1,10 +1,10 @@
 ## task_011_nexus_v1_1_shell_and_live_state_delivery - Nexus V1.1 shell and live state delivery
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: In progress
+> Status: Done
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 50%
+> Progress: 100%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -33,11 +33,11 @@ stateDiagram-v2
 
 # Plan
 - [x] Wave 1 - deliver `item_019_shell_rebrand_and_split_layout`: shell rebrand, title/subtitle copy, favicon, and split layout.
-- [ ] Wave 2 - deliver `item_020_compact_live_state_and_sync_panels`: compact panels, hover details, and live-state color treatment.
+- [x] Wave 2 - deliver `item_020_compact_live_state_and_sync_panels`: compact panels, hover details, and live-state color treatment.
 - [x] After each wave, update the linked Logics docs, run the relevant validations, and leave a commit-ready checkpoint.
 - [x] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current wave checkpoint.
 - [x] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
-- [ ] FINAL: Update related Logics docs and close the orchestration task only after both waves are complete.
+- [x] FINAL: Update related Logics docs and close the orchestration task only after both waves are complete.
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -91,6 +91,15 @@ stateDiagram-v2
   - Rewrote the top-level copy to read like a commercial product surface.
   - Added a Nexus-branded favicon and kept the shell layout split with independent scrolling.
 - Validation completed for wave 1:
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run test`
+  - `npm run build`
+- Wave 2 completed:
+  - The live corpus loader now distinguishes loaded, missing, and error states.
+  - The top bar live badge changes tone per live state and exposes the exact hover copy requested.
+  - The key status cards and recent sync cards are now compact, with explanatory text moved into hover-only affordances.
+- Validation completed for wave 2:
   - `npm run lint`
   - `npm run typecheck`
   - `npm run test`

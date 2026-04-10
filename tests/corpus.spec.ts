@@ -31,13 +31,14 @@ describe('corpus helpers', () => {
 
     vi.stubGlobal('fetch', fetchMock)
 
-    await expect(fetchLiveCorpus()).resolves.toEqual(corpus)
+    await expect(fetchLiveCorpus()).resolves.toMatchObject({ status: 'loaded', corpus })
     expect(fetchMock).toHaveBeenCalledWith('/live-corpus.json', { cache: 'no-store' })
   })
 
-  it('returns null when the live corpus request fails', async () => {
+  it('returns the fallback state when the live corpus is missing', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
+      status: 404,
       json: async () => {
         throw new Error('should not be called')
       },
@@ -45,6 +46,20 @@ describe('corpus helpers', () => {
 
     vi.stubGlobal('fetch', fetchMock)
 
-    await expect(fetchLiveCorpus()).resolves.toBeNull()
+    await expect(fetchLiveCorpus()).resolves.toMatchObject({
+      status: 'missing',
+      detail: 'Live corpus missing, fallback to mock',
+    })
+  })
+
+  it('returns an error state when the live corpus request throws', async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new Error('network down'))
+
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(fetchLiveCorpus()).resolves.toMatchObject({
+      status: 'error',
+      detail: 'Live corpus error: request failed before a response was returned',
+    })
   })
 })
