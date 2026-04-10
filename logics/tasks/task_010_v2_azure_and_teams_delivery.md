@@ -20,15 +20,17 @@ The scope covers: hosted backend deployment on Azure, the DeepVault - Gordon Tea
 %% logics-kind: task
 %% logics-signature: task|v2-azure-and-teams-delivery|item-011-hosted-backend-core|wave-1-hosted-backend-on-azure|python3-logics-skills-logics-doc-linter-
 stateDiagram-v2
-    state "item_011_hosted_backend_core" as Backend
-    state "item_012_teams_bot_channel_and_permissions" as Teams
-    state "item_013_v2_operations_runbook_and_release" as Ops
+    state "item_011_hosted_backend_core" as Backlog
+    state "Wave 1 Hosted backend on Azure" as Scope
+    state "Wave 2 DeepVault - Gordon Teams" as Build
+    state "Wave 3 Operations runbook and release" as Verify
     state "python3 logics skills logics-doc-linter sc" as Validation
     state "Done report" as Report
-    [*] --> Backend
-    Backend --> Teams
-    Teams --> Ops
-    Ops --> Validation
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
     Validation --> Report
     Report --> [*]
 ```

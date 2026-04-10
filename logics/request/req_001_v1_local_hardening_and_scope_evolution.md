@@ -28,8 +28,8 @@
 %% logics-kind: request
 %% logics-signature: request|v1-local-hardening-and-scope-evolution|keep-live-corpus-generation-incremental-|ac1-the-request-clearly-frames-the
 flowchart TD
-    Trigger[V1 local hardening and scope evolution] --> Need[Harden live path and close V1 scope cleanly]
-    Need --> Outcome[AC1: Work is framed as V1 hardening with no Azure or Teams dependency]
+    Trigger[V1 Local hardening and scope evolution] --> Need[Keep live corpus generation incremental an]
+    Need --> Outcome[AC1: The request clearly frames the]
     Outcome --> Backlog[Backlog slice]
 ```
 

@@ -23,8 +23,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-deepvault-navy-explorer-shell-and-nav|req-000-v0-bootstrap-and-initial-foundat|deepvault-navy-lets-users-navigate|ac1-deepvault-navy-lets-users
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[DeepVault - Navy lets users navigate]
-    Problem --> Scope[DeepVault - Navy explorer shell and]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[DeepVault - Navy lets users navigate]
+    Problem --> Scope[V1 DeepVault - Navy explorer shell]
     Scope --> Acceptance[AC1: DeepVault - Navy lets users]
     Acceptance --> Tasks[Execution task]
 ```

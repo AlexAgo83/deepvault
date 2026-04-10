@@ -29,7 +29,7 @@ describe('DeepVault app', () => {
 
     expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
 
-    await user.click(screen.getByRole('button', { name: 'CSAS-OP-Prod' }))
+    await user.click(screen.getByRole('button', { name: 'Pilot Site Beta' }))
 
     expect(screen.queryAllByText('Q3 2025 budget approval')).toHaveLength(0)
     expect(screen.getAllByText('Remote access security requirements').length).toBeGreaterThan(0)
@@ -45,7 +45,7 @@ describe('DeepVault app', () => {
     expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'DeepVault - Navy' }))
-    await user.click(screen.getByRole('button', { name: 'Stealth Lab' }))
+    await user.click(screen.getByRole('button', { name: 'Restricted Pilot Site' }))
     await user.type(screen.getByLabelText('Explorer search'), 'budget')
 
     expect(screen.getByText('No visible document')).toBeInTheDocument()

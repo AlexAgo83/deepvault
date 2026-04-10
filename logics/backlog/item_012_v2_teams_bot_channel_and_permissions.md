@@ -24,8 +24,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v2-deepvault-gordon-channel-and-permissi|req-000-v0-bootstrap-and-initial-foundat|implement-the-governed-deepvault-gordon|ac1-deepvault-gordon-can-route
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Implement the governed DeepVault - Gordon]
-    Problem --> Scope[DeepVault - Gordon channel and permissions]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Implement the governed DeepVault - Gordon]
+    Problem --> Scope[V2 DeepVault - Gordon channel and]
     Scope --> Acceptance[AC1: DeepVault - Gordon can route]
     Acceptance --> Tasks[Execution task]
 ```

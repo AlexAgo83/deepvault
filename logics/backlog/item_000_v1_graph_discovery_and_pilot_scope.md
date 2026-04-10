@@ -27,8 +27,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-graph-discovery-and-pilot-scope|req-000-v0-bootstrap-and-initial-foundat|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Connect to Microsoft Graph and discover]
-    Problem --> Scope[Graph discovery and pilot scope]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Connect to Microsoft Graph and discover]
+    Problem --> Scope[V1 Graph discovery and pilot scope]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```

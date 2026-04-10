@@ -22,8 +22,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v2-operations-runbook-and-release-readin|req-000-v0-bootstrap-and-initial-foundat|define-the-v2-operations-runbook-and|ac1-the-runbook-covers-deployment-rollba
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Define the V2 operations runbook and]
-    Problem --> Scope[V2 operations runbook and release readines]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Define the V2 operations runbook and]
+    Problem --> Scope[V2 Operations runbook and release readines]
     Scope --> Acceptance[AC1: The runbook covers deployment rollbac]
     Acceptance --> Tasks[task_007_v2_operations_runbook_and_release]
 ```

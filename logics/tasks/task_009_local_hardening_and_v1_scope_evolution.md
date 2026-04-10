@@ -26,19 +26,17 @@ The goal is to close V1 with a stable, well-tested local product and a clean sla
 %% logics-kind: task
 %% logics-signature: task|v1-scope-evolution-local-hardening-and-l|item-014-incremental-live-sync-and-resum|wave-1-incremental-live-sync-and|python3-logics-skills-logics-doc-linter-
 stateDiagram-v2
-    state "item_014_incremental_live_sync_and_resumab" as Wave1a
-    state "item_017_crawl_resilience_and_artifact_gove" as Wave1b
-    state "item_015_live_explorer_site_filter_alignmen" as Wave2
-    state "item_016_live_evaluation_set_and_quality_ga" as Wave3
-    state "item_018_v1_backlog_and_doc_cleanup" as Wave4
+    state "item_014_incremental_live_sync_and_resumab" as Backlog
+    state "Wave 1 Incremental live sync and" as Scope
+    state "Wave 2 Live explorer site filter" as Build
+    state "Wave 3 Live evaluation set and" as Verify
     state "python3 logics skills logics-doc-linter sc" as Validation
     state "Done report" as Report
-    [*] --> Wave1a
-    Wave1a --> Wave1b
-    Wave1b --> Wave2
-    Wave2 --> Wave3
-    Wave3 --> Wave4
-    Wave4 --> Validation
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
     Validation --> Report
     Report --> [*]
 ```

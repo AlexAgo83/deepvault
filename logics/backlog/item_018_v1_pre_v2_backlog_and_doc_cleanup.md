@@ -22,8 +22,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-pre-v2-backlog-and-doc-cleanup|req-001-v1-local-hardening-and-scope-evo|the-remaining-pre-v2-backlog-still-mixes|ac1-remaining-pre-v2-work-is-split
 flowchart TD
-    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The remaining pre-V2 backlog still mixes]
-    Problem --> Scope[Pre-V2 backlog and doc cleanup]
+    Request[req_001_v1_local_hardening_and_scope_evolu] --> Problem[The remaining pre-V2 backlog still mixes]
+    Problem --> Scope[V1 Pre-V2 backlog and doc cleanup]
     Scope --> Acceptance[AC1: Remaining pre-V2 work is split]
     Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
 ```

@@ -23,10 +23,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-incremental-live-sync-and-resumable-e|req-001-v1-local-hardening-and-scope-evo|the-live-exporter-rebuilds-too-much|ac1-export-skips-unchanged-sources-by
 flowchart TD
-    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The live exporter rebuilds too much]
-    Problem --> Scope[Incremental live sync and resumable export]
+    Request[req_001_v1_local_hardening_and_scope_evolu] --> Problem[The live exporter rebuilds too much]
+    Problem --> Scope[V1 Incremental live sync and resumable]
     Scope --> Acceptance[AC1: Export skips unchanged sources by]
-    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evolution]
+    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evol]
 ```
 
 # Acceptance criteria

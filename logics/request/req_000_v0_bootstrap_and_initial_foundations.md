@@ -56,9 +56,9 @@ Default decisions made:
 %% logics-kind: request
 %% logics-signature: request|v0-bootstrap-and-initial-foundations|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
 flowchart TD
-    Trigger[V0 Bootstrap and initial foundations] --> Need[Connect to Microsoft Graph and deliver V1]
-    Need --> Outcome[AC1: Foundations, ADRs, product briefs, and V1 local delivery complete]
-    Outcome --> Backlog[Backlog slice — all Done]
+    Trigger[V0 Bootstrap and initial foundations] --> Need[Connect to Microsoft Graph and discover]
+    Need --> Outcome[AC1: The request clearly defines the]
+    Outcome --> Backlog[Backlog slice]
 ```
 
 # Acceptance criteria

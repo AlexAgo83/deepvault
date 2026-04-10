@@ -27,8 +27,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-hybrid-knowledge-store-and-retrieval|req-000-v0-bootstrap-and-initial-foundat|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Connect to Microsoft Graph and discover]
-    Problem --> Scope[Hybrid knowledge store and retrieval]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Connect to Microsoft Graph and discover]
+    Problem --> Scope[V1 Hybrid knowledge store and retrieval]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```

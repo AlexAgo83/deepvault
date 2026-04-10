@@ -6,29 +6,29 @@
   ],
   "sites": [
     {
-      "id": "circlesas",
-      "name": "CircleSAS",
-      "url": "https://circlesas.sharepoint.com/sites/CircleSAS",
+      "id": "pilot-alpha",
+      "name": "Pilot Site Alpha",
+      "url": "https://example.test/sites/pilot-alpha",
       "libraryCount": 3,
       "listCount": 5,
       "status": "synced",
       "access": ["analyst", "admin"],
-      "owner": "Finance and operations"
+      "owner": "Operations"
     },
     {
-      "id": "csas-op-prod",
-      "name": "CSAS-OP-Prod",
-      "url": "https://circlesas.sharepoint.com/sites/CSAS-OP-Prod",
+      "id": "pilot-beta",
+      "name": "Pilot Site Beta",
+      "url": "https://example.test/sites/pilot-beta",
       "libraryCount": 4,
       "listCount": 7,
       "status": "synced",
       "access": ["analyst", "admin"],
-      "owner": "Engineering and IT"
+      "owner": "Platform"
     },
     {
-      "id": "stealth-lab",
-      "name": "Stealth Lab",
-      "url": "https://circlesas.sharepoint.com/sites/Stealth-Lab",
+      "id": "restricted-pilot",
+      "name": "Restricted Pilot Site",
+      "url": "https://example.test/sites/restricted-pilot",
       "libraryCount": 1,
       "listCount": 2,
       "status": "restricted",
@@ -43,7 +43,7 @@
       "finishedAt": "2026-04-10T08:03:00Z",
       "scope": "incremental daily + manual refresh",
       "status": "synced",
-      "siteIds": ["circlesas", "csas-op-prod"],
+      "siteIds": ["pilot-alpha", "pilot-beta"],
       "documentsSynced": 17,
       "chunksWritten": 102,
       "notes": "Pilot sites synced successfully with permission-aware filtering enabled."
@@ -54,7 +54,7 @@
       "finishedAt": "2026-04-09T08:02:00Z",
       "scope": "incremental daily + manual refresh",
       "status": "synced",
-      "siteIds": ["circlesas", "csas-op-prod"],
+      "siteIds": ["pilot-alpha", "pilot-beta"],
       "documentsSynced": 17,
       "chunksWritten": 102,
       "notes": "No permission leakage and no failed site refreshes."
@@ -63,7 +63,7 @@
   "documents": [
     {
       "id": "q3-budget",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Q3 2025 budget approval",
       "path": "/Finance/Budgets/Q3-2025-Budget-Approval.docx",
@@ -78,7 +78,7 @@
     },
     {
       "id": "project-alpha-lead",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Project Alpha charter",
       "path": "/Programs/Alpha/Project-Alpha-Charter.docx",
@@ -93,7 +93,7 @@
     },
     {
       "id": "board-meeting-notes",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Board meeting notes",
       "path": "/Governance/Board/2025-03-Board-Notes.md",
@@ -108,7 +108,7 @@
     },
     {
       "id": "remote-access-policy",
-      "siteId": "csas-op-prod",
+      "siteId": "pilot-beta",
       "kind": "document",
       "title": "Remote access security requirements",
       "path": "/Security/Policies/Remote-Access-Requirements.md",
@@ -123,7 +123,7 @@
     },
     {
       "id": "product-roadmap-q4-2024",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Q4 2024 product roadmap",
       "path": "/Product/Roadmap/Q4-2024-Roadmap.md",
@@ -138,7 +138,7 @@
     },
     {
       "id": "onboarding-process",
-      "siteId": "csas-op-prod",
+      "siteId": "pilot-beta",
       "kind": "document",
       "title": "New employee onboarding process",
       "path": "/HR/Onboarding/New-Employee-Process.md",
@@ -153,7 +153,7 @@
     },
     {
       "id": "alpha-risk-register",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Alpha project risk register",
       "path": "/Programs/Alpha/Risk-Register.xlsx",
@@ -168,7 +168,7 @@
     },
     {
       "id": "infra-spend-approval",
-      "siteId": "csas-op-prod",
+      "siteId": "pilot-beta",
       "kind": "document",
       "title": "Infrastructure spend approval",
       "path": "/Finance/Approvals/FY2025-Infrastructure-Spend.md",
@@ -183,7 +183,7 @@
     },
     {
       "id": "p1-escalation",
-      "siteId": "csas-op-prod",
+      "siteId": "pilot-beta",
       "kind": "document",
       "title": "P1 incident escalation path",
       "path": "/Operations/Incidents/P1-Escalation-Path.md",
@@ -198,7 +198,7 @@
     },
     {
       "id": "data-classification-policy",
-      "siteId": "csas-op-prod",
+      "siteId": "pilot-beta",
       "kind": "document",
       "title": "Data classification policy",
       "path": "/Security/Policies/Data-Classification-Policy.md",
@@ -213,7 +213,7 @@
     },
     {
       "id": "approved-tools-policy",
-      "siteId": "csas-op-prod",
+      "siteId": "pilot-beta",
       "kind": "document",
       "title": "Approved engineering tools",
       "path": "/Engineering/Policies/Approved-Tools.md",
@@ -228,7 +228,7 @@
     },
     {
       "id": "compliance-audit-deadline",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Q1 2026 compliance audit plan",
       "path": "/Compliance/Audits/Q1-2026-Compliance-Audit.md",
@@ -243,7 +243,7 @@
     },
     {
       "id": "alpha-status-report",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Alpha status report",
       "path": "/Programs/Alpha/Status/2025-05-Status-Report.md",
@@ -258,7 +258,7 @@
     },
     {
       "id": "quarterly-okrs",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Product team quarterly OKRs",
       "path": "/Product/Planning/Q2-2025-OKRs.md",
@@ -273,7 +273,7 @@
     },
     {
       "id": "budget-approval-contact",
-      "siteId": "circlesas",
+      "siteId": "pilot-alpha",
       "kind": "document",
       "title": "Budget approval contacts",
       "path": "/Finance/Approvals/Budget-Contacts.md",
@@ -288,7 +288,7 @@
     },
     {
       "id": "vendor-onboarding-checklist",
-      "siteId": "csas-op-prod",
+      "siteId": "pilot-beta",
       "kind": "document",
       "title": "Vendor onboarding checklist",
       "path": "/Procurement/Vendor-Onboarding-Checklist.md",
@@ -303,7 +303,7 @@
     },
     {
       "id": "sso-issues",
-      "siteId": "csas-op-prod",
+      "siteId": "pilot-beta",
       "kind": "document",
       "title": "Known SSO implementation issues",
       "path": "/Engineering/Auth/SSO-Known-Issues.md",
@@ -318,7 +318,7 @@
     },
     {
       "id": "secret-launch-notes",
-      "siteId": "stealth-lab",
+      "siteId": "restricted-pilot",
       "kind": "document",
       "title": "Restricted launch notes",
       "path": "/Security/Restricted/Launch-Notes.md",

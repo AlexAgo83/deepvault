@@ -24,8 +24,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v2-deepvault-gordon-chat-and-permissions|req-000-v0-bootstrap-and-initial-foundat|define-the-deepvault-gordon-channel|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Define the DeepVault - Gordon channel]
-    Problem --> Scope[DeepVault - Gordon chat and permissions]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Define the DeepVault - Gordon channel]
+    Problem --> Scope[V2 DeepVault - Gordon chat and]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```

@@ -29,8 +29,8 @@
 %% logics-kind: request
 %% logics-signature: request|v2-azure-and-teams-foundation|deploy-the-shared-hosted-backend-on|ac1-the-request-clearly-scopes-v2
 flowchart TD
-    Trigger[V2 Azure and Teams foundation] --> Need[Deploy hosted backend and wire Teams channel]
-    Need --> Outcome[AC1: Scope is clearly V2 with Azure and Teams dependencies identified]
+    Trigger[V2 Azure and Teams foundation] --> Need[Deploy the shared hosted backend on]
+    Need --> Outcome[AC1: The request clearly scopes V2]
     Outcome --> Backlog[Backlog slice]
 ```
 
