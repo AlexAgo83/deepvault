@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import corpus from './data/corpus.js'
+import { useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import corpus from './data/corpus'
 import {
   answerQuestion,
   buildExplorerRows,
@@ -7,19 +7,24 @@ import {
   buildSyncOverview,
   formatUpdatedAt,
   summarizeCorpus,
-} from './lib/deepvault.js'
+  type ChatMessage,
+  type CorpusDocument,
+  type ProviderId,
+  type UserRole,
+  type SiteSummary,
+} from './lib/deepvault'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'DeepVault - Navy' },
   { id: 'bishop', label: 'DeepVault - Bishop' },
   { id: 'sync', label: 'Sync status' },
-]
+] as const
 
-function Pill({ children, tone = 'neutral' }) {
+function Pill({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'accent' | 'success' }) {
   return <span className={`pill pill-${tone}`}>{children}</span>
 }
 
-function StatCard({ label, value, note }) {
+function StatCard({ label, value, note }: { label: string; value: string | number; note: string }) {
   return (
     <article className="stat-card">
       <div className="stat-label">{label}</div>
@@ -29,7 +34,7 @@ function StatCard({ label, value, note }) {
   )
 }
 
-function SectionHeading({ title, subtitle }) {
+function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="section-heading">
       <div>
@@ -40,12 +45,14 @@ function SectionHeading({ title, subtitle }) {
   )
 }
 
-function SourceCard({ source }) {
+type ExplorerRow = CorpusDocument & { score: number; siteName: string }
+
+function SourceCard({ source }: { source: ChatMessage['sources'][number] }) {
   return (
     <article className="source-card">
       <div className="source-card-top">
         <strong>{source.title}</strong>
-        <Pill tone="accent">{source.score}</Pill>
+        <Pill tone="accent">{String(source.score)}</Pill>
       </div>
       <div className="source-meta">
         <span>{source.siteName}</span>
@@ -58,7 +65,7 @@ function SourceCard({ source }) {
   )
 }
 
-function Message({ message }) {
+function Message({ message }: { message: ChatMessage }) {
   return (
     <article className={`message message-${message.role}`}>
       <div className="message-meta">
@@ -81,14 +88,14 @@ function Message({ message }) {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('explorer')
-  const [role, setRole] = useState(corpus.defaultUserRole)
-  const [provider, setProvider] = useState(corpus.providers[0].id)
-  const [siteFilter, setSiteFilter] = useState('all')
-  const [search, setSearch] = useState('')
-  const [selectedDocId, setSelectedDocId] = useState(corpus.documents[0].id)
-  const [question, setQuestion] = useState('')
-  const [messages, setMessages] = useState([
+  const [activeTab, setActiveTab] = useState<(typeof NAV_ITEMS)[number]['id']>('explorer')
+  const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
+  const [provider, setProvider] = useState<ProviderId>(corpus.providers[0].id)
+  const [siteFilter, setSiteFilter] = useState<string>('all')
+  const [search, setSearch] = useState<string>('')
+  const [selectedDocId, setSelectedDocId] = useState<string>(corpus.documents[0].id)
+  const [question, setQuestion] = useState<string>('')
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'seed',
       role: 'assistant',
@@ -98,10 +105,10 @@ export default function App() {
     },
   ])
 
-  const siteSummaries = useMemo(() => buildSiteSummaries(corpus, role), [role])
+  const siteSummaries = useMemo<SiteSummary[]>(() => buildSiteSummaries(corpus, role), [role])
   const syncOverview = useMemo(() => buildSyncOverview(corpus, role), [role])
-  const explorerRows = useMemo(
-    () => buildExplorerRows(corpus, search, { role, siteId: siteFilter }),
+  const explorerRows = useMemo<ExplorerRow[]>(
+    () => buildExplorerRows(corpus, search, { role, siteId: siteFilter }) as ExplorerRow[],
     [role, search, siteFilter],
   )
 
@@ -111,7 +118,7 @@ export default function App() {
     corpus.documents.find((document) => document.id === selectedDocId) ||
     corpus.documents[0]
 
-  const handleAsk = (event) => {
+  const handleAsk = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = question.trim()
     if (!trimmed) {
@@ -195,7 +202,7 @@ export default function App() {
           <div className="runtime-stack">
             <div className="runtime-row">
               <span>Role</span>
-              <select value={role} onChange={(event) => setRole(event.target.value)}>
+              <select value={role} onChange={(event) => setRole(event.target.value as UserRole)}>
                 <option value="analyst">analyst</option>
                 <option value="admin">admin</option>
                 <option value="guest">guest</option>
@@ -203,7 +210,7 @@ export default function App() {
             </div>
             <div className="runtime-row">
               <span>Provider</span>
-              <select value={provider} onChange={(event) => setProvider(event.target.value)}>
+              <select value={provider} onChange={(event) => setProvider(event.target.value as ProviderId)}>
                 {corpus.providers.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
@@ -245,10 +252,26 @@ export default function App() {
         </header>
 
         <section className="kpi-grid">
-          <StatCard label="Pilot sites" value={siteSummaries.length} note="Two configured pilot sites plus one restricted site for boundary checks." />
-          <StatCard label="Visible docs" value={syncOverview.documentCount} note="Role-filtered corpus entries available to this user." />
-          <StatCard label="Last refresh" value={syncOverview.lastRun ? formatUpdatedAt(syncOverview.lastRun.finishedAt) : 'n/a'} note={syncOverview.refreshPolicy} />
-          <StatCard label="Provider readiness" value={corpus.providers.filter((item) => item.ready).length} note="OpenAI and Gemini are both available in the local abstraction." />
+          <StatCard
+            label="Pilot sites"
+            value={siteSummaries.length}
+            note="Two configured pilot sites plus one restricted site for boundary checks."
+          />
+          <StatCard
+            label="Visible docs"
+            value={syncOverview.documentCount}
+            note="Role-filtered corpus entries available to this user."
+          />
+          <StatCard
+            label="Last refresh"
+            value={syncOverview.lastRun ? formatUpdatedAt(syncOverview.lastRun.finishedAt) : 'n/a'}
+            note={syncOverview.refreshPolicy}
+          />
+          <StatCard
+            label="Provider readiness"
+            value={corpus.providers.filter((item) => item.ready).length}
+            note="OpenAI and Gemini are both available in the local abstraction."
+          />
         </section>
 
         <section className="panel panel-toolbar">
@@ -362,7 +385,7 @@ export default function App() {
                   id="question"
                   value={question}
                   onChange={(event) => setQuestion(event.target.value)}
-                  rows="4"
+                  rows={4}
                   placeholder="What is the deadline for the compliance audit?"
                 />
                 <div className="chat-form-actions">
@@ -417,10 +440,26 @@ export default function App() {
             <article className="panel">
               <SectionHeading title="Sync status" subtitle="Refresh state, ingestion coverage, and operational signals." />
               <div className="kpi-grid compact">
-                <StatCard label="Synced sites" value={syncOverview.syncedSites} note="Pilot sites currently in a synced state." />
-                <StatCard label="Restricted sites" value={syncOverview.restrictedSites} note="Sites visible only to privileged roles." />
-                <StatCard label="Visible sources" value={summarizeCorpus(corpus, role).visibleSources} note="Sources accessible to the selected role." />
-                <StatCard label="Denied sources" value={summarizeCorpus(corpus, role).deniedSources} note="Sources excluded by permission-aware retrieval." />
+                <StatCard
+                  label="Synced sites"
+                  value={syncOverview.syncedSites}
+                  note="Pilot sites currently in a synced state."
+                />
+                <StatCard
+                  label="Restricted sites"
+                  value={syncOverview.restrictedSites}
+                  note="Sites visible only to privileged roles."
+                />
+                <StatCard
+                  label="Visible sources"
+                  value={summarizeCorpus(corpus, role).visibleSources}
+                  note="Sources accessible to the selected role."
+                />
+                <StatCard
+                  label="Denied sources"
+                  value={summarizeCorpus(corpus, role).deniedSources}
+                  note="Sources excluded by permission-aware retrieval."
+                />
               </div>
 
               <div className="table-wrap">

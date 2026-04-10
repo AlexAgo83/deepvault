@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
-import App from '../src/App.jsx'
+import App from '../src/App'
 
 describe('DeepVault app', () => {
   it('renders the explorer shell', () => {
