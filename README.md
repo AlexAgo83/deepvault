@@ -167,12 +167,18 @@ This:
 - reads the Microsoft Graph and Entra settings from `.env.local`
 - crawls the configured SharePoint sites
 - writes `public/live-corpus.json`
-- keeps a local checkpoint in `data/runtime/live-export-checkpoint.json` so a rerun can reuse completed site exports
+- keeps a local checkpoint in `data/runtime/live-export-checkpoint.json` for explicit resume runs
 
 If you want to validate the pipeline without hitting Graph:
 
 ```bash
 npm run export:live -- --mode mock
+```
+
+If you want to resume a previous live export from the local checkpoint, pass `--resume`:
+
+```bash
+npm run export:live -- --resume
 ```
 
 ### 3. Load the live corpus in the browser
@@ -237,4 +243,5 @@ These files can contain exported business content and should remain local.
 - If `npm run export:live` is slow, the current SharePoint crawl may be large.
 - If the browser still shows the mock corpus in live mode, confirm that `public/live-corpus.json` exists.
 - If the app does not switch to live data, make sure you started it with `VITE_DEEPVAULT_DATA_MODE=live`.
+- If `npm run export:live` keeps reusing old content, check whether you passed `--resume`; without it, the export should start fresh from the live sources.
 - If you want to reset the browser-side Playwright artifacts, delete `.playwright-cli/` locally. It is ignored by Git.

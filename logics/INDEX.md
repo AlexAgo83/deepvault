@@ -61,6 +61,8 @@
 | [item_016_v1_live_evaluation_set_and_quality_gate](backlog/item_016_v1_live_evaluation_set_and_quality_gate.md) | V1 — Live evaluation set and quality gate | Done | 100% | backlog/item_016_v1_live_evaluation_set_and_quality_gate.md |
 | [item_017_v1_crawl_resilience_and_artifact_governance](backlog/item_017_v1_crawl_resilience_and_artifact_governance.md) | V1 — Crawl resilience and artifact governance | Done | 100% | backlog/item_017_v1_crawl_resilience_and_artifact_governance.md |
 | [item_018_v1_pre_v2_backlog_and_doc_cleanup](backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md) | V1 — Pre-V2 backlog and doc cleanup | Done | 100% | backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md |
+| [item_019_shell_rebrand_and_split_layout](backlog/item_019_shell_rebrand_and_split_layout.md) | Shell rebrand and split layout | Ready | 0% | backlog/item_019_shell_rebrand_and_split_layout.md |
+| [item_020_compact_live_state_and_sync_panels](backlog/item_020_compact_live_state_and_sync_panels.md) | Compact live state and sync panels | Ready | 0% | backlog/item_020_compact_live_state_and_sync_panels.md |
 
 ## Tasks
 
@@ -72,3 +74,4 @@
 | [Pre](tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md) | evaluation checklist (must pass before starting) | Done | 100% | tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md |
 | [task_009_local_hardening_and_v1_scope_evolution](tasks/task_009_local_hardening_and_v1_scope_evolution.md) | What is already done in V1 (do not re-implement) | Done | 100% | tasks/task_009_local_hardening_and_v1_scope_evolution.md |
 | [task_010_v2_azure_and_teams_delivery](tasks/task_010_v2_azure_and_teams_delivery.md) | V2 Azure and Teams delivery | Draft | 0% | tasks/task_010_v2_azure_and_teams_delivery.md |
+| [task_011_nexus_v1_1_shell_and_live_state_delivery](tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md) | Nexus V1.1 shell and live state delivery | Ready | 0% | tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md |

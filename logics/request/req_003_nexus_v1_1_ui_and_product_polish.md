@@ -2,8 +2,8 @@
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 95%
-> Confidence: 92%
+> Understanding: 96%
+> Confidence: 94%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Keep this request focused on the V1.1 polish pass for the local shell and information hierarchy. Split into backlog items before implementation if the slice grows.
@@ -59,9 +59,8 @@ flowchart TD
 - [x] Dependencies and known risks are listed.
 
 # Companion docs
-- Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
+- Product brief(s): `prod_001_local_first_development_and_test_strategy`
 - Architecture decision(s): (none yet)
-
 # AI Context
 - Summary: V1.1 shell and product polish request for the local Nexus surface.
 - Keywords: nexus, v1.1, shell, polish, compact status, commercial copy
@@ -69,4 +68,5 @@ flowchart TD
 - Skip when: Skip when the work is about backend behavior, sync logic, or non-UI infrastructure.
 
 # Backlog
-- (none yet)
+- `item_019_shell_rebrand_and_split_layout`
+- `item_020_compact_live_state_and_sync_panels`
