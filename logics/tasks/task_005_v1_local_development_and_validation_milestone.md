@@ -1,10 +1,10 @@
 ## task_005_v1_local_development_and_validation_milestone - V1 local development and validation milestone
 > From version: 0.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 96%
 > Confidence: 93%
-> Progress: 1%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Keep this milestone focused on local development, testing, and validation. It should close only when the V1 local surfaces and shared data contracts are usable end-to-end. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -34,12 +34,12 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] Complete the shared foundations and cross-cutting contracts needed by V1.
-- [ ] Ship `DeepVault - Navy`, `DeepVault - Bishop`, and local sync visibility as one coherent local flow.
-- [ ] Harden ingestion, sync, retrieval, and provider abstraction for local validation.
-- [ ] Run the retrieval evaluation set (task_008) and confirm the quality gate passes.
-- [ ] Generate the project README covering: what DeepVault is, the three surfaces (Navy/Bishop/Gordon), local setup steps, environment variables required (referencing `.env.local`), how to run ingestion, how to run the local app, and how to run the evaluation set.
-- [ ] Validate the V1 path end-to-end and confirm it is ready for the hosted milestone.
+- [x] Complete the shared foundations and cross-cutting contracts needed by V1.
+- [x] Ship `DeepVault - Navy`, `DeepVault - Bishop`, and local sync visibility as one coherent local flow.
+- [x] Harden ingestion, sync, retrieval, and provider abstraction for local validation.
+- [x] Run the retrieval evaluation set (task_008) and confirm the quality gate passes.
+- [x] Generate the project README covering: what DeepVault is, the three surfaces (Navy/Bishop/Gordon), local setup steps, environment variables required (referencing `.env.local`), how to run ingestion, how to run the local app, and how to run the evaluation set.
+- [x] Validate the V1 path end-to-end and confirm it is ready for the hosted milestone.
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -87,14 +87,16 @@ stateDiagram-v2
 - `python3 logics/skills/logics-duplicate-detector/scripts/find_duplicates.py --min-score 0.55`
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured.
-- [ ] No wave or step was closed before the relevant automated tests and quality checks passed.
-- [ ] Linked request/backlog/task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
-- [ ] Retrieval evaluation set (task_008) passed at ≥ 80% on OpenAI.
-- [ ] Project README generated and covers: overview, surfaces, local setup, env vars, ingestion, local app, evaluation.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] Scope implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured.
+- [x] No wave or step was closed before the relevant automated tests and quality checks passed.
+- [x] Linked request/backlog/task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
+- [x] Retrieval evaluation set (task_008) passed at >= 80% on OpenAI.
+- [x] Project README generated and covers: overview, surfaces, local setup, env vars, ingestion, local app, evaluation.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report
-- Not started.
+- V1 local development is implemented in the repo root as a React local workspace.
+- Validation: `npm run lint`, `npm test`, `npm run build`, `npm run ingest`, `npm run evaluate`, `npm run e2e`.
+- Result: the local explorer, Bishop chat, sync view, ingestion snapshot, and OpenAI baseline evaluation all pass.
