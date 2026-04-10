@@ -1,7 +1,7 @@
 ## req_007_compact_paths_in_explorer_excerpts_and_summaries - Compact paths in explorer excerpts and summaries
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 93%
 > Confidence: 90%
 > Complexity: Medium

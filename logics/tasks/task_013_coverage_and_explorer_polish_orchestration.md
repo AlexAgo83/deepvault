@@ -1,10 +1,10 @@
 ## task_013_coverage_and_explorer_polish_orchestration - Coverage and explorer polish orchestration
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 93%
 > Confidence: 90%
-> Progress: 67%
+> Progress: 100%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Keep this task focused on the three follow-up requests and their six backlog slices. Split again if a wave grows beyond one coherent implementation pass.
@@ -35,12 +35,12 @@ stateDiagram-v2
 - [x] 1. Confirm scope, dependencies, and linked acceptance criteria for `item_025`, `item_026`, `item_027`, `item_028`, `item_029`, and `item_030`.
 - [x] 2. Implement wave 1 for coverage foundations.
 - [x] 3. Implement wave 2 for explorer card hierarchy and visual polish.
-- [ ] 4. Implement wave 3 for compact paths in explorer excerpts and summaries.
-- [ ] 5. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
-- [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
+- [x] 4. Implement wave 3 for compact paths in explorer excerpts and summaries.
+- [x] 5. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
+- [x] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
 - [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
-- [ ] FINAL: Update related Logics docs and close the task when all six slices are complete.
+- [x] FINAL: Update related Logics docs and close the task when all six slices are complete.
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -89,3 +89,5 @@ stateDiagram-v2
 - Validation passed for wave 1: `rtk npm run test:coverage`, `rtk npm run lint`, `rtk npm run typecheck`.
 - Wave 2 completed: explorer cards now read with a clearer title hierarchy and a less dominant score badge.
 - Validation passed for wave 2: `rtk npm run test`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
+- Wave 3 completed: compact paths now render inline in explorer summaries and source excerpts, with the full path preserved on hover/copy affordances.
+- Validation passed for wave 3: `rtk npm run test -- tests/app.spec.tsx`, `rtk npm run lint`, `rtk npm run typecheck`.
