@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 93%
 > Confidence: 91%
-> Progress: 50%
+> Progress: 75%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -35,7 +35,7 @@ stateDiagram-v2
 - [x] 1. Confirm scope, dependencies, and linked acceptance criteria for `item_021`, `item_022`, `item_023`, and `item_024`.
 - [x] 2. Implement wave 1 for shell chrome and layout cleanup.
 - [x] 3. Implement wave 2 for live state and status density polish.
-- [ ] 4. Implement wave 3 for Bishop response flow and answer trace polish.
+- [x] 4. Implement wave 3 for Bishop response flow and answer trace polish.
 - [ ] 5. Implement wave 4 for path display and hover cleanup.
 - [ ] 6. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
@@ -90,3 +90,5 @@ stateDiagram-v2
 - Validation passed for wave 1: `rtk npm run test -- tests/app.spec.tsx`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
 - Wave 2 completed: live state labels and compact status density updated, including shorter live state wording and a compact last refresh value.
 - Validation passed for wave 2: `rtk npm run test`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
+- Wave 3 completed: Bishop now shows a visible thinking step, disables send while answering, and resolves to the final grounded answer after a short delay.
+- Validation passed for wave 3: `rtk npm run test`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
