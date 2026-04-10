@@ -12,6 +12,7 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Ask Bishop' })).not.toBeInTheDocument()
     expect(screen.queryByText(/Version 1\.0\.0/)).not.toBeInTheDocument()
     expect(screen.queryByText('State')).not.toBeInTheDocument()
   })
@@ -22,7 +23,7 @@ describe('DeepVault app', () => {
 
     await user.click(screen.getByRole('button', { name: 'Bishop' }))
     await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
-    await user.click(screen.getByRole('button', { name: 'Send' }))
+    await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
 
     expect(screen.getByRole('button', { name: 'Thinking...' })).toBeDisabled()
     expect(screen.getByText('Bishop is drafting the answer from grounded sources.')).toBeInTheDocument()
