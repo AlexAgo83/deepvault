@@ -229,13 +229,13 @@ p {
 
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
 }
 
 .kpi-grid.compact {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-bottom: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-bottom: 14px;
 }
 
 .stat-card,
@@ -252,10 +252,11 @@ p {
 }
 
 .stat-card {
-  padding: 16px;
+  min-height: 120px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
 }
 
@@ -271,21 +272,40 @@ p {
 .document-row strong,
 .source-card strong,
 .message strong {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .stat-value {
-  font-size: 1.8rem;
+  font-size: 1.55rem;
   line-height: 1;
 }
 
 .stat-value-compact {
-  font-size: 1rem;
-  line-height: 1.25;
-  max-width: 11ch;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  max-width: 10ch;
+}
+
+.stat-value-datetime {
+  max-width: none;
+}
+
+.stat-datetime {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.05;
+}
+
+.stat-datetime span:last-child {
+  font-size: 0.82em;
+  color: var(--muted);
+  letter-spacing: 0.01em;
 }
 
 .stat-note {
+  font-size: 0.82rem;
+  line-height: 1.35;
   max-height: 0;
   overflow: hidden;
   opacity: 0;
@@ -555,6 +575,21 @@ th {
   text-overflow: ellipsis;
   cursor: copy;
   text-align: left;
+}
+
+.path-inline-link {
+  cursor: pointer;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 120ms ease, border-color 120ms ease, opacity 120ms ease;
+}
+
+.path-inline-link:hover,
+.path-inline-link:focus-visible {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+  outline: none;
 }
 
 .pill {

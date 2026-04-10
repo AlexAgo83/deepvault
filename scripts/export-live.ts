@@ -63,12 +63,26 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
     throw new Error('DEEPVAULT_ENTRA_SITES must list at least one SharePoint site URL.')
   }
 
-  const sites: CorpusLike['sites'] = checkpointCorpus?.sites ? [...checkpointCorpus.sites] : []
-  const documents: CorpusLike['documents'] = checkpointCorpus?.documents ? [...checkpointCorpus.documents] : []
-  const siteIds: string[] = checkpointCorpus?.syncRuns?.[0]?.siteIds ? [...checkpointCorpus.syncRuns[0].siteIds] : []
+  const sites: CorpusLike['sites'] = []
+  const documents: CorpusLike['documents'] = []
+  const siteIds: string[] = []
   let totalLibraries = sites.reduce((sum, site) => sum + site.libraryCount, 0)
   let totalLists = sites.reduce((sum, site) => sum + site.listCount, 0)
-  const startedAt = checkpointCorpus?.syncRuns?.[0]?.startedAt || new Date().toISOString()
+  const startedAt = new Date().toISOString()
+
+  if (resumeCheckpoint && checkpointCorpus) {
+    if (checkpointCorpus.sites) {
+      sites.push(...checkpointCorpus.sites)
+      totalLibraries = sites.reduce((sum, site) => sum + site.libraryCount, 0)
+      totalLists = sites.reduce((sum, site) => sum + site.listCount, 0)
+    }
+    if (checkpointCorpus.documents) {
+      documents.push(...checkpointCorpus.documents)
+    }
+    if (checkpointCorpus.syncRuns?.[0]?.siteIds) {
+      siteIds.push(...checkpointCorpus.syncRuns[0].siteIds)
+    }
+  }
 
   async function writeCheckpoint() {
     await writeCorpusFile(liveCheckpointPath, {
@@ -96,7 +110,7 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   }
 
   for (const definition of siteDefinitions) {
-    const existingSite = sites.find((site) => site.url === definition.url)
+    const existingSite = resumeCheckpoint ? sites.find((site) => site.url === definition.url) : undefined
 
     if (existingSite) {
       console.log(`[${definition.name}] Reusing checkpointed export`)
