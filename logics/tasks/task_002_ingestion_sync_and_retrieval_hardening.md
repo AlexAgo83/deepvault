@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog/task references when you edit this doc.
@@ -15,13 +15,22 @@ It covers Graph ingestion, incremental sync, hybrid knowledge storage, and permi
 The goal is to make the data layer reliable before the hosted backend and Teams channel are layered on top.
 
 ```mermaid
+%% logics-kind: task
 %% logics-signature: task|ingestion-sync-and-retrieval-hardening|item-000-graph-discovery-and-pilot-scope|implement-or-finalize-the-sharepoint-ing|python3-logics-skills-logics-doc-linter-
-flowchart TD
-    Request[Data foundation task] --> Step1[Implement ingestion]
-    Step1 --> Step2[Build hybrid store]
-    Step2 --> Step3[Add sync and permission filters]
-    Step3 --> Validate[Validate provenance and refresh]
-    Validate --> Done[Data path hardened]
+stateDiagram-v2
+    state "item_000_graph_discovery_and_pilot_scope" as Backlog
+    state "Implement or finalize the SharePoint inges" as Scope
+    state "Add or harden the incremental sync" as Build
+    state "Persist source objects metadata and chunke" as Verify
+    state "python3 logics skills logics-doc-linter sc" as Validation
+    state "Done report" as Report
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
+    Report --> [*]
 ```
 
 # Plan

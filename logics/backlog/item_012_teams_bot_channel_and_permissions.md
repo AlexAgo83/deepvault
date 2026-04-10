@@ -4,10 +4,10 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 2%
 > Complexity: High
 > Theme: General
-> Reminder: Keep this slice focused on `DeepVault - Gordon` and its permissions.
+> Reminder: Keep this slice focused on `DeepVault - Gordon` and its permissions. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Problem
 - Implement the governed `DeepVault - Gordon` chatbot that talks to the hosted backend and respects Microsoft identity.
@@ -24,9 +24,9 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deepvault-gordon-channel-and-permissions|req-000-sharepoint-knowledge-graph-kicko|implement-the-governed-deepvault-gordon|ac1-deepvault-gordon-can-route
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Implement DeepVault Gordon channel]
-    Problem --> Scope[DeepVault Gordon channel and permissions]
-    Scope --> Acceptance[AC1: The Teams bot can route]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Implement the governed DeepVault - Gordon]
+    Problem --> Scope[DeepVault - Gordon channel and permissions]
+    Scope --> Acceptance[AC1: DeepVault - Gordon can route]
     Acceptance --> Tasks[Execution task]
 ```
 

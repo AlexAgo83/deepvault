@@ -4,10 +4,10 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 2%
 > Complexity: High
 > Theme: General
-> Reminder: Keep this slice focused on `DeepVault - Bishop` and avoid drifting into `DeepVault - Gordon` or hosted backend work.
+> Reminder: Keep this slice focused on `DeepVault - Bishop` and avoid drifting into `DeepVault - Gordon` or hosted backend work. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Problem
 - `DeepVault - Bishop` lets users ask questions against SharePoint-derived knowledge without depending on `DeepVault - Gordon`.
@@ -22,9 +22,9 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deepvault-bishop-chat-surface-and-answer|req-000-sharepoint-knowledge-graph-kicko|deepvault-bishop-lets-users-ask|ac1-deepvault-bishop-can-ask
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault Bishop lets]
-    Problem --> Scope[DeepVault Bishop chat surface and answer]
-    Scope --> Acceptance[AC1: The local chat surface can]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault - Bishop lets users ask]
+    Problem --> Scope[DeepVault - Bishop chat surface and]
+    Scope --> Acceptance[AC1: DeepVault - Bishop can ask]
     Acceptance --> Tasks[Execution task]
 ```
 

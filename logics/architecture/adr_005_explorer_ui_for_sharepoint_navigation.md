@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
 > Related task: (none yet)
-> Reminder: Keep the explorer small, navigable, and aligned with the current data model. Default to a site tree plus previews before admin or deep search work.
+> Reminder: Keep the explorer small, navigable, and aligned with the current data model. Default to a site tree plus previews before admin or deep search work. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Overview
 The product should include a small explorer UI early.

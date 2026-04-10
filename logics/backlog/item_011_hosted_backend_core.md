@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: High
 > Theme: General
 > Reminder: Keep this slice focused on the hosted backend core.
@@ -22,7 +22,7 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|hosted-backend-core|req-000-sharepoint-knowledge-graph-kicko|the-hosted-backend-centralizes-ingestion|ac1-the-hosted-backend-exposes-a
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[The hosted backend centralizes]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[The hosted backend centralizes ingestion r]
     Problem --> Scope[Hosted backend core]
     Scope --> Acceptance[AC1: The hosted backend exposes a]
     Acceptance --> Tasks[Execution task]

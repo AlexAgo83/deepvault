@@ -4,10 +4,10 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 2%
 > Complexity: Medium
 > Theme: General
-> Reminder: Keep this slice focused on `DeepVault - Navy` and avoid drifting into `DeepVault - Bishop` or hosted backend work.
+> Reminder: Keep this slice focused on `DeepVault - Navy` and avoid drifting into `DeepVault - Bishop` or hosted backend work. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Problem
 - `DeepVault - Navy` lets users navigate sites, libraries, folders, and lists without waiting for the hosted backend.
@@ -23,9 +23,9 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deepvault-navy-explorer-shell-and-naviga|req-000-sharepoint-knowledge-graph-kicko|deepvault-navy-lets-users-navigate|ac1-deepvault-navy-lets-users
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault Navy lets users navigate]
-    Problem --> Scope[DeepVault Navy explorer shell and navigation]
-    Scope --> Acceptance[AC1: The local explorer shell lets]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault - Navy lets users navigate]
+    Problem --> Scope[DeepVault - Navy explorer shell and]
+    Scope --> Acceptance[AC1: DeepVault - Navy lets users]
     Acceptance --> Tasks[Execution task]
 ```
 

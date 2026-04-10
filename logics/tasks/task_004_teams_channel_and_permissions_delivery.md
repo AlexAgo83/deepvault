@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 2%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress, linked request/backlog/task references, and `DeepVault - Gordon` naming when you edit this doc.
@@ -15,13 +15,22 @@ It turns the hosted backend into an enterprise chat surface with Microsoft ident
 The outcome is a channel that can answer safely without bypassing the retrieval rules.
 
 ```mermaid
+%% logics-kind: task
 %% logics-signature: task|deepvault-gordon-channel-and-permissions|item-004-teams-bot-chat-and-permissions|register-the-deepvault-gordon-bot|python3-logics-skills-logics-doc-linter-
-flowchart TD
-    Request[Teams delivery task] --> Step1[Register DeepVault Gordon bot]
-    Step1 --> Step2[Route messages to backend]
-    Step2 --> Step3[Enforce identity and permissions]
-    Step3 --> Validate[Validate end-to-end chat]
-    Validate --> Done[Teams channel ready]
+stateDiagram-v2
+    state "item_004_teams_bot_chat_and_permissions" as Backlog
+    state "Register the DeepVault - Gordon bot" as Scope
+    state "Connect DeepVault - Gordon messages to" as Build
+    state "Enforce Microsoft identity mapping and per" as Verify
+    state "python3 logics skills logics-doc-linter sc" as Validation
+    state "Done report" as Report
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
+    Report --> [*]
 ```
 
 # Plan

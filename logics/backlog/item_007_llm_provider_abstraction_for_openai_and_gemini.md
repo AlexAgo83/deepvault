@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 2%
 > Complexity: Medium
 > Theme: General
 > Reminder: Keep this slice focused on the backend provider contract and do not hard-code a single vendor into `DeepVault - Bishop`.
@@ -23,8 +23,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deepvault-bishop-llm-provider-abstractio|req-000-sharepoint-knowledge-graph-kicko|deliver-a-provider-agnostic-llm-backend-|ac1-the-provider-agnostic-llm-backend-no
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver DeepVault Bishop LLM backend]
-    Problem --> Scope[DeepVault Bishop LLM provider abstraction for OpenAI and]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver a provider-agnostic LLM backend so]
+    Problem --> Scope[DeepVault - Bishop LLM provider abstractio]
     Scope --> Acceptance[AC1: The provider-agnostic LLM backend nor]
     Acceptance --> Tasks[Execution task]
 ```

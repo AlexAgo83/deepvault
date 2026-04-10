@@ -3,9 +3,9 @@
 > Status: Proposed
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
-> Related task: (none yet)
+> Related task: `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
 > Related architecture: `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, and DeepVault/Navy/Bishop naming when you edit this doc. Default local validation is explorer first, then chat, then sync.
+> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, and DeepVault/Navy/Bishop naming when you edit this doc. Default local validation is explorer first, then chat, then sync. For any UX/UI or frontend work tied to this strategy, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Overview
 This brief defines the local-first strategy for development and testing.
@@ -51,6 +51,7 @@ The product needs a local environment where the team can explore content, simula
 - The same answer quality and permission rules used later in hosted delivery should be testable locally.
 - `DeepVault - Navy` should remain the primary proving ground for explorer and chat UX changes.
 - Observability should be rich enough for debugging, but light enough to stay usable during rapid iteration.
+- Any UX/UI or frontend refinement for `DeepVault - Navy` or `DeepVault - Bishop` should be steered with the `logics-ui-steering` skill.
 
 # Success signals
 - Engineers can validate new behavior locally without waiting for hosted deployment cycles in `DeepVault - Navy`.

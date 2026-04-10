@@ -4,10 +4,10 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 2%
 > Complexity: Medium
 > Theme: General
-> Reminder: Keep this slice focused on `DeepVault - Navy` and its operational view.
+> Reminder: Keep this slice focused on `DeepVault - Navy` and its operational view. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Problem
 - The `DeepVault - Navy` operational view lets users see crawl progress, refresh state, and basic answer provenance.
@@ -22,9 +22,9 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deepvault-navy-sync-status-and-operation|req-000-sharepoint-knowledge-graph-kicko|the-deepvault-navy-operational-view|ac1-deepvault-navy-shows-crawl
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault Navy operational view lets]
-    Problem --> Scope[DeepVault Navy sync status and operational]
-    Scope --> Acceptance[AC1: The local sync view shows]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[The DeepVault - Navy operational view]
+    Problem --> Scope[DeepVault - Navy sync status and]
+    Scope --> Acceptance[AC1: DeepVault - Navy shows crawl]
     Acceptance --> Tasks[Execution task]
 ```
 

@@ -4,10 +4,10 @@
 > Status: Ready
 > Understanding: 99%
 > Confidence: 95%
-> Progress: 1%
+> Progress: 2%
 > Complexity: High
 > Theme: General
-> Reminder: Update status/understanding/confidence/progress, linked request/task references, and DeepVault/Navy naming when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress, linked request/task references, and DeepVault/Navy naming when you edit this doc. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Problem
 - Define the SharePoint explorer navigation model for sites, libraries, folders, lists, and documents in `DeepVault - Navy`.
@@ -23,9 +23,9 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deepvault-navy-explorer-ui-for-sharepoin|req-000-sharepoint-knowledge-graph-kicko|define-the-sharepoint-explorer-navigatio|ac1-the-explorer-navigation-model-clearl
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define the DeepVault Navy explorer model]
-    Problem --> Scope[DeepVault Navy explorer UI for SharePoint navigation]
-    Scope --> Acceptance[AC1: The request clearly defines the]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define the SharePoint explorer navigation]
+    Problem --> Scope[DeepVault - Navy explorer UI for]
+    Scope --> Acceptance[AC1: The explorer navigation model clearly]
     Acceptance --> Tasks[Execution task]
 ```
 

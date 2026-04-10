@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
 > Related task: (none yet)
-> Reminder: Keep `DeepVault - Navy`, future `DeepVault - Gordon`, and shared backend aligned when the product surface changes, using version-neutral wording.
+> Reminder: Keep `DeepVault - Navy`, future `DeepVault - Gordon`, and shared backend aligned when the product surface changes, using version-neutral wording. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Overview
 The first user-facing surface should be `DeepVault - Navy`.

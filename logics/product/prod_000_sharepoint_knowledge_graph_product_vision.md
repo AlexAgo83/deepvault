@@ -3,9 +3,9 @@
 > Status: Proposed
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`, `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
-> Related task: (none yet)
+> Related task: `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`, `logics/tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md`
 > Related architecture: `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Nexus naming when you edit this doc. Keep the default decisions section current.
+> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Nexus naming when you edit this doc. Keep the default decisions section current. For any UX/UI or frontend work tied to this product, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Overview
 DeepVault helps teams turn SharePoint into a usable knowledge base.
@@ -19,6 +19,7 @@ Teams can be the final delivery channel once the backend is hosted, but the prod
 The chat experience should be able to switch between OpenAI and Gemini behind a single product contract.
 Permission checks and answer provenance should remain visible so users can trust where responses come from.
 The local exploration UI is `DeepVault - Navy`, the local LLM chatbot is `DeepVault - Bishop`, and the Teams chatbot is `DeepVault - Gordon`.
+The delivery roadmap splits into a V1 local validation milestone and a V2 hosted industrialization milestone.
 
 ```mermaid
 flowchart LR
@@ -69,6 +70,7 @@ Users need a way to find content, understand what is available, and later ask na
 - The local development surface should prove the product value before any hosted backend or Teams channel is introduced.
 - The hosted production surface should preserve the same retrieval and permission model while moving the runtime behind a hosted backend.
 - The hosted backend should default to Azure so the enterprise identity, secrets, and operational model stay close to Microsoft, with Render available as the fallback option.
+- Any UX/UI or frontend implementation work for `DeepVault - Navy`, `DeepVault - Bishop`, or `DeepVault - Gordon` should use the `logics-ui-steering` skill before layout or styling decisions are made.
 - The initial pilot should remain configurable so the scope can expand without code changes.
 - The configuration model should stay environment-driven rather than moving straight to a full admin UI.
 - `DeepVault - Navy` and `DeepVault - Bishop` should be the validation surfaces, and the hosted backend plus `DeepVault - Gordon` should be the operational surface.
@@ -84,6 +86,17 @@ Users need a way to find content, understand what is available, and later ask na
 - The platform can explain sync state, retrieval filters, and answer provenance without leaving `DeepVault - Navy` or `DeepVault - Bishop`.
 - The hosted backend can be reused by the local app and by Teams without reworking the product contract.
 - The hosted backend has a clear deployment target choice, with Azure preferred and Render documented as the fallback if needed.
+
+# Roadmap
+## V1: Local development and validation
+- Focus: `DeepVault - Navy`, `DeepVault - Bishop`, shared foundations, and local sync visibility.
+- Goal: prove the end-to-end SharePoint discovery, ingestion, retrieval, and answer loop without external hosting.
+- Primary tasks: `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_001_local_companion_vertical_slice.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
+
+## V2: Hosted industrialization and Teams readiness
+- Focus: Azure-hosted backend, scheduling, operations, and `DeepVault - Gordon`.
+- Goal: move from a validated local product to a governed, schedulable, production-ready service.
+- Primary tasks: `logics/tasks/task_003_hosted_backend_core_delivery.md`, `logics/tasks/task_004_teams_channel_and_permissions_delivery.md`
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

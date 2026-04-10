@@ -4,10 +4,10 @@
 > Status: Ready
 > Understanding: 99%
 > Confidence: 95%
-> Progress: 1%
+> Progress: 2%
 > Complexity: High
 > Theme: General
-> Reminder: Update status/understanding/confidence/progress, linked request/task references, and DeepVault/Gordon naming when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress, linked request/task references, and DeepVault/Gordon naming when you edit this doc. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Problem
 - Define the `DeepVault - Gordon` channel governance and permission model after the backend is hosted.
@@ -24,8 +24,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deepvault-gordon-chat-and-permissions|req-000-sharepoint-knowledge-graph-kicko|define-the-deepvault-gordon-channel|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define DeepVault Gordon governance]
-    Problem --> Scope[DeepVault Gordon chat and permissions]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define the DeepVault - Gordon channel]
+    Problem --> Scope[DeepVault - Gordon chat and permissions]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```

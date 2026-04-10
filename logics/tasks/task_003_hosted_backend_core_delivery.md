@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress, linked request/backlog/task references, and DeepVault/Nexus naming when you edit this doc.
@@ -16,13 +16,22 @@ Azure is the default hosting target for this backend unless a cost or complexity
 The output is the production core that the local app and Teams channel can both call.
 
 ```mermaid
+%% logics-kind: task
 %% logics-signature: task|hosted-backend-core-delivery|item-001-sharepoint-ingestion-and-sync-p|define-the-hosted-api-boundary-and|python3-logics-skills-logics-doc-linter-
-flowchart TD
-    Request[Hosted production task] --> Step1[Extract hosted API]
-    Step1 --> Step2[Centralize orchestration]
-    Step2 --> Step3[Add config and observability]
-    Step3 --> Validate[Validate backend contract]
-    Validate --> Done[Hosted backend ready]
+stateDiagram-v2
+    state "item_001_sharepoint_ingestion_and_sync_pip" as Backlog
+    state "Define the hosted API boundary and" as Scope
+    state "Define the Azure hosting shape for" as Build
+    state "Move ingestion orchestration retrieval and" as Verify
+    state "python3 logics skills logics-doc-linter sc" as Validation
+    state "Done report" as Report
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
+    Report --> [*]
 ```
 
 # Plan

@@ -4,10 +4,10 @@
 > Status: Ready
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 2%
 > Complexity: High
 > Theme: General
-> Reminder: Keep this slice focused on `DeepVault - Navy` and avoid drifting into later `DeepVault - Gordon` integration work.
+> Reminder: Keep this slice focused on `DeepVault - Navy` and avoid drifting into later `DeepVault - Gordon` integration work. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Problem
 - Deliver the `DeepVault - Navy` shell that hosts the explorer, chat, and sync views for the DeepVault project.
@@ -22,9 +22,9 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deepvault-navy-app-for-explorer-and-chat|req-000-sharepoint-knowledge-graph-kicko|deliver-the-deepvault-navy-shell|ac1-the-deepvault-navy-shell
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver DeepVault Navy]
-    Problem --> Scope[DeepVault Navy app for explorer and]
-    Scope --> Acceptance[AC1: The local companion app shell]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver the DeepVault - Navy shell]
+    Problem --> Scope[DeepVault - Navy app for explorer]
+    Scope --> Acceptance[AC1: The DeepVault - Navy shell]
     Acceptance --> Tasks[Execution task]
 ```
 

@@ -4,10 +4,10 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 2%
 > Complexity: High
 > Theme: UI
-> Reminder: Update status/understanding/confidence/progress, linked request/backlog/task references, and `DeepVault - Navy`/`DeepVault - Bishop` naming when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress, linked request/backlog/task references, and `DeepVault - Navy`/`DeepVault - Bishop` naming when you edit this doc. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
 
 # Context
 This task delivers the first complete local user flow for the DeepVault product.
@@ -15,13 +15,22 @@ It combines `DeepVault - Navy`, `DeepVault - Bishop`, and sync status so the tea
 `DeepVault - Navy` is the proving ground for UX and local test scenarios.
 
 ```mermaid
+%% logics-kind: task
 %% logics-signature: task|deepvault-navy-vertical-slice|item-006-local-companion-app-for-explore|build-the-deepvault-navy-shell|python3-logics-skills-logics-doc-linter-
-flowchart TD
-    Request[Local-first strategy] --> Step1[Build DeepVault Navy shell]
-    Step1 --> Step2[Add explorer and chat]
-    Step2 --> Step3[Add sync status and provenance]
-    Step3 --> Validate[Validate local flow]
-    Validate --> Done[Local vertical slice ready]
+stateDiagram-v2
+    state "item_006_local_companion_app_for_explorer_" as Backlog
+    state "Build the DeepVault - Navy shell" as Scope
+    state "Wire the explorer navigation surface to" as Build
+    state "Wire the DeepVault - Bishop surface" as Verify
+    state "python3 logics skills logics-doc-linter sc" as Validation
+    state "Done report" as Report
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
+    Report --> [*]
 ```
 
 # Plan

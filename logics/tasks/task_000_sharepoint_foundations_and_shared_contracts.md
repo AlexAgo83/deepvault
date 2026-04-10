@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress, linked request/backlog/task references, and DeepVault/Nexus naming when you edit this doc.
@@ -15,13 +15,22 @@ It aligns pilot scope, configuration, ingestion, storage, retrieval, permissions
 The goal is to make the rest of the delivery plan deterministic and traceable.
 
 ```mermaid
+%% logics-kind: task
 %% logics-signature: task|sharepoint-foundations-and-shared-contra|item-000-graph-discovery-and-pilot-scope|confirm-the-shared-scope-across-discover|python3-logics-skills-logics-doc-linter-
-flowchart TD
-    Request[SharePoint knowledge graph kickoff] --> Step1[Confirm shared foundations]
-    Step1 --> Step2[Align pilot scope and contracts]
-    Step2 --> Step3[Refresh traceability links]
-    Step3 --> Validate[Validate docs and relationships]
-    Validate --> Done[Shared foundation ready]
+stateDiagram-v2
+    state "item_000_graph_discovery_and_pilot_scope" as Backlog
+    state "Confirm the shared scope across discovery" as Scope
+    state "Align the key product and architecture" as Build
+    state "Confirm the Azure-first hosting target and" as Verify
+    state "python3 logics skills logics-doc-linter sc" as Validation
+    state "Done report" as Report
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
+    Report --> [*]
 ```
 
 # Plan
