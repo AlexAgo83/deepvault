@@ -37,6 +37,8 @@ stateDiagram-v2
 - [ ] Complete the shared foundations and cross-cutting contracts needed by V1.
 - [ ] Ship `DeepVault - Navy`, `DeepVault - Bishop`, and local sync visibility as one coherent local flow.
 - [ ] Harden ingestion, sync, retrieval, and provider abstraction for local validation.
+- [ ] Run the retrieval evaluation set (task_008) and confirm the quality gate passes.
+- [ ] Generate the project README covering: what DeepVault is, the three surfaces (Navy/Bishop/Gordon), local setup steps, environment variables required (referencing `.env.local`), how to run ingestion, how to run the local app, and how to run the evaluation set.
 - [ ] Validate the V1 path end-to-end and confirm it is ready for the hosted milestone.
 
 # Delivery checkpoints
@@ -90,6 +92,8 @@ stateDiagram-v2
 - [ ] No wave or step was closed before the relevant automated tests and quality checks passed.
 - [ ] Linked request/backlog/task docs updated during completed waves and at closure.
 - [ ] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
+- [ ] Retrieval evaluation set (task_008) passed at ≥ 80% on OpenAI.
+- [ ] Project README generated and covers: overview, surfaces, local setup, env vars, ingestion, local app, evaluation.
 - [ ] Status is `Done` and progress is `100%`.
 
 # Report
