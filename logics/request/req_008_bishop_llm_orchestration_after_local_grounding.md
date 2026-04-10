@@ -1,7 +1,7 @@
 ## req_008_bishop_llm_orchestration_after_local_grounding - Bishop LLM orchestration after local grounding
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
+> Status: In progress
 > Understanding: 94%
 > Confidence: 92%
 > Complexity: Medium
