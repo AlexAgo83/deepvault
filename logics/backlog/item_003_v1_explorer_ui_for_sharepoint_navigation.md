@@ -23,8 +23,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-deepvault-navy-explorer-ui-for-sharep|req-000-v0-bootstrap-and-initial-foundat|define-the-sharepoint-explorer-navigatio|ac1-the-explorer-navigation-model-clearl
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Define the SharePoint explorer navigation]
-    Problem --> Scope[DeepVault - Navy explorer UI for]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Define the SharePoint explorer navigation]
+    Problem --> Scope[V1 DeepVault - Navy explorer UI]
     Scope --> Acceptance[AC1: The explorer navigation model clearly]
     Acceptance --> Tasks[Execution task]
 ```

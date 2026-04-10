@@ -22,8 +22,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v2-hosted-backend-core|req-000-v0-bootstrap-and-initial-foundat|the-hosted-backend-centralizes-ingestion|ac1-the-hosted-backend-exposes-a
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[The hosted backend centralizes ingestion r]
-    Problem --> Scope[Hosted backend core]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[The hosted backend centralizes ingestion r]
+    Problem --> Scope[V2 Hosted backend core]
     Scope --> Acceptance[AC1: The hosted backend exposes a]
     Acceptance --> Tasks[Execution task]
 ```

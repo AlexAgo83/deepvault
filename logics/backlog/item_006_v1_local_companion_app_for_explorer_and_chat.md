@@ -22,8 +22,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-deepvault-navy-app-for-explorer-and-c|req-000-v0-bootstrap-and-initial-foundat|deliver-the-deepvault-navy-shell|ac1-the-deepvault-navy-shell
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Deliver the DeepVault - Navy shell]
-    Problem --> Scope[DeepVault - Navy app for explorer]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Deliver the DeepVault - Navy shell]
+    Problem --> Scope[V1 DeepVault - Navy app for]
     Scope --> Acceptance[AC1: The DeepVault - Navy shell]
     Acceptance --> Tasks[Execution task]
 ```

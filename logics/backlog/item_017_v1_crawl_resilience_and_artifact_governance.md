@@ -22,10 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-crawl-resilience-and-artifact-governa|req-001-v1-local-hardening-and-scope-evo|large-sharepoint-sites-need-more-resilie|ac1-large-crawls-emit-enough-progress
 flowchart TD
-    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[Large SharePoint sites need more resilienc]
-    Problem --> Scope[Crawl resilience and artifact governance]
+    Request[req_001_v1_local_hardening_and_scope_evolu] --> Problem[Large SharePoint sites need more resilienc]
+    Problem --> Scope[V1 Crawl resilience and artifact governanc]
     Scope --> Acceptance[AC1: Large crawls emit enough progress]
-    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evolution]
+    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evol]
 ```
 
 # Acceptance criteria

@@ -23,8 +23,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-deepvault-bishop-llm-provider-abstrac|req-000-v0-bootstrap-and-initial-foundat|deliver-a-provider-agnostic-llm-backend-|ac1-the-provider-agnostic-llm-backend-no
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Deliver a provider-agnostic LLM backend so]
-    Problem --> Scope[DeepVault - Bishop LLM provider abstractio]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Deliver a provider-agnostic LLM backend so]
+    Problem --> Scope[V1 DeepVault - Bishop LLM provider]
     Scope --> Acceptance[AC1: The provider-agnostic LLM backend nor]
     Acceptance --> Tasks[Execution task]
 ```

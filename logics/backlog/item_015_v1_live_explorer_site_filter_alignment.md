@@ -22,10 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-live-explorer-site-filter-alignment|req-001-v1-local-hardening-and-scope-evo|the-live-explorer-can-surface-documents|ac1-selecting-a-site-constrains-the
 flowchart TD
-    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The live explorer can surface documents]
-    Problem --> Scope[Live explorer site filter alignment]
+    Request[req_001_v1_local_hardening_and_scope_evolu] --> Problem[The live explorer can surface documents]
+    Problem --> Scope[V1 Live explorer site filter alignment]
     Scope --> Acceptance[AC1: Selecting a site constrains the]
-    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evolution]
+    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evol]
 ```
 
 # Acceptance criteria

@@ -22,8 +22,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-deepvault-bishop-chat-surface-and-ans|req-000-v0-bootstrap-and-initial-foundat|deepvault-bishop-lets-users-ask|ac1-deepvault-bishop-can-ask
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[DeepVault - Bishop lets users ask]
-    Problem --> Scope[DeepVault - Bishop chat surface and]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[DeepVault - Bishop lets users ask]
+    Problem --> Scope[V1 DeepVault - Bishop chat surface]
     Scope --> Acceptance[AC1: DeepVault - Bishop can ask]
     Acceptance --> Tasks[Execution task]
 ```

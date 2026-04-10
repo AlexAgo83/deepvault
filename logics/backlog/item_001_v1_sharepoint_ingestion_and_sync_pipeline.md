@@ -27,8 +27,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-sharepoint-ingestion-and-sync-pipelin|req-000-v0-bootstrap-and-initial-foundat|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[Connect to Microsoft Graph and discover]
-    Problem --> Scope[SharePoint ingestion and sync pipeline]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[Connect to Microsoft Graph and discover]
+    Problem --> Scope[V1 SharePoint ingestion and sync pipeline]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```

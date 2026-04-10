@@ -22,8 +22,8 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-deepvault-navy-sync-status-and-operat|req-000-v0-bootstrap-and-initial-foundat|the-deepvault-navy-operational-view|ac1-deepvault-navy-shows-crawl
 flowchart TD
-    Request[req_000_v0_bootstrap_and_initial_foundations] --> Problem[The DeepVault - Navy operational view]
-    Problem --> Scope[DeepVault - Navy sync status and]
+    Request[req_000_v0_bootstrap_and_initial_foundatio] --> Problem[The DeepVault - Navy operational view]
+    Problem --> Scope[V1 DeepVault - Navy sync status]
     Scope --> Acceptance[AC1: DeepVault - Navy shows crawl]
     Acceptance --> Tasks[Execution task]
 ```

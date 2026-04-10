@@ -36,6 +36,7 @@
 | [req_000_v0_bootstrap_and_initial_foundations](request/req_000_v0_bootstrap_and_initial_foundations.md) | V0 — Bootstrap and initial foundations | Done |  | request/req_000_v0_bootstrap_and_initial_foundations.md |
 | [req_001_v1_local_hardening_and_scope_evolution](request/req_001_v1_local_hardening_and_scope_evolution.md) | V1 — Local hardening and scope evolution | Done |  | request/req_001_v1_local_hardening_and_scope_evolution.md |
 | [req_002_v2_azure_and_teams_foundation](request/req_002_v2_azure_and_teams_foundation.md) | V2 — Azure and Teams foundation | Draft |  | request/req_002_v2_azure_and_teams_foundation.md |
+| [req_003_nexus_v1_1_ui_and_product_polish](request/req_003_nexus_v1_1_ui_and_product_polish.md) | Nexus V1.1.0 shell and product polish | Ready |  | request/req_003_nexus_v1_1_ui_and_product_polish.md |
 
 ## Backlog
 

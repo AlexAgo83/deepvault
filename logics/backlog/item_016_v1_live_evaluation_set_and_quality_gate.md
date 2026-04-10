@@ -22,10 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|v1-live-evaluation-set-and-quality-gate|req-001-v1-local-hardening-and-scope-evo|the-current-evaluation-flow-is-not|ac1-the-evaluation-set-uses-live
 flowchart TD
-    Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The current evaluation flow is not]
-    Problem --> Scope[Live evaluation set and quality gate]
+    Request[req_001_v1_local_hardening_and_scope_evolu] --> Problem[The current evaluation flow is not]
+    Problem --> Scope[V1 Live evaluation set and quality]
     Scope --> Acceptance[AC1: The evaluation set uses live]
-    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evolution]
+    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evol]
 ```
 
 # Acceptance criteria
