@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 95%
 > Confidence: 90%
-> Progress: 20%
+> Progress: 40%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -40,7 +40,7 @@ stateDiagram-v2
 
 # Plan
 - [x] 1. Confirm the five sibling backlog items, their boundaries, and their execution order.
-- [ ] 2. Orchestrate the UI and shell wave first, then the retrieval and Bishop waves, then the export and workflow hygiene waves.
+- [x] 2. Orchestrate the UI and shell wave first, then the retrieval and Bishop waves, then the export and workflow hygiene waves.
 - [ ] 3. Keep each wave commit-ready, validate it, and update the linked Logics docs before moving on.
 - [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
@@ -94,3 +94,4 @@ stateDiagram-v2
 
 # Report
 - Wave 1 completed: cleaned Logics workflow hygiene and reference hygiene, regenerated `logics/RELATIONSHIPS.md`, and refreshed the duplicate-review notes in `item_042`.
+- Wave 2 completed: split the app shell into smaller UI primitives and hooks while keeping the current explorer, Bishop, and sync flows intact.
