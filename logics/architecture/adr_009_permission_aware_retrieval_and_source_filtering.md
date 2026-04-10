@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
 > Related task: (none yet)
-> Reminder: Apply authorization before retrieval ranking so the LLM only sees permitted source material.
+> Reminder: Apply authorization before retrieval ranking so the LLM only sees permitted source material. Default to site-level allow lists first, then finer-grained scopes later.
 
 # Overview
 The retrieval layer should not rank or prompt with content unless the current user is allowed to see it.
@@ -44,6 +44,12 @@ If the system cannot verify access, it should fail closed and return a safe deni
 Start with site-level allow lists for the pilot sites.
 Extend to library and list scope once the access mapping is stable.
 Add finer-grained item-level filtering only if the pilot proves the need.
+
+# Decision defaults
+- Enforcement point: before retrieval ranking.
+- Initial scope: site-level allow lists.
+- Next step: library and list scope.
+- Fail closed: yes, when access cannot be verified.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

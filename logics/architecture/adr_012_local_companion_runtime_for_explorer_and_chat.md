@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: (none yet)
-> Reminder: Keep `DeepVault - Navy` self-contained so it can be replaced cleanly by the hosted backend later.
+> Reminder: Keep `DeepVault - Navy` self-contained so it can be replaced cleanly by the hosted backend later. Default to a single local web runtime with minimal local auth and storage.
 
 # Overview
 The local runtime should run as `DeepVault - Navy`.
@@ -42,6 +42,12 @@ It may call local services or local-only adapters, but it should not require a h
 # Migration and rollout
 Keep API boundaries stable between the local app and the backend contract.
 When the hosted backend begins, move the backend behind a hosted service while keeping `DeepVault - Navy` as a client or test harness if useful.
+
+# Decision defaults
+- Runtime model: single local web service.
+- Local storage: lightweight and local.
+- Local auth: minimal Entra-backed auth.
+- Hosted transition: keep the same contract and swap the backend behind it.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

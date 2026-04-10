@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
-> Reminder: Keep the chat identity, ingestion identity, and permission checks aligned when the runtime model changes.
+> Reminder: Keep the chat identity, ingestion identity, and permission checks aligned when the runtime model changes. Default to service identity for ingestion and user identity for chat.
 
 # Overview
 The platform should not use one identity for every concern.
@@ -46,6 +46,12 @@ The Teams surface, when used, must be an official bot or app identity.
 Start with the ingestion identity and read-only pilot scope.
 Add the user-authenticated chat path once the permission model is stable.
 Introduce Teams bot authentication after the core access checks are in place.
+
+# Decision defaults
+- Ingestion identity: service identity or app-only flow.
+- Chat identity: active Microsoft user identity.
+- Teams identity: official bot/app identity.
+- Authorization timing: check permissions before calling the LLM.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

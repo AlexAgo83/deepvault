@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_011_hosted_backend_core.md`
 > Related task: (none yet)
-> Reminder: Keep the storage model able to back citations, search, and future semantic retrieval.
+> Reminder: Keep the storage model able to back citations, search, and future semantic retrieval. Default to source records, normalized metadata, and chunked text.
 
 # Overview
 The knowledge layer should not be a single blob of text.
@@ -45,6 +45,12 @@ Expose source links so each answer can be traced back to SharePoint.
 Start with documents and list items from the pilot sites.
 Add page content and richer metadata after the baseline schema is stable.
 Backfill the hybrid store from the first pilot crawl.
+
+# Decision defaults
+- Storage shape: source records + normalized metadata + chunked text.
+- Source of truth: latest version by default.
+- Expansion path: documents and list items first, then pages and richer metadata.
+- Embeddings: defer until the baseline store is stable.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

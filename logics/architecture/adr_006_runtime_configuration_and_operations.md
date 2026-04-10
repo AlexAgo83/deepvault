@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: (none yet)
-> Reminder: Revisit this decision when the pilot site list moves from a developer-managed setup to a user-managed setup.
+> Reminder: Revisit this decision when the pilot site list moves from a developer-managed setup to a user-managed setup. Default to env vars locally and secret-backed config in Azure. Use GitHub Actions for CI/CD, not for scheduled refresh jobs.
 
 # Overview
 The first version should stay easy to operate.
@@ -45,6 +45,14 @@ Do not hard-code site names or secrets into the application.
 Start with `.env`-based pilot configuration.
 Move site management into a database or admin surface only when the operational need is proven.
 Keep the current secret model compatible with that future migration.
+
+# Decision defaults
+- Local config: environment variables.
+- Secrets: secret-backed credentials.
+- Pilot site list: config-driven, not hard-coded.
+- Future migration: admin UI or durable store only when needed.
+- CI/CD: GitHub Actions for build and deployment.
+- Scheduled jobs: Azure Functions timer trigger for backend refresh automation.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

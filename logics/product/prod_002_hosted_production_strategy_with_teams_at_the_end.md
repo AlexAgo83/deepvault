@@ -5,7 +5,7 @@
 > Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
 > Related architecture: `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Gordon naming when you edit this doc.
+> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Gordon naming when you edit this doc. Default production priority is trust and auditability.
 
 # Overview
 This brief defines the production strategy where the backend is hosted and Teams is the final delivery surface.
@@ -107,3 +107,10 @@ flowchart LR
 - How much of the local app should remain supported as a secondary surface after production launch?
 - What operational controls need to be exposed to admins versus kept internal?
 - What Azure services should host the backend, secrets, and storage for the first production slice?
+
+# Default decisions
+- Primary production metric: trust and auditability first, then freshness and answer quality.
+- Secondary support for local surfaces: keep `DeepVault - Navy` and `DeepVault - Bishop` as validation surfaces, not primary channels.
+- Admin controls: site list, refresh controls, provider switch, and audit summary.
+- Azure layout: compute, storage, Key Vault, and monitoring for the first slice.
+- Scheduling and automation: Azure Functions timer triggers for refresh jobs, GitHub Actions for CI/CD, and Power Automate only for future business workflows if needed.

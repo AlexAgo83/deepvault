@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
 > Related task: (none yet)
-> Reminder: Keep site discovery, crawl order, and sync behavior aligned with the pilot configuration.
+> Reminder: Keep site discovery, crawl order, and sync behavior aligned with the pilot configuration. Default to incremental sync with manual refresh available.
 
 # Overview
 The system should discover the configured SharePoint sites and crawl them in a predictable order.
@@ -44,6 +44,12 @@ Track sync state so later runs can process deltas instead of rebuilding everythi
 Start with the two pilot sites and a full baseline crawl.
 Add incremental refresh once the first stable shape of the data model exists.
 Expose a manual trigger before introducing scheduled automation.
+
+# Decision defaults
+- Crawl mode: full baseline crawl first.
+- Default refresh: incremental.
+- Manual control: available for validation and troubleshooting.
+- Scheduling: conservative per-environment cadence.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

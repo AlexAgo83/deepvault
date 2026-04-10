@@ -5,7 +5,7 @@
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: (none yet)
 > Related architecture: `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, and DeepVault/Navy/Bishop naming when you edit this doc.
+> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, and DeepVault/Navy/Bishop naming when you edit this doc. Default local validation is explorer first, then chat, then sync.
 
 # Overview
 This brief defines the local-first strategy for development and testing.
@@ -95,3 +95,8 @@ flowchart LR
 - Which local validation path should be the default for daily engineering work: explorer, chat, or sync checks?
 - How much operational detail should remain visible in the local app versus backend logs?
 - Which test data set best represents the pilot sites without becoming too noisy?
+
+# Default decisions
+- Default daily validation path: explorer first, chat second, sync checks third.
+- Local operational visibility: enough detail to debug provenance and refresh state, but no secrets or raw infrastructure detail.
+- Test data baseline: real pilot sites plus a small controlled synthetic corpus.

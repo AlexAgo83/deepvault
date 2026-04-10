@@ -5,7 +5,7 @@
 > Related backlog: `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`, `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
 > Related architecture: `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Nexus naming when you edit this doc.
+> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Nexus naming when you edit this doc. Keep the default decisions section current.
 
 # Overview
 DeepVault helps teams turn SharePoint into a usable knowledge base.
@@ -118,3 +118,11 @@ Users need a way to find content, understand what is available, and later ask na
 - Which local companion app views should ship first: explorer, chat, or sync status?
 - Which LLM provider should be the default: OpenAI, Gemini, or configurable fallback routing?
 - Which observability signals should be visible to end users versus kept in backend logs?
+
+# Default decisions
+- Primary pilot metric: freshness and answer quality, with coverage as a supporting metric.
+- Post-pilot expansion: one adjacent SharePoint site at a time.
+- Scheduled refresh cadence: daily incremental refresh by default.
+- First local validation surface: explorer, then chat, then sync status.
+- LLM provider choice: OpenAI primary, Gemini fallback.
+- Observability split: surface crawl progress, last refresh, and answer provenance; keep sensitive detail backend-only.

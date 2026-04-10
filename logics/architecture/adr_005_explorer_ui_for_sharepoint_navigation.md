@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
 > Related task: (none yet)
-> Reminder: Keep the explorer small, navigable, and aligned with the current data model.
+> Reminder: Keep the explorer small, navigable, and aligned with the current data model. Default to a site tree plus previews before admin or deep search work.
 
 # Overview
 The product should include a small explorer UI early.
@@ -44,6 +44,11 @@ Search and filters can be added as part of the same surface if they remain simpl
 Start with read-only navigation on the pilot sites.
 Add preview and search after the basic tree view is stable.
 Expand the explorer only when the underlying content model is reliable.
+
+# Decision defaults
+- Initial route shape: site -> library -> folder -> list -> document detail.
+- First UI capability: lightweight navigation and preview.
+- Later additions: search and filters once the tree is stable.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
 > Related task: (none yet)
-> Reminder: Keep observability useful but lightweight.
+> Reminder: Keep observability useful but lightweight. Default to user-visible summary signals plus backend-only sensitive traces.
 
 # Overview
 The platform should emit enough operational signal to explain what was ingested, what was refreshed, what was filtered, and how each answer was assembled.
@@ -43,6 +43,11 @@ Each answer should be traceable to the source objects and retrieval filters that
 Start with minimal structured logs for run status, provider choice, and source IDs.
 Add answer provenance and retrieval filter details once the first pilot uses the chat path.
 Introduce richer dashboards only if the pilot proves they are necessary.
+
+# Decision defaults
+- User-visible signals: crawl progress, refresh state, answer provenance.
+- Backend-only signals: sensitive details, verbose traces, secrets.
+- First audit scope: ingestion runs, retrieval filters, provider choice, answer provenance.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

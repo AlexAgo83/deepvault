@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
 > Related task: (none yet)
-> Reminder: Prefer incremental refreshes and stable change markers over repeated full crawls, using version-neutral wording.
+> Reminder: Prefer incremental refreshes and stable change markers over repeated full crawls, using version-neutral wording. Default to daily incremental refresh plus manual refresh, driven by Azure Functions timer triggers.
 
 # Overview
 The SharePoint sync pipeline should be incremental by default.
@@ -45,6 +45,14 @@ Scheduled refresh should be configurable per environment, with a conservative de
 Start with the pilot sites and a small set of content types.
 Track per-source sync state so partial failures can resume safely.
 After the pilot, tune cadence and scope before adding broader tenant coverage.
+
+# Decision defaults
+- Default policy: incremental sync.
+- Manual trigger: yes.
+- Scheduled cadence: daily by default.
+- Retry shape: per-source watermark and resumable checkpoints.
+- Scheduler: Azure Functions timer trigger for hosted refresh jobs.
+- CI/CD: GitHub Actions only for build and deployment automation, not for scheduled sync.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

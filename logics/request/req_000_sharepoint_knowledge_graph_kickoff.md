@@ -3,7 +3,7 @@
 > Schema version: 1.0
 > Status: Draft
 > Understanding: 100%
-> Confidence: 95%
+> Confidence: 96%
 > Complexity: High
 > Theme: General
 > Reminder: Keep the scope focused on SharePoint ingestion, knowledge storage, and LLM-ready retrieval. Update links, indicators, and DeepVault/Nexus naming as the project evolves.
@@ -92,6 +92,16 @@ Open framing questions:
 - Which observability signals should be surfaced in `DeepVault - Navy` and `DeepVault - Bishop` versus kept in backend logs only?
 - Which parts of the runtime should remain local-only versus moving behind the hosted backend?
 - Which responsibilities stay inside the local runtime versus moving into the hosted backend?
+
+# Default decisions
+- Sync cadence: incremental daily refresh, with manual refresh on demand.
+- Success focus: freshness plus answer quality.
+- First `DeepVault - Navy` view: explorer.
+- Usefulness metric: freshness, answer quality, and navigation speed.
+- Pilot expansion: one adjacent site at a time.
+- LLM provider default: OpenAI primary, Gemini fallback.
+- Observability surfaced in UI: crawl progress, last refresh, and answer provenance.
+- Local vs hosted split: local validation and UI, hosted ingestion/retrieval/auth/orchestration/audit.
 
 ```mermaid
 %% logics-kind: request

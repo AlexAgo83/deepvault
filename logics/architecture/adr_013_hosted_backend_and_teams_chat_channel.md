@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
-> Reminder: Preserve the same retrieval and permission model when the runtime moves behind the hosted backend for `DeepVault - Gordon`.
+> Reminder: Preserve the same retrieval and permission model when the runtime moves behind the hosted backend for `DeepVault - Gordon`. Default to Azure unless cost or complexity becomes a problem. Use Azure-native scheduling for refresh jobs.
 
 # Overview
 The runtime should move to a hosted backend service.
@@ -49,6 +49,14 @@ Stabilize the local runtime and retrieval contracts first.
 When the hosted phase starts, extract the shared services into the hosted backend and wire Teams to it.
 Keep the local app as a companion surface for exploration and troubleshooting if it still adds value.
 Deploy the hosted backend on Azure first; if cost or operational constraints become too high, move the same service shape to Render without changing the product contract.
+
+# Decision defaults
+- Hosting target: Azure first.
+- Fallback target: Render.
+- Channel order: backend first, `DeepVault - Gordon` at the end.
+- Deployment principle: keep the service shape stable across hosting targets.
+- Scheduler: Azure Functions timer trigger for refresh orchestration.
+- CI/CD: GitHub Actions for build and deploy, not for runtime scheduling.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
