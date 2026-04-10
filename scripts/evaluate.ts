@@ -3,6 +3,9 @@ import { dirname, resolve } from 'node:path'
 import {
   answerQuestion,
   buildEvaluationRows,
+  canAccessDocument,
+  type Corpus,
+  type EvaluationRow,
 } from '../src/lib/deepvault'
 import { loadCorpus, resolveSnapshotPath } from './corpus-loader'
 
@@ -28,7 +31,42 @@ await mkdir(dirname(outputPath), { recursive: true })
 
 const { corpus } = await loadCorpus({ mode, inputPath })
 
-const rows = buildEvaluationRows()
+function buildLiveEvaluationRows(liveCorpus: Corpus): EvaluationRow[] {
+  const candidateDocuments = liveCorpus.documents
+    .filter((document) => canAccessDocument(document, 'analyst'))
+    .filter((document) => Boolean(document.title && document.path))
+    .sort((left, right) => new Date(right.updatedAt).getTime() - new Date(left.updatedAt).getTime())
+
+  const rows: EvaluationRow[] = candidateDocuments.slice(0, 18).map((document, index) => ({
+    id: `L${String(index + 1).padStart(2, '0')}`,
+    query: `Summarize the document: ${document.directAnswer || document.summary || document.title}.`,
+    expectedSourceId: document.id,
+    role: 'analyst',
+    expectedStatus: 'answered',
+  }))
+
+  const restrictedDocument = liveCorpus.documents.find((document) => !canAccessDocument(document, 'guest'))
+  rows.push({
+    id: 'L19',
+    query: restrictedDocument
+      ? `What does the document say: ${restrictedDocument.directAnswer || restrictedDocument.summary || restrictedDocument.title}.`
+      : 'What are the restricted launch notes for the restricted pilot site?',
+    expectedSourceId: restrictedDocument?.id || null,
+    role: 'guest',
+    expectedStatus: 'no_permitted_sources',
+  })
+  rows.push({
+    id: 'L20',
+    query: 'What SharePoint sites are available for the Finance team?',
+    expectedSourceId: null,
+    role: 'analyst',
+    expectedStatus: 'no_answer',
+  })
+
+  return rows
+}
+
+const rows = mode === 'live' ? buildLiveEvaluationRows(corpus) : buildEvaluationRows()
 const results = rows.map((row) => {
   const answer = answerQuestion(corpus, row.query, { role: row.role, provider: 'openai', limit: 3 })
   const sourceIds = answer.sources.map((source) => source.id)
