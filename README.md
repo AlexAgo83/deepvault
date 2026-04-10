@@ -161,6 +161,7 @@ This:
 - reads the Microsoft Graph and Entra settings from `.env.local`
 - crawls the configured SharePoint sites
 - writes `public/live-corpus.json`
+- keeps a local checkpoint in `data/runtime/live-export-checkpoint.json` so a rerun can reuse completed site exports
 
 If you want to validate the pipeline without hitting Graph:
 

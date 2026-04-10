@@ -26,6 +26,16 @@ function normalizeMode(value: string | undefined): 'live' | 'mock' {
   return value === 'mock' ? 'mock' : 'live'
 }
 
+const liveCheckpointPath = resolve('data/runtime/live-export-checkpoint.json')
+
+async function readCorpusFile(path: string): Promise<CorpusLike | null> {
+  try {
+    return JSON.parse(await readFile(path, 'utf8')) as CorpusLike
+  } catch {
+    return null
+  }
+}
+
 async function loadMockCorpus(): Promise<Corpus> {
   const content = await readFile(resolve('data/pilot-corpus.json'), 'utf8')
   return JSON.parse(content) as Corpus
@@ -46,19 +56,60 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   const token = await acquireGraphAccessToken(config)
   const client = new GraphClient(config.baseUrl, token, config.timeoutSeconds)
   const siteDefinitions = buildSiteDefinitions(config)
+  const checkpointCorpus = (await readCorpusFile(outputPath)) || (await readCorpusFile(liveCheckpointPath))
 
   if (siteDefinitions.length === 0) {
     throw new Error('DEEPVAULT_ENTRA_SITES must list at least one SharePoint site URL.')
   }
 
-  const sites: CorpusLike['sites'] = []
-  const documents: CorpusLike['documents'] = []
-  const siteIds: string[] = []
-  let totalLibraries = 0
-  let totalLists = 0
-  const startedAt = new Date().toISOString()
+  const sites: CorpusLike['sites'] = checkpointCorpus?.sites ? [...checkpointCorpus.sites] : []
+  const documents: CorpusLike['documents'] = checkpointCorpus?.documents ? [...checkpointCorpus.documents] : []
+  const siteIds: string[] = checkpointCorpus?.syncRuns?.[0]?.siteIds ? [...checkpointCorpus.syncRuns[0].siteIds] : []
+  let totalLibraries = sites.reduce((sum, site) => sum + site.libraryCount, 0)
+  let totalLists = sites.reduce((sum, site) => sum + site.listCount, 0)
+  const startedAt = checkpointCorpus?.syncRuns?.[0]?.startedAt || new Date().toISOString()
+
+  async function writeCheckpoint() {
+    await writeCorpusFile(liveCheckpointPath, {
+      defaultUserRole: 'analyst',
+      providers: [
+        { id: 'openai', name: 'OpenAI', ready: Boolean(process.env.OPENAI_API_KEY) },
+        { id: 'gemini', name: 'Gemini', ready: Boolean(process.env.GEMINI_API_KEY) },
+      ],
+      sites,
+      syncRuns: [
+        {
+          id: `sync-${new Date().toISOString().slice(0, 10)}-live`,
+          startedAt,
+          finishedAt: new Date().toISOString(),
+          scope: `SharePoint live export from ${siteDefinitions.length} configured site(s)`,
+          status: 'synced',
+          siteIds,
+          documentsSynced: documents.length,
+          chunksWritten: documents.length * 6,
+          notes: `Checkpointed ${documents.length} documents from ${totalLibraries} libraries and ${totalLists} lists.`,
+        },
+      ],
+      documents,
+    })
+  }
 
   for (const definition of siteDefinitions) {
+    const existingSite = sites.find(
+      (site) =>
+        site.url === definition.url ||
+        site.name === definition.name ||
+        site.owner === definition.name,
+    )
+
+    if (existingSite) {
+      console.log(`[${definition.name}] Reusing checkpointed export`)
+      if (!siteIds.includes(existingSite.id)) {
+        siteIds.push(existingSite.id)
+      }
+      continue
+    }
+
     try {
       console.log(`[${definition.name}] Starting export`)
       const exported = await exportSiteCorpus(client, definition, (message) => console.log(message))
@@ -82,6 +133,8 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
       })
       console.log(`Skipped ${definition.url}: ${message}`)
     }
+
+    await writeCheckpoint()
   }
 
   const corpus: CorpusLike = {
@@ -109,6 +162,7 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
 
   console.log(`Export summary: ${documents.length} documents across ${totalLibraries} libraries and ${totalLists} lists`)
   await writeCorpusFile(outputPath, corpus)
+  await writeCheckpoint()
   const role = corpus.defaultUserRole || 'analyst'
   const summary = summarizeCorpus(corpus as Corpus, role)
   console.log(`Wrote ${outputPath}`)
