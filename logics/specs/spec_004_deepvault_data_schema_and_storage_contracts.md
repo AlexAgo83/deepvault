@@ -179,6 +179,47 @@ Fields:
 | `source_type_weight` | float | No | Pre-computed structural weight: document=1.0, page=0.8, list=0.6, metadata-only=0.3 |
 | `chunked_at` | string | No | ISO 8601 UTC timestamp when the chunk was produced |
 
+# Schema versioning
+
+The schema must be versioned so changes can be applied safely during V1 development and during the V1 → V2 migration.
+
+## Version tracking
+
+A `schema_migrations` table tracks which migrations have been applied:
+
+```sql
+CREATE TABLE schema_migrations (
+    version     INTEGER PRIMARY KEY,  -- Sequential migration number (1, 2, 3...)
+    applied_at  TEXT NOT NULL,        -- ISO 8601 UTC timestamp
+    description TEXT NOT NULL         -- One-line description of the change
+);
+```
+
+The current V1 schema is version 1. Every structural change (add column, rename table, add index) requires a new migration with an incremented version number.
+
+## Rules for schema changes
+
+| Change type | Safe to apply? | Procedure |
+|---|---|---|
+| Add nullable column with default | Yes | Add migration. Existing rows get the default. No data loss. |
+| Add non-nullable column | Only with a default value | Add migration with `DEFAULT` clause. |
+| Rename column | No — breaking | Add new column, backfill, then remove old column in a later migration. Never rename directly. |
+| Drop column | Only if unused | Verify no code reads the column before dropping. |
+| Change column type | No — breaking | Add new column with new type, migrate data, remove old column. |
+| Add index | Yes | Non-blocking. Apply as a separate migration. |
+
+## V1 → V2 migration contract
+
+The SQLite schema exported for Azure SQL migration must be at the same version as the local schema at migration time. Before running the migration:
+
+1. Record the current `MAX(version)` from `schema_migrations`.
+2. Apply all pending migrations to the local SQLite database first.
+3. Export the schema and data at that version.
+4. Import into Azure SQL using the same migration scripts — do not use SQLite dumps directly (type compatibility differs).
+5. After import, run `SELECT MAX(version) FROM schema_migrations` on Azure SQL and confirm it matches the local value.
+
+If a new field is needed that does not exist in the V1 schema, add it as a nullable column with a default before migration. Never add a required field during migration.
+
 # Validation / test plan
 - Run a schema migration script against SQLite and verify all tables create without error.
 - Ingest one document and confirm the extract file matches the schema above.
