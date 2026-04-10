@@ -82,4 +82,25 @@ describe('bishop orchestration helpers', () => {
     expect(result.tokenCount).toBe(420)
     expect(result.latencyMs).toBe(84)
   })
+
+  it('falls back locally when the remote orchestration endpoint returns a bad status', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 502,
+      json: async () => ({
+        answer: '',
+      }),
+    })
+
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+      endpoint: 'https://example.test/bishop',
+      fetchImpl: fetchMock as typeof fetch,
+    })
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(result.mode).toBe('fallback')
+    expect(result.answer).toContain('Q3 2025 budget')
+  })
 })
