@@ -1,0 +1,352 @@
+{
+  "generatedAt": "2026-04-10T13:48:47.763Z",
+  "provider": "openai",
+  "passCount": 20,
+  "totalCount": 20,
+  "passRate": 1,
+  "results": [
+    {
+      "query_id": "Q01",
+      "query": "What is the budget for Q3 2025?",
+      "expected_source_id": "q3-budget",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 706,
+      "source_count": 3,
+      "latency_ms": 574,
+      "source_ids": [
+        "q3-budget",
+        "budget-approval-contact",
+        "infra-spend-approval"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q02",
+      "query": "Who is the project lead for Project Alpha?",
+      "expected_source_id": "project-alpha-lead",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 898,
+      "source_count": 3,
+      "latency_ms": 618,
+      "source_ids": [
+        "project-alpha-lead",
+        "alpha-risk-register",
+        "alpha-status-report"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q03",
+      "query": "What were the decisions made in the last board meeting?",
+      "expected_source_id": "board-meeting-notes",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 1181,
+      "source_count": 3,
+      "latency_ms": 670,
+      "source_ids": [
+        "board-meeting-notes",
+        "vendor-onboarding-checklist",
+        "onboarding-process"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q04",
+      "query": "What are the IT security requirements for remote access?",
+      "expected_source_id": "remote-access-policy",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 1239,
+      "source_count": 3,
+      "latency_ms": 674,
+      "source_ids": [
+        "remote-access-policy",
+        "vendor-onboarding-checklist",
+        "data-classification-policy"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q05",
+      "query": "Summarize the Q4 2024 product roadmap.",
+      "expected_source_id": "product-roadmap-q4-2024",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 12,
+      "token_count": 866,
+      "source_count": 2,
+      "latency_ms": 512,
+      "source_ids": [
+        "product-roadmap-q4-2024",
+        "quarterly-okrs"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q06",
+      "query": "What is the onboarding process for new employees?",
+      "expected_source_id": "onboarding-process",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 1109,
+      "source_count": 3,
+      "latency_ms": 646,
+      "source_ids": [
+        "onboarding-process",
+        "vendor-onboarding-checklist",
+        "board-meeting-notes"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q07",
+      "query": "What are the current open risks on the Alpha project?",
+      "expected_source_id": "alpha-risk-register",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 1030,
+      "source_count": 3,
+      "latency_ms": 662,
+      "source_ids": [
+        "alpha-risk-register",
+        "project-alpha-lead",
+        "alpha-status-report"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q08",
+      "query": "Who approved the infrastructure spend for FY2025?",
+      "expected_source_id": "infra-spend-approval",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 958,
+      "source_count": 3,
+      "latency_ms": 646,
+      "source_ids": [
+        "infra-spend-approval",
+        "approved-tools-policy",
+        "q3-budget"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q09",
+      "query": "What is the escalation path for a P1 incident?",
+      "expected_source_id": "p1-escalation",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 12,
+      "token_count": 901,
+      "source_count": 2,
+      "latency_ms": 544,
+      "source_ids": [
+        "p1-escalation",
+        "budget-approval-contact"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q10",
+      "query": "Explain the data classification policy.",
+      "expected_source_id": "data-classification-policy",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 986,
+      "source_count": 3,
+      "latency_ms": 606,
+      "source_ids": [
+        "data-classification-policy",
+        "alpha-risk-register",
+        "onboarding-process"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q11",
+      "query": "What tools are approved for use by the engineering team?",
+      "expected_source_id": "approved-tools-policy",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 1146,
+      "source_count": 3,
+      "latency_ms": 674,
+      "source_ids": [
+        "approved-tools-policy",
+        "remote-access-policy",
+        "quarterly-okrs"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q12",
+      "query": "What is the deadline for the Q1 2026 compliance audit?",
+      "expected_source_id": "compliance-audit-deadline",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 12,
+      "token_count": 960,
+      "source_count": 2,
+      "latency_ms": 576,
+      "source_ids": [
+        "compliance-audit-deadline",
+        "remote-access-policy"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q13",
+      "query": "Give me a summary of the Alpha project status as of last month.",
+      "expected_source_id": "alpha-status-report",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 1150,
+      "source_count": 3,
+      "latency_ms": 702,
+      "source_ids": [
+        "alpha-status-report",
+        "project-alpha-lead",
+        "alpha-risk-register"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q14",
+      "query": "What SharePoint sites are available for the Finance team?",
+      "expected_source_id": null,
+      "expected_status": "no_answer",
+      "provider": "openai",
+      "status": "no_answer",
+      "chunk_count": 0,
+      "token_count": 0,
+      "source_count": 0,
+      "latency_ms": 0,
+      "source_ids": [],
+      "pass": true
+    },
+    {
+      "query_id": "Q15",
+      "query": "What are the quarterly OKRs for the product team?",
+      "expected_source_id": "quarterly-okrs",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 1073,
+      "source_count": 3,
+      "latency_ms": 646,
+      "source_ids": [
+        "quarterly-okrs",
+        "product-roadmap-q4-2024",
+        "budget-approval-contact"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q16",
+      "query": "Who should I contact for budget approval?",
+      "expected_source_id": "budget-approval-contact",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 826,
+      "source_count": 3,
+      "latency_ms": 614,
+      "source_ids": [
+        "budget-approval-contact",
+        "q3-budget",
+        "infra-spend-approval"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q17",
+      "query": "What is the vendor onboarding checklist?",
+      "expected_source_id": "vendor-onboarding-checklist",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 18,
+      "token_count": 937,
+      "source_count": 3,
+      "latency_ms": 610,
+      "source_ids": [
+        "vendor-onboarding-checklist",
+        "onboarding-process",
+        "alpha-risk-register"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q18",
+      "query": "What are the known issues with the current SSO implementation?",
+      "expected_source_id": "sso-issues",
+      "expected_status": "answered",
+      "provider": "openai",
+      "status": "answered",
+      "chunk_count": 6,
+      "token_count": 964,
+      "source_count": 1,
+      "latency_ms": 518,
+      "source_ids": [
+        "sso-issues"
+      ],
+      "pass": true
+    },
+    {
+      "query_id": "Q19",
+      "query": "What are the restricted launch notes for the stealth lab?",
+      "expected_source_id": "secret-launch-notes",
+      "expected_status": "no_permitted_sources",
+      "provider": "openai",
+      "status": "no_permitted_sources",
+      "chunk_count": 0,
+      "token_count": 0,
+      "source_count": 0,
+      "latency_ms": 0,
+      "source_ids": [],
+      "pass": true
+    },
+    {
+      "query_id": "Q20",
+      "query": "What is the cobalt orchard relocation timeline?",
+      "expected_source_id": null,
+      "expected_status": "no_answer",
+      "provider": "openai",
+      "status": "no_answer",
+      "chunk_count": 0,
+      "token_count": 0,
+      "source_count": 0,
+      "latency_ms": 0,
+      "source_ids": [],
+      "pass": true
+    }
+  ]
+}
