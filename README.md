@@ -9,6 +9,7 @@ It ships a grounded local surface for:
 - sync visibility for ingestion, refresh state, and provenance
 
 The app runs on a bundled pilot corpus by default so V1 can be validated without a hosted backend.
+You can also switch to a live corpus file for local testing when you have one.
 
 ## What is included
 
@@ -16,6 +17,7 @@ The app runs on a bundled pilot corpus by default so V1 can be validated without
 - A local retrieval engine with permission filtering
 - A deterministic evaluation script for the V1 baseline
 - A sync snapshot generator for local ingestion validation
+- A mock/live corpus switch for local testing and future tenant-backed data
 
 ## Prerequisites
 
@@ -61,6 +63,14 @@ That file is ignored by Git and should remain local.
 The provided environment block is intended for future Graph, Entra, and LLM wiring.
 The current V1 app does not require those variables to run because it uses the bundled pilot corpus.
 
+To switch the app to live data mode, set:
+
+```bash
+VITE_DEEPVAULT_DATA_MODE=live
+```
+
+If `data/live-corpus.json` exists locally, the app will use it. Otherwise it falls back to the bundled mock corpus.
+
 ## Ingestion
 
 Run the local ingestion snapshot generator:
@@ -71,6 +81,14 @@ npm run ingest
 
 This writes `data/runtime/sync-state.json`.
 
+Run the live variant against a real exported corpus file:
+
+```bash
+npm run ingest:live -- --input /absolute/path/to/live-corpus.json
+```
+
+The live snapshot is written to `data/runtime/sync-state.live.json`.
+
 ## Evaluation
 
 Run the V1 retrieval baseline:
@@ -80,6 +98,14 @@ npm run evaluate
 ```
 
 This writes `data/eval/v1_baseline_YYYY-MM-DD.json`.
+
+Run the live variant with a real corpus file:
+
+```bash
+npm run evaluate:live -- --input /absolute/path/to/live-corpus.json
+```
+
+The live baseline is written to `data/eval/v1_baseline_YYYY-MM-DD.live.json`.
 
 ## Validation
 
@@ -96,3 +122,4 @@ npm run evaluate
 
 - The local provider abstraction currently routes to deterministic retrieval logic for both OpenAI and Gemini labels.
 - The corpus includes a restricted site so permission-aware retrieval can be exercised locally.
+- Mock mode is the default. Live mode is an explicit opt-in for local testing against a real corpus export.
