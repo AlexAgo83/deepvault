@@ -29,11 +29,23 @@ The spec covers the navigation states, detail states, and operational states tha
 - In: keyboard navigation, responsive layout, and lightweight search and filtering when available.
 - Out: write actions, admin workflows, and Teams-specific behavior.
 
+# Authentication model for local Navy
+`DeepVault - Navy` runs as a local web service and requires a real Microsoft identity to access SharePoint content. The minimum authentication model is:
+
+- On first launch, Navy opens a device code flow (MSAL) that prompts the user to authenticate with their Entra ID (Microsoft 365) account in a browser.
+- The access token and refresh token are stored in the OS native credential store (macOS Keychain on Mac, Windows Credential Manager on Windows). Tokens are never written to plain files or environment variables.
+- Subsequent launches reuse the stored refresh token silently. The user is only re-prompted if the refresh token expires or is revoked.
+- Token expiry: access tokens expire after 1 hour (Entra default). Refresh tokens are valid for 90 days of inactivity.
+- Local Navy does not support unauthenticated access. The explorer cannot show any SharePoint content without a valid token.
+- The identity resolved at login is the same identity used by the retrieval layer for permission checks. No separate service account is used for local exploration.
+
 # Requirements
 - `DeepVault - Navy` must let a user move from site to library to folder to list to document detail.
 - The explorer must keep the current location, breadcrumbs, and selection state visible.
 - The UI must show why content is unavailable when permissions block it.
 - The local shell must stay usable on desktop and mobile.
+- Navy must prompt for Entra authentication on first launch via device code flow.
+- Navy must surface a clear re-authentication prompt if the stored token expires or is invalid.
 - Any UI implementation should use `logics/skills/logics-ui-steering/SKILL.md` before layout or styling choices are finalized.
 
 # Acceptance criteria
@@ -57,6 +69,8 @@ The spec covers the navigation states, detail states, and operational states tha
 - `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`
 - `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
 - `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
+- `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`
 - `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`
 - `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`
+- `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`
 - `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
