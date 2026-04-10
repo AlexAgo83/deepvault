@@ -11,11 +11,18 @@ function readArg(name: string): string | undefined {
   return index >= 0 ? process.argv[index + 1] : undefined
 }
 
+function readFlag(name: string): boolean {
+  return process.argv.includes(name)
+}
+
 const today = new Date().toISOString().slice(0, 10)
 const outputDir = resolve('data/eval')
 const mode = readArg('--mode') || process.env.DEEPVAULT_DATA_MODE
 const inputPath = readArg('--input') || process.env.DEEPVAULT_CORPUS_PATH
 const outputPath = resolveSnapshotPath(resolve(outputDir, `v1_baseline_${today}.json`), mode === 'live' ? 'live' : 'mock')
+const strict = readFlag('--strict') || process.env.DEEPVAULT_EVAL_STRICT === '1'
+const minPassRateRaw = readArg('--min-pass-rate') || process.env.DEEPVAULT_EVAL_MIN_PASS_RATE
+const minPassRate = Number(minPassRateRaw || (mode === 'live' ? 0.9 : 1))
 
 await mkdir(dirname(outputPath), { recursive: true })
 
@@ -56,16 +63,28 @@ const results = rows.map((row) => {
 })
 
 const passCount = results.filter((result) => result.pass).length
+const passRate = Number((passCount / results.length).toFixed(2))
+const gatePassed = passRate >= minPassRate
 const payload = {
   generatedAt: new Date().toISOString(),
   provider: 'openai',
   passCount,
   totalCount: results.length,
-  passRate: Number((passCount / results.length).toFixed(2)),
+  passRate,
+  qualityGate: {
+    strict,
+    minPassRate,
+    passed: gatePassed,
+  },
   results,
 }
 
 await writeFile(outputPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
 
 console.log(`Wrote ${outputPath}`)
-console.log(`Pass rate: ${Math.round((passCount / results.length) * 100)}%`)
+console.log(`Pass rate: ${Math.round(passRate * 100)}%`)
+console.log(`Quality gate: ${gatePassed ? 'pass' : 'fail'} (threshold ${Math.round(minPassRate * 100)}%)`)
+
+if (strict && !gatePassed) {
+  process.exitCode = 1
+}
