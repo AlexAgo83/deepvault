@@ -38,6 +38,20 @@ function Pill({
   )
 }
 
+function formatInlinePath(value: string): string {
+  const cleaned = value.replace(/\/+$/, '')
+  const segments = cleaned.split('/').filter(Boolean)
+  return segments[segments.length - 1] || value
+}
+
+function PathLabel({ value }: { value: string }) {
+  return (
+    <span className="path-inline" title={value}>
+      {formatInlinePath(value)}
+    </span>
+  )
+}
+
 function StatCard({
   label,
   value,
@@ -58,7 +72,7 @@ function StatCard({
   )
 }
 
-function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+function SectionHeading({ title, subtitle }: { title: string; subtitle?: ReactNode }) {
   return (
     <div className="section-heading">
       <div>
@@ -84,7 +98,9 @@ function SourceCard({ source }: { source: ChatMessage['sources'][number] }) {
         <span>{formatUpdatedAt(source.updatedAt)}</span>
       </div>
       <p>{source.snippet}</p>
-      <div className="source-path">{source.path}</div>
+      <div className="source-path">
+        <PathLabel value={source.path} />
+      </div>
     </article>
   )
 }
@@ -102,7 +118,7 @@ function Message({ message }: { message: ChatMessage }) {
           {message.sources.map((source) => (
             <div key={source.id} className="message-source">
               <strong>{source.title}</strong>
-              <span>{source.path}</span>
+              <PathLabel value={source.path} />
             </div>
           ))}
         </div>
@@ -449,7 +465,7 @@ export default function App() {
             <article className="panel">
               {selectedExplorerDoc ? (
                 <>
-                  <SectionHeading title={selectedExplorerDoc.title} subtitle={selectedExplorerDoc.path} />
+                  <SectionHeading title={selectedExplorerDoc.title} subtitle={<PathLabel value={selectedExplorerDoc.path} />} />
                   <div className="detail-stack">
                     <div className="detail-row">
                       <span>Site</span>

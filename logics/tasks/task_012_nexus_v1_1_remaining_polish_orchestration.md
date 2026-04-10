@@ -1,10 +1,10 @@
 ## task_012_nexus_v1_1_remaining_polish_orchestration - Nexus V1.1 remaining polish orchestration
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 93%
 > Confidence: 91%
-> Progress: 75%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -36,8 +36,8 @@ stateDiagram-v2
 - [x] 2. Implement wave 1 for shell chrome and layout cleanup.
 - [x] 3. Implement wave 2 for live state and status density polish.
 - [x] 4. Implement wave 3 for Bishop response flow and answer trace polish.
-- [ ] 5. Implement wave 4 for path display and hover cleanup.
-- [ ] 6. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
+- [x] 5. Implement wave 4 for path display and hover cleanup.
+- [x] 6. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
 - [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
@@ -78,12 +78,12 @@ stateDiagram-v2
 - Confirm the completed wave leaves the repository in a commit-ready state.
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured.
-- [ ] No wave or step was closed before the relevant automated tests and quality checks passed.
-- [ ] Linked request/backlog/task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] Scope implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured.
+- [x] No wave or step was closed before the relevant automated tests and quality checks passed.
+- [x] Linked request/backlog/task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report
 - Wave 1 completed: shell chrome and layout cleanup shipped, including subtitle removal, left-menu analytics removal, and product-facing top copy.
@@ -92,3 +92,5 @@ stateDiagram-v2
 - Validation passed for wave 2: `rtk npm run test`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
 - Wave 3 completed: Bishop now shows a visible thinking step, disables send while answering, and resolves to the final grounded answer after a short delay.
 - Validation passed for wave 3: `rtk npm run test`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
+- Wave 4 completed: paths are now compact inline labels with full-path hover titles across the explorer, source cards, and Bishop trace.
+- Validation passed for wave 4: `rtk npm run test`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
