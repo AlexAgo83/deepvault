@@ -331,12 +331,15 @@ export class GraphClient {
     return { text, contentType }
   }
 
-  async listAll<TItem>(path: string): Promise<TItem[]> {
+  async listAll<TItem>(path: string, report?: DeepVaultProgressReporter, label?: string): Promise<TItem[]> {
     const items: TItem[] = []
     let nextUrl: string | undefined = this.resolveUrl(path)
+    let pageIndex = 0
     while (nextUrl) {
+      pageIndex += 1
       const page: { value: TItem[]; '@odata.nextLink'?: string } = await this.getJson(nextUrl)
       items.push(...page.value)
+      report?.(`${label || 'Graph'} page ${pageIndex}: fetched ${page.value.length} items (total ${items.length})`)
       nextUrl = page['@odata.nextLink']
     }
     return items
@@ -388,15 +391,22 @@ async function crawlDriveItems(
     rootPath
       ? `/drives/${drive.id}/root:/${encodeDrivePath(rootPath)}:/children?$top=200`
       : `/drives/${drive.id}/root/children?$top=200`,
+    report,
+    `[${siteName}] ${drive.name}${rootPath ? `/${rootPath}` : ''}`,
   )
   const documents: CorpusDocumentLike[] = []
 
-  for (const item of items) {
+  for (let index = 0; index < items.length; index += 1) {
+    const item = items[index]
     const currentPath = `${rootPath}/${item.name}`.replace(/\/+/g, '/')
     if (item.folder) {
-      const nested = await crawlDriveItems(client, siteId, siteName, drive, currentPath)
+      const nested = await crawlDriveItems(client, siteId, siteName, drive, currentPath, report)
       documents.push(...nested)
       continue
+    }
+
+    if (index > 0 && index % 100 === 0) {
+      report?.(`[${siteName}] ${drive.name}${rootPath ? `/${rootPath}` : ''}: processed ${index}/${items.length} items`)
     }
 
     const extension = item.name.includes('.') ? item.name.split('.').pop()?.toLowerCase() || '' : ''
@@ -448,8 +458,8 @@ export async function exportSiteCorpus(
   report?.(`[${siteDefinition.name}] Resolving site ${siteDefinition.url}`)
   const site = await client.getJson<GraphSite>(siteUrlToGraphPath(siteDefinition.url))
   report?.(`[${siteDefinition.name}] Site resolved as ${site.displayName}`)
-  const drives = await client.listAll<GraphDrive>(`/sites/${site.id}/drives?$top=100`)
-  const lists = await client.listAll<{ id: string }>(`/sites/${site.id}/lists?$top=100`)
+  const drives = await client.listAll<GraphDrive>(`/sites/${site.id}/drives?$top=100`, report, `[${siteDefinition.name}] drives`)
+  const lists = await client.listAll<{ id: string }>(`/sites/${site.id}/lists?$top=100`, report, `[${siteDefinition.name}] lists`)
   const documents: CorpusDocumentLike[] = []
   report?.(`[${siteDefinition.name}] Found ${drives.length} libraries and ${lists.length} lists`)
 
