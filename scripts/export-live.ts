@@ -56,7 +56,8 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   const token = await acquireGraphAccessToken(config)
   const client = new GraphClient(config.baseUrl, token, config.timeoutSeconds)
   const siteDefinitions = buildSiteDefinitions(config)
-  const checkpointCorpus = (await readCorpusFile(outputPath)) || (await readCorpusFile(liveCheckpointPath))
+  const resumeCheckpoint = readFlag('--resume')
+  const checkpointCorpus = resumeCheckpoint ? await readCorpusFile(liveCheckpointPath) : null
 
   if (siteDefinitions.length === 0) {
     throw new Error('DEEPVAULT_ENTRA_SITES must list at least one SharePoint site URL.')
@@ -95,12 +96,7 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   }
 
   for (const definition of siteDefinitions) {
-    const existingSite = sites.find(
-      (site) =>
-        site.url === definition.url ||
-        site.name === definition.name ||
-        site.owner === definition.name,
-    )
+    const existingSite = sites.find((site) => site.url === definition.url)
 
     if (existingSite) {
       console.log(`[${definition.name}] Reusing checkpointed export`)
@@ -178,11 +174,13 @@ await loadProjectEnv()
 const mode = normalizeMode(readArg('--mode') || process.env.DEEPVAULT_DATA_MODE)
 const outputPath = resolve(readArg('--output') || 'public/live-corpus.json')
 const useMock = mode === 'mock' || readFlag('--mock')
+const resumeCheckpoint = readFlag('--resume')
 const config = buildDeepVaultExportConfig()
 
 console.log(`Auth mode: ${config.authMode}`)
 console.log(`Client secret loaded: ${config.secretValue ? 'yes' : 'no'}`)
 console.log(`Configured sites: ${config.siteUrls.length}`)
+console.log(`Checkpoint resume: ${resumeCheckpoint ? 'yes' : 'no'}`)
 
 if (useMock) {
   await runMockExport(outputPath)
