@@ -3,9 +3,12 @@ import { getMockCorpusBundle } from '../src/data/corpus'
 import {
   answerQuestion,
   buildEvaluationRows,
+  buildSharePointFileUrl,
   buildSiteSummaries,
   buildSyncOverview,
   formatUpdatedAt,
+  resolveSharePointFileUrl,
+  type Corpus,
   summarizeCorpus,
 } from '../src/lib/deepvault'
 
@@ -81,5 +84,33 @@ describe('deepvault helpers', () => {
     expect(summary.visibleSources).toBe(17)
     expect(summary.deniedSources).toBe(1)
     expect(formatUpdatedAt('2025-06-12T10:00:00Z')).toContain('2025')
+  })
+
+  it('prefers the native webUrl and falls back to a safe SharePoint path', () => {
+    const liveCorpus: Corpus = {
+      ...corpus,
+      sites: [
+        {
+          id: 'site-a',
+          name: 'Site A',
+          url: 'https://example.sharepoint.com/sites/site-a',
+          libraryCount: 1,
+          listCount: 0,
+          status: 'synced' as const,
+          access: ['analyst', 'admin'] as const,
+          owner: 'Ops',
+        },
+      ],
+    }
+
+    expect(
+      resolveSharePointFileUrl(liveCorpus, 'site-a', '/Documents/Folder/File.docx', 'https://example.sharepoint.com/sites/site-a/shared/file.docx'),
+    ).toBe('https://example.sharepoint.com/sites/site-a/shared/file.docx')
+    expect(buildSharePointFileUrl('https://example.sharepoint.com/sites/site-a', '/Documents/Folder/File.docx')).toBe(
+      'https://example.sharepoint.com/sites/site-a/Shared%20Documents/Folder/File.docx',
+    )
+    expect(resolveSharePointFileUrl(liveCorpus, 'site-a', '/Documents/Folder/File.docx')).toBe(
+      'https://example.sharepoint.com/sites/site-a/Shared%20Documents/Folder/File.docx',
+    )
   })
 })

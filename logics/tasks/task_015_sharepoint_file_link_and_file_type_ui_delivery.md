@@ -1,10 +1,10 @@
 ## task_015_sharepoint_file_link_and_file_type_ui_delivery - SharePoint file link and file type UI delivery
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: In progress
-> Understanding: 84%
-> Confidence: 80%
-> Progress: 50%
+> Status: Done
+> Understanding: 94%
+> Confidence: 92%
+> Progress: 100%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -35,8 +35,8 @@ stateDiagram-v2
 
 # Plan
 - [x] 1. Deliver the inline file type pill and compact title row polish.
-- [ ] 2. Deliver native SharePoint file URLs, fallback resolution, and link coverage.
-- [ ] 3. Checkpoint each wave in a commit-ready state, validate it, and update the linked Logics docs.
+- [x] 2. Deliver native SharePoint file URLs, fallback resolution, and link coverage.
+- [x] 3. Checkpoint each wave in a commit-ready state, validate it, and update the linked Logics docs.
 - [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
 - [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
@@ -89,3 +89,4 @@ stateDiagram-v2
 
 # Report
 - Wave 1 completed: Explorer file type pill now sits inline with the title, and the row is more compact.
+- Wave 2 completed: Explorer file clicks now resolve to SharePoint web URLs with a safe fallback path, and the helper coverage is in place.
