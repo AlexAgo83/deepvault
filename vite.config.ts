@@ -13,5 +13,17 @@ export default defineConfig({
     globals: true,
     include: ['tests/**/*.spec.ts', 'tests/**/*.spec.tsx'],
     exclude: ['tests/e2e/**'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'json-summary'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/global.d.ts', 'src/main.tsx'],
+      thresholds: {
+        lines: 90,
+        statements: 90,
+        branches: 85,
+        functions: 80,
+      },
+    },
   },
 })

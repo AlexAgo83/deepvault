@@ -27,8 +27,8 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Unit tests
-        run: npm run test
+      - name: Coverage
+        run: npm run test:coverage
 
       - name: Build
         run: npm run build
