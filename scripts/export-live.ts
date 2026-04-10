@@ -1,7 +1,14 @@
-import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { summarizeCorpus, type Corpus } from '../src/lib/deepvault'
 import { loadProjectEnv } from './runtime-env'
+import {
+  buildLiveExportCorpus,
+  liveCheckpointPath,
+  normalizeMode,
+  readCliArg,
+  readCliFlag,
+  readCorpusLikeFile,
+} from './live-export-state'
 import {
   acquireGraphAccessToken,
   buildDeepVaultExportConfig,
@@ -13,31 +20,8 @@ import {
   writeCorpusFile,
 } from './deepvault-graph'
 
-function readArg(name: string): string | undefined {
-  const index = process.argv.indexOf(name)
-  return index >= 0 ? process.argv[index + 1] : undefined
-}
-
-function readFlag(name: string): boolean {
-  return process.argv.includes(name)
-}
-
-function normalizeMode(value: string | undefined): 'live' | 'mock' {
-  return value === 'mock' ? 'mock' : 'live'
-}
-
-const liveCheckpointPath = resolve('data/runtime/live-export-checkpoint.json')
-
-async function readCorpusFile(path: string): Promise<CorpusLike | null> {
-  try {
-    return JSON.parse(await readFile(path, 'utf8')) as CorpusLike
-  } catch {
-    return null
-  }
-}
-
 async function loadMockCorpus(): Promise<Corpus> {
-  const content = await readFile(resolve('data/pilot-corpus.json'), 'utf8')
+  const content = await import('node:fs/promises').then(({ readFile }) => readFile(resolve('data/pilot-corpus.json'), 'utf8'))
   return JSON.parse(content) as Corpus
 }
 
@@ -56,8 +40,8 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   const token = await acquireGraphAccessToken(config)
   const client = new GraphClient(config.baseUrl, token, config.timeoutSeconds)
   const siteDefinitions = buildSiteDefinitions(config)
-  const resumeCheckpoint = readFlag('--resume')
-  const checkpointCorpus = resumeCheckpoint ? await readCorpusFile(liveCheckpointPath) : null
+  const resumeCheckpoint = readCliFlag(process.argv, '--resume')
+  const checkpointCorpus = resumeCheckpoint ? await readCorpusLikeFile(liveCheckpointPath) : null
 
   if (siteDefinitions.length === 0) {
     throw new Error('DEEPVAULT_ENTRA_SITES must list at least one SharePoint site URL.')
@@ -85,28 +69,19 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   }
 
   async function writeCheckpoint() {
-    await writeCorpusFile(liveCheckpointPath, {
-      defaultUserRole: 'analyst',
-      providers: [
-        { id: 'openai', name: 'OpenAI', ready: Boolean(process.env.OPENAI_API_KEY) },
-        { id: 'gemini', name: 'Gemini', ready: Boolean(process.env.GEMINI_API_KEY) },
-      ],
-      sites,
-      syncRuns: [
-        {
-          id: `sync-${new Date().toISOString().slice(0, 10)}-live`,
-          startedAt,
-          finishedAt: new Date().toISOString(),
-          scope: `SharePoint live export from ${siteDefinitions.length} configured site(s)`,
-          status: 'synced',
-          siteIds,
-          documentsSynced: documents.length,
-          chunksWritten: documents.length * 6,
-          notes: `Checkpointed ${documents.length} documents from ${totalLibraries} libraries and ${totalLists} lists.`,
-        },
-      ],
-      documents,
-    })
+    await writeCorpusFile(
+      liveCheckpointPath,
+      buildLiveExportCorpus(config, {
+        startedAt,
+        sites,
+        documents,
+        siteIds,
+        totalLibraries,
+        totalLists,
+        notes: `Checkpointed ${documents.length} documents from ${totalLibraries} libraries and ${totalLists} lists.`,
+        status: 'synced',
+      }),
+    )
   }
 
   for (const definition of siteDefinitions) {
@@ -147,28 +122,16 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
     await writeCheckpoint()
   }
 
-  const corpus: CorpusLike = {
-    defaultUserRole: 'analyst',
-    providers: [
-      { id: 'openai', name: 'OpenAI', ready: Boolean(process.env.OPENAI_API_KEY) },
-      { id: 'gemini', name: 'Gemini', ready: Boolean(process.env.GEMINI_API_KEY) },
-    ],
+  const corpus = buildLiveExportCorpus(config, {
+    startedAt,
     sites,
-    syncRuns: [
-      {
-        id: `sync-${new Date().toISOString().slice(0, 10)}-live`,
-        startedAt,
-        finishedAt: new Date().toISOString(),
-        scope: `SharePoint live export from ${siteDefinitions.length} configured site(s)`,
-        status: 'synced',
-        siteIds,
-        documentsSynced: documents.length,
-        chunksWritten: documents.length * 6,
-        notes: `Exported ${documents.length} documents from ${totalLibraries} libraries and ${totalLists} lists.`,
-      },
-    ],
     documents,
-  }
+    siteIds,
+    totalLibraries,
+    totalLists,
+    notes: `Exported ${documents.length} documents from ${totalLibraries} libraries and ${totalLists} lists.`,
+    status: 'synced',
+  })
 
   console.log(`Export summary: ${documents.length} documents across ${totalLibraries} libraries and ${totalLists} lists`)
   await writeCorpusFile(outputPath, corpus)
@@ -185,10 +148,10 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
 
 await loadProjectEnv()
 
-const mode = normalizeMode(readArg('--mode') || process.env.DEEPVAULT_DATA_MODE)
-const outputPath = resolve(readArg('--output') || 'public/live-corpus.json')
-const useMock = mode === 'mock' || readFlag('--mock')
-const resumeCheckpoint = readFlag('--resume')
+const mode = normalizeMode(readCliArg(process.argv, '--mode') || process.env.DEEPVAULT_DATA_MODE)
+const outputPath = resolve(readCliArg(process.argv, '--output') || 'public/live-corpus.json')
+const useMock = mode === 'mock' || readCliFlag(process.argv, '--mock')
+const resumeCheckpoint = readCliFlag(process.argv, '--resume')
 const config = buildDeepVaultExportConfig()
 
 console.log(`Auth mode: ${config.authMode}`)

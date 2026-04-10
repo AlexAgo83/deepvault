@@ -49,7 +49,7 @@
 | [req_008_bishop_llm_orchestration_after_local_grounding](request/req_008_bishop_llm_orchestration_after_local_grounding.md) | Bishop LLM orchestration after local grounding | Done |  | request/req_008_bishop_llm_orchestration_after_local_grounding.md |
 | [req_009_explorer_file_type_pill_inline_with_title](request/req_009_explorer_file_type_pill_inline_with_title.md) | Explorer file type pill inline with document title | Done |  | request/req_009_explorer_file_type_pill_inline_with_title.md |
 | [req_010_fix_sharepoint_file_links_in_explorer](request/req_010_fix_sharepoint_file_links_in_explorer.md) | Fix SharePoint file links in Explorer | Done |  | request/req_010_fix_sharepoint_file_links_in_explorer.md |
-| [req_011_audit_de_dette_technique_et_cleanup_structurel](request/req_011_audit_de_dette_technique_et_cleanup_structurel.md) | Technical debt and structural cleanup audit | Draft |  | request/req_011_audit_de_dette_technique_et_cleanup_structurel.md |
+| [req_011_audit_de_dette_technique_et_cleanup_structurel](request/req_011_audit_de_dette_technique_et_cleanup_structurel.md) | Technical debt and structural cleanup audit | Done |  | request/req_011_audit_de_dette_technique_et_cleanup_structurel.md |
 
 ## Backlog
 
@@ -96,8 +96,8 @@
 | [item_038_refactor_app_shell_and_ui_state](backlog/item_038_refactor_app_shell_and_ui_state.md) | Refactor app shell and UI state | Ready | 0% | backlog/item_038_refactor_app_shell_and_ui_state.md |
 | [item_039_split_deepvault_retrieval_and_evaluation_helpers](backlog/item_039_split_deepvault_retrieval_and_evaluation_helpers.md) | Split deepvault retrieval and evaluation helpers | Ready | 0% | backlog/item_039_split_deepvault_retrieval_and_evaluation_helpers.md |
 | [item_040_clarify_bishop_orchestration_contract](backlog/item_040_clarify_bishop_orchestration_contract.md) | Clarify Bishop orchestration contract | Ready | 0% | backlog/item_040_clarify_bishop_orchestration_contract.md |
-| [item_041_harden_live_export_and_checkpoint_handling](backlog/item_041_harden_live_export_and_checkpoint_handling.md) | Harden live export and checkpoint handling | Ready | 0% | backlog/item_041_harden_live_export_and_checkpoint_handling.md |
-| [item_042_clean_logics_workflow_hygiene_and_references](backlog/item_042_clean_logics_workflow_hygiene_and_references.md) | Clean Logics workflow hygiene and references | Ready | 0% | backlog/item_042_clean_logics_workflow_hygiene_and_references.md |
+| [item_041_harden_live_export_and_checkpoint_handling](backlog/item_041_harden_live_export_and_checkpoint_handling.md) | Harden live export and checkpoint handling | Done | 100% | backlog/item_041_harden_live_export_and_checkpoint_handling.md |
+| [item_042_clean_logics_workflow_hygiene_and_references](backlog/item_042_clean_logics_workflow_hygiene_and_references.md) | Clean Logics workflow hygiene and references | Ready | 10% | backlog/item_042_clean_logics_workflow_hygiene_and_references.md |
 
 ## Tasks
 
@@ -114,4 +114,4 @@
 | [task_013_coverage_and_explorer_polish_orchestration](tasks/task_013_coverage_and_explorer_polish_orchestration.md) | Coverage and explorer polish orchestration | Done | 100% | tasks/task_013_coverage_and_explorer_polish_orchestration.md |
 | [task_014_bishop_llm_orchestration_delivery](tasks/task_014_bishop_llm_orchestration_delivery.md) | Bishop LLM orchestration delivery | Done | 100% | tasks/task_014_bishop_llm_orchestration_delivery.md |
 | [task_015_sharepoint_file_link_and_file_type_ui_delivery](tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md) | SharePoint file link and file type UI delivery | Done | 100% | tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md |
-| [task_016_orchestrate_technical_debt_cleanup_waves](tasks/task_016_orchestrate_technical_debt_cleanup_waves.md) | Orchestrate technical debt cleanup waves | Ready | 0% | tasks/task_016_orchestrate_technical_debt_cleanup_waves.md |
+| [task_016_orchestrate_technical_debt_cleanup_waves](tasks/task_016_orchestrate_technical_debt_cleanup_waves.md) | Orchestrate technical debt cleanup waves | Done | 100% | tasks/task_016_orchestrate_technical_debt_cleanup_waves.md |
