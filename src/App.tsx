@@ -281,6 +281,7 @@ export default function App() {
                 status: result.status,
                 sources: result.sources,
                 provider: result.provider,
+                orchestrationMode: result.mode,
                 chunkCount: result.chunkCount,
                 tokenCount: result.tokenCount,
                 latencyMs: result.latencyMs,
@@ -603,6 +604,10 @@ export default function App() {
                 <div className="detail-row">
                   <span>Provider</span>
                   <strong>{selectedMessage.provider || provider}</strong>
+                </div>
+                <div className="detail-row">
+                  <span>Orchestration</span>
+                  <strong>{selectedMessage.orchestrationMode || 'local'}</strong>
                 </div>
                 <div className="detail-row">
                   <span>Chunk count</span>

@@ -27,6 +27,8 @@ describe('DeepVault app', () => {
 
     expect(screen.getByRole('button', { name: 'Thinking...' })).toBeDisabled()
     expect(screen.getByText('Bishop is drafting the answer from grounded sources.')).toBeInTheDocument()
+    expect(await screen.findByText('Orchestration')).toBeInTheDocument()
+    expect(await screen.findByText('fallback')).toBeInTheDocument()
     expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
   })
 

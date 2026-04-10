@@ -1,10 +1,10 @@
 ## item_033_bishop_trace_status_and_evaluation_coverage - Bishop trace, status, and evaluation coverage
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 94%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
