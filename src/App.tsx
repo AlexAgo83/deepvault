@@ -171,25 +171,27 @@ export default function App() {
           />
         </section>
 
-        <section className="panel panel-toolbar">
-          <div className="toolbar">
-            <div className="toolbar-search">
-              <label htmlFor="search">Explorer search</label>
-              <input
-                id="search"
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Budget, roadmap, policy, status..."
-              />
+        {activeTab !== 'bishop' ? (
+          <section className="panel panel-toolbar">
+            <div className="toolbar">
+              <div className="toolbar-search">
+                <label htmlFor="search">Explorer search</label>
+                <input
+                  id="search"
+                  type="search"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Budget, roadmap, policy, status..."
+                />
+              </div>
+              <div className="toolbar-actions">
+                <button type="button" className="secondary-button" onClick={() => setSearch('')}>
+                  Clear
+                </button>
+              </div>
             </div>
-            <div className="toolbar-actions">
-              <button type="button" className="secondary-button" onClick={() => setSearch('')}>
-                Clear
-              </button>
-            </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
         {activeTab === 'explorer' ? (
           <section className="content-grid">
