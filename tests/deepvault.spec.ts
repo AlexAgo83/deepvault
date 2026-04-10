@@ -37,14 +37,14 @@ describe('deepvault helpers', () => {
     const siteSummaries = buildSiteSummaries(corpus, 'guest')
 
     expect(siteSummaries).toHaveLength(3)
-    expect(siteSummaries.find((site) => site.id === 'stealth-lab')).toMatchObject({
+    expect(siteSummaries.find((site) => site.id === 'restricted-pilot')).toMatchObject({
       status: 'restricted',
       permittedDocumentCount: 0,
     })
   })
 
   it('returns denied sources when a role cannot access relevant content', () => {
-    const result = answerQuestion(corpus, 'What are the restricted launch notes for the stealth lab?', {
+    const result = answerQuestion(corpus, 'What are the restricted launch notes for the restricted pilot site?', {
       role: 'guest',
       provider: 'openai',
     })

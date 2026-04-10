@@ -1,7 +1,7 @@
 ## req_003_nexus_v1_1_ui_and_product_polish - Nexus V1.1.0 shell and product polish
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In progress
 > Understanding: 96%
 > Confidence: 94%
 > Complexity: Medium

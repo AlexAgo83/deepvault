@@ -1,22 +1,23 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from '../src/App'
 
 describe('DeepVault app', () => {
-  it('renders the explorer shell', () => {
+  it('renders the explorer shell', async () => {
     render(<App />)
 
-    expect(screen.getByText('DeepVault - Navy')).toBeInTheDocument()
-    expect(screen.getByText('DeepVault - Bishop')).toBeInTheDocument()
-    expect(screen.getByText('Sync status')).toBeInTheDocument()
+    await waitFor(() => expect(document.title).toBe('Nexus'))
+    expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
   })
 
   it('returns to Bishop after asking a question', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'DeepVault - Bishop' }))
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
     await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
     await user.click(screen.getByRole('button', { name: 'Send' }))
 
@@ -44,7 +45,7 @@ describe('DeepVault app', () => {
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
     expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'DeepVault - Navy' }))
+    await user.click(screen.getByRole('button', { name: 'Explorer' }))
     await user.click(screen.getByRole('button', { name: 'Restricted Pilot Site' }))
     await user.type(screen.getByLabelText('Explorer search'), 'budget')
 
