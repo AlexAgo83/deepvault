@@ -1,10 +1,10 @@
 ## item_026_live_corpus_fetch_branch_coverage - Live corpus fetch branch coverage
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 90%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -73,3 +73,4 @@ flowchart TD
 - Source file: `logics/request/req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
 - Request context seeded into this backlog item from `logics/request/req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core.md`.
+- Implemented in task `task_013_coverage_and_explorer_polish_orchestration` wave 1.

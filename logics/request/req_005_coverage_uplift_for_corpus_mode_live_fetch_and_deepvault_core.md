@@ -1,7 +1,7 @@
 ## req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core - Coverage uplift for corpus mode, live fetch, and deepvault core
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 90%
 > Confidence: 90%
 > Complexity: Medium
