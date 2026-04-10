@@ -1,12 +1,12 @@
 ## req_001_v1_local_hardening_and_scope_evolution - V1 — Local hardening and scope evolution
 > From version: 1.0.2
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 93%
+> Status: Done
+> Understanding: 98%
+> Confidence: 96%
 > Complexity: High
 > Theme: General
-> Reminder: Keep this request focused on V1 local hardening and scope evolution. No Azure or Teams dependencies. Update links and indicators as backlog items complete.
+> Reminder: Keep this request focused on V1 local hardening and scope evolution. No Azure or Teams dependencies. Update links and indicators as backlog items complete. Closed after task_009 completed and items_014-018 were synced.
 
 # Needs
 - Keep live corpus generation incremental and resumable so unchanged SharePoint content is not reparsed on every run.
