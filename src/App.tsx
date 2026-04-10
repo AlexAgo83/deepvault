@@ -452,9 +452,6 @@ export default function App() {
               <button type="button" className="secondary-button" onClick={() => setSearch('')}>
                 Clear
               </button>
-              <button type="button" className="primary-button" onClick={() => setActiveTab('bishop')}>
-                Ask Bishop
-              </button>
             </div>
           </div>
         </section>
@@ -572,7 +569,7 @@ export default function App() {
                     Current provider: {provider}. Current role: {role}. No fallback mixing during evaluation.
                   </div>
                   <button type="submit" className="primary-button" disabled={isAsking}>
-                    {isAsking ? 'Thinking...' : 'Send'}
+                    {isAsking ? 'Thinking...' : 'Ask bishop'}
                   </button>
                 </div>
               </form>
