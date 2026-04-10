@@ -21,6 +21,10 @@
 | [adr_015_deepvault_security_audit_logging_and_retention_boundaries](architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md) | DeepVault security audit logging and retention boundaries | Proposed |  | architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md |
 | [adr_016_deepvault_persistence_and_storage_layout](architecture/adr_016_deepvault_persistence_and_storage_layout.md) | DeepVault persistence and storage layout | Proposed |  | architecture/adr_016_deepvault_persistence_and_storage_layout.md |
 | [adr_017_bishop_llm_orchestration_after_local_grounding](architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md) | Bishop LLM orchestration after local grounding | Proposed |  | architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md |
+| [adr_018_split_the_app_shell_and_ui_state_boundaries](architecture/adr_018_split_the_app_shell_and_ui_state_boundaries.md) | Split the app shell and UI state boundaries | Proposed |  | architecture/adr_018_split_the_app_shell_and_ui_state_boundaries.md |
+| [adr_019_split_deepvault_retrieval_and_evaluation_helpers](architecture/adr_019_split_deepvault_retrieval_and_evaluation_helpers.md) | Split DeepVault retrieval and evaluation helpers | Proposed |  | architecture/adr_019_split_deepvault_retrieval_and_evaluation_helpers.md |
+| [adr_020_clarify_bishop_orchestration_states_and_response_contract](architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md) | Clarify Bishop orchestration states and response contract | Proposed |  | architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md |
+| [adr_021_harden_live_export_and_checkpoint_boundaries](architecture/adr_021_harden_live_export_and_checkpoint_boundaries.md) | Harden live export and checkpoint boundaries | Proposed |  | architecture/adr_021_harden_live_export_and_checkpoint_boundaries.md |
 
 ## Product briefs
 
@@ -43,6 +47,9 @@
 | [req_006_explorer_card_hierarchy_and_visual_polish](request/req_006_explorer_card_hierarchy_and_visual_polish.md) | Explorer card hierarchy and visual polish | Done |  | request/req_006_explorer_card_hierarchy_and_visual_polish.md |
 | [req_007_compact_paths_in_explorer_excerpts_and_summaries](request/req_007_compact_paths_in_explorer_excerpts_and_summaries.md) | Compact paths in explorer excerpts and summaries | Done |  | request/req_007_compact_paths_in_explorer_excerpts_and_summaries.md |
 | [req_008_bishop_llm_orchestration_after_local_grounding](request/req_008_bishop_llm_orchestration_after_local_grounding.md) | Bishop LLM orchestration after local grounding | Done |  | request/req_008_bishop_llm_orchestration_after_local_grounding.md |
+| [req_009_explorer_file_type_pill_inline_with_title](request/req_009_explorer_file_type_pill_inline_with_title.md) | Explorer file type pill inline with document title | Done |  | request/req_009_explorer_file_type_pill_inline_with_title.md |
+| [req_010_fix_sharepoint_file_links_in_explorer](request/req_010_fix_sharepoint_file_links_in_explorer.md) | Fix SharePoint file links in Explorer | Done |  | request/req_010_fix_sharepoint_file_links_in_explorer.md |
+| [req_011_audit_de_dette_technique_et_cleanup_structurel](request/req_011_audit_de_dette_technique_et_cleanup_structurel.md) | Technical debt and structural cleanup audit | Draft |  | request/req_011_audit_de_dette_technique_et_cleanup_structurel.md |
 
 ## Backlog
 
@@ -82,6 +89,15 @@
 | [item_031_bishop_grounding_contract_and_response_shape](backlog/item_031_bishop_grounding_contract_and_response_shape.md) | Bishop grounding contract and response shape | Done | 100% | backlog/item_031_bishop_grounding_contract_and_response_shape.md |
 | [item_032_bishop_llm_orchestration_and_fallback](backlog/item_032_bishop_llm_orchestration_and_fallback.md) | Bishop LLM orchestration and fallback | Done | 100% | backlog/item_032_bishop_llm_orchestration_and_fallback.md |
 | [item_033_bishop_trace_status_and_evaluation_coverage](backlog/item_033_bishop_trace_status_and_evaluation_coverage.md) | Bishop trace, status, and evaluation coverage | Done | 100% | backlog/item_033_bishop_trace_status_and_evaluation_coverage.md |
+| [item_034_inline_file_type_pill_in_explorer_title_row](backlog/item_034_inline_file_type_pill_in_explorer_title_row.md) | Inline file type pill in Explorer title row | Done | 100% | backlog/item_034_inline_file_type_pill_in_explorer_title_row.md |
+| [item_035_compact_title_row_spacing_and_regression_checks](backlog/item_035_compact_title_row_spacing_and_regression_checks.md) | Compact title row spacing and regression checks | Done | 100% | backlog/item_035_compact_title_row_spacing_and_regression_checks.md |
+| [item_036_use_native_sharepoint_file_weburl](backlog/item_036_use_native_sharepoint_file_weburl.md) | Use native SharePoint file webUrl | Done | 100% | backlog/item_036_use_native_sharepoint_file_weburl.md |
+| [item_037_fallback_file_link_resolution_and_link_tests](backlog/item_037_fallback_file_link_resolution_and_link_tests.md) | Fallback file link resolution and link tests | Done | 100% | backlog/item_037_fallback_file_link_resolution_and_link_tests.md |
+| [item_038_refactor_app_shell_and_ui_state](backlog/item_038_refactor_app_shell_and_ui_state.md) | Refactor app shell and UI state | Ready | 0% | backlog/item_038_refactor_app_shell_and_ui_state.md |
+| [item_039_split_deepvault_retrieval_and_evaluation_helpers](backlog/item_039_split_deepvault_retrieval_and_evaluation_helpers.md) | Split deepvault retrieval and evaluation helpers | Ready | 0% | backlog/item_039_split_deepvault_retrieval_and_evaluation_helpers.md |
+| [item_040_clarify_bishop_orchestration_contract](backlog/item_040_clarify_bishop_orchestration_contract.md) | Clarify Bishop orchestration contract | Ready | 0% | backlog/item_040_clarify_bishop_orchestration_contract.md |
+| [item_041_harden_live_export_and_checkpoint_handling](backlog/item_041_harden_live_export_and_checkpoint_handling.md) | Harden live export and checkpoint handling | Ready | 0% | backlog/item_041_harden_live_export_and_checkpoint_handling.md |
+| [item_042_clean_logics_workflow_hygiene_and_references](backlog/item_042_clean_logics_workflow_hygiene_and_references.md) | Clean Logics workflow hygiene and references | Ready | 0% | backlog/item_042_clean_logics_workflow_hygiene_and_references.md |
 
 ## Tasks
 
@@ -97,3 +113,5 @@
 | [task_012_nexus_v1_1_remaining_polish_orchestration](tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md) | Nexus V1.1 remaining polish orchestration | Done | 100% | tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md |
 | [task_013_coverage_and_explorer_polish_orchestration](tasks/task_013_coverage_and_explorer_polish_orchestration.md) | Coverage and explorer polish orchestration | Done | 100% | tasks/task_013_coverage_and_explorer_polish_orchestration.md |
 | [task_014_bishop_llm_orchestration_delivery](tasks/task_014_bishop_llm_orchestration_delivery.md) | Bishop LLM orchestration delivery | Done | 100% | tasks/task_014_bishop_llm_orchestration_delivery.md |
+| [task_015_sharepoint_file_link_and_file_type_ui_delivery](tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md) | SharePoint file link and file type UI delivery | Done | 100% | tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md |
+| [task_016_orchestrate_technical_debt_cleanup_waves](tasks/task_016_orchestrate_technical_debt_cleanup_waves.md) | Orchestrate technical debt cleanup waves | Ready | 0% | tasks/task_016_orchestrate_technical_debt_cleanup_waves.md |
