@@ -3,6 +3,7 @@ import { constants } from 'node:fs'
 import { resolve } from 'node:path'
 import type { Corpus } from '../src/lib/deepvault'
 import { normalizeCorpusMode, type CorpusMode } from '../src/lib/corpus-mode'
+import { loadProjectEnv } from './runtime-env'
 
 export interface CorpusSourceOptions {
   mode?: string | null
@@ -19,13 +20,14 @@ export function resolveCorpusInputPath(mode: CorpusMode, explicitPath?: string |
   }
 
   if (mode === 'live') {
-    return resolve('data/live-corpus.json')
+    return resolve('public/live-corpus.json')
   }
 
   return resolve('data/pilot-corpus.json')
 }
 
 export async function loadCorpus(options: CorpusSourceOptions = {}): Promise<{ corpus: Corpus; corpusPath: string; mode: CorpusMode }> {
+  await loadProjectEnv()
   const mode = parseCorpusMode(options.mode ?? process.env.DEEPVAULT_DATA_MODE)
   const corpusPath = resolveCorpusInputPath(mode, options.inputPath ?? process.env.DEEPVAULT_CORPUS_PATH)
 

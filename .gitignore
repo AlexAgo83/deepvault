@@ -8,6 +8,7 @@ test-results/
 data/runtime/
 data/eval/*.live.json
 data/live-corpus.json
+public/live-corpus.json
 logics/.cache/
 logics/.cache/hybrid_assist_audit.jsonl
 logics/.cache/hybrid_assist_measurements.jsonl

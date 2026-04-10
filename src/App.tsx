@@ -1,5 +1,5 @@
-import { useMemo, useState, type FormEvent, type ReactNode } from 'react'
-import { loadCorpus } from './data/corpus'
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import { fetchLiveCorpus, getMockCorpusBundle, normalizeRequestedCorpusMode, type CorpusBundle } from './data/corpus'
 import {
   answerQuestion,
   buildExplorerRows,
@@ -13,7 +13,7 @@ import {
   type UserRole,
   type SiteSummary,
 } from './lib/deepvault'
-import { describeCorpusMode, normalizeCorpusMode } from './lib/corpus-mode'
+import { describeCorpusMode } from './lib/corpus-mode'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'DeepVault - Navy' },
@@ -89,7 +89,8 @@ function Message({ message }: { message: ChatMessage }) {
 }
 
 export default function App() {
-  const corpusBundle = loadCorpus(normalizeCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE))
+  const requestedCorpusMode = normalizeRequestedCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE)
+  const [corpusBundle, setCorpusBundle] = useState<CorpusBundle>(() => getMockCorpusBundle())
   const corpus = corpusBundle.corpus
   const corpusMode = corpusBundle.mode
   const [activeTab, setActiveTab] = useState<(typeof NAV_ITEMS)[number]['id']>('explorer')
@@ -150,6 +151,31 @@ export default function App() {
   }
 
   const selectedMessage = messages[messages.length - 1]
+
+  useEffect(() => {
+    let active = true
+    if (requestedCorpusMode !== 'live') {
+      setCorpusBundle(getMockCorpusBundle())
+      return () => {
+        active = false
+      }
+    }
+
+    void fetchLiveCorpus().then((liveCorpus) => {
+      if (!active) {
+        return
+      }
+      if (liveCorpus) {
+        setCorpusBundle({ corpus: liveCorpus, mode: 'live' })
+      } else {
+        setCorpusBundle(getMockCorpusBundle())
+      }
+    })
+
+    return () => {
+      active = false
+    }
+  }, [requestedCorpusMode])
 
   return (
     <div className="app-shell">
