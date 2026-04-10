@@ -1,10 +1,10 @@
 ## item_014_v1_incremental_live_sync_and_resumable_export - V1 — Incremental live sync and resumable export
 > From version: 1.0.2
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 96%
 > Confidence: 93%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Operations
 > Reminder: Keep this slice focused on change detection, checkpointing, and resume behavior for the live export path.
@@ -26,7 +26,7 @@ flowchart TD
     Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The live exporter rebuilds too much]
     Problem --> Scope[Incremental live sync and resumable export]
     Scope --> Acceptance[AC1: Export skips unchanged sources by]
-    Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
+    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evolution]
 ```
 
 # Acceptance criteria
@@ -53,7 +53,7 @@ flowchart TD
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
 - Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-- Primary task(s): `logics/tasks/task_009_pre_v2_live_hardening_milestone.md`
+- Primary task(s): `logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md`
 
 # AI Context
 - Summary: Incremental live sync and resumable export slice for the DeepVault live corpus pipeline.
@@ -69,3 +69,4 @@ flowchart TD
 - Derived from request `req_001_v1_local_hardening_and_scope_evolution`.
 - Source file: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`.
 - Keep this backlog item bounded to export and sync behavior only.
+- Completed in `logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md`.

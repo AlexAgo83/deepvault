@@ -55,10 +55,10 @@
 | [item_011_v2_hosted_backend_core](backlog/item_011_v2_hosted_backend_core.md) | V2 — Hosted backend core | Ready | 0% | backlog/item_011_v2_hosted_backend_core.md |
 | [item_012_v2_teams_bot_channel_and_permissions](backlog/item_012_v2_teams_bot_channel_and_permissions.md) | V2 — DeepVault - Gordon channel and permissions | Ready | 0% | backlog/item_012_v2_teams_bot_channel_and_permissions.md |
 | [item_013_v2_operations_runbook_and_release_readiness](backlog/item_013_v2_operations_runbook_and_release_readiness.md) | V2 — Operations runbook and release readiness | Ready | 0% | backlog/item_013_v2_operations_runbook_and_release_readiness.md |
-| [item_014_v1_incremental_live_sync_and_resumable_export](backlog/item_014_v1_incremental_live_sync_and_resumable_export.md) | V1 — Incremental live sync and resumable export | Ready | 0% | backlog/item_014_v1_incremental_live_sync_and_resumable_export.md |
-| [item_015_v1_live_explorer_site_filter_alignment](backlog/item_015_v1_live_explorer_site_filter_alignment.md) | V1 — Live explorer site filter alignment | Ready | 0% | backlog/item_015_v1_live_explorer_site_filter_alignment.md |
-| [item_016_v1_live_evaluation_set_and_quality_gate](backlog/item_016_v1_live_evaluation_set_and_quality_gate.md) | V1 — Live evaluation set and quality gate | Ready | 0% | backlog/item_016_v1_live_evaluation_set_and_quality_gate.md |
-| [item_017_v1_crawl_resilience_and_artifact_governance](backlog/item_017_v1_crawl_resilience_and_artifact_governance.md) | V1 — Crawl resilience and artifact governance | Ready | 0% | backlog/item_017_v1_crawl_resilience_and_artifact_governance.md |
+| [item_014_v1_incremental_live_sync_and_resumable_export](backlog/item_014_v1_incremental_live_sync_and_resumable_export.md) | V1 — Incremental live sync and resumable export | Done | 100% | backlog/item_014_v1_incremental_live_sync_and_resumable_export.md |
+| [item_015_v1_live_explorer_site_filter_alignment](backlog/item_015_v1_live_explorer_site_filter_alignment.md) | V1 — Live explorer site filter alignment | Done | 100% | backlog/item_015_v1_live_explorer_site_filter_alignment.md |
+| [item_016_v1_live_evaluation_set_and_quality_gate](backlog/item_016_v1_live_evaluation_set_and_quality_gate.md) | V1 — Live evaluation set and quality gate | Done | 100% | backlog/item_016_v1_live_evaluation_set_and_quality_gate.md |
+| [item_017_v1_crawl_resilience_and_artifact_governance](backlog/item_017_v1_crawl_resilience_and_artifact_governance.md) | V1 — Crawl resilience and artifact governance | Done | 100% | backlog/item_017_v1_crawl_resilience_and_artifact_governance.md |
 | [item_018_v1_pre_v2_backlog_and_doc_cleanup](backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md) | V1 — Pre-V2 backlog and doc cleanup | Done | 100% | backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md |
 
 ## Tasks

@@ -1,10 +1,10 @@
 ## item_017_v1_crawl_resilience_and_artifact_governance - V1 — Crawl resilience and artifact governance
 > From version: 1.0.2
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 96%
 > Confidence: 93%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Operations
 > Reminder: Keep large-site crawl behavior observable and keep generated live artifacts governed locally.
@@ -25,7 +25,7 @@ flowchart TD
     Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[Large SharePoint sites need more resilienc]
     Problem --> Scope[Crawl resilience and artifact governance]
     Scope --> Acceptance[AC1: Large crawls emit enough progress]
-    Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
+    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evolution]
 ```
 
 # Acceptance criteria
@@ -52,7 +52,7 @@ flowchart TD
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
 - Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-- Primary task(s): `logics/tasks/task_009_pre_v2_live_hardening_milestone.md`
+- Primary task(s): `logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md`
 
 # AI Context
 - Summary: Crawl resilience and artifact governance slice for the DeepVault live export path.
@@ -68,3 +68,4 @@ flowchart TD
 - Derived from request `req_001_v1_local_hardening_and_scope_evolution`.
 - Source file: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`.
 - Keep this backlog item bounded to crawl resilience and artifact governance only.
+- Completed in `logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md`.
