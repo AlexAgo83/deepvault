@@ -1,10 +1,10 @@
 ## item_015_v1_live_explorer_site_filter_alignment - V1 — Live explorer site filter alignment
 > From version: 1.0.2
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 96%
 > Confidence: 93%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Keep the selected site, visible results, and detail pane aligned in the live explorer.
@@ -25,7 +25,7 @@ flowchart TD
     Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The live explorer can surface documents]
     Problem --> Scope[Live explorer site filter alignment]
     Scope --> Acceptance[AC1: Selecting a site constrains the]
-    Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
+    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evolution]
 ```
 
 # Acceptance criteria
@@ -52,7 +52,7 @@ flowchart TD
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
 - Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-- Primary task(s): `logics/tasks/task_009_pre_v2_live_hardening_milestone.md`
+- Primary task(s): `logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md`
 
 # AI Context
 - Summary: Live explorer filtering slice for the DeepVault local UI.
@@ -68,3 +68,4 @@ flowchart TD
 - Derived from request `req_001_v1_local_hardening_and_scope_evolution`.
 - Source file: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`.
 - Keep this backlog item bounded to explorer scope behavior only.
+- Completed in `logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md`.

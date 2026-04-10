@@ -1,10 +1,10 @@
 ## item_016_v1_live_evaluation_set_and_quality_gate - V1 — Live evaluation set and quality gate
 > From version: 1.0.2
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 96%
 > Confidence: 93%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Operations
 > Reminder: Keep the live quality gate aligned to exported SharePoint content, not just the mock corpus.
@@ -25,7 +25,7 @@ flowchart TD
     Request[req_001_live_corpus_hardening_and_pre_v2_c] --> Problem[The current evaluation flow is not]
     Problem --> Scope[Live evaluation set and quality gate]
     Scope --> Acceptance[AC1: The evaluation set uses live]
-    Acceptance --> Tasks[task_009_pre_v2_live_hardening_milestone]
+    Acceptance --> Tasks[task_009_local_hardening_and_v1_scope_evolution]
 ```
 
 # Acceptance criteria
@@ -52,7 +52,7 @@ flowchart TD
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
 - Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-- Primary task(s): `logics/tasks/task_009_pre_v2_live_hardening_milestone.md`
+- Primary task(s): `logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md`
 
 # AI Context
 - Summary: Live evaluation set and quality gate slice for the DeepVault live corpus pipeline.
@@ -68,3 +68,4 @@ flowchart TD
 - Derived from request `req_001_v1_local_hardening_and_scope_evolution`.
 - Source file: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`.
 - Keep this backlog item bounded to evaluation and gating only.
+- Completed in `logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md`.
