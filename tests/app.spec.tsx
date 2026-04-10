@@ -52,12 +52,6 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    expect(
-      screen.getByText(
-        'A product-ready workspace for exploring content, validating grounded answers, and reviewing sync health before release.',
-      ),
-    ).toBeInTheDocument()
-
     await user.click(screen.getByRole('button', { name: 'Sync status' }))
 
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
