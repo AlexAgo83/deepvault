@@ -1,17 +1,18 @@
-## prod_002_hosted_production_strategy_with_teams_at_the_end - Hosted production strategy with Teams at the end
+## prod_002_hosted_production_strategy_with_teams_at_the_end - DeepVault - Gordon hosted production strategy
 > Date: 2026-04-10
 > Status: Proposed
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
 > Related architecture: `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
+> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Gordon naming when you edit this doc.
 
 # Overview
 This brief defines the production strategy where the backend is hosted and Teams is the final delivery surface.
 The core value is a governed, scalable experience that centralizes ingestion, retrieval, permission checks, and answer delivery in one place.
-The local app can remain useful for exploration and validation, but the production contract is the hosted backend plus Teams.
+`DeepVault - Navy` and `DeepVault - Bishop` can remain useful for exploration and validation, but the production contract is the hosted backend plus `DeepVault - Gordon`.
 The sequence matters: backend first, Teams at the end of the chain.
+The preferred hosting target is Azure when the platform cost and operational overhead stay reasonable; Render remains the fallback if we need a simpler production path.
 
 ```mermaid
 flowchart LR
@@ -27,14 +28,15 @@ A production product must centralize ingestion, permissions, refresh, answer tra
 Teams is the final user-facing channel because it matches the enterprise context and reduces adoption friction.
 
 # Target users and situations
-- Employees who want trustworthy answers from SharePoint content in Teams.
+- Employees who want trustworthy answers from SharePoint content in `DeepVault - Gordon`.
 - Platform owners who need governed access, auditability, and operational control.
 - Support and admin teams who need visibility into ingestion, refresh, and answer provenance.
 
 # Goals
 - Deliver a hosted backend that can be reused by multiple channels.
-- Make Teams the primary production chatbot surface.
+- Make `DeepVault - Gordon` the primary production chatbot surface.
 - Keep permission-aware retrieval and answer traceability intact end to end.
+- Prefer Azure for hosting the shared runtime and operational services, with Render as the backup option.
 
 # Non-goals
 - Letting Teams bypass the permission model.
@@ -47,10 +49,11 @@ Teams is the final user-facing channel because it matches the enterprise context
 - Out: local-only development shortcuts, experimental UI surface changes, and unmanaged tenant-wide rollout.
 
 # Key product decisions
-- The hosted backend is the production contract, not the local app.
-- Teams should be the final delivery step, not the place where core product logic lives.
+- The hosted backend is the production contract, not `DeepVault - Navy` or `DeepVault - Bishop`.
+- `DeepVault - Gordon` should be the final delivery step, not the place where core product logic lives.
 - Configuration, permissions, and observability must be managed centrally enough to support operations.
 - The product should preserve the same grounding and provenance rules across channels.
+- The backend should run on Azure by default so identity, secrets, and operations stay aligned with Microsoft-native delivery.
 
 # Success signals
 - Users get grounded answers in Teams without revealing unauthorized content.
@@ -61,7 +64,7 @@ Teams is the final user-facing channel because it matches the enterprise context
 # Target infrastructure
 ```mermaid
 flowchart LR
-    Users[Teams users] --> Teams[Teams bot]
+    Users[Teams users] --> Teams[DeepVault - Gordon]
     Teams --> API[Hosted backend API]
     API --> Auth[Identity and permission checks]
     API --> Ingest[SharePoint ingestion and sync]
@@ -73,8 +76,13 @@ flowchart LR
     API --> Config[Runtime configuration]
 ```
 
+# Hosting target
+- Default target: Azure
+- Fallback target: Render
+- Shared-runtime guidance: use the Azure path when cost and complexity stay acceptable, and switch to Render if we need a lighter operational footprint.
+
 # Positioning
-- This brief is the production delivery variant.
+- This brief is the production delivery variant for `DeepVault - Gordon`.
 - It keeps the hosted backend and Teams channel at the end of the chain.
 - It should stay focused on operating model and user value, not local development mechanics.
 
@@ -98,3 +106,4 @@ flowchart LR
 - Which production metric should matter most first: freshness, answer quality, or trust/auditability?
 - How much of the local app should remain supported as a secondary surface after production launch?
 - What operational controls need to be exposed to admins versus kept internal?
+- What Azure services should host the backend, secrets, and storage for the first production slice?

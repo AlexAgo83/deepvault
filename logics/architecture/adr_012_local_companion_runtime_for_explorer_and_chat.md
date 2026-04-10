@@ -1,21 +1,21 @@
-## adr_012_local_companion_runtime_for_explorer_and_chat - Local companion runtime for explorer and chat
+## adr_012_local_companion_runtime_for_explorer_and_chat - DeepVault - Navy runtime for explorer and chat
 > Date: 2026-04-10
 > Status: Proposed
 > Drivers: Ship a fast local-only validation surface for the first pilot, avoid hosting and channel complexity, and keep the chatbot usable while the backend is still in development.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: (none yet)
-> Reminder: Keep the runtime self-contained so it can be replaced cleanly by the hosted backend later.
+> Reminder: Keep `DeepVault - Navy` self-contained so it can be replaced cleanly by the hosted backend later.
 
 # Overview
-The local runtime should run as a local-only companion app.
-The local app includes the explorer, the chat surface, and sync status in one place.
+The local runtime should run as `DeepVault - Navy`.
+`DeepVault - Navy` includes the explorer, the chat surface, and sync status in one place.
 The chatbot should be able to answer using the local runtime and the same SharePoint retrieval contracts that the hosted backend will later reuse.
 
 ```mermaid
 flowchart LR
-    LocalApp[Local companion app] --> Explorer[Explorer]
-    LocalApp --> Chat[Local chatbot]
+    LocalApp[DeepVault - Navy] --> Explorer[Explorer]
+    LocalApp --> Chat[DeepVault - Bishop]
     LocalApp --> Sync[Sync status]
 ```
 
@@ -26,12 +26,12 @@ The local app also keeps the feedback loop short for iteration.
 
 # Decision
 Use a self-contained local runtime.
-The local app owns the explorer UI, the chatbot surface, and the operational status views.
+`DeepVault - Navy` owns the explorer UI, the chatbot surface, and the operational status views.
 It may call local services or local-only adapters, but it should not require a hosted backend or Teams channel to validate the pilot.
 
 # Alternatives considered
 - Hosted backend from day one
-- Teams as the only chat surface
+- `DeepVault - Gordon` as the only chat surface
 - Desktop-native application instead of a local web app
 
 # Consequences
@@ -41,7 +41,7 @@ It may call local services or local-only adapters, but it should not require a h
 
 # Migration and rollout
 Keep API boundaries stable between the local app and the backend contract.
-When the hosted backend begins, move the backend behind a hosted service while keeping the local app as a client or test harness if useful.
+When the hosted backend begins, move the backend behind a hosted service while keeping `DeepVault - Navy` as a client or test harness if useful.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`

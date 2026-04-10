@@ -1,16 +1,16 @@
-## item_009_local_chat_surface_and_answer_flow - Local chat surface and answer flow
+## item_009_local_chat_surface_and_answer_flow - DeepVault - Bishop chat surface and answer flow
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: High
 > Theme: General
-> Reminder: Keep this slice focused on the local chat surface and avoid drifting into Teams or hosted backend work.
+> Reminder: Keep this slice focused on `DeepVault - Bishop` and avoid drifting into `DeepVault - Gordon` or hosted backend work.
 
 # Problem
-- The local chatbot surface lets users ask questions against SharePoint-derived knowledge without depending on Teams.
+- `DeepVault - Bishop` lets users ask questions against SharePoint-derived knowledge without depending on `DeepVault - Gordon`.
 - The answer flow must use the same permission-aware retrieval model that later channels will reuse.
 
 # Scope
@@ -20,16 +20,16 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|local-chat-surface-and-answer-flow|req-000-sharepoint-knowledge-graph-kicko|the-local-chatbot-surface-lets-users|ac1-the-local-chat-surface-can
+%% logics-signature: backlog|deepvault-bishop-chat-surface-and-answer|req-000-sharepoint-knowledge-graph-kicko|deepvault-bishop-lets-users-ask|ac1-deepvault-bishop-can-ask
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[The local chatbot surface lets]
-    Problem --> Scope[Local chat surface and answer]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault Bishop lets]
+    Problem --> Scope[DeepVault Bishop chat surface and answer]
     Scope --> Acceptance[AC1: The local chat surface can]
     Acceptance --> Tasks[Execution task]
 ```
 
 # Acceptance criteria
-- AC1: The local chat surface can ask questions and display grounded answers locally.
+- AC1: `DeepVault - Bishop` can ask questions and display grounded answers locally.
 - AC2: The flow can call a provider-agnostic LLM backend contract.
 - AC3: The surface shows source-backed answers without requiring Teams.
 
@@ -54,9 +54,9 @@ flowchart TD
 - Primary task(s): (none yet)
 
 # AI Context
-- Summary: Local chat surface and answer flow
+- Summary: DeepVault - Bishop chat surface and answer flow
 - Keywords: local, chat, answers, retrieval, citations, openai, gemini
-- Use when: Use when implementing the local chatbot.
+- Use when: Use when implementing `DeepVault - Bishop`.
 - Skip when: Skip when the change is about navigation, sync, or hosted backend work.
 
 # Priority

@@ -1,17 +1,17 @@
-## item_010_local_sync_status_and_operational_view - Local sync status and operational view
+## item_010_local_sync_status_and_operational_view - DeepVault - Navy sync status and operational view
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: Medium
 > Theme: General
-> Reminder: Keep this slice focused on the local sync and operational view.
+> Reminder: Keep this slice focused on `DeepVault - Navy` and its operational view.
 
 # Problem
-- The local operational view lets users see crawl progress, refresh state, and basic answer provenance.
-- The sync surface makes the local runtime inspectable before any hosted backend exists.
+- The `DeepVault - Navy` operational view lets users see crawl progress, refresh state, and basic answer provenance.
+- The sync surface makes `DeepVault - Navy` inspectable before any hosted backend exists.
 
 # Scope
 - In: local sync status, last refresh time, basic run health, and simple provenance indicators.
@@ -20,16 +20,16 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|local-sync-status-and-operational-view|req-000-sharepoint-knowledge-graph-kicko|the-local-operational-view-lets-users|ac1-the-local-sync-view-shows
+%% logics-signature: backlog|deepvault-navy-sync-status-and-operation|req-000-sharepoint-knowledge-graph-kicko|the-deepvault-navy-operational-view|ac1-deepvault-navy-shows-crawl
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[The local operational view lets]
-    Problem --> Scope[Local sync status and operational]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault Navy operational view lets]
+    Problem --> Scope[DeepVault Navy sync status and operational]
     Scope --> Acceptance[AC1: The local sync view shows]
     Acceptance --> Tasks[Execution task]
 ```
 
 # Acceptance criteria
-- AC1: The local sync view shows crawl progress and last refresh status.
+- AC1: `DeepVault - Navy` shows crawl progress and last refresh status.
 - AC2: The view exposes enough operational detail to support debugging.
 - AC3: The view remains local-only and does not depend on the hosted backend.
 
@@ -54,9 +54,9 @@ flowchart TD
 - Primary task(s): (none yet)
 
 # AI Context
-- Summary: Local sync status and operational view
+- Summary: DeepVault - Navy sync status and operational view
 - Keywords: local, sync, status, operations, refresh, provenance
-- Use when: Use when implementing the sync and operational display.
+- Use when: Use when implementing the `DeepVault - Navy` sync and operational display.
 - Skip when: Skip when the change is about chat, explorer, or hosted backend work.
 
 # Priority

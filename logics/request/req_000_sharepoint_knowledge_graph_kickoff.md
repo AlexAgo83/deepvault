@@ -2,11 +2,18 @@
 > From version: 0.0.2
 > Schema version: 1.0
 > Status: Draft
-> Understanding: 99%
+> Understanding: 100%
 > Confidence: 95%
 > Complexity: High
 > Theme: General
-> Reminder: Keep the scope focused on SharePoint ingestion, knowledge storage, and LLM-ready retrieval. Update links and indicators as the project evolves.
+> Reminder: Keep the scope focused on SharePoint ingestion, knowledge storage, and LLM-ready retrieval. Update links, indicators, and DeepVault/Nexus naming as the project evolves.
+
+# Naming
+- `DeepVault` is the product family and the Microsoft-facing application.
+- `Nexus` is the internal tooling and orchestration brain in this repository.
+- `DeepVault - Navy` is the local exploration UI.
+- `DeepVault - Bishop` is the local LLM chatbot.
+- `DeepVault - Gordon` is the Teams chatbot.
 
 # Needs
 - Connect to Microsoft Graph and discover the initial SharePoint sites, libraries, and lists.
@@ -31,20 +38,20 @@ Validated context so far:
 - The default `Documents` library on that site is currently empty at the root, so useful content will likely live in other libraries or deeper folder trees.
 
 Product direction:
-- The tool should act as a SharePoint explorer and ingestion layer.
+- The tool should act as a SharePoint explorer and ingestion layer for DeepVault.
 - The platform should separate ingestion, storage, retrieval, and answer generation into clear layers.
 - The long-term goal is to expose a searchable knowledge database built from SharePoint content.
 - A future LLM agent should be able to answer questions using the collected data.
 
-Validated product choices:
-- The local phase should stay local-only, with the explorer and chatbot running in a small local site or companion app.
+- Validated product choices:
+- The local phase should stay local-only, with the explorer and chatbot running in `DeepVault - Navy` and `DeepVault - Bishop`.
 - The hosted phase should move the backend to a hosted service and add a Teams chatbot channel.
 - Ingestion should run autonomously, while LLM chat access must verify the current user's rights before answering.
-- The first navigation experience should be a local companion app with explorer, chat, and sync/status views.
+- The first navigation experience should be `DeepVault - Navy` with explorer, chat, and sync/status views.
 - The knowledge base should be hybrid, combining source objects with chunked text for retrieval.
 - Retrieval should filter by user permissions before context reaches the LLM.
-- The chat experience should be delivered through the local companion app first, with Teams becoming the primary channel once the backend is hosted.
-- The local app should authenticate through Entra, verify the current user's rights, call the LLM, and return the answer inside the app.
+- The chat experience should be delivered through `DeepVault - Bishop` first, with `DeepVault - Gordon` becoming the primary channel once the backend is hosted.
+- The local app should authenticate through Entra, verify the current user's rights, call the LLM, and return the answer inside `DeepVault - Bishop`.
 - The chat backend should be provider-agnostic and able to route through OpenAI API or Gemini API.
 - The configurable pilot site list should stay in environment configuration for the hosted runtime.
 
@@ -70,7 +77,7 @@ Security direction:
 - Keep the local chatbot self-contained, then reuse the same retrieval and permission model when the backend is hosted.
 
 Operational direction:
-- Track crawl progress, refresh status, and answer provenance in a way that is easy to inspect from the local companion app.
+- Track crawl progress, refresh status, and answer provenance in a way that is easy to inspect from `DeepVault - Navy` and `DeepVault - Bishop`.
 - Log the source objects, retrieval filters, and provider choice used for each answer.
 - Keep the observability surface simple enough for the hosted runtime, but explicit enough to support debugging and audit later.
 - Define which operational signals remain local and which are promoted to backend services.
@@ -78,11 +85,11 @@ Operational direction:
 Open framing questions:
 - What sync cadence should be the default for planned refreshes?
 - Which search and retrieval signals should weigh most heavily in the first question-answering experience?
-- Which local companion app views should ship first: explorer, chat, or sync status?
+- Which `DeepVault - Navy` views should ship first: explorer, chat, or sync status?
 - Which user-visible metric should define "usefulness" first: coverage, freshness, browse speed, or answer quality?
 - What additional SharePoint sites should enter scope after the pilot?
 - Should OpenAI be the default provider, with Gemini as a fallback or secondary option?
-- Which observability signals should be surfaced in the local companion app versus kept in backend logs only?
+- Which observability signals should be surfaced in `DeepVault - Navy` and `DeepVault - Bishop` versus kept in backend logs only?
 - Which parts of the runtime should remain local-only versus moving behind the hosted backend?
 - Which responsibilities stay inside the local runtime versus moving into the hosted backend?
 
@@ -103,9 +110,9 @@ flowchart TD
 - AC5: The pilot site list is explicitly configurable so new SharePoint sites can be added without code changes.
 - AC6: The request records the intended priority order across documents, lists, pages, and metadata.
 - AC7: The request acknowledges the future Microsoft account-based user rights model.
-- AC8: The request defines the first explorer UI as a required part of the product direction.
+- AC8: The request defines `DeepVault - Navy` as a required part of the product direction.
 - AC9: The request captures the hybrid ingestion and chunked retrieval model for the knowledge base.
-- AC10: The request explicitly allows a local companion app chatbot path with Entra-backed identity and permission checks, while keeping Teams as a later integration.
+- AC10: The request explicitly allows a `DeepVault - Bishop` chatbot path with Entra-backed identity and permission checks, while keeping `DeepVault - Gordon` as a later integration.
 - AC11: The request explicitly allows the chat backend to route through OpenAI API or Gemini API behind a single abstraction.
 - AC12: The request explicitly defines the layered path from Graph ingestion to normalization, storage, retrieval, and answer generation.
 - AC13: The request explicitly calls out permission-aware retrieval so unauthorized content never reaches the LLM context.

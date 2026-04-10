@@ -1,31 +1,31 @@
-## item_004_teams_bot_chat_and_permissions - Teams bot chat and permissions
+## item_004_teams_bot_chat_and_permissions - DeepVault - Gordon chat and permissions
 > From version: 0.0.2
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 99%
 > Confidence: 95%
-> Progress: 0%
+> Progress: 1%
 > Complexity: High
 > Theme: General
-> Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress, linked request/task references, and DeepVault/Gordon naming when you edit this doc.
 
 # Problem
-- Define the Teams channel governance and permission model after the backend is hosted.
+- Define the `DeepVault - Gordon` channel governance and permission model after the backend is hosted.
 - Keep the enterprise chat surface governed through Microsoft identity and the shared retrieval model.
 - Separate the policy and channel rules from the concrete bot packaging work.
 
 # Scope
-- In: channel policy, identity mapping, and permission rules for the Teams chatbot.
-- In: the hosted backend integration contract that Teams must respect.
+- In: channel policy, identity mapping, and permission rules for `DeepVault - Gordon`.
+- In: the hosted backend integration contract that `DeepVault - Gordon` must respect.
 - In: the requirements that keep Teams aligned with the permission-aware retrieval model.
 - Out: Teams bot packaging, tenant distribution, and local runtime work.
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|teams-bot-chat-and-permissions|req-000-sharepoint-knowledge-graph-kicko|define-the-teams-channel-governance-and|ac1-the-request-clearly-defines-the
+%% logics-signature: backlog|deepvault-gordon-chat-and-permissions|req-000-sharepoint-knowledge-graph-kicko|define-the-deepvault-gordon-channel|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define the Teams channel governance]
-    Problem --> Scope[Teams bot chat and permissions]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define DeepVault Gordon governance]
+    Problem --> Scope[DeepVault Gordon chat and permissions]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```
@@ -70,9 +70,9 @@ flowchart TD
 - Primary task(s): `task_XXX_example`
 
 # AI Context
-- Summary: Teams channel governance and permission model for the chatbot.
+- Summary: DeepVault - Gordon channel governance and permission model for the chatbot.
 - Keywords: teams, permissions, identity, governance, chatbot, hosted backend
-- Use when: Use when defining the Teams policy and channel rules.
+- Use when: Use when defining the `DeepVault - Gordon` policy and channel rules.
 - Skip when: Skip when the work is about packaging or implementation details.
 # References
 - `logics/skills/logics-ui-steering/SKILL.md`

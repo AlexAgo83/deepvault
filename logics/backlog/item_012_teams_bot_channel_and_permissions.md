@@ -1,38 +1,38 @@
-## item_012_teams_bot_channel_and_permissions - Teams bot channel and permissions
+## item_012_teams_bot_channel_and_permissions - DeepVault - Gordon channel and permissions
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: High
 > Theme: General
-> Reminder: Keep this slice focused on the Teams channel and permissions.
+> Reminder: Keep this slice focused on `DeepVault - Gordon` and its permissions.
 
 # Problem
-- Implement the governed Teams chatbot that talks to the hosted backend and respects Microsoft identity.
+- Implement the governed `DeepVault - Gordon` chatbot that talks to the hosted backend and respects Microsoft identity.
 - The channel must use the same permission-aware retrieval model as the backend.
 - This slice turns the policy and channel rules into an actual Teams delivery.
 
 # Scope
-- In: Teams bot registration, message routing, identity mapping, and permission checks.
+- In: `DeepVault - Gordon` registration, message routing, identity mapping, and permission checks.
 - In: integration with the hosted backend contract.
 - In: the packaging and channel plumbing required to make the Teams experience real.
 - Out: policy framing, local-only runtime work, and local companion app UI work.
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|teams-bot-channel-and-permissions|req-000-sharepoint-knowledge-graph-kicko|implement-the-governed-teams-chatbot-tha|ac1-the-teams-bot-can-route
+%% logics-signature: backlog|deepvault-gordon-channel-and-permissions|req-000-sharepoint-knowledge-graph-kicko|implement-the-governed-deepvault-gordon|ac1-deepvault-gordon-can-route
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Implement the Teams chatbot channel]
-    Problem --> Scope[Teams bot channel and permissions]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Implement DeepVault Gordon channel]
+    Problem --> Scope[DeepVault Gordon channel and permissions]
     Scope --> Acceptance[AC1: The Teams bot can route]
     Acceptance --> Tasks[Execution task]
 ```
 
 # Acceptance criteria
-- AC1: The Teams bot can route user messages to the hosted backend.
-- AC2: The bot enforces the governed Microsoft identity and permission model.
+- AC1: `DeepVault - Gordon` can route user messages to the hosted backend.
+- AC2: `DeepVault - Gordon` enforces the governed Microsoft identity and permission model.
 - AC3: The bot remains separate from the local runtime.
 
 # AC Traceability
@@ -56,9 +56,9 @@ flowchart TD
 - Primary task(s): (none yet)
 
 # AI Context
-- Summary: Teams bot channel and permissions
+- Summary: DeepVault - Gordon channel and permissions
 - Keywords: teams, bot, permissions, identity, hosted backend, chat
-- Use when: Use when implementing the Teams chatbot channel.
+- Use when: Use when implementing `DeepVault - Gordon`.
 - Skip when: Skip when the change is about local-only runtime work.
 
 # Priority

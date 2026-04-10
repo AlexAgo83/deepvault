@@ -1,17 +1,17 @@
-## item_008_local_explorer_shell_and_navigation - Local explorer shell and navigation
+## item_008_local_explorer_shell_and_navigation - DeepVault - Navy explorer shell and navigation
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: Medium
 > Theme: General
-> Reminder: Keep this slice focused on the local explorer shell and avoid drifting into chat or hosted backend work.
+> Reminder: Keep this slice focused on `DeepVault - Navy` and avoid drifting into `DeepVault - Bishop` or hosted backend work.
 
 # Problem
-- The local explorer lets users navigate sites, libraries, folders, and lists without waiting for the hosted backend.
-- The explorer should validate the local runtime and the SharePoint navigation model early.
+- `DeepVault - Navy` lets users navigate sites, libraries, folders, and lists without waiting for the hosted backend.
+- `DeepVault - Navy` should validate the local runtime and the SharePoint navigation model early.
 
 # Scope
 - In: the local web shell, routing, navigation chrome, and a site/library tree.
@@ -21,16 +21,16 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|local-explorer-shell-and-navigation|req-000-sharepoint-knowledge-graph-kicko|the-local-explorer-lets-users-navigate|ac1-the-local-explorer-shell-lets
+%% logics-signature: backlog|deepvault-navy-explorer-shell-and-naviga|req-000-sharepoint-knowledge-graph-kicko|deepvault-navy-lets-users-navigate|ac1-deepvault-navy-lets-users
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[The local explorer lets users navigate]
-    Problem --> Scope[Local explorer shell and navigation]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[DeepVault Navy lets users navigate]
+    Problem --> Scope[DeepVault Navy explorer shell and navigation]
     Scope --> Acceptance[AC1: The local explorer shell lets]
     Acceptance --> Tasks[Execution task]
 ```
 
 # Acceptance criteria
-- AC1: The local explorer shell lets users browse SharePoint sites and their top-level structure locally.
+- AC1: `DeepVault - Navy` lets users browse SharePoint sites and their top-level structure locally.
 - AC2: The shell exposes enough navigation context to validate the pilot scope.
 - AC3: The shell remains independent from Teams and the hosted backend.
 
@@ -56,9 +56,9 @@ flowchart TD
 - Primary task(s): (none yet)
 
 # AI Context
-- Summary: Local explorer shell and navigation
+- Summary: DeepVault - Navy explorer shell and navigation
 - Keywords: local, explorer, navigation, shell, sites, libraries
-- Use when: Use when implementing the local explorer shell.
+- Use when: Use when implementing `DeepVault - Navy`.
 - Skip when: Skip when the change is about chat, sync, or hosted backend work.
 
 # Priority

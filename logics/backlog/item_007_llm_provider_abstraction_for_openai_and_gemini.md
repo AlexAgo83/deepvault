@@ -1,37 +1,37 @@
-## item_007_llm_provider_abstraction_for_openai_and_gemini - LLM provider abstraction for OpenAI and Gemini
+## item_007_llm_provider_abstraction_for_openai_and_gemini - DeepVault - Bishop LLM provider abstraction for OpenAI and Gemini
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 1%
 > Complexity: Medium
 > Theme: General
-> Reminder: Keep this slice focused on the backend provider contract and do not hard-code a single vendor into the local app.
+> Reminder: Keep this slice focused on the backend provider contract and do not hard-code a single vendor into `DeepVault - Bishop`.
 
 # Problem
-- Deliver a provider-agnostic LLM backend so the local companion app can use OpenAI or Gemini behind one contract.
+- Deliver a provider-agnostic LLM backend so `DeepVault - Bishop` can use OpenAI or Gemini behind one contract.
 - The product already has keys configured for both providers and should not hard-code one vendor into the UI.
 
 # Scope
 - In: one backend provider abstraction that normalizes prompts, responses, and errors.
 - In: a configurable primary provider plus a fallback/secondary provider route.
-- In: wiring the local companion app chat path to the abstraction instead of a single vendor.
+- In: wiring the `DeepVault - Bishop` chat path to the abstraction instead of a single vendor.
 - Out: model fine-tuning, prompt science experiments, and unrelated chat UX polish.
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|llm-provider-abstraction-for-openai-and-|req-000-sharepoint-knowledge-graph-kicko|deliver-a-provider-agnostic-llm-backend-|ac1-the-provider-agnostic-llm-backend-no
+%% logics-signature: backlog|deepvault-bishop-llm-provider-abstractio|req-000-sharepoint-knowledge-graph-kicko|deliver-a-provider-agnostic-llm-backend-|ac1-the-provider-agnostic-llm-backend-no
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver a provider-agnostic LLM backend so]
-    Problem --> Scope[LLM provider abstraction for OpenAI and]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver DeepVault Bishop LLM backend]
+    Problem --> Scope[DeepVault Bishop LLM provider abstraction for OpenAI and]
     Scope --> Acceptance[AC1: The provider-agnostic LLM backend nor]
     Acceptance --> Tasks[Execution task]
 ```
 
 # Acceptance criteria
 - AC1: The provider-agnostic LLM backend normalizes prompts, responses, and errors for both OpenAI and Gemini.
-- AC2: The local companion app can call the backend without knowing which provider handled the request.
+- AC2: `DeepVault - Bishop` can call the backend without knowing which provider handled the request.
 - AC3: The primary provider is configurable and a secondary provider can be enabled as fallback.
 
 # AC Traceability
@@ -54,9 +54,9 @@ flowchart TD
 - Primary task(s): (none yet)
 
 # AI Context
-- Summary: Provider-agnostic chat backend for OpenAI and Gemini
+- Summary: DeepVault - Bishop provider-agnostic chat backend for OpenAI and Gemini
 - Keywords: llm, provider, abstraction, openai, gemini, fallback, backend
-- Use when: Use when implementing or reviewing the delivery slice for the chat provider abstraction.
+- Use when: Use when implementing or reviewing the delivery slice for `DeepVault - Bishop`.
 - Skip when: Skip when the change is unrelated to this delivery slice or its linked request.
 # Priority
 - Impact: High
