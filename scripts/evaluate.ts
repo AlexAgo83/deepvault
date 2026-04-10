@@ -1,19 +1,25 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import {
   answerQuestion,
   buildEvaluationRows,
-  type Corpus,
 } from '../src/lib/deepvault'
+import { loadCorpus, resolveSnapshotPath } from './corpus-loader'
+
+function readArg(name: string): string | undefined {
+  const index = process.argv.indexOf(name)
+  return index >= 0 ? process.argv[index + 1] : undefined
+}
 
 const today = new Date().toISOString().slice(0, 10)
 const outputDir = resolve('data/eval')
-const outputPath = resolve(outputDir, `v1_baseline_${today}.json`)
-const corpusPath = resolve('data/pilot-corpus.json')
+const mode = readArg('--mode') || process.env.DEEPVAULT_DATA_MODE
+const inputPath = readArg('--input') || process.env.DEEPVAULT_CORPUS_PATH
+const outputPath = resolveSnapshotPath(resolve(outputDir, `v1_baseline_${today}.json`), mode === 'live' ? 'live' : 'mock')
 
 await mkdir(dirname(outputPath), { recursive: true })
 
-const corpus = JSON.parse(await readFile(corpusPath, 'utf8')) as Corpus
+const { corpus } = await loadCorpus({ mode, inputPath })
 
 const rows = buildEvaluationRows()
 const results = rows.map((row) => {

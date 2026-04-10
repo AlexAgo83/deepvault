@@ -12,7 +12,9 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "ingest": "tsx scripts/ingest.ts",
+    "ingest:live": "tsx scripts/ingest.ts --mode live",
     "evaluate": "tsx scripts/evaluate.ts",
+    "evaluate:live": "tsx scripts/evaluate.ts --mode live",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run evaluate"
   },
   "dependencies": {

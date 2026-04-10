@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent, type ReactNode } from 'react'
-import corpus from './data/corpus'
+import { loadCorpus } from './data/corpus'
 import {
   answerQuestion,
   buildExplorerRows,
@@ -13,6 +13,7 @@ import {
   type UserRole,
   type SiteSummary,
 } from './lib/deepvault'
+import { describeCorpusMode, normalizeCorpusMode } from './lib/corpus-mode'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'DeepVault - Navy' },
@@ -88,6 +89,9 @@ function Message({ message }: { message: ChatMessage }) {
 }
 
 export default function App() {
+  const corpusBundle = loadCorpus(normalizeCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE))
+  const corpus = corpusBundle.corpus
+  const corpusMode = corpusBundle.mode
   const [activeTab, setActiveTab] = useState<(typeof NAV_ITEMS)[number]['id']>('explorer')
   const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
   const [provider, setProvider] = useState<ProviderId>(corpus.providers[0].id)
@@ -105,11 +109,11 @@ export default function App() {
     },
   ])
 
-  const siteSummaries = useMemo<SiteSummary[]>(() => buildSiteSummaries(corpus, role), [role])
-  const syncOverview = useMemo(() => buildSyncOverview(corpus, role), [role])
+  const siteSummaries = useMemo<SiteSummary[]>(() => buildSiteSummaries(corpus, role), [corpus, role])
+  const syncOverview = useMemo(() => buildSyncOverview(corpus, role), [corpus, role])
   const explorerRows = useMemo<ExplorerRow[]>(
     () => buildExplorerRows(corpus, search, { role, siteId: siteFilter }) as ExplorerRow[],
-    [role, search, siteFilter],
+    [corpus, role, search, siteFilter],
   )
 
   const selectedDoc =
@@ -245,6 +249,7 @@ export default function App() {
             </p>
           </div>
           <div className="topbar-badges">
+            <Pill tone={corpusMode === 'live' ? 'success' : 'neutral'}>{describeCorpusMode(corpusMode)}</Pill>
             <Pill tone="success">Synced</Pill>
             <Pill tone="neutral">{provider}</Pill>
             <Pill tone="accent">{role}</Pill>
