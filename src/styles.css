@@ -279,6 +279,12 @@ p {
   line-height: 1;
 }
 
+.stat-value-compact {
+  font-size: 1rem;
+  line-height: 1.25;
+  max-width: 11ch;
+}
+
 .stat-note {
   max-height: 0;
   overflow: hidden;
