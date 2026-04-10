@@ -26,7 +26,7 @@ export interface BishopOrchestrationOptions {
 }
 
 export interface BishopOrchestrationResult extends AnswerResult {
-  mode: 'remote' | 'fallback' | 'grounded'
+  mode: 'remote' | 'fallback' | 'grounded-only'
   prompt: string
 }
 
@@ -69,7 +69,7 @@ export async function orchestrateBishopAnswer(
   if (grounding.status !== 'answered') {
     return {
       ...fallback,
-      mode: 'grounded',
+      mode: 'grounded-only',
       prompt,
     }
   }
