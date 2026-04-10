@@ -185,6 +185,7 @@ npm run evaluate:live -- --input public/live-corpus.json
 ```
 
 Those commands validate the generated live JSON as an input artifact.
+Use `--strict` with `npm run evaluate:live` when you want the quality gate to fail the command if the pass rate falls below the configured threshold.
 
 ## Validation
 
