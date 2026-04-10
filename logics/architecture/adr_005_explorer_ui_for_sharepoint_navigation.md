@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Give users a lightweight way to browse sites and content while validating ingestion quality.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
 > Related task: (none yet)
 > Reminder: Keep the explorer small, navigable, and aligned with the current data model.
 
@@ -52,4 +52,3 @@ Expand the explorer only when the underlying content model is reliable.
 - Define explorer routes and API payloads
 - Build tree navigation and preview components
 - Add search and filtering later
-

@@ -1,5 +1,5 @@
 ## item_006_local_companion_app_for_explorer_and_chat - Local companion app for explorer and chat
-> From version: 0.0.0
+> From version: 0.0.2
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 96%
@@ -10,47 +10,45 @@
 > Reminder: Keep this slice focused on the local companion web app and avoid drifting into later Teams integration work.
 
 # Problem
-- Deliver the first local companion web app that combines exploration, chat, and sync status for the SharePoint knowledge project.
-- The current project direction needs a usable local surface before any later channel integrations.
+- Deliver the local companion app shell that hosts the explorer, chat, and sync views for the SharePoint knowledge project.
+- The shell is the shared local runtime container before the feature slices are implemented independently.
 
 # Scope
-- In: one local web app shell with routing, layout, and a shared backend contract.
-- In: explorer navigation for the pilot SharePoint sites.
-- In: a local chat surface backed by the same permission-aware backend used for retrieval.
-- In: a simple sync/status view so users can see whether the knowledge base is current.
-- Out: Teams app packaging, tenant distribution, and other later channel integrations.
+- In: one local web app shell with routing, layout, and a shared runtime contract.
+- In: the placeholder app structure that the explorer, chat, and sync slices plug into.
+- Out: the feature slices themselves, Teams app packaging, tenant distribution, hosted backend migration, and other later integrations.
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|local-companion-app-for-explorer-and-cha|req-000-sharepoint-knowledge-graph-kicko|deliver-the-first-local-companion-web|ac1-the-local-companion-app-exposes
+%% logics-signature: backlog|local-companion-app-for-explorer-and-cha|req-000-sharepoint-knowledge-graph-kicko|deliver-the-local-companion-app-shell|ac1-the-local-companion-app-shell
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver the first local companion web]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Deliver the local companion app]
     Problem --> Scope[Local companion app for explorer and]
-    Scope --> Acceptance[AC1: The local companion app exposes]
+    Scope --> Acceptance[AC1: The local companion app shell]
     Acceptance --> Tasks[Execution task]
 ```
 
 # Acceptance criteria
-- AC1: The local companion app exposes explorer, chat, and sync/status views in one coherent slice.
-- AC2: The app can reuse the shared backend contracts for SharePoint discovery and answer generation.
-- AC3: The app stays local-first and does not require Teams packaging to validate the pilot.
+- AC1: The local companion app shell exposes routing and layout that the feature slices can reuse.
+- AC2: The shell remains local-first and does not require Teams packaging to validate the pilot.
+- AC3: The shell provides a stable container for the explorer, chat, and sync slices.
 
 # AC Traceability
-- AC1 -> Scope: Deliver the first local companion web app that combines exploration, chat, and sync status for the SharePoint knowledge project. Proof: capture validation evidence in this doc.
-- AC2 -> Scope: In: one local web app shell with routing, layout, and a shared backend contract. Proof: capture validation evidence in this doc.
-- AC3 -> Scope: Out: Teams app packaging, tenant distribution, and other later channel integrations. Proof: capture validation evidence in this doc.
+- AC1 -> Scope: In: one local web app shell with routing, layout, and a shared runtime contract. Proof: capture validation evidence in this doc.
+- AC2 -> Scope: Out: the feature slices themselves, Teams app packaging, tenant distribution, hosted backend migration, and other later integrations. Proof: capture validation evidence in this doc.
+- AC3 -> Scope: In: the placeholder app structure that the explorer, chat, and sync slices plug into. Proof: capture validation evidence in this doc.
 
 # Decision framing
 - Product framing: Required
-- Product signals: local site as primary V1 surface, explorer and chat together, sync visibility
-- Product follow-up: Keep the product brief aligned with the local-first companion app direction.
+- Product signals: local shell, shared layout, local runtime boundary
+- Product follow-up: Keep the product brief aligned with the local shell direction.
 - Architecture framing: Required
-- Architecture signals: browser auth, shared backend, channel-agnostic contracts
-- Architecture follow-up: Keep the local companion app architecture ADR current as the UI evolves.
+- Architecture signals: browser auth, shared shell contract, local runtime boundary
+- Architecture follow-up: Keep the local runtime ADR current as the shell evolves.
 
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
-- Architecture decision(s): `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
+- Architecture decision(s): `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
 - Request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 - Primary task(s): (none yet)
 

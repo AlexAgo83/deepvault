@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Keep the pilot easy to change, protect secrets, and leave room for future scale and governance.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: (none yet)
 > Reminder: Revisit this decision when the pilot site list moves from a developer-managed setup to a user-managed setup.
 
@@ -53,4 +53,3 @@ Keep the current secret model compatible with that future migration.
 - Define a canonical env schema
 - Add config validation on startup
 - Plan a future admin/config UI if site management becomes user-facing
-

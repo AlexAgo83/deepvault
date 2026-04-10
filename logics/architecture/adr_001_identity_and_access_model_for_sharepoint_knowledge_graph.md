@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Separate autonomous ingestion from user-aware chat access, preserve auditability, and keep future Teams integration governed.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
 > Reminder: Keep the chat identity, ingestion identity, and permission checks aligned when the runtime model changes.
 
@@ -49,9 +49,7 @@ Introduce Teams bot authentication after the core access checks are in place.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-
 # Follow-up work
 - Build a permission-check service for chat access
 - Define token refresh and secret storage rules
 - Add Teams bot auth and identity mapping
-

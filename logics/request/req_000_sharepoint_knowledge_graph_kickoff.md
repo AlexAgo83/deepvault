@@ -1,5 +1,5 @@
 ## req_000_sharepoint_knowledge_graph_kickoff - SharePoint knowledge graph kickoff
-> From version: 0.0.0
+> From version: 0.0.2
 > Schema version: 1.0
 > Status: Draft
 > Understanding: 99%
@@ -18,6 +18,7 @@
 - Define how the system should sync, refresh, and filter content as SharePoint changes.
 - Allow the pilot site list to be updated through environment configuration.
 - Record observability and audit signals for ingestion runs, retrieval decisions, and chat answers.
+- Define the local runtime and hosted runtime so the chatbot surface can evolve without rewriting the product.
 
 # Context
 This project starts from a working Microsoft Graph connection against the tenant and a verified SharePoint site structure.
@@ -36,14 +37,16 @@ Product direction:
 - A future LLM agent should be able to answer questions using the collected data.
 
 Validated product choices:
+- The local phase should stay local-only, with the explorer and chatbot running in a small local site or companion app.
+- The hosted phase should move the backend to a hosted service and add a Teams chatbot channel.
 - Ingestion should run autonomously, while LLM chat access must verify the current user's rights before answering.
 - The first navigation experience should be a local companion app with explorer, chat, and sync/status views.
 - The knowledge base should be hybrid, combining source objects with chunked text for retrieval.
 - Retrieval should filter by user permissions before context reaches the LLM.
-- The chat experience should be delivered through the local companion app first, with Teams kept as a later integration option.
+- The chat experience should be delivered through the local companion app first, with Teams becoming the primary channel once the backend is hosted.
 - The local app should authenticate through Entra, verify the current user's rights, call the LLM, and return the answer inside the app.
 - The chat backend should be provider-agnostic and able to route through OpenAI API or Gemini API.
-- The configurable pilot site list should stay in environment configuration for V1.
+- The configurable pilot site list should stay in environment configuration for the hosted runtime.
 
 Pilot scope:
 - Start with two sites: `Circle SAS` and `https://circlesas.sharepoint.com/sites/CSAS-OP-Prod`.
@@ -54,7 +57,7 @@ Pilot scope:
 Default indexing strategy:
 - Priority order: documents, lists, pages, metadata, then versions if supported later.
 - Index title, path, author, dates, type, tags, and full text where available.
-- Keep the latest version as the default V1 source of truth.
+- Keep the latest version as the default source of truth.
 - Preserve links back to the original SharePoint source for traceability and navigation.
 - Prefer incremental refreshes over full reindexing whenever the source system can provide stable change markers.
 
@@ -64,11 +67,13 @@ Security direction:
 - Keep the design open for future group-based and finer-grained permission checks.
 - Prefer a governed local app identity over a faux profile, and keep any later Teams integration governed as well.
 - Enforce authorization again at retrieval time so the LLM only receives permitted context.
+- Keep the local chatbot self-contained, then reuse the same retrieval and permission model when the backend is hosted.
 
 Operational direction:
 - Track crawl progress, refresh status, and answer provenance in a way that is easy to inspect from the local companion app.
 - Log the source objects, retrieval filters, and provider choice used for each answer.
-- Keep the observability surface simple enough for V1, but explicit enough to support debugging and audit later.
+- Keep the observability surface simple enough for the hosted runtime, but explicit enough to support debugging and audit later.
+- Define which operational signals remain local and which are promoted to backend services.
 
 Open framing questions:
 - What sync cadence should be the default for planned refreshes?
@@ -76,8 +81,10 @@ Open framing questions:
 - Which local companion app views should ship first: explorer, chat, or sync status?
 - Which user-visible metric should define "usefulness" first: coverage, freshness, browse speed, or answer quality?
 - What additional SharePoint sites should enter scope after the pilot?
-- Should OpenAI be the default provider in V1, with Gemini as a fallback or secondary option?
+- Should OpenAI be the default provider, with Gemini as a fallback or secondary option?
 - Which observability signals should be surfaced in the local companion app versus kept in backend logs only?
+- Which parts of the runtime should remain local-only versus moving behind the hosted backend?
+- Which responsibilities stay inside the local runtime versus moving into the hosted backend?
 
 ```mermaid
 %% logics-kind: request
@@ -103,6 +110,7 @@ flowchart TD
 - AC12: The request explicitly defines the layered path from Graph ingestion to normalization, storage, retrieval, and answer generation.
 - AC13: The request explicitly calls out permission-aware retrieval so unauthorized content never reaches the LLM context.
 - AC14: The request explicitly captures observability and audit needs for ingestion runs, retrieval decisions, and chat answers.
+- AC15: The request explicitly distinguishes a local runtime from a hosted backend plus Teams channel.
 
 # Definition of Ready (DoR)
 - [ ] Problem statement is explicit and user impact is clear.
@@ -113,7 +121,7 @@ flowchart TD
 # Companion docs
 - Product brief(s): `prod_000_sharepoint_knowledge_graph_product_vision`
   - `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
-- Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`, `adr_007_local_companion_app_architecture_for_explorer_and_chat`, `adr_008_llm_provider_abstraction_for_openai_and_gemini`, `adr_009_permission_aware_retrieval_and_source_filtering`, `adr_010_sharepoint_sync_orchestration_and_refresh_policy`, `adr_011_observability_audit_and_answer_traceability`
+- Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`, `adr_007_local_companion_app_architecture_for_explorer_and_chat`, `adr_008_llm_provider_abstraction_for_openai_and_gemini`, `adr_009_permission_aware_retrieval_and_source_filtering`, `adr_010_sharepoint_sync_orchestration_and_refresh_policy`, `adr_011_observability_audit_and_answer_traceability`, `adr_012_local_companion_runtime_for_explorer_and_chat`, `adr_013_hosted_backend_and_teams_chat_channel`
   - `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`
   - `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`
   - `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`
@@ -125,6 +133,8 @@ flowchart TD
   - `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`
   - `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`
   - `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
+  - `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
+  - `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
 # AI Context
 - Summary: Kickoff request for a SharePoint knowledge graph and retrieval tool built on Microsoft Graph.
 - Keywords: microsoft graph, sharepoint, knowledge graph, ingestion, retrieval, llm
@@ -139,3 +149,8 @@ flowchart TD
 - `item_005_runtime_config_and_operations`
 - `item_006_local_companion_app_for_explorer_and_chat`
 - `item_007_llm_provider_abstraction_for_openai_and_gemini`
+- `item_008_local_explorer_shell_and_navigation`
+- `item_009_local_chat_surface_and_answer_flow`
+- `item_010_local_sync_status_and_operational_view`
+- `item_011_hosted_backend_core`
+- `item_012_teams_bot_channel_and_permissions`

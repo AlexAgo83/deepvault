@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
 > Related task: (none yet)
-> Reminder: Keep the local app, future Teams option, and shared backend aligned when the product surface changes.
+> Reminder: Keep the local app, future Teams option, and shared backend aligned when the product surface changes, using version-neutral wording.
 
 # Overview
 The first user-facing surface should be a local companion web app.
@@ -28,7 +28,7 @@ The product needs a fast feedback loop for the explorer and the chat experience 
 The local web app can still authenticate through Entra and enforce the same permissions model as the eventual bot or channel integration.
 
 # Decision
-Use a local companion web app as the primary V1 surface.
+Use a local companion web app as the primary user-facing surface.
 Keep the explorer, chat, and status views in the same app so the user can move between navigation and questioning without context switching.
 Keep Teams as a later channel that reuses the same backend, auth, and data contracts.
 
@@ -38,7 +38,7 @@ Keep Teams as a later channel that reuses the same backend, auth, and data contr
 - Separate explorer and chat applications
 
 # Consequences
-- Faster iteration and lower integration friction in V1
+- Faster iteration and lower integration friction
 - Shared backend can support both the local app and later Teams integration
 - The product still needs a clear auth boundary so user rights are enforced in the browser app too
 

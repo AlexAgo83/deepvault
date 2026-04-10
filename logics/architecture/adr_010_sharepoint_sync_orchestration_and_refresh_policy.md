@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
 > Related task: (none yet)
-> Reminder: Prefer incremental refreshes and stable change markers over repeated full crawls.
+> Reminder: Prefer incremental refreshes and stable change markers over repeated full crawls, using version-neutral wording.
 
 # Overview
 The SharePoint sync pipeline should be incremental by default.
@@ -53,5 +53,5 @@ After the pilot, tune cadence and scope before adding broader tenant coverage.
 
 # Follow-up work
 - Define the per-source sync state model
-- Decide the default scheduled cadence for V1
+- Decide the default scheduled cadence for the hosted runtime
 - Add retry and backoff rules for Graph errors

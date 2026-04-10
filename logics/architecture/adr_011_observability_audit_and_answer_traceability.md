@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
 > Related task: (none yet)
-> Reminder: Keep observability useful but lightweight for V1.
+> Reminder: Keep observability useful but lightweight.
 
 # Overview
 The platform should emit enough operational signal to explain what was ingested, what was refreshed, what was filtered, and how each answer was assembled.

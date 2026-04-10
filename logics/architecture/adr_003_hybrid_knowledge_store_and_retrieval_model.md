@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Support document, list, page, and metadata indexing while keeping source traceability for future LLM answers.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_011_hosted_backend_core.md`
 > Related task: (none yet)
 > Reminder: Keep the storage model able to back citations, search, and future semantic retrieval.
 
@@ -28,7 +28,7 @@ A pure document store or pure vector store would make traceability and structure
 # Decision
 Use a hybrid model with three layers:
 source records for the original SharePoint objects, normalized metadata for filtering and navigation, and chunked text for retrieval.
-Keep the latest version as the V1 default source of truth.
+Keep the latest version as the default source of truth.
 Expose source links so each answer can be traced back to SharePoint.
 
 # Alternatives considered
@@ -53,4 +53,3 @@ Backfill the hybrid store from the first pilot crawl.
 - Define storage schema for source objects and chunks
 - Add ranking and citation fields
 - Decide whether embeddings are stored now or later
-

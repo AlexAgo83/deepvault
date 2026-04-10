@@ -1,5 +1,5 @@
 ## item_004_teams_bot_chat_and_permissions - Teams bot chat and permissions
-> From version: 0.0.0
+> From version: 0.0.2
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 99%
@@ -10,24 +10,21 @@
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
 
 # Problem
-- Connect to Microsoft Graph and discover the initial SharePoint sites, libraries, and lists.
-- Navigate SharePoint content and extract useful metadata and documents from selected spaces.
-- Build a durable knowledge store from collected SharePoint content.
-- Prepare the data layer so an LLM agent can answer questions from the indexed knowledge base.
-- Define how the system should sync, refresh, and filter content as SharePoint changes.
-- Allow the pilot site list to be updated through environment configuration.
-- This project starts from a working Microsoft Graph connection against the tenant and a verified SharePoint site structure.
-- Validated context so far:
+- Define the Teams channel governance and permission model after the backend is hosted.
+- Keep the enterprise chat surface governed through Microsoft identity and the shared retrieval model.
+- Separate the policy and channel rules from the concrete bot packaging work.
 
 # Scope
-- In: one coherent delivery slice from the source request.
-- Out: unrelated sibling slices that should stay in separate backlog items instead of widening this doc.
+- In: channel policy, identity mapping, and permission rules for the Teams chatbot.
+- In: the hosted backend integration contract that Teams must respect.
+- In: the requirements that keep Teams aligned with the permission-aware retrieval model.
+- Out: Teams bot packaging, tenant distribution, and local runtime work.
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|teams-bot-chat-and-permissions|req-000-sharepoint-knowledge-graph-kicko|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
+%% logics-signature: backlog|teams-bot-chat-and-permissions|req-000-sharepoint-knowledge-graph-kicko|define-the-teams-channel-governance-and|ac1-the-request-clearly-defines-the
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Connect to Microsoft Graph and discover]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define the Teams channel governance]
     Problem --> Scope[Teams bot chat and permissions]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
@@ -59,23 +56,24 @@ flowchart TD
 
 # Decision framing
 - Product framing: Required
-- Product signals: navigation and discoverability, experience scope
-- Product follow-up: Create or link a product brief before implementation moves deeper into delivery.
+- Product signals: enterprise channel, governed chatbot, user permissions
+- Product follow-up: Keep the product brief aligned with the hosted backend and Teams channel direction.
 - Architecture framing: Required
-- Architecture signals: data model and persistence, state and sync, security and identity
-- Architecture follow-up: Create or link an architecture decision before irreversible implementation work starts.
+- Architecture signals: bot auth, hosted backend contract, permission-aware retrieval
+- Architecture follow-up: Keep the hosted backend and Teams ADR current as the channel matures.
 
 # Links
 - Product brief(s): `prod_000_sharepoint_knowledge_graph_product_vision`
-- Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`, `adr_009_permission_aware_retrieval_and_source_filtering`
+- Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`, `adr_009_permission_aware_retrieval_and_source_filtering`, `adr_013_hosted_backend_and_teams_chat_channel`
+- Related backlog: `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 - Request: `req_000_sharepoint_knowledge_graph_kickoff`
 - Primary task(s): `task_XXX_example`
 
 # AI Context
-- Summary: Kickoff request for a SharePoint knowledge graph and retrieval tool built on Microsoft Graph.
-- Keywords: microsoft graph, sharepoint, knowledge graph, ingestion, retrieval, llm
-- Use when: Use when framing the first delivery slice for SharePoint discovery, indexing, and question answering.
-- Skip when: Skip when the work is about unrelated app features or a later delivery stage.
+- Summary: Teams channel governance and permission model for the chatbot.
+- Keywords: teams, permissions, identity, governance, chatbot, hosted backend
+- Use when: Use when defining the Teams policy and channel rules.
+- Skip when: Skip when the work is about packaging or implementation details.
 # References
 - `logics/skills/logics-ui-steering/SKILL.md`
 

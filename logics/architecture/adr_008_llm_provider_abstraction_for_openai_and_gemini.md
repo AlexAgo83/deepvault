@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
 > Related task: (none yet)
-> Reminder: Keep the provider contract stable so the local app can switch models without changing product behavior.
+> Reminder: Keep the provider contract stable so the local app can switch models without changing product behavior, using version-neutral wording.
 
 # Overview
 The chat layer should call a provider abstraction instead of hard-coding a single LLM vendor.
@@ -42,7 +42,7 @@ Allow the backend to switch providers or fail over without changing the local ap
 - Easier product experimentation because model choice can change without UI changes
 
 # Migration and rollout
-Start with one primary provider in V1 and keep the second provider available as a fallback or test route.
+Start with one primary provider and keep the second provider available as a fallback or test route.
 Expose provider choice through environment configuration.
 Log provider usage so quality and cost can be evaluated later.
 

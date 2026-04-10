@@ -2,18 +2,18 @@
 > Date: 2026-04-10
 > Status: Proposed
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`, `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
-> Related architecture: `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
+> Related architecture: `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
 
 # Overview
 The product helps teams turn SharePoint into a usable knowledge base.
 It should ingest selected SharePoint sites, keep the content searchable, and make it easy to browse or ask questions from that knowledge.
 The backend should behave like a knowledge platform with separate ingestion, storage, retrieval, and answer-generation layers.
-The user experience should start with a local companion app that combines a small explorer for navigation with a chat surface and sync status.
+The product should support both a local development surface and a hosted production surface, each with a clear role.
 The first value is reliable discovery and retrieval from real company content, not a generic chat demo.
-Teams can still become a later channel, but the product should not depend on it for the first release.
+Teams can be the final delivery channel once the backend is hosted, but the product should not depend on it for the local development path.
 The chat experience should be able to switch between OpenAI and Gemini behind a single product contract.
 Permission checks and answer provenance should remain visible so users can trust where responses come from.
 
@@ -43,17 +43,17 @@ Users need a way to find content, understand what is available, and later ask na
 # Non-goals
 - Replacing SharePoint as the source of truth.
 - Building a full admin or content-management platform.
-- Supporting write-back or editing of SharePoint content in V1.
+- Supporting write-back or editing of SharePoint content.
 - Solving every permission model edge case on day one.
 
 # Scope and guardrails
-- In: A pilot experience for a small set of SharePoint sites, with search, browse, local chat, and future Teams readiness.
-- In: Content ingestion, content indexing, and source-linked retrieval.
-- In: A retrieval layer that filters by user rights before context is assembled for the LLM.
-- In: Ingestion, sync, and audit signals that make refresh state and answer provenance inspectable.
-- In: A governed local companion app path for chat when the product reaches that stage.
-- In: A provider-agnostic chat experience that can use OpenAI or Gemini through the same backend contract.
-- Out: A fake human profile, generic chat without permissions, or a broad tenant-wide rollout at V1.
+- In: a local development and test surface with search, browse, chat, and sync visibility.
+- In: a hosted production surface with governed channels and centrally managed retrieval.
+- In: content ingestion, content indexing, and source-linked retrieval.
+- In: a retrieval layer that filters by user rights before context is assembled for the LLM.
+- In: ingestion, sync, and audit signals that make refresh state and answer provenance inspectable.
+- In: a provider-agnostic chat experience that can use OpenAI or Gemini through the same backend contract.
+- Out: a fake human profile, generic chat without permissions, or a broad tenant-wide rollout.
 
 # Key product decisions
 - The product is a knowledge access layer, not a replacement for SharePoint.
@@ -61,9 +61,12 @@ Users need a way to find content, understand what is available, and later ask na
 - The experience should support both navigation and question answering, but the backend must stay permission-aware.
 - The LLM provider should remain swappable so quality, cost, and availability can be tuned without changing the product surface.
 - The retrieval layer should apply user permissions before content is passed into the LLM prompt.
+- The product is split into two strategy briefs: one local-first for development and tests, and one hosted for production with Teams at the end.
+- The local development surface should prove the product value before any hosted backend or Teams channel is introduced.
+- The hosted production surface should preserve the same retrieval and permission model while moving the runtime behind a hosted backend.
 - The initial pilot should remain configurable so the scope can expand without code changes.
-- The pilot configuration should stay environment-driven in V1 rather than moving straight to a full admin UI.
-- The first release should ship the local companion app as a core validation surface, even if the Teams channel is added later.
+- The configuration model should stay environment-driven rather than moving straight to a full admin UI.
+- The local companion app should be the validation surface, and the hosted backend plus Teams channel should be the operational surface.
 - The product should expose enough observability to explain what was ingested, when it was refreshed, and which sources fed an answer.
 
 # Success signals
@@ -74,23 +77,38 @@ Users need a way to find content, understand what is available, and later ask na
 - The first pilot users can tell whether the system is useful by coverage, freshness, browse speed, or answer quality.
 - The chat backend can route through OpenAI or Gemini without changing the user-facing app.
 - The platform can explain sync state, retrieval filters, and answer provenance without leaving the local companion app.
+- The hosted backend can be reused by the local app and by Teams without reworking the product contract.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
+- `logics/product/prod_001_local_first_development_and_test_strategy.md`
+- `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
+- `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`
+- `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
+- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
+- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
+- `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
+- `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`
+- `logics/backlog/item_010_local_sync_status_and_operational_view.md`
+- `logics/backlog/item_011_hosted_backend_core.md`
+- `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 - `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`
 - `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`
 - `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`
 - `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`
 - `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`
 - `logics/architecture/adr_006_runtime_configuration_and_operations.md`
+- `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`
+- `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`
 - `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`
 - `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`
 - `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
-
+- `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
+- `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
 # Open questions
 - Which metric should be the primary success signal in the pilot: coverage, freshness, browse speed, or answer quality?
 - Which additional SharePoint sites should enter scope after the pilot?
 - What should be the default cadence for scheduled refreshes?
 - Which local companion app views should ship first: explorer, chat, or sync status?
-- Which LLM provider should be the default in V1: OpenAI, Gemini, or configurable fallback routing?
+- Which LLM provider should be the default: OpenAI, Gemini, or configurable fallback routing?
 - Which observability signals should be visible to end users versus kept in backend logs?

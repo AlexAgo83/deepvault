@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Deliver the chatbot through Teams, keep identity governed, and verify user access before invoking the LLM.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
 > Reminder: Keep the bot identity, Teams payload handling, and rights checks aligned.
 
@@ -43,7 +43,7 @@ Before each answer, verify that the current user is allowed to access the reques
 # Migration and rollout
 Start with a small internal Teams channel or test tenant.
 Validate authentication, access checks, and answer formatting before wider rollout.
-Keep a web chat option open for later, but do not require it for V1.
+Keep a web chat option open for later, but do not require it yet.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
@@ -52,4 +52,3 @@ Keep a web chat option open for later, but do not require it for V1.
 - Register the Teams app and bot
 - Define message schema and response templates
 - Add moderation, logging, and rate limiting
-

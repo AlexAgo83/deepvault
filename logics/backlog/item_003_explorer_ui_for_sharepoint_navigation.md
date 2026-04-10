@@ -1,5 +1,5 @@
 ## item_003_explorer_ui_for_sharepoint_navigation - Explorer UI for SharePoint navigation
-> From version: 0.0.0
+> From version: 0.0.1
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 99%
@@ -10,52 +10,34 @@
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
 
 # Problem
-- Connect to Microsoft Graph and discover the initial SharePoint sites, libraries, and lists.
-- Navigate SharePoint content and extract useful metadata and documents from selected spaces.
-- Build a durable knowledge store from collected SharePoint content.
-- Prepare the data layer so an LLM agent can answer questions from the indexed knowledge base.
-- Define how the system should sync, refresh, and filter content as SharePoint changes.
-- Allow the pilot site list to be updated through environment configuration.
-- This project starts from a working Microsoft Graph connection against the tenant and a verified SharePoint site structure.
-- Validated context so far:
+- Define the SharePoint explorer navigation model for sites, libraries, folders, lists, and documents.
+- Keep navigation behavior consistent between the local shell and future hosted surfaces.
+- Clarify the metadata, routing, and detail-context patterns the explorer should expose.
 
 # Scope
-- In: one coherent delivery slice from the source request.
-- Out: unrelated sibling slices that should stay in separate backlog items instead of widening this doc.
+- In: the reusable explorer navigation contract, hierarchy, breadcrumbs, detail panes, and source-link behavior.
+- In: the rules that make the explorer readable across local and future hosted shells.
+- Out: the local shell implementation, chat, sync, hosted backend work, and Teams integration.
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|explorer-ui-for-sharepoint-navigation|req-000-sharepoint-knowledge-graph-kicko|connect-to-microsoft-graph-and-discover|ac1-the-request-clearly-defines-the
+%% logics-signature: backlog|explorer-ui-for-sharepoint-navigation|req-000-sharepoint-knowledge-graph-kicko|define-the-sharepoint-explorer-navigatio|ac1-the-explorer-navigation-model-clearl
 flowchart TD
-    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Connect to Microsoft Graph and discover]
+    Request[req_000_sharepoint_knowledge_graph_kickoff] --> Problem[Define the explorer navigation model]
     Problem --> Scope[Explorer UI for SharePoint navigation]
     Scope --> Acceptance[AC1: The request clearly defines the]
     Acceptance --> Tasks[Execution task]
 ```
 
 # Acceptance criteria
-- AC1: The request clearly defines the SharePoint ingestion and knowledge-base kickoff goal.
-- AC2: The request identifies the initial Microsoft Graph surfaces needed for site discovery and content listing.
-- AC3: The request states the intended end state of an LLM-ready knowledge store.
-- AC4: The request captures the main open scope decisions needed before backlog grooming.
-- AC5: The pilot site list is explicitly configurable so new SharePoint sites can be added without code changes.
-- AC6: The request records the intended priority order across documents, lists, pages, and metadata.
-- AC7: The request acknowledges the future Microsoft account-based user rights model.
-- AC8: The request defines the first explorer UI as a required part of the product direction.
-- AC9: The request captures the hybrid ingestion and chunked retrieval model for the knowledge base.
-- AC10: The request explicitly allows a Teams bot-based chatbot path with Entra-backed identity and permission checks.
+- AC1: The explorer navigation model clearly covers sites, libraries, folders, lists, and documents.
+- AC2: The explorer defines enough hierarchy and detail context to validate pilot content.
+- AC3: The navigation contract is reusable across the local shell and later hosted surfaces.
 
 # AC Traceability
-- AC1 -> Scope: The request clearly defines the SharePoint ingestion and knowledge-base kickoff goal.. Proof: capture validation evidence in this doc.
-- AC2 -> Scope: The request identifies the initial Microsoft Graph surfaces needed for site discovery and content listing.. Proof: capture validation evidence in this doc.
-- AC3 -> Scope: The request states the intended end state of an LLM-ready knowledge store.. Proof: capture validation evidence in this doc.
-- AC4 -> Scope: The request captures the main open scope decisions needed before backlog grooming.. Proof: capture validation evidence in this doc.
-- AC5 -> Scope: The pilot site list is explicitly configurable so new SharePoint sites can be added without code changes.. Proof: capture validation evidence in this doc.
-- AC6 -> Scope: The request records the intended priority order across documents, lists, pages, and metadata.. Proof: capture validation evidence in this doc.
-- AC7 -> Scope: The request acknowledges the future Microsoft account-based user rights model.. Proof: capture validation evidence in this doc.
-- AC8 -> Scope: The request defines the first explorer UI as a required part of the product direction.. Proof: capture validation evidence in this doc.
-- AC9 -> Scope: The request captures the hybrid ingestion and chunked retrieval model for the knowledge base.. Proof: capture validation evidence in this doc.
-- AC10 -> Scope: The request explicitly allows a Teams bot-based chatbot path with Entra-backed identity and permission checks.. Proof: capture validation evidence in this doc.
+- AC1 -> Scope: The reusable explorer navigation contract, hierarchy, breadcrumbs, detail panes, and source-link behavior.. Proof: capture validation evidence in this doc.
+- AC2 -> Scope: The rules that make the explorer readable across local and future hosted shells.. Proof: capture validation evidence in this doc.
+- AC3 -> Scope: The local shell implementation, chat, sync, hosted backend work, and Teams integration are out of scope here.. Proof: capture validation evidence in this doc.
 
 # Decision framing
 - Product framing: Required
@@ -69,13 +51,14 @@ flowchart TD
 - Product brief(s): `prod_000_sharepoint_knowledge_graph_product_vision`
 - Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`
 - Request: `req_000_sharepoint_knowledge_graph_kickoff`
+- Related backlog: `item_008_local_explorer_shell_and_navigation`
 - Primary task(s): `task_XXX_example`
 
 # AI Context
-- Summary: Kickoff request for a SharePoint knowledge graph and retrieval tool built on Microsoft Graph.
-- Keywords: microsoft graph, sharepoint, knowledge graph, ingestion, retrieval, llm
-- Use when: Use when framing the first delivery slice for SharePoint discovery, indexing, and question answering.
-- Skip when: Skip when the work is about unrelated app features or a later delivery stage.
+- Summary: Explorer navigation model for SharePoint sites, libraries, folders, lists, and documents.
+- Keywords: explorer, navigation, sharepoint, hierarchy, detail context
+- Use when: Use when defining the reusable explorer contract across local and hosted surfaces.
+- Skip when: Skip when the work is about local shell implementation, chat, or sync.
 # References
 - `logics/skills/logics-ui-steering/SKILL.md`
 
