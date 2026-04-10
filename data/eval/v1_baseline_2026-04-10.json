@@ -1,9 +1,14 @@
 {
-  "generatedAt": "2026-04-10T14:50:41.859Z",
+  "generatedAt": "2026-04-10T20:46:00.298Z",
   "provider": "openai",
   "passCount": 20,
   "totalCount": 20,
   "passRate": 1,
+  "qualityGate": {
+    "strict": false,
+    "minPassRate": 1,
+    "passed": true
+  },
   "results": [
     {
       "query_id": "Q01",
