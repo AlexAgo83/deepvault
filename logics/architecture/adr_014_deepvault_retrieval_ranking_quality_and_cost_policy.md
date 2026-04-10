@@ -27,14 +27,37 @@ Without an explicit ranking policy, the system can become expensive, inconsisten
 We need the retrieval layer to stay trustworthy while still being tunable as quality feedback arrives.
 
 # Decision
-Filter by permission first, then rank by a small set of signal groups:
-- structural source type and document shape
-- freshness and change recency
-- semantic relevance to the query
-- traceability and source quality hints
+Filter by permission first, then rank by a weighted combination of four signal groups. Keep context assembly bounded by an explicit token budget. Treat all weights and budgets as policy defaults — tunable after baseline is established, not before.
 
-Keep context assembly bounded and configurable so the answer flow can remain predictable in both local and hosted modes.
-Treat ranking thresholds and token budgets as policy, not as ad hoc code paths.
+# Ranking weights (V1 defaults)
+
+| Signal group | Weight | Description |
+|---|---|---|
+| Semantic relevance | 40% | Cosine similarity between the query embedding and the chunk embedding |
+| Structural source type | 30% | Documents > pages > list items > metadata-only entries. Structured documents from libraries score higher than loose list content. |
+| Freshness | 20% | Last-modified recency. Content modified in the last 7 days scores full freshness. 7–30 days: 0.75. 30–90 days: 0.5. Older than 90 days: 0.25. |
+| Traceability | 10% | Sources with a known author, library path, and content type score higher than sources with incomplete metadata. |
+
+Tie-break: when two chunks have the same composite score, prefer the one with the more recent `last_modified` timestamp.
+
+Permission gate always runs before scoring. Chunks from sources the user cannot access are removed from the candidate set entirely before weights are applied.
+
+# Context assembly budget (V1 defaults)
+
+| Parameter | Default value | Purpose |
+|---|---|---|
+| Max chunks in context | 20 | Bounds the number of source passages assembled into the LLM prompt |
+| Max tokens per chunk | 512 | Each chunk extracted from a document is limited to 512 tokens |
+| Chunk overlap | 64 tokens | Adjacent chunks share 64 tokens to preserve sentence continuity |
+| Total context budget | 8,000 tokens | Hard ceiling for the full assembled context passed to the LLM. The prompt template and answer space are outside this budget. |
+| Min chunk score threshold | 0.35 | Chunks with a composite score below 0.35 are excluded even if fewer than 20 chunks are assembled |
+
+If context assembly reaches the token budget before 20 chunks, the lowest-scoring chunks are dropped first.
+
+# Cost guardrails
+- The context budget (8,000 tokens) is enforced before calling the LLM, not after.
+- The backend must log the token count of each assembled context so cost can be tracked per run.
+- Queries that consistently hit the ceiling should be investigated — they may indicate retrieval is returning too many low-relevance chunks.
 
 # Alternatives considered
 - Freshness-only ranking
@@ -45,10 +68,11 @@ Treat ranking thresholds and token budgets as policy, not as ad hoc code paths.
 - Answers should become easier to explain and compare.
 - The team gets a repeatable way to tune retrieval behavior.
 - Some queries may require explicit threshold tuning as new content types are added.
+- Explicit weights make ranking auditable and comparable across pilot iterations.
 
 # Migration and rollout
-- Start with the pilot sites and measure quality against a small evaluation set.
-- Tune ranking weights only after the baseline is stable.
+- Start with the pilot sites and measure quality against the evaluation set defined in `task_008`.
+- Tune ranking weights only after the baseline is stable and at least 20 queries have been evaluated.
 - Keep the policy configurable so the local and hosted runtimes can share the same logic.
 
 # References
@@ -57,6 +81,8 @@ Treat ranking thresholds and token budgets as policy, not as ad hoc code paths.
 - `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
 - `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`
 - `logics/specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md`
+- `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
+- `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
 - `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
 - `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
 - `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
@@ -66,6 +92,6 @@ Treat ranking thresholds and token budgets as policy, not as ad hoc code paths.
 - `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
 
 # Follow-up work
-- Define a small retrieval evaluation set for the pilot.
-- Capture the ranking weights and token budget policy in configuration.
+- Run the evaluation set from `task_008` against V1 defaults and record scores.
+- Capture weight and budget overrides in a config block so they can change without code.
 - Revisit the policy when a new content type or site shape becomes common.

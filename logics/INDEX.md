@@ -11,14 +11,15 @@
 | [adr_005_explorer_ui_for_sharepoint_navigation](architecture/adr_005_explorer_ui_for_sharepoint_navigation.md) | Explorer UI for SharePoint navigation | Proposed |  | architecture/adr_005_explorer_ui_for_sharepoint_navigation.md |
 | [adr_006_runtime_configuration_and_operations](architecture/adr_006_runtime_configuration_and_operations.md) | Runtime configuration and operations | Proposed |  | architecture/adr_006_runtime_configuration_and_operations.md |
 | [adr_007_local_companion_app_architecture_for_explorer_and_chat](architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md) | DeepVault - Navy architecture for explorer and chat | Proposed |  | architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md |
-| [adr_008_llm_provider_abstraction_for_openai_and_gemini](architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md) | LLM provider abstraction for OpenAI and Gemini | Proposed |  | architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md |
-| [adr_009_permission_aware_retrieval_and_source_filtering](architecture/adr_009_permission_aware_retrieval_and_source_filtering.md) | Permission-aware retrieval and source filtering | Proposed |  | architecture/adr_009_permission_aware_retrieval_and_source_filtering.md |
-| [adr_010_sharepoint_sync_orchestration_and_refresh_policy](architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md) | SharePoint sync orchestration and refresh policy | Proposed |  | architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md |
+| [adr_008_llm_provider_abstraction_for_openai_and_gemini](architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md) | LLM provider abstraction for OpenAI and Gemini — fallback policy aligned | Proposed |  | architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md |
+| [adr_009_permission_aware_retrieval_and_source_filtering](architecture/adr_009_permission_aware_retrieval_and_source_filtering.md) | Permission-aware retrieval and source filtering — scope mapping and cache TTLs added | Proposed |  | architecture/adr_009_permission_aware_retrieval_and_source_filtering.md |
+| [adr_010_sharepoint_sync_orchestration_and_refresh_policy](architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md) | SharePoint sync orchestration and refresh policy — daily default fixed, retry policy added | Proposed |  | architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md |
 | [adr_011_observability_audit_and_answer_traceability](architecture/adr_011_observability_audit_and_answer_traceability.md) | Observability, audit, and answer traceability | Proposed |  | architecture/adr_011_observability_audit_and_answer_traceability.md |
 | [adr_012_local_companion_runtime_for_explorer_and_chat](architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md) | DeepVault - Navy runtime for explorer and chat | Proposed |  | architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md |
 | [adr_013_hosted_backend_and_teams_chat_channel](architecture/adr_013_hosted_backend_and_teams_chat_channel.md) | Hosted backend and Teams chat channel | Proposed |  | architecture/adr_013_hosted_backend_and_teams_chat_channel.md |
-| [adr_014_deepvault_retrieval_ranking_quality_and_cost_policy](architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md) | DeepVault retrieval ranking quality and cost policy | Proposed |  | architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md |
+| [adr_014_deepvault_retrieval_ranking_quality_and_cost_policy](architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md) | DeepVault retrieval ranking quality and cost policy — weights and token budget added | Proposed |  | architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md |
 | [adr_015_deepvault_security_audit_logging_and_retention_boundaries](architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md) | DeepVault security audit logging and retention boundaries | Proposed |  | architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md |
+| [adr_016_deepvault_persistence_and_storage_layout](architecture/adr_016_deepvault_persistence_and_storage_layout.md) | DeepVault persistence and storage layout | Proposed |  | architecture/adr_016_deepvault_persistence_and_storage_layout.md |
 
 ## Product briefs
 
@@ -26,7 +27,19 @@
 |---|---|---|---|---|
 | [prod_000_sharepoint_knowledge_graph_product_vision](product/prod_000_sharepoint_knowledge_graph_product_vision.md) | V2: Hosted industrialization and Teams readiness | Proposed |  | product/prod_000_sharepoint_knowledge_graph_product_vision.md |
 | [prod_001_local_first_development_and_test_strategy](product/prod_001_local_first_development_and_test_strategy.md) | DeepVault - Navy local-first development and test strategy | Active |  | product/prod_001_local_first_development_and_test_strategy.md |
-| [prod_002_hosted_production_strategy_with_teams_at_the_end](product/prod_002_hosted_production_strategy_with_teams_at_the_end.md) | DeepVault - Gordon hosted production strategy | Proposed |  | product/prod_002_hosted_production_strategy_with_teams_at_the_end.md |
+| [prod_002_hosted_production_strategy_with_teams_at_the_end](product/prod_002_hosted_production_strategy_with_teams_at_the_end.md) | DeepVault - Gordon hosted production strategy — Navy/Bishop post-V2 model added | Proposed |  | product/prod_002_hosted_production_strategy_with_teams_at_the_end.md |
+
+## Specs
+
+| Doc | Title | Status | Progress | Path |
+|---|---|---|---|---|
+| [spec_000_deepvault_navy_experience_and_state_matrix](specs/spec_000_deepvault_navy_experience_and_state_matrix.md) | DeepVault Navy experience and state matrix — Entra auth model added | Active |  | specs/spec_000_deepvault_navy_experience_and_state_matrix.md |
+| [spec_001_deepvault_gordon_teams_channel_experience_and_rollout](specs/spec_001_deepvault_gordon_teams_channel_experience_and_rollout.md) | DeepVault Gordon Teams channel experience and rollout | Active |  | specs/spec_001_deepvault_gordon_teams_channel_experience_and_rollout.md |
+| [spec_002_deepvault_bishop_chat_flow_and_answer_quality](specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md) | DeepVault Bishop chat flow and answer quality | Active |  | specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md |
+| [spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality](specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md) | DeepVault pilot site onboarding and retrieval quality | Active |  | specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md |
+| [spec_004_deepvault_data_schema_and_storage_contracts](specs/spec_004_deepvault_data_schema_and_storage_contracts.md) | DeepVault data schema and storage contracts | Active |  | specs/spec_004_deepvault_data_schema_and_storage_contracts.md |
+| [spec_005_deepvault_permission_mapping_and_retrieval_filters](specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md) | DeepVault permission mapping and retrieval filters | Active |  | specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md |
+| [spec_006_deepvault_prompt_and_context_assembly](specs/spec_006_deepvault_prompt_and_context_assembly.md) | DeepVault prompt and context assembly | Active |  | specs/spec_006_deepvault_prompt_and_context_assembly.md |
 
 ## Requests
 
@@ -64,4 +77,5 @@
 | [task_004_teams_channel_and_permissions_delivery](tasks/task_004_teams_channel_and_permissions_delivery.md) | DeepVault - Gordon channel and permissions delivery | Ready | 2% | tasks/task_004_teams_channel_and_permissions_delivery.md |
 | [task_005_v1_local_development_and_validation_milestone](tasks/task_005_v1_local_development_and_validation_milestone.md) | V1 local development and validation milestone | Ready | 1% | tasks/task_005_v1_local_development_and_validation_milestone.md |
 | [task_006_v2_hosted_industrialization_and_teams_readiness_milestone](tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md) | V2 hosted industrialization and Teams readiness milestone | Ready | 1% | tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md |
-| [task_007_v2_operations_runbook_and_release_readiness](tasks/task_007_v2_operations_runbook_and_release_readiness.md) | V2 operations runbook and release readiness | Ready | 1% | tasks/task_007_v2_operations_runbook_and_release_readiness.md |
+| [task_007_v2_operations_runbook_and_release_readiness](tasks/task_007_v2_operations_runbook_and_release_readiness.md) | V2 operations runbook and release readiness — migration plan and Azure manifest added | Ready | 1% | tasks/task_007_v2_operations_runbook_and_release_readiness.md |
+| [task_008_retrieval_evaluation_set_and_quality_gates](tasks/task_008_retrieval_evaluation_set_and_quality_gates.md) | Retrieval evaluation set and quality gates | Ready | 0% | tasks/task_008_retrieval_evaluation_set_and_quality_gates.md |

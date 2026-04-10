@@ -111,15 +111,27 @@ flowchart LR
 - `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
 - `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
 
+# Post-V2 support model for Navy and Bishop
+
+`DeepVault - Navy` and `DeepVault - Bishop` are not deprecated after V2 launches. Their role changes:
+
+| Surface | Pre-V2 role | Post-V2 role |
+|---|---|---|
+| DeepVault - Navy | Primary local explorer for validation | Internal operator tool for content inspection and ingestion debugging |
+| DeepVault - Bishop | Primary local chat for answer quality testing | Internal QA surface for retrieval and ranking regression checks |
+| DeepVault - Gordon | Planned Teams channel | Primary production user-facing channel |
+
+Both Navy and Bishop remain maintained as internal tools. They are not promoted to end users. They do not receive feature investment beyond what is needed to keep them useful for operators and engineers. They are the fastest way to validate retrieval behavior without going through Teams, so they remain the preferred debugging path in production incidents.
+
+Navy and Bishop will not be published to end users, will not be promoted in change communications, and will not be expected to match the UX quality of Gordon. Their continued existence is a deliberate operational choice, not a transition phase.
+
 # Open questions
-- Which production metric should matter most first: freshness, answer quality, or trust/auditability?
-- How much of the local app should remain supported as a secondary surface after production launch?
 - What operational controls need to be exposed to admins versus kept internal?
 - What Azure services should host the backend, secrets, and storage for the first production slice?
 
 # Default decisions
 - Primary production metric: trust and auditability first, then freshness and answer quality.
-- Secondary support for local surfaces: keep `DeepVault - Navy` and `DeepVault - Bishop` as validation surfaces, not primary channels.
+- Local surfaces post-V2: `DeepVault - Navy` and `DeepVault - Bishop` remain as internal operator and QA tools, not primary user channels.
 - Admin controls: site list, refresh controls, provider switch, and audit summary.
 - Azure layout: compute, storage, Key Vault, and monitoring for the first slice.
 - Scheduling and automation: Azure Functions timer triggers for refresh jobs, GitHub Actions for CI/CD, and Power Automate only for future business workflows if needed.

@@ -28,8 +28,16 @@ The backend should normalize prompts, context, and responses so the UI stays ind
 
 # Decision
 Use a provider abstraction for the chat backend.
-Default to a configurable primary provider, with OpenAI and Gemini both supported by the contract.
-Allow the backend to switch providers or fail over without changing the local app surface.
+OpenAI is the hard default primary provider. Gemini is the secondary fallback. The contract normalizes prompts, context, and responses so the UI never needs to change when the provider changes.
+
+The backend must not switch providers silently. Every request must log which provider handled it. Fallback must be deliberate and auditable.
+
+# Fallback policy
+- Primary: OpenAI. Active unless overridden by `LLM_PROVIDER=gemini` environment variable.
+- Secondary: Gemini. Used when `LLM_PROVIDER=gemini` is set, or when OpenAI returns a retryable error (HTTP 429, 503, or timeout after 10 seconds) and `LLM_FALLBACK_ENABLED=true` is set.
+- Auto-switch behavior: if `LLM_FALLBACK_ENABLED=true`, the backend retries once with Gemini on transient OpenAI failure, then returns a structured error to the caller if Gemini also fails.
+- Silent fallback: never. Every provider selection must appear in the run log.
+- Cost or quality trade-off switch: manual only, via environment variable. No automatic quality-based switching in V1.
 
 # Alternatives considered
 - OpenAI only
@@ -40,23 +48,26 @@ Allow the backend to switch providers or fail over without changing the local ap
 - Better resilience and vendor flexibility
 - Slightly more backend complexity because prompts and responses must be normalized
 - Easier product experimentation because model choice can change without UI changes
+- Fallback audit trail makes provider behavior traceable in both local and hosted runtimes
 
 # Migration and rollout
-Start with one primary provider and keep the second provider available as a fallback or test route.
-Expose provider choice through environment configuration.
-Log provider usage so quality and cost can be evaluated later.
+Start with OpenAI as primary. Keep Gemini configured but inactive by default. Enable `LLM_FALLBACK_ENABLED=true` only after verifying Gemini produces acceptable answers on the pilot corpus. Log provider usage on every request from day one.
 
 # Decision defaults
-- Primary provider: OpenAI.
-- Secondary provider: Gemini.
-- Fallback trigger: cost, quality, or availability.
+- Primary provider: OpenAI (`LLM_PROVIDER=openai`).
+- Secondary provider: Gemini (`LLM_PROVIDER=gemini`).
+- Auto-fallback: disabled by default (`LLM_FALLBACK_ENABLED=false`).
+- Fallback trigger when enabled: HTTP 429, 503, or timeout > 10 seconds on the primary.
 - Contract rule: normalize prompts, context, and responses in the backend.
+- Logging: provider name, model identifier, and latency logged on every request.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 - `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
+- `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
+- `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
 
 # Follow-up work
 - Define the provider contract and response schema
 - Add primary/fallback selection in the backend
-- Measure quality and latency across OpenAI and Gemini
+- Measure quality and latency across OpenAI and Gemini against the pilot evaluation set

@@ -174,18 +174,28 @@ flowchart TD
 - `item_013_v2_operations_runbook_and_release_readiness`
 
 # Specs
-- `spec_000_deepvault_navy_experience_and_state_matrix`
-- `spec_001_deepvault_gordon_teams_channel_experience_and_rollout`
-- `spec_002_deepvault_bishop_chat_flow_and_answer_quality`
-- `spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality`
+- `spec_000_deepvault_navy_experience_and_state_matrix` — `logics/specs/spec_000_deepvault_navy_experience_and_state_matrix.md`
+- `spec_001_deepvault_gordon_teams_channel_experience_and_rollout` — `logics/specs/spec_001_deepvault_gordon_teams_channel_experience_and_rollout.md`
+- `spec_002_deepvault_bishop_chat_flow_and_answer_quality` — `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`
+- `spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality` — `logics/specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md`
+- `spec_004_deepvault_data_schema_and_storage_contracts` — `logics/specs/spec_004_deepvault_data_schema_and_storage_contracts.md`
+- `spec_005_deepvault_permission_mapping_and_retrieval_filters` — `logics/specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md`
+- `spec_006_deepvault_prompt_and_context_assembly` — `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
 
 # Delivery children
-## V1 local validation
-- `task_000_sharepoint_foundations_and_shared_contracts`
-- `task_001_local_companion_vertical_slice`
-- `task_002_ingestion_sync_and_retrieval_hardening`
 
-## V2 hosted industrialization
-- `task_003_hosted_backend_core_delivery`
-- `task_004_teams_channel_and_permissions_delivery`
-- `task_007_v2_operations_runbook_and_release_readiness`
+The tasks below are the expected delivery children of this request. They cover the full V1 and V2 scope.
+Each task should trace back to this request. No task should be added to the delivery without a corresponding backlog item.
+
+## V1 milestone: local validation
+- `task_000_sharepoint_foundations_and_shared_contracts` — `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`
+- `task_001_local_companion_vertical_slice` — `logics/tasks/task_001_local_companion_vertical_slice.md`
+- `task_002_ingestion_sync_and_retrieval_hardening` — `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
+- `task_005_v1_local_development_and_validation_milestone` — `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
+- `task_008_retrieval_evaluation_set_and_quality_gates` — `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md` *(quality gate — must pass before V2 starts)*
+
+## V2 milestone: hosted industrialization and Teams readiness
+- `task_003_hosted_backend_core_delivery` — `logics/tasks/task_003_hosted_backend_core_delivery.md`
+- `task_004_teams_channel_and_permissions_delivery` — `logics/tasks/task_004_teams_channel_and_permissions_delivery.md`
+- `task_006_v2_hosted_industrialization_and_teams_readiness_milestone` — `logics/tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md`
+- `task_007_v2_operations_runbook_and_release_readiness` — `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
