@@ -123,6 +123,10 @@ const outputPath = resolve(readArg('--output') || 'public/live-corpus.json')
 const useMock = mode === 'mock' || readFlag('--mock')
 const config = buildDeepVaultExportConfig()
 
+console.log(`Auth mode: ${config.authMode}`)
+console.log(`Client secret loaded: ${config.secretValue ? 'yes' : 'no'}`)
+console.log(`Configured sites: ${config.siteUrls.length}`)
+
 if (useMock) {
   await runMockExport(outputPath)
 } else {
