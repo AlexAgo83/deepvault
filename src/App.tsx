@@ -117,12 +117,21 @@ export default function App() {
     () => buildExplorerRows(corpus, search, { role, siteId: siteFilter }) as ExplorerRow[],
     [corpus, role, search, siteFilter],
   )
+  const selectedExplorerDoc =
+    explorerRows.find((document) => document.id === selectedDocId) || explorerRows[0] || null
 
-  const selectedDoc =
-    explorerRows.find((document) => document.id === selectedDocId) ||
-    explorerRows[0] ||
-    corpus.documents.find((document) => document.id === selectedDocId) ||
-    corpus.documents[0]
+  useEffect(() => {
+    if (explorerRows.length === 0) {
+      if (selectedDocId !== '') {
+        setSelectedDocId('')
+      }
+      return
+    }
+
+    if (!explorerRows.some((document) => document.id === selectedDocId)) {
+      setSelectedDocId(explorerRows[0].id)
+    }
+  }, [explorerRows, selectedDocId])
 
   const handleAsk = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -369,35 +378,47 @@ export default function App() {
             </article>
 
             <article className="panel">
-              <SectionHeading title={selectedDoc.title} subtitle={selectedDoc.path} />
-              <div className="detail-stack">
-                <div className="detail-row">
-                  <span>Site</span>
-                  <strong>{selectedDoc.siteName || selectedDoc.siteId}</strong>
-                </div>
-                <div className="detail-row">
-                  <span>Owner</span>
-                  <strong>{selectedDoc.author}</strong>
-                </div>
-                <div className="detail-row">
-                  <span>Updated</span>
-                  <strong>{formatUpdatedAt(selectedDoc.updatedAt)}</strong>
-                </div>
-                <div className="detail-row">
-                  <span>Access</span>
-                  <strong>{selectedDoc.access.join(', ')}</strong>
-                </div>
-                <div className="detail-row">
-                  <span>Tags</span>
-                  <strong>{selectedDoc.tags.join(', ')}</strong>
-                </div>
-              </div>
-              <div className="document-content">
-                <h3>Answer-ready summary</h3>
-                <p>{selectedDoc.directAnswer || selectedDoc.summary}</p>
-                <h3>Source excerpt</h3>
-                <p>{selectedDoc.content}</p>
-              </div>
+              {selectedExplorerDoc ? (
+                <>
+                  <SectionHeading title={selectedExplorerDoc.title} subtitle={selectedExplorerDoc.path} />
+                  <div className="detail-stack">
+                    <div className="detail-row">
+                      <span>Site</span>
+                      <strong>{selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}</strong>
+                    </div>
+                    <div className="detail-row">
+                      <span>Owner</span>
+                      <strong>{selectedExplorerDoc.author}</strong>
+                    </div>
+                    <div className="detail-row">
+                      <span>Updated</span>
+                      <strong>{formatUpdatedAt(selectedExplorerDoc.updatedAt)}</strong>
+                    </div>
+                    <div className="detail-row">
+                      <span>Access</span>
+                      <strong>{selectedExplorerDoc.access.join(', ')}</strong>
+                    </div>
+                    <div className="detail-row">
+                      <span>Tags</span>
+                      <strong>{selectedExplorerDoc.tags.join(', ')}</strong>
+                    </div>
+                  </div>
+                  <div className="document-content">
+                    <h3>Answer-ready summary</h3>
+                    <p>{selectedExplorerDoc.directAnswer || selectedExplorerDoc.summary}</p>
+                    <h3>Source excerpt</h3>
+                    <p>{selectedExplorerDoc.content}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <SectionHeading
+                    title="No visible document"
+                    subtitle="Choose a site with matching results to inspect its details."
+                  />
+                  <div className="empty-state">No permitted sources match the current site filter.</div>
+                </>
+              )}
             </article>
           </section>
         ) : null}

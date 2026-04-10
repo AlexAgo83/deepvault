@@ -22,4 +22,16 @@ describe('DeepVault app', () => {
 
     expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
   })
+
+  it('keeps the explorer detail pane within the selected site scope', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
+
+    await user.click(screen.getByRole('button', { name: 'CSAS-OP-Prod' }))
+
+    expect(screen.queryAllByText('Q3 2025 budget approval')).toHaveLength(0)
+    expect(screen.getAllByText('Remote access security requirements').length).toBeGreaterThan(0)
+  })
 })
