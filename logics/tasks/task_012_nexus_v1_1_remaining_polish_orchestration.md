@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 93%
 > Confidence: 91%
-> Progress: 0%
+> Progress: 25%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -32,8 +32,8 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirm scope, dependencies, and linked acceptance criteria for `item_021`, `item_022`, `item_023`, and `item_024`.
-- [ ] 2. Implement wave 1 for shell chrome and layout cleanup.
+- [x] 1. Confirm scope, dependencies, and linked acceptance criteria for `item_021`, `item_022`, `item_023`, and `item_024`.
+- [x] 2. Implement wave 1 for shell chrome and layout cleanup.
 - [ ] 3. Implement wave 2 for live state and status density polish.
 - [ ] 4. Implement wave 3 for Bishop response flow and answer trace polish.
 - [ ] 5. Implement wave 4 for path display and hover cleanup.
@@ -86,3 +86,5 @@ stateDiagram-v2
 - [ ] Status is `Done` and progress is `100%`.
 
 # Report
+- Wave 1 completed: shell chrome and layout cleanup shipped, including subtitle removal, left-menu analytics removal, and product-facing top copy.
+- Validation passed for wave 1: `rtk npm run test -- tests/app.spec.tsx`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
