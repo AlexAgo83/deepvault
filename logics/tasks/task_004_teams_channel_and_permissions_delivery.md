@@ -2,9 +2,9 @@
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 95%
-> Confidence: 92%
-> Progress: 2%
+> Understanding: 96%
+> Confidence: 93%
+> Progress: 0%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress, linked request/backlog/task references, and `DeepVault - Gordon` naming when you edit this doc.
@@ -90,3 +90,5 @@ stateDiagram-v2
 
 # Report
 - Not started.
+
+# Notes

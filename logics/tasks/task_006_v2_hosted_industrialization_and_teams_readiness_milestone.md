@@ -2,9 +2,9 @@
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 96%
-> Confidence: 93%
-> Progress: 2%
+> Understanding: 97%
+> Confidence: 94%
+> Progress: 0%
 > Complexity: High
 > Theme: General
 > Reminder: Keep this milestone focused on Azure, Teams, scheduling, and production readiness. It should start only after V1 is stable and the external platform prerequisites are in place. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -105,3 +105,5 @@ stateDiagram-v2
 
 # Report
 - Not started.
+
+# Notes

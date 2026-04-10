@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
 > Related task: `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
-> Reminder: Apply authorization before retrieval ranking so the LLM only sees permitted source material. Default to site-level allow lists first, then finer-grained scopes later.
+> Reminder: Apply authorization before retrieval ranking so the LLM only sees permitted source material. Default to site-level allow lists first, then finer-grained scopes later. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The retrieval layer should not rank or prompt with content unless the current user is allowed to see it.
@@ -81,10 +81,12 @@ Item-level filtering enters scope only after V1 is stable and the pilot shows th
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`
-- `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`
-- `logics/specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md`
-
+- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
+- `logics/backlog/item_004_teams_bot_chat_and_permissions.md`
+- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
+- `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`
+- `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
+- `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
 # Follow-up work
 - Implement the permission cache with the TTLs defined above
 - Add audit log entries for denied retrievals (exclusion count, not item IDs)

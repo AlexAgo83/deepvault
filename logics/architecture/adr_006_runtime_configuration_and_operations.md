@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: (none yet)
-> Reminder: Revisit this decision when the pilot site list moves from a developer-managed setup to a user-managed setup. Default to env vars locally and secret-backed config in Azure. Use GitHub Actions for CI/CD, not for scheduled refresh jobs.
+> Reminder: Revisit this decision when the pilot site list moves from a developer-managed setup to a user-managed setup. Default to env vars locally and secret-backed config in Azure. Use GitHub Actions for CI/CD, not for scheduled refresh jobs. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The first version should stay easy to operate.
@@ -56,7 +56,8 @@ Keep the current secret model compatible with that future migration.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-
+- `logics/backlog/item_005_runtime_config_and_operations.md`
+- `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 # Follow-up work
 - Define a canonical env schema
 - Add config validation on startup

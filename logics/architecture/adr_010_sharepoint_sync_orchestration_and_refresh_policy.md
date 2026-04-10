@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
 > Related task: (none yet)
-> Reminder: Prefer incremental refreshes and stable change markers over repeated full crawls, using version-neutral wording. Default to daily incremental refresh plus manual refresh, driven by Azure Functions timer triggers.
+> Reminder: Prefer incremental refreshes and stable change markers over repeated full crawls, using version-neutral wording. Default to daily incremental refresh plus manual refresh, driven by Azure Functions timer triggers. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The SharePoint sync pipeline should be incremental by default.
@@ -101,10 +101,8 @@ When `SYNC_CADENCE_HOURS` is set, the backend generates the CRON expression dyna
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`
-- `logics/architecture/adr_006_runtime_configuration_and_operations.md`
-- `logics/specs/spec_004_deepvault_data_schema_and_storage_contracts.md`
-
+- `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
+- `logics/backlog/item_005_runtime_config_and_operations.md`
 # Follow-up work
 - Implement the per-source sync state model with watermarks and checkpoint fields
 - Wire `SYNC_CADENCE_HOURS` into the Azure Functions timer trigger for V2

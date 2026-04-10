@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_011_hosted_backend_core.md`
 > Related task: (none yet)
-> Reminder: Keep the storage model able to back citations, search, and future semantic retrieval. Default to source records, normalized metadata, and chunked text.
+> Reminder: Keep the storage model able to back citations, search, and future semantic retrieval. Default to source records, normalized metadata, and chunked text. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The knowledge layer should not be a single blob of text.
@@ -54,7 +54,9 @@ Backfill the hybrid store from the first pilot crawl.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-
+- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
+- `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`
+- `logics/backlog/item_011_hosted_backend_core.md`
 # Follow-up work
 - Define storage schema for source objects and chunks
 - Add ranking and citation fields

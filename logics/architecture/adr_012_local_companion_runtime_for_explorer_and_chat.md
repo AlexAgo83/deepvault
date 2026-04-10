@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 > Related task: (none yet)
-> Reminder: Keep `DeepVault - Navy` self-contained so it can be replaced cleanly by the hosted backend later. Default to a single local web runtime with minimal local auth and storage. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
+> Reminder: Keep `DeepVault - Navy` self-contained so it can be replaced cleanly by the hosted backend later. Default to a single local web runtime with minimal local auth and storage. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The local runtime should run as `DeepVault - Navy`.
@@ -51,9 +51,10 @@ When the hosted backend begins, move the backend behind a hosted service while k
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
-- `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`
-
+- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
+- `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
+- `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`
+- `logics/backlog/item_010_local_sync_status_and_operational_view.md`
 # Follow-up work
 - Define the local runtime process model and startup flow
 - Decide whether local storage is embedded or file-based

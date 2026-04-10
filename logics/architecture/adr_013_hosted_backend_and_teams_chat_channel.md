@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
-> Reminder: Preserve the same retrieval and permission model when the runtime moves behind the hosted backend for `DeepVault - Gordon`. Default to Azure unless cost or complexity becomes a problem. Use Azure-native scheduling for refresh jobs.
+> Reminder: Preserve the same retrieval and permission model when the runtime moves behind the hosted backend for `DeepVault - Gordon`. Default to Azure unless cost or complexity becomes a problem. Use Azure-native scheduling for refresh jobs. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The runtime should move to a hosted backend service.
@@ -61,6 +61,8 @@ Deploy the hosted backend on Azure first; if cost or operational constraints bec
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 - `logics/backlog/item_004_teams_bot_chat_and_permissions.md`
+- `logics/backlog/item_011_hosted_backend_core.md`
+- `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 # Follow-up work
 - Define the Azure resource split for backend, storage, and secrets
 - Specify the `DeepVault - Gordon` bot registration and auth flow
