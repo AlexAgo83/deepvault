@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 94%
 > Confidence: 92%
-> Progress: 33%
+> Progress: 67%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -34,7 +34,7 @@ stateDiagram-v2
 # Plan
 - [x] 1. Confirm scope, dependencies, and linked acceptance criteria for `item_031`, `item_032`, and `item_033`.
 - [x] 2. Implement wave 1 for the grounding contract and response shape.
-- [ ] 3. Implement wave 2 for orchestration and fallback handling.
+- [x] 3. Implement wave 2 for orchestration and fallback handling.
 - [ ] 4. Implement wave 3 for trace, status, and evaluation coverage.
 - [ ] 5. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
@@ -86,7 +86,9 @@ stateDiagram-v2
 
 # Report
 - Wave 1: pending grounding contract implementation.
-- Wave 2: pending orchestration and fallback implementation.
+- Wave 2 completed: Bishop now runs through a dedicated orchestration helper with a remote endpoint path and local fallback.
 - Wave 3: pending trace and evaluation coverage.
 - Wave 1 completed: Bishop grounding is now split into a reusable contract and the local answer synthesis contract remains intact.
 - Validation passed for wave 1: `rtk npm run test -- tests/bishop.spec.ts tests/deepvault.spec.ts`, `rtk npm run lint`, `rtk npm run typecheck`.
+- Wave 2 completed: Bishop UI now awaits the orchestration result, keeps the thinking state visible, and falls back locally when no remote endpoint is configured.
+- Validation passed for wave 2: `rtk npm run test -- tests/bishop.spec.ts tests/app.spec.tsx tests/deepvault.spec.ts`, `rtk npm run lint`, `rtk npm run typecheck`.
