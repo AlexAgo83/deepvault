@@ -26,7 +26,7 @@ async function loadEnvFile(path: string): Promise<void> {
     const content = await readFile(path, 'utf8')
     for (const line of content.split(/\r?\n/)) {
       const parsed = parseEnvLine(line)
-      if (parsed && process.env[parsed[0]] === undefined) {
+      if (parsed && (process.env[parsed[0]] === undefined || process.env[parsed[0]] === '')) {
         process.env[parsed[0]] = parsed[1]
       }
     }
