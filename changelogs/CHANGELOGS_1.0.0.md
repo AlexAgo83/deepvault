@@ -4,17 +4,17 @@ Release date: 2026-04-10
 
 ## DeepVault Nexus 1.0.0
 
-The first release of DeepVault Nexus lands the local V1 workspace and the live SharePoint export path.
+DeepVault Nexus 1.0.0 is the first release of the local V1 workspace and the live SharePoint export path.
 
-### Highlights
+### What shipped
 
-- Local React + TypeScript workspace for `DeepVault - Navy`, `DeepVault - Bishop`, and sync visibility
+- A React + TypeScript workspace for `DeepVault - Navy`, `DeepVault - Bishop`, and sync visibility
 - Permission-aware retrieval on top of the bundled pilot corpus
-- Mock/live corpus switching for browser testing
-- SharePoint / Microsoft Graph live export pipeline wired to `.env.local`
+- Mock and live corpus switching for browser testing
+- SharePoint / Microsoft Graph live export wired to `.env.local`
 - Memory guards and pagination progress logs for large live exports
 - Local ingestion and evaluation commands for mock and live corpus files
-- Project branding, MIT license, and contribution guide added for the release
+- Project branding, MIT license, and contribution guidance
 
 ### Validation
 
@@ -33,4 +33,4 @@ npm run evaluate:live -- --input public/live-corpus.json
 ### Notes
 
 - `public/live-corpus.json`, `data/runtime/`, and `data/eval/*.live.json` are generated locally and ignored by Git.
-- The live corpus is treated as business content and should remain local unless you deliberately export it elsewhere.
+- Live corpus files can contain business content and should stay local unless you intentionally export them elsewhere.
