@@ -247,7 +247,16 @@ export async function acquireGraphAccessToken(config: DeepVaultExportConfig): Pr
     return acquireClientCredentialsToken(config)
   }
 
-  return acquireDelegatedToken(config)
+  try {
+    return await acquireDelegatedToken(config)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    if (config.secretValue && message.includes('AADSTS7000218')) {
+      console.log('Device code flow requires client credentials in this tenant. Falling back to client_credentials.')
+      return acquireClientCredentialsToken(config)
+    }
+    throw error
+  }
 }
 
 export class GraphClient {
