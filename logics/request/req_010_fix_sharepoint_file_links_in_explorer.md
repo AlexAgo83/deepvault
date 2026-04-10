@@ -1,9 +1,9 @@
 ## req_010_fix_sharepoint_file_links_in_explorer - Fix SharePoint file links in Explorer
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
-> Understanding: 86%
-> Confidence: 82%
+> Status: Done
+> Understanding: 94%
+> Confidence: 92%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.

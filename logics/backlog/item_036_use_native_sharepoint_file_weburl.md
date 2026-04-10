@@ -1,10 +1,10 @@
 ## item_036_use_native_sharepoint_file_weburl - Use native SharePoint file webUrl
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 86%
-> Confidence: 82%
-> Progress: 0%
+> Status: Done
+> Understanding: 94%
+> Confidence: 92%
+> Progress: 100%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -69,11 +69,12 @@ flowchart TD
 - `logics/skills/logics-ui-steering/SKILL.md`
 
 # Priority
-- Impact:
-- Urgency:
+- Impact: High
+- Urgency: High
 
 # Notes
 - Derived from request `req_010_fix_sharepoint_file_links_in_explorer`.
 - Source file: `logics/request/req_010_fix_sharepoint_file_links_in_explorer.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
 - Request context seeded into this backlog item from `logics/request/req_010_fix_sharepoint_file_links_in_explorer.md`.
+- Completed in wave 2 of `task_015_sharepoint_file_link_and_file_type_ui_delivery`.
