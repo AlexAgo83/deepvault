@@ -38,11 +38,21 @@ function Pill({
   )
 }
 
-function StatCard({ label, value, note }: { label: string; value: string | number; note: string }) {
+function StatCard({
+  label,
+  value,
+  note,
+  valueClassName,
+}: {
+  label: string
+  value: string | number
+  note: string
+  valueClassName?: string
+}) {
   return (
     <article className="stat-card" title={note}>
       <div className="stat-label">{label}</div>
-      <div className="stat-value">{value}</div>
+      <div className={`stat-value ${valueClassName || ''}`.trim()}>{value}</div>
       <div className="stat-note">{note}</div>
     </article>
   )
@@ -110,7 +120,7 @@ export default function App() {
     tone: PillTone
   }>(() =>
     requestedCorpusMode === 'live'
-      ? { label: 'Live data', detail: 'Waiting for live corpus', tone: 'neutral' }
+      ? { label: 'Live', detail: 'Waiting for live corpus', tone: 'neutral' }
       : { label: 'Mock data', detail: 'Mock corpus selected', tone: 'neutral' },
   )
   const corpus = corpusBundle.corpus
@@ -202,7 +212,7 @@ export default function App() {
       }
       if (result.status === 'loaded') {
         setCorpusBundle({ corpus: result.corpus, mode: 'live' })
-        setLiveState({ label: 'Live data', detail: result.detail, tone: 'success' })
+        setLiveState({ label: 'Live', detail: result.detail, tone: 'success' })
         return
       }
       setCorpusBundle(getMockCorpusBundle())
@@ -321,6 +331,7 @@ export default function App() {
             label="Last refresh"
             value={syncOverview.lastRun ? formatUpdatedAt(syncOverview.lastRun.finishedAt) : 'n/a'}
             note={syncOverview.refreshPolicy}
+            valueClassName="stat-value-compact"
           />
           <StatCard
             label="Provider readiness"
