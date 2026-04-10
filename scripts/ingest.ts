@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { buildSyncOverview, summarizeCorpus } from '../src/lib/deepvault.js'
+import { buildSyncOverview, summarizeCorpus, type Corpus } from '../src/lib/deepvault'
 
 const runtimeDir = resolve('data/runtime')
 const outputPath = resolve(runtimeDir, 'sync-state.json')
@@ -8,7 +8,7 @@ const corpusPath = resolve('data/pilot-corpus.json')
 
 await mkdir(dirname(outputPath), { recursive: true })
 
-const corpus = JSON.parse(await readFile(corpusPath, 'utf8'))
+const corpus = JSON.parse(await readFile(corpusPath, 'utf8')) as Corpus
 
 const role = corpus.defaultUserRole || 'analyst'
 const syncOverview = buildSyncOverview(corpus, role)

@@ -1,6 +1,10 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { answerQuestion, buildEvaluationRows } from '../src/lib/deepvault.js'
+import {
+  answerQuestion,
+  buildEvaluationRows,
+  type Corpus,
+} from '../src/lib/deepvault'
 
 const today = new Date().toISOString().slice(0, 10)
 const outputDir = resolve('data/eval')
@@ -9,20 +13,24 @@ const corpusPath = resolve('data/pilot-corpus.json')
 
 await mkdir(dirname(outputPath), { recursive: true })
 
-const corpus = JSON.parse(await readFile(corpusPath, 'utf8'))
+const corpus = JSON.parse(await readFile(corpusPath, 'utf8')) as Corpus
 
-const rows = buildEvaluationRows(corpus)
+const rows = buildEvaluationRows()
 const results = rows.map((row) => {
   const answer = answerQuestion(corpus, row.query, { role: row.role, provider: 'openai', limit: 3 })
   const sourceIds = answer.sources.map((source) => source.id)
-  const deniedSourceIds = (answer.deniedSources || []).map((source) => source.id)
+  const deniedSourceIds = answer.deniedSources.map((source) => source.id)
   const pass =
     answer.status === row.expectedStatus &&
     (row.expectedStatus === 'answered'
-      ? (row.expectedSourceId ? sourceIds.includes(row.expectedSourceId) : answer.sources.length > 0)
+      ? row.expectedSourceId
+        ? sourceIds.includes(row.expectedSourceId)
+        : answer.sources.length > 0
       : true) &&
     (row.expectedStatus === 'no_permitted_sources'
-      ? (row.expectedSourceId ? deniedSourceIds.includes(row.expectedSourceId) : true)
+      ? row.expectedSourceId
+        ? deniedSourceIds.includes(row.expectedSourceId)
+        : true
       : true)
 
   return {
