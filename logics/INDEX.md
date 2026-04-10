@@ -37,6 +37,7 @@
 | [req_001_v1_local_hardening_and_scope_evolution](request/req_001_v1_local_hardening_and_scope_evolution.md) | V1 — Local hardening and scope evolution | Done |  | request/req_001_v1_local_hardening_and_scope_evolution.md |
 | [req_002_v2_azure_and_teams_foundation](request/req_002_v2_azure_and_teams_foundation.md) | V2 — Azure and Teams foundation | Draft |  | request/req_002_v2_azure_and_teams_foundation.md |
 | [req_003_nexus_v1_1_ui_and_product_polish](request/req_003_nexus_v1_1_ui_and_product_polish.md) | Nexus V1.1.0 shell and product polish | Done |  | request/req_003_nexus_v1_1_ui_and_product_polish.md |
+| [req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up](request/req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up.md) | Nexus V1.1 remaining polish and Bishop UX follow-up | Draft |  | request/req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up.md |
 
 ## Backlog
 
@@ -63,6 +64,10 @@
 | [item_018_v1_pre_v2_backlog_and_doc_cleanup](backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md) | V1 — Pre-V2 backlog and doc cleanup | Done | 100% | backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md |
 | [item_019_shell_rebrand_and_split_layout](backlog/item_019_shell_rebrand_and_split_layout.md) | Shell rebrand and split layout | Done | 100% | backlog/item_019_shell_rebrand_and_split_layout.md |
 | [item_020_compact_live_state_and_sync_panels](backlog/item_020_compact_live_state_and_sync_panels.md) | Compact live state and sync panels | Done | 100% | backlog/item_020_compact_live_state_and_sync_panels.md |
+| [item_021_shell_chrome_and_layout_cleanup](backlog/item_021_shell_chrome_and_layout_cleanup.md) | Shell chrome and layout cleanup | Ready | 0% | backlog/item_021_shell_chrome_and_layout_cleanup.md |
+| [item_022_live_state_and_status_density_polish](backlog/item_022_live_state_and_status_density_polish.md) | Live state and status density polish | Ready | 0% | backlog/item_022_live_state_and_status_density_polish.md |
+| [item_023_bishop_response_flow_and_answer_trace_polish](backlog/item_023_bishop_response_flow_and_answer_trace_polish.md) | Bishop response flow and answer trace polish | Ready | 0% | backlog/item_023_bishop_response_flow_and_answer_trace_polish.md |
+| [item_024_path_display_and_hover_cleanup](backlog/item_024_path_display_and_hover_cleanup.md) | Path display and hover cleanup | Ready | 0% | backlog/item_024_path_display_and_hover_cleanup.md |
 
 ## Tasks
 
@@ -75,3 +80,4 @@
 | [task_009_local_hardening_and_v1_scope_evolution](tasks/task_009_local_hardening_and_v1_scope_evolution.md) | What is already done in V1 (do not re-implement) | Done | 100% | tasks/task_009_local_hardening_and_v1_scope_evolution.md |
 | [task_010_v2_azure_and_teams_delivery](tasks/task_010_v2_azure_and_teams_delivery.md) | V2 Azure and Teams delivery | Draft | 0% | tasks/task_010_v2_azure_and_teams_delivery.md |
 | [task_011_nexus_v1_1_shell_and_live_state_delivery](tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md) | Nexus V1.1 shell and live state delivery | Done | 100% | tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md |
+| [task_012_nexus_v1_1_remaining_polish_orchestration](tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md) | Nexus V1.1 remaining polish orchestration | Ready | 0% | tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md |
