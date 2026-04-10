@@ -8,7 +8,6 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await waitFor(() => expect(document.title).toBe('Nexus'))
-    expect(screen.getByRole('heading', { name: 'Nexus' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sync status' })).toBeInTheDocument()

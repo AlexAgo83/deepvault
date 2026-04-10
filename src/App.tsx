@@ -418,7 +418,6 @@ export default function App() {
       <main className="main-content">
         <header className="topbar">
           <div>
-            <h1>Nexus</h1>
             <p>A product-ready workspace for exploring content, validating grounded answers, and reviewing sync health before release.</p>
           </div>
           <div className="topbar-badges">
