@@ -1,10 +1,10 @@
 ## task_002_ingestion_sync_and_retrieval_hardening - Ingestion, sync, and retrieval hardening
 > From version: 0.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 1%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog/task references when you edit this doc.
@@ -34,10 +34,10 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] Implement or finalize the SharePoint ingestion path and its source selection rules.
-- [ ] Add or harden the incremental sync behavior, checkpoints, and refresh policy.
-- [ ] Persist source objects, metadata, and chunked text in the hybrid knowledge store.
-- [ ] Enforce permission-aware retrieval before LLM context is assembled.
+- [x] Implement or finalize the SharePoint ingestion path and its source selection rules.
+- [x] Add or harden the incremental sync behavior, checkpoints, and refresh policy.
+- [x] Persist source objects, metadata, and chunked text in the hybrid knowledge store.
+- [x] Enforce permission-aware retrieval before LLM context is assembled.
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -83,12 +83,14 @@ stateDiagram-v2
 - `python3 logics/skills/logics-duplicate-detector/scripts/find_duplicates.py --min-score 0.55`
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured.
-- [ ] No wave or step was closed before the relevant automated tests and quality checks passed.
-- [ ] Linked request/backlog/task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] Scope implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured.
+- [x] No wave or step was closed before the relevant automated tests and quality checks passed.
+- [x] Linked request/backlog/task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report
-- Not started.
+- Implemented the local corpus, sync snapshot generator, and permission-aware retrieval engine.
+- Validation: `npm run ingest`, `npm run evaluate`, `npm run lint`, `npm test`, `npm run build`.
+- Result: local refresh state is reproducible and the baseline evaluation passes at 100%.

@@ -1,10 +1,10 @@
 ## task_001_local_companion_vertical_slice - DeepVault - Navy vertical slice
 > From version: 0.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 95%
 > Confidence: 92%
-> Progress: 2%
+> Progress: 100%
 > Complexity: High
 > Theme: UI
 > Reminder: Update status/understanding/confidence/progress, linked request/backlog/task references, and `DeepVault - Navy`/`DeepVault - Bishop` naming when you edit this doc. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
@@ -34,10 +34,10 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] Build the `DeepVault - Navy` shell and route structure for the companion app.
-- [ ] Wire the explorer navigation surface to the local data contract.
-- [ ] Wire the `DeepVault - Bishop` surface to the provider abstraction and permission-aware retrieval flow.
-- [ ] Add the sync and operational view so `DeepVault - Navy` can explain refresh and provenance.
+- [x] Build the `DeepVault - Navy` shell and route structure for the companion app.
+- [x] Wire the explorer navigation surface to the local data contract.
+- [x] Wire the `DeepVault - Bishop` surface to the provider abstraction and permission-aware retrieval flow.
+- [x] Add the sync and operational view so `DeepVault - Navy` can explain refresh and provenance.
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -83,12 +83,14 @@ stateDiagram-v2
 - `python3 logics/skills/logics-duplicate-detector/scripts/find_duplicates.py --min-score 0.55`
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured.
-- [ ] No wave or step was closed before the relevant automated tests and quality checks passed.
-- [ ] Linked request/backlog/task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] Scope implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured.
+- [x] No wave or step was closed before the relevant automated tests and quality checks passed.
+- [x] Linked request/backlog/task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report
-- Not started.
+- Delivered the local vertical slice for `DeepVault - Navy` and `DeepVault - Bishop`.
+- Validation: `npm run lint`, `npm test`, `npm run build`, `npm run ingest`, `npm run evaluate`, `npm run e2e`.
+- Result: explorer, chat, and sync surfaces are wired to the local retrieval model and pass the smoke checks.

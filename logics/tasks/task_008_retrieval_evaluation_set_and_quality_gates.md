@@ -1,10 +1,10 @@
 ## task_008_retrieval_evaluation_set_and_quality_gates - Retrieval evaluation set and quality gates
-> From version: 0.0.1
+> From version: 0.0.2
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 93%
-> Progress: 0%
+> Status: Done
+> Understanding: 96%
+> Confidence: 94%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Quality
 
@@ -15,39 +15,39 @@
 
 ```mermaid
 %% logics-kind: task
+%% logics-signature: task|retrieval-evaluation-set-and-quality-gat|item-002-hybrid-knowledge-store-and-retr|1-confirm-the-pilot-corpus-is|run-python3-logics-skills-logics-doc-lin
 stateDiagram-v2
-    state "Define evaluation queries" as Queries
-    state "Run queries against pilot corpus" as Run
-    state "Score answers against pass/fail criteria" as Score
-    state "Fix ranking policy if below threshold" as Fix
-    state "Record baseline metrics" as Baseline
-    state "Done" as Done
-    [*] --> Queries
-    Queries --> Run
-    Run --> Score
-    Score --> Fix : below threshold
-    Fix --> Run
-    Score --> Baseline : all pass
-    Baseline --> Done
-    Done --> [*]
+    state "item_002_hybrid_knowledge_store_and_retrie" as Backlog
+    state "1. Confirm the pilot corpus is" as Scope
+    state "2. Fix the baseline provider before" as Build
+    state "3. Run the 20 evaluation queries" as Verify
+    state "Run python3 logics skills logics-doc-linte" as Validation
+    state "Done report" as Report
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
+    Report --> [*]
 ```
 
 # Plan
-- [ ] 1. Confirm the pilot corpus is fully ingested and indexed before running any queries (pre-evaluation checklist below).
-- [ ] 2. **Fix the baseline provider before running.** All 20 queries must run on OpenAI (`LLM_PROVIDER=openai`) for the V1 baseline. Do not mix providers in the baseline run — a mixed run cannot be used for regression comparison. If Gemini evaluation is desired, run it as a separate named set (`v1_baseline_gemini_{date}.json`) after the OpenAI baseline is complete.
-- [ ] 3. Run the 20 evaluation queries against the local Bishop chat surface with `LLM_PROVIDER=openai`.
-- [ ] 4. Score each answer against the pass/fail criteria.
-- [ ] 5. If fewer than 16 of 20 queries pass, investigate ranking or ingestion issues before advancing.
-- [ ] 6. Record the baseline metrics for each query (score, chunk count, token count, latency, provider).
-- [ ] 7. Re-run after any ranking weight or threshold change to confirm no regression — always on the same provider (OpenAI) for comparability.
-- [ ] GATE: do not close V1 or advance to V2 until the evaluation set passes at 80% or above on OpenAI.
+- [x] 1. Confirm the pilot corpus is fully ingested and indexed before running any queries (pre-evaluation checklist below).
+- [x] 2. **Fix the baseline provider before running.** All 20 queries must run on OpenAI (`LLM_PROVIDER=openai`) for the V1 baseline. Do not mix providers in the baseline run — a mixed run cannot be used for regression comparison. If Gemini evaluation is desired, run it as a separate named set (`v1_baseline_gemini_{date}.json`) after the OpenAI baseline is complete.
+- [x] 3. Run the 20 evaluation queries against the local Bishop chat surface with `LLM_PROVIDER=openai`.
+- [x] 4. Score each answer against the pass/fail criteria.
+- [x] 5. If fewer than 16 of 20 queries pass, investigate ranking or ingestion issues before advancing.
+- [x] 6. Record the baseline metrics for each query (score, chunk count, token count, latency, provider).
+- [x] 7. Re-run after any ranking weight or threshold change to confirm no regression — always on the same provider (OpenAI) for comparability.
+- [x] GATE: do not close V1 or advance to V2 until the evaluation set passes at 80% or above on OpenAI.
 
 ## Pre-evaluation checklist (must pass before starting)
-- [ ] All configured sites show `sync_status = "synced"` in `sync_state` — no site in `pending` or `sync_failed`.
-- [ ] No site has `sync_failed_count > 0`.
-- [ ] The retrieval index has at least 100 chunks from at least 5 distinct sources (verify via index stats).
-- [ ] `LLM_PROVIDER=openai` is set and the OpenAI key resolves correctly (smoke test: run one query and confirm provider in the response).
-- [ ] `LLM_FALLBACK_ENABLED=false` — auto-fallback must be disabled during evaluation to prevent provider mixing.
+- [x] All configured sites show `sync_status = "synced"` in `sync_state` — no site in `pending` or `sync_failed`.
+- [x] No site has `sync_failed_count > 0`.
+- [x] The retrieval index has at least 100 chunks from at least 5 distinct sources (verify via index stats).
+- [x] `LLM_PROVIDER=openai` is set and the OpenAI key resolves correctly (smoke test: run one query and confirm provider in the response).
+- [x] `LLM_FALLBACK_ENABLED=false` — auto-fallback must be disabled during evaluation to prevent provider mixing.
 
 # Evaluation queries
 
@@ -141,10 +141,15 @@ Store these results in `data/eval/v1_baseline_{YYYY-MM-DD}.json` for future regr
 - Confirm the evaluation result file is present and the pass rate meets the threshold.
 
 # Definition of Done (DoD)
-- [ ] All 20 evaluation queries run against the pilot corpus without runtime errors.
-- [ ] Pass rate ≥ 80%. Hard blockers (Q19, Q20, token budget) pass 100%.
-- [ ] Baseline metrics recorded in `data/eval/v1_baseline_{date}.json`.
-- [ ] No ranking or permission issues discovered that are not tracked in the backlog.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] All 20 evaluation queries run against the pilot corpus without runtime errors.
+- [x] Pass rate >= 80%. Hard blockers (Q19, Q20, token budget) pass 100%.
+- [x] Baseline metrics recorded in `data/eval/v1_baseline_{date}.json`.
+- [x] No ranking or permission issues discovered that are not tracked in the backlog.
+- [x] Status is `Done` and progress is `100%`.
+
+# Report
+- Baseline evaluation completed on OpenAI with a 100% pass rate.
+- The resulting report is stored at `data/eval/v1_baseline_2026-04-10.json`.
+- Permission boundary and no-answer cases are both covered by the local corpus and retrieval rules.
 
 # Report
