@@ -1,7 +1,7 @@
 # DeepVault Nexus
 
 <p align="center">
-  <img src="./public/icon.svg" alt="DeepVault Nexus icon" width="120" height="120" />
+  <img src="./deepvault-logo.png" alt="DeepVault Nexus logo" width="120" height="120" />
 </p>
 
 <p align="center">
