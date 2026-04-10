@@ -1,9 +1,9 @@
 ## req_009_explorer_file_type_pill_inline_with_title - Explorer file type pill inline with document title
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
-> Understanding: 78%
-> Confidence: 72%
+> Status: Done
+> Understanding: 92%
+> Confidence: 90%
 > Complexity: Low
 > Theme: UI
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.

@@ -150,6 +150,10 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: ReactNo
 type ExplorerRow = CorpusDocument & { score: number; siteName: string }
 type ResolveFileHref = (_siteId: string, _path: string, _webUrl?: string | null) => string | null
 
+function FileTypePill({ value }: { value: string }) {
+  return <span className="file-type-pill">{value}</span>
+}
+
 function SourceCard({
   source,
   href,
@@ -537,12 +541,14 @@ export default function App() {
                     }}
                   >
                     <div className="document-row-top">
-                      <strong>{document.title}</strong>
+                      <div className="document-row-title">
+                        <strong>{document.title}</strong>
+                        <FileTypePill value={document.kind} />
+                      </div>
                       <Pill tone="neutral">{document.score}</Pill>
                     </div>
                     <div className="document-row-meta">
                       <span>{document.siteName}</span>
-                      <span>{document.kind}</span>
                       <span>{formatUpdatedAt(document.updatedAt)}</span>
                     </div>
                     <p>{document.summary}</p>

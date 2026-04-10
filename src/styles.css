@@ -414,9 +414,31 @@ p {
   margin-bottom: 0;
 }
 
+.document-row-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
 .document-row-top strong {
   font-size: 1.15rem;
   line-height: 1.2;
+}
+
+.file-type-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #f5f0e8;
+  color: var(--muted);
+  padding: 2px 8px;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .document-row .pill {
