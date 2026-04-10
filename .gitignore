@@ -1,5 +1,11 @@
 # Generated Logics runtime artifacts
 .env.local
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+data/runtime/
 logics/.cache/
 logics/.cache/hybrid_assist_audit.jsonl
 logics/.cache/hybrid_assist_measurements.jsonl
