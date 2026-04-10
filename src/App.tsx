@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
-import versionText from '../VERSION?raw'
 import { fetchLiveCorpus, getMockCorpusBundle, normalizeRequestedCorpusMode, type CorpusBundle } from './data/corpus'
 import {
   answerQuestion,
@@ -20,8 +19,6 @@ const NAV_ITEMS = [
   { id: 'bishop', label: 'Bishop' },
   { id: 'sync', label: 'Sync status' },
 ] as const
-
-const APP_VERSION = versionText.trim()
 
 type PillTone = 'neutral' | 'accent' | 'success' | 'danger'
 
@@ -226,7 +223,6 @@ export default function App() {
       <aside className="sidebar">
         <div className="sidebar-brandline">
           <span>Nexus</span>
-          <span>{APP_VERSION ? `Version ${APP_VERSION}` : 'Version 1.0.0'}</span>
         </div>
 
         <div className="sidebar-section">
@@ -292,25 +288,13 @@ export default function App() {
           </div>
         </div>
 
-        <div className="sidebar-section">
-          <div className="sidebar-label">State</div>
-          <div className="sidebar-metric">
-            <strong>{syncOverview.documentCount}</strong>
-            <span>visible documents</span>
-          </div>
-          <div className="sidebar-metric">
-            <strong>{syncOverview.chunkCount}</strong>
-            <span>estimated chunks</span>
-          </div>
-        </div>
       </aside>
 
       <main className="main-content">
         <header className="topbar">
           <div>
-            <div className="topbar-kicker">{APP_VERSION ? `Version ${APP_VERSION}` : 'Version 1.0.0'}</div>
             <h1>Nexus</h1>
-            <p>A focused local workspace for exploring content, validating grounded answers, and reviewing sync health before release.</p>
+            <p>A product-ready workspace for exploring content, validating grounded answers, and reviewing sync health before release.</p>
           </div>
           <div className="topbar-badges">
             <Pill tone={liveState.tone} title={liveState.detail}>

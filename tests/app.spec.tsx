@@ -8,9 +8,12 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await waitFor(() => expect(document.title).toBe('Nexus'))
+    expect(screen.getByRole('heading', { name: 'Nexus' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
+    expect(screen.queryByText(/Version 1\.0\.0/)).not.toBeInTheDocument()
+    expect(screen.queryByText('State')).not.toBeInTheDocument()
   })
 
   it('returns to Bishop after asking a question', async () => {
@@ -39,6 +42,12 @@ describe('DeepVault app', () => {
   it('shows the sync tab and the empty explorer state for an impossible filter', async () => {
     const user = userEvent.setup()
     render(<App />)
+
+    expect(
+      screen.getByText(
+        'A product-ready workspace for exploring content, validating grounded answers, and reviewing sync health before release.',
+      ),
+    ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Sync status' }))
 
