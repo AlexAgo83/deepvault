@@ -59,7 +59,7 @@
 | [item_015_v1_live_explorer_site_filter_alignment](backlog/item_015_v1_live_explorer_site_filter_alignment.md) | V1 — Live explorer site filter alignment | Ready | 0% | backlog/item_015_v1_live_explorer_site_filter_alignment.md |
 | [item_016_v1_live_evaluation_set_and_quality_gate](backlog/item_016_v1_live_evaluation_set_and_quality_gate.md) | V1 — Live evaluation set and quality gate | Ready | 0% | backlog/item_016_v1_live_evaluation_set_and_quality_gate.md |
 | [item_017_v1_crawl_resilience_and_artifact_governance](backlog/item_017_v1_crawl_resilience_and_artifact_governance.md) | V1 — Crawl resilience and artifact governance | Ready | 0% | backlog/item_017_v1_crawl_resilience_and_artifact_governance.md |
-| [item_018_v1_pre_v2_backlog_and_doc_cleanup](backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md) | V1 — Pre-V2 backlog and doc cleanup | Ready | 0% | backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md |
+| [item_018_v1_pre_v2_backlog_and_doc_cleanup](backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md) | V1 — Pre-V2 backlog and doc cleanup | Done | 100% | backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md |
 
 ## Tasks
 
@@ -69,5 +69,5 @@
 | [task_002_v1_ingestion_sync_and_retrieval_hardening](tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md) | V1 — Ingestion, sync, and retrieval hardening | Done | 100% | tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md |
 | [task_005_v1_local_development_and_validation_milestone](tasks/task_005_v1_local_development_and_validation_milestone.md) | V1 — Local development and validation milestone | Done | 100% | tasks/task_005_v1_local_development_and_validation_milestone.md |
 | [Pre](tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md) | evaluation checklist (must pass before starting) | Done | 100% | tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md |
-| [task_009_local_hardening_and_v1_scope_evolution](tasks/task_009_local_hardening_and_v1_scope_evolution.md) | What is already done in V1 (do not re-implement) | Ready | 0% | tasks/task_009_local_hardening_and_v1_scope_evolution.md |
+| [task_009_local_hardening_and_v1_scope_evolution](tasks/task_009_local_hardening_and_v1_scope_evolution.md) | What is already done in V1 (do not re-implement) | Done | 100% | tasks/task_009_local_hardening_and_v1_scope_evolution.md |
 | [task_010_v2_azure_and_teams_delivery](tasks/task_010_v2_azure_and_teams_delivery.md) | V2 Azure and Teams delivery | Draft | 0% | tasks/task_010_v2_azure_and_teams_delivery.md |
