@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
 > Related task: `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_003_hosted_backend_core_delivery.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
-> Reminder: Keep the storage layout, derived data boundaries, and environment-specific persistence rules aligned with the current local and hosted runtime design.
+> Reminder: Keep the storage layout, derived data boundaries, and environment-specific persistence rules aligned with the current local and hosted runtime design. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 DeepVault should persist only the data it derives or needs to operate.
@@ -54,9 +54,7 @@ For hosted production, prefer Azure Blob Storage, Azure SQL or managed Postgres,
 - Keep audit and secret boundaries stable as the hosted backend is introduced.
 
 # References
-- `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
-- `logics/product/prod_001_local_first_development_and_test_strategy.md`
-- `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
+- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 - `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
 - `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
 - `logics/backlog/item_005_runtime_config_and_operations.md`
@@ -64,10 +62,6 @@ For hosted production, prefer Azure Blob Storage, Azure SQL or managed Postgres,
 - `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
 - `logics/tasks/task_003_hosted_backend_core_delivery.md`
 - `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
-- `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`
-- `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
-- `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
-
 # Follow-up work
 - Specify the exact Azure services for blobs, relational state, retrieval index, and audit.
 - Define what is persisted locally versus only in hosted production.

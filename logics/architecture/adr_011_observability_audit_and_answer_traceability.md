@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
 > Related task: (none yet)
-> Reminder: Keep observability useful but lightweight. Default to user-visible summary signals plus backend-only sensitive traces.
+> Reminder: Keep observability useful but lightweight. Default to user-visible summary signals plus backend-only sensitive traces. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The platform should emit enough operational signal to explain what was ingested, what was refreshed, what was filtered, and how each answer was assembled.
@@ -51,9 +51,9 @@ Introduce richer dashboards only if the pilot proves they are necessary.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/architecture/adr_006_runtime_configuration_and_operations.md`
-- `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`
-
+- `logics/backlog/item_005_runtime_config_and_operations.md`
+- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
+- `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
 # Follow-up work
 - Define the log schema for ingestion and retrieval events
 - Decide which observability fields should be visible in the UI

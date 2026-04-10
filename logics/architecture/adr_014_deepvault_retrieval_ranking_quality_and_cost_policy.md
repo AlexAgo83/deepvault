@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
 > Related task: `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
-> Reminder: Keep the ranking policy, cost guardrails, and quality thresholds aligned with the current retrieval design and pilot scope.
+> Reminder: Keep the ranking policy, cost guardrails, and quality thresholds aligned with the current retrieval design and pilot scope. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 Retrieval should rank permission-safe candidates using a predictable and bounded policy.
@@ -123,21 +123,11 @@ If context assembly reaches the token budget before 20 chunks, the lowest-scorin
 - Keep the policy configurable so the local and hosted runtimes can share the same logic.
 
 # References
-- `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
-- `logics/product/prod_001_local_first_development_and_test_strategy.md`
-- `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
-- `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`
-- `logics/specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md`
-- `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
-- `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
+- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 - `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
 - `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
 - `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
 - `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
-- `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`
-- `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`
-- `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
-
 # Follow-up work
 - Run the evaluation set from `task_008` against V1 defaults and record scores.
 - Capture weight and budget overrides in a config block so they can change without code.

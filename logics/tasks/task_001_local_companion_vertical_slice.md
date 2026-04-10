@@ -2,8 +2,8 @@
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Done
-> Understanding: 95%
-> Confidence: 92%
+> Understanding: 96%
+> Confidence: 93%
 > Progress: 100%
 > Complexity: High
 > Theme: UI
@@ -94,3 +94,5 @@ stateDiagram-v2
 - Delivered the local vertical slice for `DeepVault - Navy` and `DeepVault - Bishop`.
 - Validation: `npm run lint`, `npm test`, `npm run build`, `npm run ingest`, `npm run evaluate`, `npm run e2e`.
 - Result: explorer, chat, and sync surfaces are wired to the local retrieval model and pass the smoke checks.
+
+# Notes

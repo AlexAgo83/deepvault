@@ -2,14 +2,15 @@
 > From version: 0.0.2
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 95%
-> Confidence: 90%
-> Progress: 1%
+> Understanding: 96%
+> Confidence: 91%
+> Progress: 0%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
 
 # Context
+Derived from `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`.
 - Execute the bounded delivery slice for V2 operations runbook and release readiness.
 - The work should produce a practical launch guide for Azure, rollback, secrets, monitoring, and release gates.
 
@@ -139,3 +140,5 @@ If migration validation fails:
 - [ ] Status is `Done` and progress is `100%`.
 
 # Report
+
+# Notes

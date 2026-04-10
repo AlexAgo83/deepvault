@@ -2,8 +2,8 @@
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Done
-> Understanding: 96%
-> Confidence: 93%
+> Understanding: 97%
+> Confidence: 94%
 > Progress: 100%
 > Complexity: High
 > Theme: General
@@ -100,3 +100,5 @@ stateDiagram-v2
 - V1 local development is implemented in the repo root as a React local workspace.
 - Validation: `npm run lint`, `npm test`, `npm run build`, `npm run ingest`, `npm run evaluate`, `npm run e2e`.
 - Result: the local explorer, Bishop chat, sync view, ingestion snapshot, and OpenAI baseline evaluation all pass.
+
+# Notes

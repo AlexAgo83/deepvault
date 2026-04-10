@@ -2,8 +2,8 @@
 > From version: 0.0.0
 > Schema version: 1.0
 > Status: Done
-> Understanding: 95%
-> Confidence: 92%
+> Understanding: 96%
+> Confidence: 93%
 > Progress: 100%
 > Complexity: High
 > Theme: General
@@ -94,3 +94,5 @@ stateDiagram-v2
 - Implemented the local corpus, sync snapshot generator, and permission-aware retrieval engine.
 - Validation: `npm run ingest`, `npm run evaluate`, `npm run lint`, `npm test`, `npm run build`.
 - Result: local refresh state is reproducible and the baseline evaluation passes at 100%.
+
+# Notes

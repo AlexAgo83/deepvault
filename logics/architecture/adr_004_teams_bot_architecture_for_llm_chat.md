@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
 > Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 > Related task: (none yet)
-> Reminder: Keep the bot identity, `DeepVault - Gordon` payload handling, and rights checks aligned. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`.
+> Reminder: Keep the bot identity, `DeepVault - Gordon` payload handling, and rights checks aligned. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The chat surface should be `DeepVault - Gordon` rather than a fake user profile.
@@ -47,7 +47,8 @@ Keep a web chat option open for later, but do not require it yet.
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-
+- `logics/backlog/item_004_teams_bot_chat_and_permissions.md`
+- `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 # Follow-up work
 - Register the `DeepVault - Gordon` app and bot
 - Define message schema and response templates

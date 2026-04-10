@@ -3,9 +3,9 @@
 > Status: Proposed
 > Drivers: Keep the chat backend provider-agnostic, use the keys already configured in the environment, and allow quality or cost trade-offs without changing the UI.
 > Related request: `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-> Related backlog: `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
+> Related backlog: `item_007_llm_provider_abstraction_for_openai_and_gemini`
 > Related task: `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
-> Reminder: Keep the provider contract stable so the local app can switch models without changing product behavior, using version-neutral wording. Default to OpenAI primary with Gemini fallback routing.
+> Reminder: Keep the provider contract stable so the local app can switch models without changing product behavior, using version-neutral wording. Default to OpenAI primary with Gemini fallback routing. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 The chat layer should call a provider abstraction instead of hard-coding a single LLM vendor.
@@ -63,10 +63,10 @@ Start with OpenAI as primary. Keep Gemini configured but inactive by default. En
 
 # References
 - `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
-- `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
-- `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
-
+- `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
+- `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`
+- `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
+- `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
 # Follow-up work
 - Define the provider contract and response schema
 - Add primary/fallback selection in the backend

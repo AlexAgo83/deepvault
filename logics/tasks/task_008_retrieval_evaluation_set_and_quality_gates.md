@@ -2,8 +2,8 @@
 > From version: 0.0.2
 > Schema version: 1.0
 > Status: Done
-> Understanding: 96%
-> Confidence: 94%
+> Understanding: 97%
+> Confidence: 95%
 > Progress: 100%
 > Complexity: Medium
 > Theme: Quality
@@ -153,3 +153,5 @@ Store these results in `data/eval/v1_baseline_{YYYY-MM-DD}.json` for future regr
 - Permission boundary and no-answer cases are both covered by the local corpus and retrieval rules.
 
 # Report
+
+# Notes

@@ -5,7 +5,7 @@
 > Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_011_hosted_backend_core.md`, `logics/backlog/item_012_teams_bot_channel_and_permissions.md`, `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
 > Related task: `logics/tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
 > Related architecture: `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Gordon naming when you edit this doc. Default production priority is trust and auditability. For any UX/UI or frontend work tied to this strategy, use `logics/skills/logics-ui-steering/SKILL.md`.
+> Reminder: Update status, linked refs, scope, decisions, success signals, open questions, the Azure/Render hosting decision, and DeepVault/Gordon naming when you edit this doc. Default production priority is trust and auditability. For any UX/UI or frontend work tied to this strategy, use `logics/skills/logics-ui-steering/SKILL.md`. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
 This brief defines the production strategy where the backend is hosted and Teams is the final delivery surface.
@@ -95,11 +95,7 @@ flowchart LR
 - `logics/backlog/item_011_hosted_backend_core.md`
 - `logics/backlog/item_012_teams_bot_channel_and_permissions.md`
 - `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
-- `logics/specs/spec_001_deepvault_gordon_teams_channel_experience_and_rollout.md`
-- `logics/specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md`
-- `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
-- `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
-- `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
+- `logics/tasks/task_006_v2_hosted_industrialization_and_teams_readiness_milestone.md`
 - `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
 - `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`
 - `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`
@@ -110,7 +106,9 @@ flowchart LR
 - `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`
 - `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
 - `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
-
+- `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
+- `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
+- `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
 # Post-V2 support model for Navy and Bishop
 
 `DeepVault - Navy` and `DeepVault - Bishop` are not deprecated after V2 launches. Their role changes:
