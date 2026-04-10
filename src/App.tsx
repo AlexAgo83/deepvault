@@ -5,6 +5,7 @@ import {
   buildSiteSummaries,
   buildSyncOverview,
   formatUpdatedAt,
+  resolveSharePointFileUrl,
   summarizeCorpus,
   type ChatMessage,
   type CorpusDocument,
@@ -44,7 +45,17 @@ function formatInlinePath(value: string): string {
   return segments[segments.length - 1] || value
 }
 
-function PathLabel({ value }: { value: string }) {
+function PathLabel({ value, href }: { value: string; href?: string | null }) {
+  const displayValue = formatInlinePath(value)
+
+  if (href) {
+    return (
+      <a className="path-inline path-inline-link" title={`Open file in SharePoint: ${value}`} href={href} target="_blank" rel="noreferrer">
+        {displayValue}
+      </a>
+    )
+  }
+
   const copyPath = async () => {
     if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(value)
@@ -61,12 +72,12 @@ function PathLabel({ value }: { value: string }) {
         void copyPath()
       }}
     >
-      {formatInlinePath(value)}
+      {displayValue}
     </button>
   )
 }
 
-function CompactPathText({ value }: { value: string }) {
+function CompactPathText({ value, href }: { value: string; href?: string | null }) {
   const marker = 'Path:'
   const markerIndex = value.indexOf(marker)
 
@@ -80,8 +91,28 @@ function CompactPathText({ value }: { value: string }) {
   return (
     <>
       {prefix}{' '}
-      <PathLabel value={pathText} />
+      <PathLabel value={pathText} href={href} />
     </>
+  )
+}
+
+function CompactDateTime({ value }: { value: string }) {
+  const date = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(value))
+  const time = new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date(value))
+
+  return (
+    <span className="stat-datetime">
+      <span>{date}</span>
+      <span>{time}</span>
+    </span>
   )
 }
 
@@ -92,7 +123,7 @@ function StatCard({
   valueClassName,
 }: {
   label: string
-  value: string | number
+  value: ReactNode
   note: string
   valueClassName?: string
 }) {
@@ -117,8 +148,15 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: ReactNo
 }
 
 type ExplorerRow = CorpusDocument & { score: number; siteName: string }
+type ResolveFileHref = (_siteId: string, _path: string, _webUrl?: string | null) => string | null
 
-function SourceCard({ source }: { source: ChatMessage['sources'][number] }) {
+function SourceCard({
+  source,
+  href,
+}: {
+  source: ChatMessage['sources'][number]
+  href?: string | null
+}) {
   return (
     <article className="source-card">
       <div className="source-card-top">
@@ -132,13 +170,19 @@ function SourceCard({ source }: { source: ChatMessage['sources'][number] }) {
       </div>
       <p>{source.snippet}</p>
       <div className="source-path">
-        <PathLabel value={source.path} />
+        <PathLabel value={source.path} href={href} />
       </div>
     </article>
   )
 }
 
-function Message({ message }: { message: ChatMessage }) {
+function Message({
+  message,
+  resolveFileHref,
+}: {
+  message: ChatMessage
+  resolveFileHref: ResolveFileHref
+}) {
   return (
     <article className={`message message-${message.role}`}>
       <div className="message-meta">
@@ -151,7 +195,7 @@ function Message({ message }: { message: ChatMessage }) {
           {message.sources.map((source) => (
             <div key={source.id} className="message-source">
               <strong>{source.title}</strong>
-              <PathLabel value={source.path} />
+              <PathLabel value={source.path} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
             </div>
           ))}
         </div>
@@ -173,6 +217,8 @@ export default function App() {
       : { label: 'Mock data', detail: 'Mock corpus selected', tone: 'neutral' },
   )
   const corpus = corpusBundle.corpus
+  const resolveFileHref = (siteId: string, path: string, webUrl?: string | null) =>
+    resolveSharePointFileUrl(corpus, siteId, path, webUrl)
   const [activeTab, setActiveTab] = useState<(typeof NAV_ITEMS)[number]['id']>('explorer')
   const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
   const [provider, setProvider] = useState<ProviderId>(corpus.providers[0].id)
@@ -441,9 +487,9 @@ export default function App() {
           />
           <StatCard
             label="Last refresh"
-            value={syncOverview.lastRun ? formatUpdatedAt(syncOverview.lastRun.finishedAt) : 'n/a'}
+            value={syncOverview.lastRun ? <CompactDateTime value={syncOverview.lastRun.finishedAt} /> : 'n/a'}
             note={syncOverview.refreshPolicy}
-            valueClassName="stat-value-compact"
+            valueClassName="stat-value-compact stat-value-datetime"
           />
           <StatCard
             label="Provider readiness"
@@ -511,7 +557,15 @@ export default function App() {
             <article className="panel">
               {selectedExplorerDoc ? (
                 <>
-                  <SectionHeading title={selectedExplorerDoc.title} subtitle={<PathLabel value={selectedExplorerDoc.path} />} />
+                  <SectionHeading
+                    title={selectedExplorerDoc.title}
+                    subtitle={
+                      <PathLabel
+                        value={selectedExplorerDoc.path}
+                        href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                      />
+                    }
+                  />
                   <div className="detail-stack">
                     <div className="detail-row">
                       <span>Site</span>
@@ -537,11 +591,17 @@ export default function App() {
                   <div className="document-content">
                     <h3>Answer-ready summary</h3>
                     <p>
-                      <CompactPathText value={selectedExplorerDoc.directAnswer || selectedExplorerDoc.summary} />
+                      <CompactPathText
+                        value={selectedExplorerDoc.directAnswer || selectedExplorerDoc.summary}
+                        href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                      />
                     </p>
                     <h3>Source excerpt</h3>
                     <p>
-                      <CompactPathText value={selectedExplorerDoc.content} />
+                      <CompactPathText
+                        value={selectedExplorerDoc.content}
+                        href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                      />
                     </p>
                   </div>
                 </>
@@ -567,7 +627,7 @@ export default function App() {
               />
               <div className="message-list">
                 {messages.map((message) => (
-                  <Message key={message.id} message={message} />
+                  <Message key={message.id} message={message} resolveFileHref={resolveFileHref} />
                 ))}
               </div>
               <form className="chat-form" onSubmit={handleAsk}>
@@ -621,7 +681,11 @@ export default function App() {
               </div>
               <div className="source-list">
                 {(selectedMessage.sources || []).map((source) => (
-                  <SourceCard key={source.id} source={source} />
+                  <SourceCard
+                    key={source.id}
+                    source={source}
+                    href={resolveFileHref(source.siteId, source.path, source.webUrl)}
+                  />
                 ))}
                 {!selectedMessage.sources?.length ? (
                   <div className="empty-state">No grounded sources yet. Ask Bishop a question to populate this trace.</div>

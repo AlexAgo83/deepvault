@@ -50,6 +50,7 @@ export interface CorpusDocumentLike {
   kind: string
   title: string
   path: string
+  webUrl?: string
   author: string
   updatedAt: string
   summary: string
@@ -431,6 +432,7 @@ async function crawlDriveItems(
       kind: extension || 'file',
       title,
       path: normalizedPath,
+      webUrl: item.webUrl,
       author: siteName,
       updatedAt: item.lastModifiedDateTime || item.createdDateTime || new Date().toISOString(),
       summary: buildSummary(text, title),

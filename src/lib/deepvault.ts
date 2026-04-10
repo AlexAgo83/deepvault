@@ -36,6 +36,7 @@ export interface CorpusDocument {
   kind: string
   title: string
   path: string
+  webUrl?: string
   author: string
   updatedAt: string
   summary: string
@@ -60,6 +61,7 @@ export interface SourceRecord {
   siteId: string
   siteName: string
   path: string
+  webUrl?: string
   updatedAt: string
   author: string
   score: number
@@ -190,6 +192,40 @@ export function canAccessDocument(document: Pick<CorpusDocument, 'access'>, role
 
 export function getSiteById(corpusData: Corpus, siteId: string): SiteRecord | undefined {
   return corpusData.sites.find((site) => site.id === siteId)
+}
+
+export function buildSharePointFileUrl(siteUrl: string, path: string): string {
+  const url = new URL(siteUrl)
+  const sitePath = url.pathname.replace(/\/$/, '')
+  const segments = path
+    .split('/')
+    .filter(Boolean)
+  if (segments[0] === 'Documents') {
+    segments[0] = 'Shared Documents'
+  }
+  const encodedPath = segments
+    .map((segment) => encodeURIComponent(segment))
+    .join('/')
+
+  url.pathname = `${sitePath}/${encodedPath}`.replace(/\/+/g, '/')
+  return url.toString()
+}
+
+export function resolveSharePointFileUrl(
+  corpusData: Corpus,
+  siteId: string,
+  path: string,
+  webUrl?: string | null,
+): string | null {
+  if (webUrl) {
+    return webUrl
+  }
+
+  const site = getSiteById(corpusData, siteId)
+  if (!site?.url) {
+    return null
+  }
+  return buildSharePointFileUrl(site.url, path)
 }
 
 export function getDocumentScore(document: CorpusDocument, query: string): number {
@@ -372,6 +408,7 @@ function buildSource(document: CorpusDocument, score: number, corpusData: Corpus
     siteId: document.siteId,
     siteName: getSiteById(corpusData, document.siteId)?.name || '',
     path: document.path,
+    webUrl: document.webUrl,
     updatedAt: document.updatedAt,
     author: document.author,
     score,

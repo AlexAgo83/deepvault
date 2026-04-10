@@ -36,9 +36,11 @@ describe('DeepVault app', () => {
     render(<App />)
 
     expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('button', { name: /Copy full path / }).length).toBeGreaterThan(0)
-    expect(screen.getAllByTitle(/\/.+/).length).toBeGreaterThan(0)
-    for (const pathLabel of screen.getAllByTitle(/\/.+/)) {
+    const pathLinks = screen.getAllByRole('link')
+    expect(pathLinks.length).toBeGreaterThan(0)
+    expect(pathLinks.some((link) => link.getAttribute('href')?.startsWith('http'))).toBe(true)
+    expect(pathLinks.some((link) => link.getAttribute('target') === '_blank')).toBe(true)
+    for (const pathLabel of pathLinks) {
       expect(pathLabel.textContent).not.toContain('/')
     }
 
