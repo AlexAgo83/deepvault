@@ -121,6 +121,19 @@ export interface AnswerResult {
   latencyMs: number
 }
 
+export interface GroundingResult {
+  status: AnswerResult['status']
+  provider: ProviderId
+  query: string
+  sources: SourceRecord[]
+  deniedSources: SourceRecord[]
+  chunkCount: number
+  tokenCount: number
+  latencyMs: number
+  localAnswer: string
+  primaryDocumentId: string | null
+}
+
 const STOP_WORDS = new Set([
   'a',
   'an',
@@ -250,6 +263,107 @@ function summarizeSentence(document: CorpusDocument, query: string): string {
   return matched || document.summary || document.content.split('.')[0]
 }
 
+export function groundQuestion(
+  corpusData: Corpus,
+  query: string,
+  options: { role?: UserRole; provider?: ProviderId; limit?: number } = {},
+): GroundingResult {
+  const role = options.role || 'analyst'
+  const provider = options.provider || 'openai'
+  const limit = options.limit || 3
+  const normalizedQuery = normalizeText(query)
+
+  if (/sharepoint\s+sites|sites\s+are\s+available|available\s+sites/.test(normalizedQuery)) {
+    return {
+      status: 'no_answer',
+      provider,
+      query,
+      localAnswer: 'DeepVault is answering from indexed document content, not from SharePoint site inventory.',
+      sources: [],
+      deniedSources: [],
+      chunkCount: 0,
+      tokenCount: 0,
+      latencyMs: 0,
+      primaryDocumentId: null,
+    }
+  }
+
+  const allResults = searchDocuments(corpusData, query, { role, limit: 10, includeDenied: true })
+  const deniedMatches = allResults.filter(({ document }) => !canAccessDocument(document, role))
+  const permittedMatches = allResults.filter(({ document }) => canAccessDocument(document, role))
+  const deniedSources = deniedMatches.map(({ document, score }) => buildSource(document, score, corpusData))
+
+  if (permittedMatches.length === 0) {
+    if (deniedMatches.length > 0) {
+      return {
+        status: 'no_permitted_sources',
+        provider,
+        query,
+        localAnswer: 'I found relevant content, but your current role cannot access the matching sources.',
+        sources: [],
+        deniedSources,
+        chunkCount: 0,
+        tokenCount: 0,
+        latencyMs: 0,
+        primaryDocumentId: null,
+      }
+    }
+
+    return {
+      status: 'no_answer',
+      provider,
+      query,
+      localAnswer: 'No relevant content was found in the indexed pilot corpus.',
+      sources: [],
+      deniedSources,
+      chunkCount: 0,
+      tokenCount: 0,
+      latencyMs: 0,
+      primaryDocumentId: null,
+    }
+  }
+
+  const sources = permittedMatches.slice(0, limit).map(({ document, score }) => ({
+    ...buildSource(document, score, corpusData),
+    siteName: getSiteById(corpusData, document.siteId)?.name || document.siteId,
+  }))
+  const primary = sources[0]
+  const primaryDocument = corpusData.documents.find((document) => document.id === primary.id)
+
+  if (!primaryDocument) {
+    return {
+      status: 'no_answer',
+      provider,
+      query,
+      localAnswer: 'No relevant content was found in the indexed pilot corpus.',
+      sources: [],
+      deniedSources,
+      chunkCount: 0,
+      tokenCount: 0,
+      latencyMs: 0,
+      primaryDocumentId: null,
+    }
+  }
+
+  const localAnswer = summarizeSentence(primaryDocument, query)
+  const chunkCount = sources.length * 6
+  const tokenCount = Math.min(2400, 120 + query.length * 12 + sources.reduce((total, source) => total + source.snippet.length, 0))
+  const latencyMs = Math.min(2400, 180 + sources.length * 90 + query.length * 4)
+
+  return {
+    status: 'answered',
+    provider,
+    query,
+    localAnswer,
+    sources,
+    deniedSources,
+    chunkCount,
+    tokenCount,
+    latencyMs,
+    primaryDocumentId: primaryDocument.id,
+  }
+}
+
 function buildSource(document: CorpusDocument, score: number, corpusData: Corpus): SourceRecord {
   return {
     id: document.id,
@@ -305,94 +419,18 @@ export function answerQuestion(
   query: string,
   options: { role?: UserRole; provider?: ProviderId; limit?: number } = {},
 ): AnswerResult {
-  const role = options.role || 'analyst'
-  const provider = options.provider || 'openai'
-  const limit = options.limit || 3
-  const normalizedQuery = normalizeText(query)
-
-  if (/sharepoint\s+sites|sites\s+are\s+available|available\s+sites/.test(normalizedQuery)) {
-    return {
-      status: 'no_answer',
-      provider,
-      query,
-      answer: 'DeepVault is answering from indexed document content, not from SharePoint site inventory.',
-      sources: [],
-      deniedSources: [],
-      chunkCount: 0,
-      tokenCount: 0,
-      latencyMs: 0,
-    }
-  }
-
-  const allResults = searchDocuments(corpusData, query, { role, limit: 10, includeDenied: true })
-  const deniedMatches = allResults.filter(({ document }) => !canAccessDocument(document, role))
-  const permittedMatches = allResults.filter(({ document }) => canAccessDocument(document, role))
-  const deniedSources = deniedMatches.map(({ document, score }) => buildSource(document, score, corpusData))
-
-  if (permittedMatches.length === 0) {
-    if (deniedMatches.length > 0) {
-      return {
-        status: 'no_permitted_sources',
-        provider,
-        query,
-        answer: 'I found relevant content, but your current role cannot access the matching sources.',
-        sources: [],
-        deniedSources,
-        chunkCount: 0,
-        tokenCount: 0,
-        latencyMs: 0,
-      }
-    }
-
-    return {
-      status: 'no_answer',
-      provider,
-      query,
-      answer: 'No relevant content was found in the indexed pilot corpus.',
-      sources: [],
-      deniedSources,
-      chunkCount: 0,
-      tokenCount: 0,
-      latencyMs: 0,
-    }
-  }
-
-  const sources = permittedMatches.slice(0, limit).map(({ document, score }) => ({
-    ...buildSource(document, score, corpusData),
-    siteName: getSiteById(corpusData, document.siteId)?.name || document.siteId,
-  }))
-  const primary = sources[0]
-  const primaryDocument = corpusData.documents.find((document) => document.id === primary.id)
-
-  if (!primaryDocument) {
-    return {
-      status: 'no_answer',
-      provider,
-      query,
-      answer: 'No relevant content was found in the indexed pilot corpus.',
-      sources: [],
-      deniedSources,
-      chunkCount: 0,
-      tokenCount: 0,
-      latencyMs: 0,
-    }
-  }
-
-  const answer = summarizeSentence(primaryDocument, query)
-  const chunkCount = sources.length * 6
-  const tokenCount = Math.min(2400, 120 + query.length * 12 + sources.reduce((total, source) => total + source.snippet.length, 0))
-  const latencyMs = Math.min(2400, 180 + sources.length * 90 + query.length * 4)
+  const grounding = groundQuestion(corpusData, query, options)
 
   return {
-    status: 'answered',
-    provider,
-    query,
-    answer,
-    sources,
-    deniedSources,
-    chunkCount,
-    tokenCount,
-    latencyMs,
+    status: grounding.status,
+    provider: grounding.provider,
+    query: grounding.query,
+    answer: grounding.localAnswer,
+    sources: grounding.sources,
+    deniedSources: grounding.deniedSources,
+    chunkCount: grounding.chunkCount,
+    tokenCount: grounding.tokenCount,
+    latencyMs: grounding.latencyMs,
   }
 }
 

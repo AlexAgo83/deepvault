@@ -42,7 +42,7 @@
 | [req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core](request/req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core.md) | Coverage uplift for corpus mode, live fetch, and deepvault core | Done |  | request/req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core.md |
 | [req_006_explorer_card_hierarchy_and_visual_polish](request/req_006_explorer_card_hierarchy_and_visual_polish.md) | Explorer card hierarchy and visual polish | Done |  | request/req_006_explorer_card_hierarchy_and_visual_polish.md |
 | [req_007_compact_paths_in_explorer_excerpts_and_summaries](request/req_007_compact_paths_in_explorer_excerpts_and_summaries.md) | Compact paths in explorer excerpts and summaries | Done |  | request/req_007_compact_paths_in_explorer_excerpts_and_summaries.md |
-| [req_008_bishop_llm_orchestration_after_local_grounding](request/req_008_bishop_llm_orchestration_after_local_grounding.md) | Bishop LLM orchestration after local grounding | Draft |  | request/req_008_bishop_llm_orchestration_after_local_grounding.md |
+| [req_008_bishop_llm_orchestration_after_local_grounding](request/req_008_bishop_llm_orchestration_after_local_grounding.md) | Bishop LLM orchestration after local grounding | In progress |  | request/req_008_bishop_llm_orchestration_after_local_grounding.md |
 
 ## Backlog
 
@@ -79,7 +79,7 @@
 | [item_028_explorer_card_hierarchy_cleanup](backlog/item_028_explorer_card_hierarchy_cleanup.md) | Explorer card hierarchy cleanup | Done | 100% | backlog/item_028_explorer_card_hierarchy_cleanup.md |
 | [item_029_explorer_badge_and_source_line_polish](backlog/item_029_explorer_badge_and_source_line_polish.md) | Explorer badge and source line polish | Done | 100% | backlog/item_029_explorer_badge_and_source_line_polish.md |
 | [item_030_compact_paths_in_explorer_excerpts_and_summaries](backlog/item_030_compact_paths_in_explorer_excerpts_and_summaries.md) | Compact paths in explorer excerpts and summaries | Done | 100% | backlog/item_030_compact_paths_in_explorer_excerpts_and_summaries.md |
-| [item_031_bishop_grounding_contract_and_response_shape](backlog/item_031_bishop_grounding_contract_and_response_shape.md) | Bishop grounding contract and response shape | Ready | 0% | backlog/item_031_bishop_grounding_contract_and_response_shape.md |
+| [item_031_bishop_grounding_contract_and_response_shape](backlog/item_031_bishop_grounding_contract_and_response_shape.md) | Bishop grounding contract and response shape | Done | 100% | backlog/item_031_bishop_grounding_contract_and_response_shape.md |
 | [item_032_bishop_llm_orchestration_and_fallback](backlog/item_032_bishop_llm_orchestration_and_fallback.md) | Bishop LLM orchestration and fallback | Ready | 0% | backlog/item_032_bishop_llm_orchestration_and_fallback.md |
 | [item_033_bishop_trace_status_and_evaluation_coverage](backlog/item_033_bishop_trace_status_and_evaluation_coverage.md) | Bishop trace, status, and evaluation coverage | Ready | 0% | backlog/item_033_bishop_trace_status_and_evaluation_coverage.md |
 
@@ -96,4 +96,4 @@
 | [task_011_nexus_v1_1_shell_and_live_state_delivery](tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md) | Nexus V1.1 shell and live state delivery | Done | 100% | tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md |
 | [task_012_nexus_v1_1_remaining_polish_orchestration](tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md) | Nexus V1.1 remaining polish orchestration | Done | 100% | tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md |
 | [task_013_coverage_and_explorer_polish_orchestration](tasks/task_013_coverage_and_explorer_polish_orchestration.md) | Coverage and explorer polish orchestration | Done | 100% | tasks/task_013_coverage_and_explorer_polish_orchestration.md |
-| [task_014_bishop_llm_orchestration_delivery](tasks/task_014_bishop_llm_orchestration_delivery.md) | Bishop LLM orchestration delivery | Ready | 0% | tasks/task_014_bishop_llm_orchestration_delivery.md |
+| [task_014_bishop_llm_orchestration_delivery](tasks/task_014_bishop_llm_orchestration_delivery.md) | Bishop LLM orchestration delivery | In progress | 33% | tasks/task_014_bishop_llm_orchestration_delivery.md |
