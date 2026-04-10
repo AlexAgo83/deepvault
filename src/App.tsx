@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { fetchLiveCorpus, getMockCorpusBundle, normalizeRequestedCorpusMode, type CorpusBundle } from './data/corpus'
 import {
   answerQuestion,
@@ -131,6 +131,8 @@ export default function App() {
   const [search, setSearch] = useState<string>('')
   const [selectedDocId, setSelectedDocId] = useState<string>(corpus.documents[0].id)
   const [question, setQuestion] = useState<string>('')
+  const [isAsking, setIsAsking] = useState(false)
+  const answerTimers = useRef<number[]>([])
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'seed',
@@ -166,28 +168,63 @@ export default function App() {
   const handleAsk = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = question.trim()
-    if (!trimmed) {
+    if (!trimmed || isAsking) {
       return
     }
 
     const result = answerQuestion(corpus, trimmed, { role, provider, limit: 3 })
+    const assistantId = `${Date.now()}-assistant`
+    setIsAsking(true)
     setMessages((current) => [
       ...current,
       { id: `${Date.now()}-user`, role: 'user', text: trimmed, status: '', sources: [] },
       {
-        id: `${Date.now()}-assistant`,
+        id: assistantId,
         role: 'assistant',
-        text: result.answer,
-        status: result.status,
-        sources: result.sources,
-        provider: result.provider,
-        chunkCount: result.chunkCount,
-        tokenCount: result.tokenCount,
-        latencyMs: result.latencyMs,
+        text: 'Bishop is drafting the answer from grounded sources.',
+        status: 'draft',
+        sources: [],
       },
     ])
     setQuestion('')
     setActiveTab('bishop')
+
+    const answerDelay = window.setTimeout(() => {
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === assistantId
+            ? {
+                ...message,
+                text: 'Bishop is thinking through the grounded sources.',
+                status: 'answering',
+              }
+            : message,
+        ),
+      )
+    }, 220)
+
+    const finishDelay = window.setTimeout(() => {
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === assistantId
+            ? {
+                ...message,
+                text: result.answer,
+                status: result.status,
+                sources: result.sources,
+                provider: result.provider,
+                chunkCount: result.chunkCount,
+                tokenCount: result.tokenCount,
+                latencyMs: result.latencyMs,
+              }
+            : message,
+        ),
+      )
+      setIsAsking(false)
+      answerTimers.current = []
+    }, 560)
+
+    answerTimers.current.push(answerDelay, finishDelay)
   }
 
   const selectedMessage = messages[messages.length - 1]
@@ -195,6 +232,16 @@ export default function App() {
   useEffect(() => {
     document.title = 'Nexus'
   }, [])
+
+  useEffect(
+    () => () => {
+      for (const timer of answerTimers.current) {
+        window.clearTimeout(timer)
+      }
+      answerTimers.current = []
+    },
+    [],
+  )
 
   useEffect(() => {
     let active = true
@@ -465,13 +512,14 @@ export default function App() {
                   onChange={(event) => setQuestion(event.target.value)}
                   rows={4}
                   placeholder="What is the deadline for the compliance audit?"
+                  disabled={isAsking}
                 />
                 <div className="chat-form-actions">
                   <div className="chat-note">
                     Current provider: {provider}. Current role: {role}. No fallback mixing during evaluation.
                   </div>
-                  <button type="submit" className="primary-button">
-                    Send
+                  <button type="submit" className="primary-button" disabled={isAsking}>
+                    {isAsking ? 'Thinking...' : 'Send'}
                   </button>
                 </div>
               </form>

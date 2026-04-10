@@ -24,6 +24,8 @@ describe('DeepVault app', () => {
     await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
     await user.click(screen.getByRole('button', { name: 'Send' }))
 
+    expect(screen.getByRole('button', { name: 'Thinking...' })).toBeDisabled()
+    expect(screen.getByText('Bishop is drafting the answer from grounded sources.')).toBeInTheDocument()
     expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
   })
 

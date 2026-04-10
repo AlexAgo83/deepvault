@@ -341,6 +341,13 @@ p {
   border-color: #a95d3c;
 }
 
+.primary-button:disabled {
+  background: #d8cec1;
+  border-color: #d8cec1;
+  color: #6e6258;
+  cursor: not-allowed;
+}
+
 .secondary-button {
   background: transparent;
 }
@@ -456,6 +463,12 @@ th {
 
 .message-assistant {
   border-color: rgba(76, 125, 90, 0.3);
+}
+
+.message-draft,
+.message-answering {
+  border-color: rgba(76, 125, 90, 0.4);
+  background: linear-gradient(180deg, rgba(76, 125, 90, 0.06), rgba(255, 253, 249, 0.98));
 }
 
 .message-sources {
