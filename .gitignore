@@ -1,10 +1,12 @@
 # Generated Logics runtime artifacts
 .env.local
+.DS_Store
 node_modules/
 dist/
 coverage/
 playwright-report/
 test-results/
+.playwright-cli/
 data/runtime/
 data/eval/*.live.json
 data/live-corpus.json
