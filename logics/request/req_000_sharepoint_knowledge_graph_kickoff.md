@@ -34,7 +34,7 @@ Validated context so far:
 - The app can obtain an access token with the current Entra credentials.
 - The app can list SharePoint sites through Graph.
 - The app can list libraries and lists for a site.
-- The Circle SAS site is reachable at `https://circlesas.sharepoint.com/sites/CircleSAS`.
+- The first pilot site is reachable and listed in `DEEPVAULT_ENTRA_SITES` in `.env.local`.
 - The default `Documents` library on that site is currently empty at the root, so useful content will likely live in other libraries or deeper folder trees.
 
 Product direction:
@@ -56,7 +56,7 @@ Product direction:
 - The configurable pilot site list should stay in environment configuration for the hosted runtime.
 
 Pilot scope:
-- Start with two sites: `Circle SAS` and `https://circlesas.sharepoint.com/sites/CSAS-OP-Prod`.
+- Start with two sites configured in `DEEPVAULT_ENTRA_SITES` in `.env.local` (see also `DEEPVAULT_PILOT_SITE_NAMES` for human-readable labels).
 - Keep the pilot site list configurable through the environment so it can be updated without code changes.
 - Index all available content types, with priority given to the most useful and queryable sources first.
 - Keep the first pilot focused on read-only discovery, ingestion, retrieval, and answer traceability.
