@@ -53,6 +53,27 @@ describe('deepvault helpers', () => {
     expect(result.deniedSources).not.toHaveLength(0)
   })
 
+  it('returns no answer for inventory style SharePoint questions', () => {
+    const result = answerQuestion(corpus, 'What SharePoint sites are available for the Finance team?', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    expect(result.status).toBe('no_answer')
+    expect(result.sources).toHaveLength(0)
+  })
+
+  it('returns grounded answers when the query matches document content', () => {
+    const result = answerQuestion(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    expect(result.status).toBe('answered')
+    expect(result.sources).not.toHaveLength(0)
+    expect(result.answer).toContain('Q3 2025 budget')
+  })
+
   it('summarizes the corpus and formats timestamps', () => {
     const summary = summarizeCorpus(corpus, 'analyst')
 

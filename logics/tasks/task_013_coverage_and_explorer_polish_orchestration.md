@@ -4,7 +4,7 @@
 > Status: Ready
 > Understanding: 93%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 33%
 > Complexity: Medium
 > Theme: UI
 > Reminder: Keep this task focused on the three follow-up requests and their six backlog slices. Split again if a wave grows beyond one coherent implementation pass.
@@ -32,8 +32,8 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirm scope, dependencies, and linked acceptance criteria for `item_025`, `item_026`, `item_027`, `item_028`, `item_029`, and `item_030`.
-- [ ] 2. Implement wave 1 for coverage foundations.
+- [x] 1. Confirm scope, dependencies, and linked acceptance criteria for `item_025`, `item_026`, `item_027`, `item_028`, `item_029`, and `item_030`.
+- [x] 2. Implement wave 1 for coverage foundations.
 - [ ] 3. Implement wave 2 for explorer card hierarchy and visual polish.
 - [ ] 4. Implement wave 3 for compact paths in explorer excerpts and summaries.
 - [ ] 5. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
@@ -85,3 +85,5 @@ stateDiagram-v2
 - [ ] Status is `Done` and progress is `100%`.
 
 # Report
+- Wave 1 completed: corpus mode normalization, live corpus fetch branches, and deepvault retrieval paths are covered with focused tests.
+- Validation passed for wave 1: `rtk npm run test:coverage`, `rtk npm run lint`, `rtk npm run typecheck`.
