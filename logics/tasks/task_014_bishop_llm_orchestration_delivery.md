@@ -1,10 +1,10 @@
 ## task_014_bishop_llm_orchestration_delivery - Bishop LLM orchestration delivery
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: In progress
+> Status: Done
 > Understanding: 94%
 > Confidence: 92%
-> Progress: 67%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -35,12 +35,12 @@ stateDiagram-v2
 - [x] 1. Confirm scope, dependencies, and linked acceptance criteria for `item_031`, `item_032`, and `item_033`.
 - [x] 2. Implement wave 1 for the grounding contract and response shape.
 - [x] 3. Implement wave 2 for orchestration and fallback handling.
-- [ ] 4. Implement wave 3 for trace, status, and evaluation coverage.
-- [ ] 5. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
-- [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
+- [x] 4. Implement wave 3 for trace, status, and evaluation coverage.
+- [x] 5. Validate each wave, keep the wave commit-ready, and update the linked Logics docs before continuing.
+- [x] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
 - [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
-- [ ] FINAL: Update related Logics docs and close the task when all three slices are complete.
+- [x] FINAL: Update related Logics docs and close the task when all three slices are complete.
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -87,8 +87,9 @@ stateDiagram-v2
 # Report
 - Wave 1: pending grounding contract implementation.
 - Wave 2 completed: Bishop now runs through a dedicated orchestration helper with a remote endpoint path and local fallback.
-- Wave 3: pending trace and evaluation coverage.
 - Wave 1 completed: Bishop grounding is now split into a reusable contract and the local answer synthesis contract remains intact.
 - Validation passed for wave 1: `rtk npm run test -- tests/bishop.spec.ts tests/deepvault.spec.ts`, `rtk npm run lint`, `rtk npm run typecheck`.
 - Wave 2 completed: Bishop UI now awaits the orchestration result, keeps the thinking state visible, and falls back locally when no remote endpoint is configured.
 - Validation passed for wave 2: `rtk npm run test -- tests/bishop.spec.ts tests/app.spec.tsx tests/deepvault.spec.ts`, `rtk npm run lint`, `rtk npm run typecheck`.
+- Wave 3 completed: Bishop trace now exposes orchestration mode and evaluation now exercises the orchestration helper end to end.
+- Validation passed for wave 3: `rtk npm run test -- tests/bishop.spec.ts tests/app.spec.tsx tests/deepvault.spec.ts`, `rtk npm run evaluate`, `rtk npm run lint`, `rtk npm run typecheck`.

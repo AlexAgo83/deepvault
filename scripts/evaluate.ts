@@ -1,12 +1,12 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import {
-  answerQuestion,
   buildEvaluationRows,
   canAccessDocument,
   type Corpus,
   type EvaluationRow,
 } from '../src/lib/deepvault'
+import { orchestrateBishopAnswer } from '../src/lib/bishop'
 import { loadCorpus, resolveSnapshotPath } from './corpus-loader'
 
 function readArg(name: string): string | undefined {
@@ -67,38 +67,41 @@ function buildLiveEvaluationRows(liveCorpus: Corpus): EvaluationRow[] {
 }
 
 const rows = mode === 'live' ? buildLiveEvaluationRows(corpus) : buildEvaluationRows()
-const results = rows.map((row) => {
-  const answer = answerQuestion(corpus, row.query, { role: row.role, provider: 'openai', limit: 3 })
-  const sourceIds = answer.sources.map((source) => source.id)
-  const deniedSourceIds = answer.deniedSources.map((source) => source.id)
-  const pass =
-    answer.status === row.expectedStatus &&
-    (row.expectedStatus === 'answered'
-      ? row.expectedSourceId
-        ? sourceIds.includes(row.expectedSourceId)
-        : answer.sources.length > 0
-      : true) &&
-    (row.expectedStatus === 'no_permitted_sources'
-      ? row.expectedSourceId
-        ? deniedSourceIds.includes(row.expectedSourceId)
-        : true
-      : true)
+const results = await Promise.all(
+  rows.map(async (row) => {
+    const answer = await orchestrateBishopAnswer(corpus, row.query, { role: row.role, provider: 'openai', limit: 3 })
+    const sourceIds = answer.sources.map((source) => source.id)
+    const deniedSourceIds = answer.deniedSources.map((source) => source.id)
+    const pass =
+      answer.status === row.expectedStatus &&
+      (row.expectedStatus === 'answered'
+        ? row.expectedSourceId
+          ? sourceIds.includes(row.expectedSourceId)
+          : answer.sources.length > 0
+        : true) &&
+      (row.expectedStatus === 'no_permitted_sources'
+        ? row.expectedSourceId
+          ? deniedSourceIds.includes(row.expectedSourceId)
+          : true
+        : true)
 
-  return {
-    query_id: row.id,
-    query: row.query,
-    expected_source_id: row.expectedSourceId,
-    expected_status: row.expectedStatus,
-    provider: answer.provider,
-    status: answer.status,
-    chunk_count: answer.chunkCount,
-    token_count: answer.tokenCount,
-    source_count: answer.sources.length,
-    latency_ms: answer.latencyMs,
-    source_ids: sourceIds,
-    pass,
-  }
-})
+    return {
+      query_id: row.id,
+      query: row.query,
+      expected_source_id: row.expectedSourceId,
+      expected_status: row.expectedStatus,
+      provider: answer.provider,
+      status: answer.status,
+      orchestration_mode: answer.mode,
+      chunk_count: answer.chunkCount,
+      token_count: answer.tokenCount,
+      source_count: answer.sources.length,
+      latency_ms: answer.latencyMs,
+      source_ids: sourceIds,
+      pass,
+    }
+  }),
+)
 
 const passCount = results.filter((result) => result.pass).length
 const passRate = Number((passCount / results.length).toFixed(2))
