@@ -1,7 +1,7 @@
 ## req_006_explorer_card_hierarchy_and_visual_polish - Explorer card hierarchy and visual polish
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 93%
 > Confidence: 90%
 > Complexity: Medium
