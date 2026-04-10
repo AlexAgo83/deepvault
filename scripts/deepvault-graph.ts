@@ -202,6 +202,7 @@ async function acquireDelegatedToken(config: DeepVaultExportConfig): Promise<str
         grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
         client_id: config.appId,
         device_code: deviceCode.device_code,
+        ...(config.secretValue ? { client_secret: config.secretValue } : {}),
       }),
     })
     const payload = (await tokenResponse.json()) as { access_token?: string; error?: string; error_description?: string }
