@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import deepvaultLogo from '../deepvault-logo.png'
 import { fetchLiveCorpus, getMockCorpusBundle, normalizeRequestedCorpusMode, type CorpusBundle } from './data/corpus'
 import {
   answerQuestion,
@@ -181,10 +182,13 @@ export default function App() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand-block">
-          <div>
-            <div className="brand-mark">DeepVault</div>
-            <h1>Local validation workspace</h1>
-            <p>Explorer, grounded chat, and sync status in one local surface.</p>
+          <div className="brand-header">
+            <img className="brand-logo" src={deepvaultLogo} alt="DeepVault logo" />
+            <div>
+              <div className="brand-mark">DeepVault</div>
+              <h1>Local validation workspace</h1>
+              <p>Explorer, grounded chat, and sync status in one local surface.</p>
+            </div>
           </div>
         </div>
 

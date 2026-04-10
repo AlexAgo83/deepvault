@@ -74,6 +74,20 @@ p {
   box-shadow: var(--shadow);
 }
 
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: 0 10px 24px rgba(42, 36, 31, 0.14);
+}
+
 .brand-mark {
   font-size: 0.75rem;
   letter-spacing: 0.08em;
