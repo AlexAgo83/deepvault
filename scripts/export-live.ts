@@ -60,12 +60,14 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
 
   for (const definition of siteDefinitions) {
     try {
-      const exported = await exportSiteCorpus(client, definition)
+      console.log(`[${definition.name}] Starting export`)
+      const exported = await exportSiteCorpus(client, definition, (message) => console.log(message))
       sites.push(exported.site)
       documents.push(...exported.documents)
       siteIds.push(exported.site.id)
       totalLibraries += exported.driveCount
       totalLists += exported.listCount
+      console.log(`[${definition.name}] Export finished with ${exported.documents.length} documents`)
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       sites.push({
@@ -105,6 +107,7 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
     documents,
   }
 
+  console.log(`Export summary: ${documents.length} documents across ${totalLibraries} libraries and ${totalLists} lists`)
   await writeCorpusFile(outputPath, corpus)
   const role = corpus.defaultUserRole || 'analyst'
   const summary = summarizeCorpus(corpus as Corpus, role)

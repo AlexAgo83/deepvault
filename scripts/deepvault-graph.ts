@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
-import { JSDOM } from 'jsdom'
 
 export interface DeepVaultSiteDefinition {
   url: string
@@ -98,8 +97,16 @@ function parseCsv(value: string | undefined): string[] {
 }
 
 function normalizeHtmlToText(value: string): string {
-  const dom = new JSDOM(value)
-  return (dom.window.document.body.textContent || '').replace(/\s+/g, ' ').trim()
+  return value
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function contentHash(value: string): string {
@@ -132,6 +139,10 @@ function buildTags(siteName: string, driveName: string, itemPath: string, kind: 
   return [...new Set(tokens.map((token) => token.toLowerCase()).filter(Boolean))].slice(0, 12)
 }
 
+const TEXTUAL_MIME_PREFIXES = ['text/', 'application/json', 'application/xml', 'application/xhtml+xml']
+const TEXTUAL_EXTENSIONS = new Set(['txt', 'md', 'markdown', 'csv', 'tsv', 'json', 'xml', 'html', 'htm', 'aspx'])
+const MAX_TEXT_DOWNLOAD_BYTES = 256 * 1024
+
 function encodeDrivePath(path: string): string {
   return path
     .split('/')
@@ -139,6 +150,8 @@ function encodeDrivePath(path: string): string {
     .map((segment) => encodeURIComponent(segment))
     .join('/')
 }
+
+export type DeepVaultProgressReporter = (_message: string) => void
 
 export function buildDeepVaultExportConfig(): DeepVaultExportConfig {
   return {
@@ -351,13 +364,26 @@ async function tryDownloadText(client: GraphClient, itemPath: string): Promise<s
   return ''
 }
 
+function isTextualItem(name: string, mimeType?: string): boolean {
+  const extension = name.includes('.') ? name.split('.').pop()?.toLowerCase() || '' : ''
+  if (extension && TEXTUAL_EXTENSIONS.has(extension)) {
+    return true
+  }
+  if (!mimeType) {
+    return false
+  }
+  return TEXTUAL_MIME_PREFIXES.some((prefix) => mimeType.startsWith(prefix))
+}
+
 async function crawlDriveItems(
   client: GraphClient,
   siteId: string,
   siteName: string,
   drive: GraphDrive,
   rootPath = '',
+  report?: DeepVaultProgressReporter,
 ): Promise<CorpusDocumentLike[]> {
+  report?.(`[${siteName}] Scanning ${drive.name}${rootPath ? `/${rootPath}` : ''}`)
   const items = await client.listAll<GraphDriveItem>(
     rootPath
       ? `/drives/${drive.id}/root:/${encodeDrivePath(rootPath)}:/children?$top=200`
@@ -374,7 +400,16 @@ async function crawlDriveItems(
     }
 
     const extension = item.name.includes('.') ? item.name.split('.').pop()?.toLowerCase() || '' : ''
-    const rawText = await tryDownloadText(client, `/drives/${drive.id}/items/${item.id}`)
+    const rawText = item.file
+      && isTextualItem(item.name, item.file.mimeType)
+      && (typeof item.size !== 'number' || item.size <= MAX_TEXT_DOWNLOAD_BYTES)
+      ? await tryDownloadText(client, `/drives/${drive.id}/items/${item.id}`)
+      : ''
+    if (item.file && !rawText && typeof item.size === 'number' && item.size > MAX_TEXT_DOWNLOAD_BYTES) {
+      report?.(
+        `[${siteName}] ${drive.name}${currentPath} over size limit (${item.size} bytes), keeping metadata only`,
+      )
+    }
     const fallbackText = `Source: ${item.name}. Path: ${currentPath}.`
     const text = rawText || fallbackText
     const normalizedPath = `/${drive.name}${currentPath.startsWith('/') ? currentPath : `/${currentPath}`}`.replace(/\/+/g, '/')
@@ -390,7 +425,7 @@ async function crawlDriveItems(
       updatedAt: item.lastModifiedDateTime || item.createdDateTime || new Date().toISOString(),
       summary: buildSummary(text, title),
       directAnswer: buildDirectAnswer(text, title),
-      content: text.slice(0, 12000),
+      content: text.slice(0, 4000),
       tags: buildTags(siteName, drive.name, currentPath, extension || 'file'),
       access: ['analyst', 'admin'],
       source: 'SharePoint',
@@ -403,21 +438,36 @@ async function crawlDriveItems(
 export async function exportSiteCorpus(
   client: GraphClient,
   siteDefinition: DeepVaultSiteDefinition,
+  report?: DeepVaultProgressReporter,
 ): Promise<{
   site: CorpusSiteLike
   documents: CorpusDocumentLike[]
   driveCount: number
   listCount: number
 }> {
+  report?.(`[${siteDefinition.name}] Resolving site ${siteDefinition.url}`)
   const site = await client.getJson<GraphSite>(siteUrlToGraphPath(siteDefinition.url))
+  report?.(`[${siteDefinition.name}] Site resolved as ${site.displayName}`)
   const drives = await client.listAll<GraphDrive>(`/sites/${site.id}/drives?$top=100`)
   const lists = await client.listAll<{ id: string }>(`/sites/${site.id}/lists?$top=100`)
   const documents: CorpusDocumentLike[] = []
+  report?.(`[${siteDefinition.name}] Found ${drives.length} libraries and ${lists.length} lists`)
 
   for (const drive of drives) {
-    const nestedDocuments = await crawlDriveItems(client, site.id, siteDefinition.name || site.displayName, drive)
+    report?.(`[${siteDefinition.name}] Crawling library ${drive.name}`)
+    const nestedDocuments = await crawlDriveItems(
+      client,
+      site.id,
+      siteDefinition.name || site.displayName,
+      drive,
+      '',
+      report,
+    )
     documents.push(...nestedDocuments)
+    report?.(`[${siteDefinition.name}] Library ${drive.name} yielded ${nestedDocuments.length} documents`)
   }
+
+  report?.(`[${siteDefinition.name}] Completed with ${documents.length} documents`)
 
   return {
     site: {
