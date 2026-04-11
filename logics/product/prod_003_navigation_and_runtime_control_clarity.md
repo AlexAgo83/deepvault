@@ -1,8 +1,8 @@
 ## prod_003_navigation_and_runtime_control_clarity - Navigation and runtime control clarity
 > Date: 2026-04-11
 > Status: Proposed
-> Related request: req_012_ajouter_des_ic_nes_dans_la_navigation, req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime, req_014_d_placer_runtime_sous_sync_status
-> Related backlog: item_043_ajouter_des_ic_nes_dans_la_navigation, item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime, item_045_d_placer_runtime_sous_sync_status
+> Related request: req_012_add_leading_icons_to_navigation, req_013_move_site_selector_into_runtime, req_014_move_runtime_under_sync_status
+> Related backlog: item_043_add_leading_icons_to_navigation, item_044_move_site_selector_into_runtime, item_045_move_runtime_under_sync_status
 > Related task: task_017_orchestrate_navigation_and_runtime_ui_changes
 > Related architecture: (none yet)
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
@@ -52,12 +52,12 @@ Users need to find primary navigation faster and understand the active runtime s
 - No reported confusion around the new placement of navigation and runtime controls
 
 # References
-- `logics/request/req_012_ajouter_des_ic_nes_dans_la_navigation.md`
-- `logics/request/req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md`
-- `logics/request/req_014_d_placer_runtime_sous_sync_status.md`
-- `logics/backlog/item_043_ajouter_des_ic_nes_dans_la_navigation.md`
-- `logics/backlog/item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md`
-- `logics/backlog/item_045_d_placer_runtime_sous_sync_status.md`
+- `logics/request/req_012_add_leading_icons_to_navigation.md`
+- `logics/request/req_013_move_site_selector_into_runtime.md`
+- `logics/request/req_014_move_runtime_under_sync_status.md`
+- `logics/backlog/item_043_add_leading_icons_to_navigation.md`
+- `logics/backlog/item_044_move_site_selector_into_runtime.md`
+- `logics/backlog/item_045_move_runtime_under_sync_status.md`
 - `logics/tasks/task_017_orchestrate_navigation_and_runtime_ui_changes.md`
 
 # Open questions

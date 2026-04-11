@@ -51,9 +51,9 @@
 | [req_009_explorer_file_type_pill_inline_with_title](request/req_009_explorer_file_type_pill_inline_with_title.md) | Explorer file type pill inline with document title | Done |  | request/req_009_explorer_file_type_pill_inline_with_title.md |
 | [req_010_fix_sharepoint_file_links_in_explorer](request/req_010_fix_sharepoint_file_links_in_explorer.md) | Fix SharePoint file links in Explorer | Done |  | request/req_010_fix_sharepoint_file_links_in_explorer.md |
 | [req_011_audit_de_dette_technique_et_cleanup_structurel](request/req_011_audit_de_dette_technique_et_cleanup_structurel.md) | Technical debt and structural cleanup audit | Done |  | request/req_011_audit_de_dette_technique_et_cleanup_structurel.md |
-| [req_012_ajouter_des_ic_nes_dans_la_navigation](request/req_012_ajouter_des_ic_nes_dans_la_navigation.md) | Ajouter des icônes dans la navigation | Draft |  | request/req_012_ajouter_des_ic_nes_dans_la_navigation.md |
-| [req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime](request/req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md) | Déplacer le sélecteur de sites dans le runtime | Draft |  | request/req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md |
-| [req_014_d_placer_runtime_sous_sync_status](request/req_014_d_placer_runtime_sous_sync_status.md) | Déplacer Runtime sous Sync status | Draft |  | request/req_014_d_placer_runtime_sous_sync_status.md |
+| [req_012_add_leading_icons_to_navigation](request/req_012_add_leading_icons_to_navigation.md) | Add leading icons to navigation | Draft |  | request/req_012_add_leading_icons_to_navigation.md |
+| [req_013_move_site_selector_into_runtime](request/req_013_move_site_selector_into_runtime.md) | Move site selector into runtime | Draft |  | request/req_013_move_site_selector_into_runtime.md |
+| [req_014_move_runtime_under_sync_status](request/req_014_move_runtime_under_sync_status.md) | Move runtime under Sync status | Draft |  | request/req_014_move_runtime_under_sync_status.md |
 
 ## Backlog
 
@@ -102,9 +102,9 @@
 | [item_040_clarify_bishop_orchestration_contract](backlog/item_040_clarify_bishop_orchestration_contract.md) | Clarify Bishop orchestration contract | Ready | 0% | backlog/item_040_clarify_bishop_orchestration_contract.md |
 | [item_041_harden_live_export_and_checkpoint_handling](backlog/item_041_harden_live_export_and_checkpoint_handling.md) | Harden live export and checkpoint handling | Done | 100% | backlog/item_041_harden_live_export_and_checkpoint_handling.md |
 | [item_042_clean_logics_workflow_hygiene_and_references](backlog/item_042_clean_logics_workflow_hygiene_and_references.md) | Clean Logics workflow hygiene and references | Ready | 10% | backlog/item_042_clean_logics_workflow_hygiene_and_references.md |
-| [item_043_ajouter_des_ic_nes_dans_la_navigation](backlog/item_043_ajouter_des_ic_nes_dans_la_navigation.md) | Ajouter des icônes dans la navigation | Ready | 0% | backlog/item_043_ajouter_des_ic_nes_dans_la_navigation.md |
-| [item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime](backlog/item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md) | Déplacer le sélecteur de sites dans le runtime | Ready | 0% | backlog/item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md |
-| [item_045_d_placer_runtime_sous_sync_status](backlog/item_045_d_placer_runtime_sous_sync_status.md) | Déplacer Runtime sous Sync status | Ready | 0% | backlog/item_045_d_placer_runtime_sous_sync_status.md |
+| [item_043_add_leading_icons_to_navigation](backlog/item_043_add_leading_icons_to_navigation.md) | Add leading icons to navigation | Ready | 0% | backlog/item_043_add_leading_icons_to_navigation.md |
+| [item_044_move_site_selector_into_runtime](backlog/item_044_move_site_selector_into_runtime.md) | Move site selector into runtime | Ready | 0% | backlog/item_044_move_site_selector_into_runtime.md |
+| [item_045_move_runtime_under_sync_status](backlog/item_045_move_runtime_under_sync_status.md) | Move runtime under Sync status | Ready | 0% | backlog/item_045_move_runtime_under_sync_status.md |
 
 ## Tasks
 

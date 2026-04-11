@@ -1,4 +1,4 @@
-## req_012_ajouter_des_ic_nes_dans_la_navigation - Ajouter des icônes dans la navigation
+## req_012_add_leading_icons_to_navigation - Add leading icons to navigation
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: Draft
@@ -21,7 +21,7 @@
 
 ```mermaid
 %% logics-kind: request
-%% logics-signature: request|ajouter-des-icones-dans-la-navigation|add-a-leading-icon-to-each|ac1-each-primary-navigation-entry-has
+%% logics-signature: request|add-leading-icons-to-navigation|add-a-leading-icon-to-each|ac1-each-primary-navigation-entry-has
 flowchart TD
     Trigger[Sidebar navigation] --> Need[Add leading icons]
     Need --> Value[Improve scanability]
@@ -53,4 +53,4 @@ flowchart TD
 - Use when: Use when framing the menu icon refresh for the main navigation.
 - Skip when: Skip when the work targets layout, routing, or content changes instead of navigation affordances.
 # Backlog
-- `item_043_ajouter_des_ic_nes_dans_la_navigation`
+- `item_043_add_leading_icons_to_navigation`

@@ -1,4 +1,4 @@
-## req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime - Déplacer le sélecteur de sites dans le runtime
+## req_013_move_site_selector_into_runtime - Move site selector into runtime
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: Draft
@@ -22,7 +22,7 @@
 
 ```mermaid
 %% logics-kind: request
-%% logics-signature: request|deplacer-le-selecteur-de-sites-dans-le-r|move-the-site-selector-into-the|ac1-the-site-selector-appears-in
+%% logics-signature: request|move-site-selector-into-runtime|move-the-site-selector-into-the|ac1-the-site-selector-appears-in
 flowchart TD
     Trigger[Sidebar site selector] --> Need[Move it into runtime]
     Need --> Value[Make corpus scope explicit]
@@ -55,4 +55,4 @@ flowchart TD
 - Use when: Use when framing the navigation/runtime context selection change.
 - Skip when: Skip when the work only touches explorer-local filtering or unrelated UI controls.
 # Backlog
-- `item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime`
+- `item_044_move_site_selector_into_runtime`
