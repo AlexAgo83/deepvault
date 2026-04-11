@@ -1,7 +1,7 @@
 ## req_014_move_runtime_under_sync_status - Move runtime under Sync status
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 96%
 > Confidence: 92%
 > Complexity: Medium

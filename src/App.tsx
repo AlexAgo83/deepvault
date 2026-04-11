@@ -5,11 +5,39 @@ import { useBishopConversation } from './hooks/useBishopConversation'
 import { CompactDateTime, CompactPathText, FileTypePill, Message, PathLabel, Pill, SectionHeading, SourceCard, StatCard } from './components/app-ui'
 
 const NAV_ITEMS = [
-  { id: 'explorer', label: 'Explorer' },
-  { id: 'bishop', label: 'Bishop' },
-  { id: 'sync', label: 'Sync status' },
+  { id: 'explorer', label: 'Explorer', icon: ExplorerIcon },
+  { id: 'bishop', label: 'Bishop', icon: BishopIcon },
+  { id: 'sync', label: 'Sync status', icon: SyncIcon },
 ] as const
 type ExplorerRow = CorpusDocument & { score: number; siteName: string }
+
+function ExplorerIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M4 4.75A1.75 1.75 0 0 1 5.75 3h8.5A1.75 1.75 0 0 1 16 4.75v10.5A1.75 1.75 0 0 1 14.25 17h-8.5A1.75 1.75 0 0 1 4 15.25z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M6.5 7.5h7M6.5 10h5.5M6.5 12.5h3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function BishopIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M10 3.75c1.15 0 2.08.93 2.08 2.08 0 .7-.35 1.32-.88 1.7.88.67 1.44 1.73 1.44 2.92 0 1.05-.45 2-1.17 2.67l1.03 2.38h-5l1.03-2.38a3.78 3.78 0 0 1-1.17-2.67c0-1.19.56-2.25 1.44-2.92a2.06 2.06 0 0 1-.88-1.7c0-1.15.93-2.08 2.08-2.08Z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M7.5 16.25h5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function SyncIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.25 7.25A6.12 6.12 0 0 1 10 5.25c2.12 0 4.02 1.08 5.16 2.72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M14.5 5.75v2.9h-2.9M14.75 12.75A6.12 6.12 0 0 1 10 14.75c-2.12 0-4.02-1.08-5.16-2.72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M5.5 14.25v-2.9h2.9" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
 export default function App() {
   const { corpusBundle, liveState } = useLiveCorpus(import.meta.env.VITE_DEEPVAULT_DATA_MODE)
   const corpus = corpusBundle.corpus
@@ -23,10 +51,29 @@ export default function App() {
     resolveSharePointFileUrl(corpus, siteId, path, webUrl)
 
   const siteSummaries = useMemo<SiteSummary[]>(() => buildSiteSummaries(corpus, role), [corpus, role])
-  const syncOverview = useMemo(() => buildSyncOverview(corpus, role), [corpus, role])
+  const scopedCorpus = useMemo(() => {
+    if (siteFilter === 'all') {
+      return corpus
+    }
+
+    const selectedSite = corpus.sites.find((site) => site.id === siteFilter)
+    if (!selectedSite) {
+      return corpus
+    }
+
+    return {
+      ...corpus,
+      sites: [selectedSite],
+      syncRuns: corpus.syncRuns.filter((run) => run.siteIds.includes(siteFilter)),
+      documents: corpus.documents.filter((document) => document.siteId === siteFilter),
+    }
+  }, [corpus, siteFilter])
+  const scopedSiteSummaries = useMemo<SiteSummary[]>(() => buildSiteSummaries(scopedCorpus, role), [scopedCorpus, role])
+  const scopedSyncOverview = useMemo(() => buildSyncOverview(scopedCorpus, role), [scopedCorpus, role])
+  const scopedCorpusSummary = useMemo(() => summarizeCorpus(scopedCorpus, role), [scopedCorpus, role])
   const explorerRows = useMemo<ExplorerRow[]>(
-    () => buildExplorerRows(corpus, search, { role, siteId: siteFilter }) as ExplorerRow[],
-    [corpus, role, search, siteFilter],
+    () => buildExplorerRows(scopedCorpus, search, { role }) as ExplorerRow[],
+    [scopedCorpus, role, search],
   )
   const selectedExplorerDoc =
     explorerRows.find((document) => document.id === selectedDocId) || explorerRows[0] || null
@@ -38,7 +85,7 @@ export default function App() {
     selectedMessage,
     handleAsk,
   } = useBishopConversation({
-    corpus,
+    corpus: scopedCorpus,
     role,
     provider,
     endpoint: import.meta.env.VITE_BISHOP_LLM_ENDPOINT,
@@ -62,6 +109,9 @@ export default function App() {
     document.title = 'Nexus'
   }, [])
 
+  const activeSiteSummary = siteSummaries.find((site) => site.id === siteFilter)
+  const activeScopeLabel = siteFilter === 'all' ? 'All sites' : activeSiteSummary?.name || siteFilter
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -79,59 +129,14 @@ export default function App() {
                 className={`nav-item ${activeTab === item.id ? 'nav-item-active' : ''}`}
                 onClick={() => setActiveTab(item.id)}
               >
+                <span className="nav-item-icon" aria-hidden="true">
+                  <item.icon />
+                </span>
                 {item.label}
               </button>
             ))}
           </nav>
         </div>
-
-        <div className="sidebar-section">
-          <div className="sidebar-label">Pilot sites</div>
-          <div className="site-list">
-            <button
-              type="button"
-              className={`site-chip ${siteFilter === 'all' ? 'site-chip-active' : ''}`}
-              onClick={() => setSiteFilter('all')}
-            >
-              All sites
-            </button>
-            {siteSummaries.map((site) => (
-              <button
-                key={site.id}
-                type="button"
-                className={`site-chip ${siteFilter === site.id ? 'site-chip-active' : ''}`}
-                onClick={() => setSiteFilter(site.id)}
-              >
-                {site.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="sidebar-section">
-          <div className="sidebar-label">Runtime</div>
-          <div className="runtime-stack">
-            <div className="runtime-row">
-              <span>Role</span>
-              <select value={role} onChange={(event) => setRole(event.target.value as UserRole)}>
-                <option value="analyst">analyst</option>
-                <option value="admin">admin</option>
-                <option value="guest">guest</option>
-              </select>
-            </div>
-            <div className="runtime-row">
-              <span>Provider</span>
-              <select value={provider} onChange={(event) => setProvider(event.target.value as ProviderId)}>
-                {corpus.providers.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
       </aside>
 
       <main className="main-content">
@@ -142,6 +147,7 @@ export default function App() {
               {liveState.label}
             </Pill>
             <Pill tone="success">Synced</Pill>
+            <Pill tone="neutral">{activeScopeLabel}</Pill>
             <Pill tone="neutral">{provider}</Pill>
             <Pill tone="accent">{role}</Pill>
           </div>
@@ -149,19 +155,19 @@ export default function App() {
 
         <section className="kpi-grid">
           <StatCard
-            label="Pilot sites"
-            value={siteSummaries.length}
-            note="Two configured pilot sites plus one restricted site for boundary checks."
+            label="Sites in scope"
+            value={scopedSyncOverview.siteSummaries.length}
+            note="Site scope is shared across Explorer, Bishop, and Sync status."
           />
           <StatCard
             label="Visible docs"
-            value={syncOverview.documentCount}
-            note="Role-filtered corpus entries available to this user."
+            value={scopedSyncOverview.documentCount}
+            note="Role-filtered corpus entries available in the current site scope."
           />
           <StatCard
             label="Last refresh"
-            value={syncOverview.lastRun ? <CompactDateTime value={syncOverview.lastRun.finishedAt} /> : 'n/a'}
-            note={syncOverview.refreshPolicy}
+            value={scopedSyncOverview.lastRun ? <CompactDateTime value={scopedSyncOverview.lastRun.finishedAt} /> : 'n/a'}
+            note={scopedSyncOverview.refreshPolicy}
             valueClassName="stat-value-compact stat-value-datetime"
           />
           <StatCard
@@ -376,26 +382,77 @@ export default function App() {
           <section className="content-grid sync-grid">
             <article className="panel">
               <SectionHeading title="Sync status" subtitle="Refresh state, ingestion coverage, and operational signals." />
+              <div className="runtime-panel">
+                <div className="runtime-panel-head">
+                  <div>
+                    <div className="runtime-panel-title">Runtime</div>
+                    <p>Execution context shared by Explorer, Bishop, and Sync status.</p>
+                  </div>
+                  <Pill tone="accent">{activeScopeLabel}</Pill>
+                </div>
+                <div className="runtime-stack runtime-stack-grid">
+                  <div className="runtime-row">
+                    <span>Role</span>
+                    <select value={role} onChange={(event) => setRole(event.target.value as UserRole)}>
+                      <option value="analyst">analyst</option>
+                      <option value="admin">admin</option>
+                      <option value="guest">guest</option>
+                    </select>
+                  </div>
+                  <div className="runtime-row">
+                    <span>Provider</span>
+                    <select value={provider} onChange={(event) => setProvider(event.target.value as ProviderId)}>
+                      {corpus.providers.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="runtime-row runtime-row-scope">
+                    <span>Site scope</span>
+                    <div className="site-list">
+                      <button
+                        type="button"
+                        className={`site-chip ${siteFilter === 'all' ? 'site-chip-active' : ''}`}
+                        onClick={() => setSiteFilter('all')}
+                      >
+                        All sites
+                      </button>
+                      {siteSummaries.map((site) => (
+                        <button
+                          key={site.id}
+                          type="button"
+                          className={`site-chip ${siteFilter === site.id ? 'site-chip-active' : ''}`}
+                          onClick={() => setSiteFilter(site.id)}
+                        >
+                          {site.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="kpi-grid compact">
                 <StatCard
                   label="Synced sites"
-                  value={syncOverview.syncedSites}
-                  note="Pilot sites currently in a synced state."
+                  value={scopedSyncOverview.syncedSites}
+                  note="Sites currently in a synced state within the active scope."
                 />
                 <StatCard
                   label="Restricted sites"
-                  value={syncOverview.restrictedSites}
-                  note="Sites visible only to privileged roles."
+                  value={scopedSyncOverview.restrictedSites}
+                  note="Sites visible only to privileged roles within the active scope."
                 />
                 <StatCard
                   label="Visible sources"
-                  value={summarizeCorpus(corpus, role).visibleSources}
-                  note="Sources accessible to the selected role."
+                  value={scopedCorpusSummary.visibleSources}
+                  note="Sources accessible to the selected role and scope."
                 />
                 <StatCard
                   label="Denied sources"
-                  value={summarizeCorpus(corpus, role).deniedSources}
-                  note="Sources excluded by permission-aware retrieval."
+                  value={scopedCorpusSummary.deniedSources}
+                  note="Sources excluded by permission-aware retrieval in scope."
                 />
               </div>
 
@@ -411,7 +468,7 @@ export default function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {siteSummaries.map((site) => (
+                    {scopedSiteSummaries.map((site) => (
                       <tr key={site.id}>
                         <td>
                           <strong>{site.name}</strong>
@@ -431,7 +488,7 @@ export default function App() {
             <aside className="panel">
               <SectionHeading title="Recent sync runs" subtitle="Hover each run for the full note." />
               <div className="sync-list">
-                {corpus.syncRuns.map((run) => (
+                {scopedCorpus.syncRuns.map((run) => (
                   <article key={run.id} className="sync-card" title={run.notes}>
                     <div className="source-card-top">
                       <strong>{run.status}</strong>

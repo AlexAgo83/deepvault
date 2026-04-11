@@ -1,7 +1,7 @@
 ## req_013_move_site_selector_into_runtime - Move site selector into runtime
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 96%
 > Confidence: 92%
 > Complexity: Medium

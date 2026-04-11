@@ -1,7 +1,7 @@
 ## req_012_add_leading_icons_to_navigation - Add leading icons to navigation
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 96%
 > Confidence: 92%
 > Complexity: Medium
