@@ -1,4 +1,4 @@
-## item_045_d_placer_runtime_sous_sync_status - Déplacer Runtime sous Sync status
+## item_045_move_runtime_under_sync_status - Move runtime under Sync status
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: Ready
@@ -13,8 +13,8 @@
 - Move the runtime controls into the Sync status page so the execution context lives with the operational state it controls.
 - Keep role, provider, and site scope visible together in one place.
 - Avoid changing the underlying behavior of the controls or the corpus scope they apply to.
-- - The current UI treats Runtime like a standalone sidebar section.
-- - Sync status already groups operational information about corpus state, sync coverage, and refresh history.
+- The current UI treats Runtime like a standalone sidebar section.
+- Sync status already groups operational information about corpus state, sync coverage, and refresh history.
 
 # Scope
 - In: one coherent delivery slice from the source request.
@@ -22,10 +22,10 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deplacer-runtime-sous-sync-status|req-014-d-placer-runtime-sous-sync-statu|move-the-runtime-controls-into-the|ac1-runtime-controls-are-shown-inside
+%% logics-signature: backlog|move-runtime-under-sync-status|req-014-move-runtime-under-sync-statu|move-the-runtime-controls-into-the|ac1-runtime-controls-are-shown-inside
 flowchart TD
-    Request[req_014_d_placer_runtime_sous_sync_status] --> Problem[Move the runtime controls into the]
-    Problem --> Scope[Deplacer Runtime sous Sync status]
+    Request[req_014_move_runtime_under_sync_status] --> Problem[Move runtime under Sync status]
+    Problem --> Scope[Runtime under Sync status]
     Scope --> Acceptance[AC1: Runtime controls are shown inside]
     Acceptance --> Tasks[Execution task]
 ```
@@ -55,7 +55,7 @@ flowchart TD
 # Links
 - Product brief(s): `prod_003_navigation_and_runtime_control_clarity`
 - Architecture decision(s): (none yet)
-- Request: `req_014_d_placer_runtime_sous_sync_status`
+- Request: `req_014_move_runtime_under_sync_status`
 - Primary task(s): `task_017_orchestrate_navigation_and_runtime_ui_changes`
 
 # AI Context
@@ -71,7 +71,7 @@ flowchart TD
 - Urgency: Medium
 
 # Notes
-- Derived from request `req_014_d_placer_runtime_sous_sync_status`.
-- Source file: `logics/request/req_014_d_placer_runtime_sous_sync_status.md`.
+- Derived from request `req_014_move_runtime_under_sync_status`.
+- Source file: `logics/request/req_014_move_runtime_under_sync_status.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
-- Request context seeded into this backlog item from `logics/request/req_014_d_placer_runtime_sous_sync_status.md`.
+- Request context seeded into this backlog item from `logics/request/req_014_move_runtime_under_sync_status.md`.

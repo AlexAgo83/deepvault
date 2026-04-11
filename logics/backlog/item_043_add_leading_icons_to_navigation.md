@@ -1,4 +1,4 @@
-## item_043_ajouter_des_ic_nes_dans_la_navigation - Ajouter des icônes dans la navigation
+## item_043_add_leading_icons_to_navigation - Add leading icons to navigation
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: Ready
@@ -13,8 +13,8 @@
 - Add a leading icon to each primary navigation entry in the sidebar so the menu is easier to scan and visually distinct.
 - Keep the current navigation structure and labels intact while improving the menu affordance.
 - Preserve keyboard accessibility and avoid cluttering the sidebar on smaller screens.
-- - The sidebar currently shows text-only navigation entries for Explorer, Bishop, and Sync status.
-- - The new icons should appear before each label and should match the existing visual tone of the app.
+- The sidebar currently shows text-only navigation entries for Explorer, Bishop, and Sync status.
+- The new icons should appear before each label and should match the existing visual tone of the app.
 
 # Scope
 - In: one coherent delivery slice from the source request.
@@ -22,10 +22,10 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|ajouter-des-icones-dans-la-navigation|req-012-ajouter-des-ic-nes-dans-la-navig|add-a-leading-icon-to-each|ac1-each-primary-navigation-entry-has
+%% logics-signature: backlog|add-leading-icons-to-navigation|req-012-add-leading-icons-to-navigatio|add-a-leading-icon-to-each|ac1-each-primary-navigation-entry-has
 flowchart TD
-    Request[req_012_ajouter_des_ic_nes_dans_la_navigat] --> Problem[Add a leading icon to each]
-    Problem --> Scope[Ajouter des icones dans la navigation]
+    Request[req_012_add_leading_icons_to_navigation] --> Problem[Add leading icons to navigation]
+    Problem --> Scope[Navigation icons]
     Scope --> Acceptance[AC1: Each primary navigation entry has]
     Acceptance --> Tasks[Execution task]
 ```
@@ -53,7 +53,7 @@ flowchart TD
 # Links
 - Product brief(s): `prod_003_navigation_and_runtime_control_clarity`
 - Architecture decision(s): (none yet)
-- Request: `req_012_ajouter_des_ic_nes_dans_la_navigation`
+- Request: `req_012_add_leading_icons_to_navigation`
 - Primary task(s): `task_017_orchestrate_navigation_and_runtime_ui_changes`
 
 # AI Context
@@ -69,7 +69,7 @@ flowchart TD
 - Urgency: Medium
 
 # Notes
-- Derived from request `req_012_ajouter_des_ic_nes_dans_la_navigation`.
-- Source file: `logics/request/req_012_ajouter_des_ic_nes_dans_la_navigation.md`.
+- Derived from request `req_012_add_leading_icons_to_navigation`.
+- Source file: `logics/request/req_012_add_leading_icons_to_navigation.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
-- Request context seeded into this backlog item from `logics/request/req_012_ajouter_des_ic_nes_dans_la_navigation.md`.
+- Request context seeded into this backlog item from `logics/request/req_012_add_leading_icons_to_navigation.md`.

@@ -1,4 +1,4 @@
-## req_014_d_placer_runtime_sous_sync_status - Déplacer Runtime sous Sync status
+## req_014_move_runtime_under_sync_status - Move runtime under Sync status
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: Draft
@@ -22,7 +22,7 @@
 
 ```mermaid
 %% logics-kind: request
-%% logics-signature: request|deplacer-runtime-sous-sync-status|move-the-runtime-controls-into-the|ac1-runtime-controls-are-shown-inside
+%% logics-signature: request|move-runtime-under-sync-status|move-the-runtime-controls-into-the|ac1-runtime-controls-are-shown-inside
 flowchart TD
     Trigger[Runtime controls in sidebar] --> Need[Move them under Sync status]
     Need --> Value[Group operational context]
@@ -55,4 +55,4 @@ flowchart TD
 - Use when: Use when framing the UI move that groups runtime controls with operational status.
 - Skip when: Skip when the work only changes sidebar labels or explorer-local filters.
 # Backlog
-- `item_045_d_placer_runtime_sous_sync_status`
+- `item_045_move_runtime_under_sync_status`

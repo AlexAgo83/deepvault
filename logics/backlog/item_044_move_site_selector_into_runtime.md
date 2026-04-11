@@ -1,4 +1,4 @@
-## item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime - Déplacer le sélecteur de sites dans le runtime
+## item_044_move_site_selector_into_runtime - Move site selector into runtime
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: Ready
@@ -13,8 +13,8 @@
 - Move the site selector into the runtime controls so it behaves like a global execution context rather than an explorer-only filter.
 - Make the selected site scope visible and editable alongside role and provider.
 - Keep the current corpus behavior stable when no site is selected or when all sites remain active.
-- - The current sidebar treats site selection like a separate pilot-site filter.
-- - The runtime controls already group execution-wide parameters such as role and provider.
+- The current sidebar treats site selection like a separate pilot-site filter.
+- The runtime controls already group execution-wide parameters such as role and provider.
 
 # Scope
 - In: one coherent delivery slice from the source request.
@@ -22,10 +22,10 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deplacer-le-selecteur-de-sites-dans-le-r|req-013-d-placer-le-s-lecteur-de-sites-d|move-the-site-selector-into-the|ac1-the-site-selector-appears-in
+%% logics-signature: backlog|move-site-selector-into-runtime|req-013-move-site-selector-into-runtim|move-the-site-selector-into-the|ac1-the-site-selector-appears-in
 flowchart TD
-    Request[req_013_d_placer_le_s_lecteur_de_sites_dan] --> Problem[Move the site selector into the]
-    Problem --> Scope[Deplacer le selecteur de sites dans]
+    Request[req_013_move_site_selector_into_runtime] --> Problem[Move the site selector into runtime]
+    Problem --> Scope[Runtime site selector]
     Scope --> Acceptance[AC1: The site selector appears in]
     Acceptance --> Tasks[Execution task]
 ```
@@ -55,7 +55,7 @@ flowchart TD
 # Links
 - Product brief(s): `prod_003_navigation_and_runtime_control_clarity`
 - Architecture decision(s): (none yet)
-- Request: `req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime`
+- Request: `req_013_move_site_selector_into_runtime`
 - Primary task(s): `task_017_orchestrate_navigation_and_runtime_ui_changes`
 
 # AI Context
@@ -71,7 +71,7 @@ flowchart TD
 - Urgency: Medium
 
 # Notes
-- Derived from request `req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime`.
-- Source file: `logics/request/req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md`.
+- Derived from request `req_013_move_site_selector_into_runtime`.
+- Source file: `logics/request/req_013_move_site_selector_into_runtime.md`.
 - Keep this backlog item as one bounded delivery slice; create sibling backlog items for the remaining request coverage instead of widening this doc.
-- Request context seeded into this backlog item from `logics/request/req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime.md`.
+- Request context seeded into this backlog item from `logics/request/req_013_move_site_selector_into_runtime.md`.

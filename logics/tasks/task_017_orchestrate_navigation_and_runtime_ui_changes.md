@@ -12,9 +12,9 @@
 # Context
 - Orchestrate the three UI slices that improve navigation clarity and runtime placement without changing the underlying corpus behavior.
 - Recommended wave order:
-  1. `item_043_ajouter_des_ic_nes_dans_la_navigation`
-  2. `item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime`
-  3. `item_045_d_placer_runtime_sous_sync_status`
+  1. `item_043_add_leading_icons_to_navigation`
+  2. `item_044_move_site_selector_into_runtime`
+  3. `item_045_move_runtime_under_sync_status`
 - Keep the navigation icons, runtime site scope, and runtime panel move separate so each wave stays commit-ready.
 - Update the linked Logics docs after each wave, not only at the end.
 - Treat the first wave as pure navigation affordance work, the second wave as context selection work, and the third wave as layout consolidation work.
@@ -22,7 +22,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-navigation-and-runtime-ui-ch|item-043-ajouter-des-ic-nes-dans-la-navi|1-confirm-the-product-framing-dependenci|wave-1-run-ui-focused-tests-and
+%% logics-signature: task|orchestrate-navigation-and-runtime-ui-ch|item-043-add-leading-icons-to-navigatio|1-confirm-the-product-framing-dependenci|wave-1-run-ui-focused-tests-and
 stateDiagram-v2
     state "Navigation and runtime UI changes" as Backlog
     state "1. Confirm scope, order, and wave boundaries" as Scope
@@ -71,8 +71,8 @@ stateDiagram-v2
 # Links
 - Product brief(s): `prod_003_navigation_and_runtime_control_clarity`
 - Architecture decision(s): (none yet)
-- Backlog items: `item_043_ajouter_des_ic_nes_dans_la_navigation`, `item_044_d_placer_le_s_lecteur_de_sites_dans_le_runtime`, `item_045_d_placer_runtime_sous_sync_status`
-- Request(s): `req_012_ajouter_des_ic_nes_dans_la_navigation`, `req_013_d_placer_le_s_lecteur_de_sites_dans_le_runtime`, `req_014_d_placer_runtime_sous_sync_status`
+- Backlog items: `item_043_add_leading_icons_to_navigation`, `item_044_move_site_selector_into_runtime`, `item_045_move_runtime_under_sync_status`
+- Request(s): `req_012_add_leading_icons_to_navigation`, `req_013_move_site_selector_into_runtime`, `req_014_move_runtime_under_sync_status`
 
 # AI Context
 - Summary: Orchestrate navigation and runtime UI changes
