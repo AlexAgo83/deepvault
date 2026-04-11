@@ -2,6 +2,8 @@
 .env.local
 .DS_Store
 node_modules/
+.claude/
+.code-review-graph/
 dist/
 coverage/
 playwright-report/
