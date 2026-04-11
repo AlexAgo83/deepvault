@@ -12,6 +12,7 @@ import {
 } from './app-ui'
 import { formatUpdatedAt, type ProviderId, type UserRole } from '../lib/deepvault'
 import type { AppModel, AppTab, ExplorerRow } from '../hooks/useAppModel'
+import { version } from '../../package.json'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'Explorer', icon: ExplorerIcon },
@@ -116,11 +117,9 @@ function AppTopbar({
 function AppToolbar({
   search,
   onSearchChange,
-  onClearSearch,
 }: {
   search: string
   onSearchChange: (_value: string) => void
-  onClearSearch: () => void
 }) {
   return (
     <section className="panel panel-toolbar">
@@ -134,11 +133,6 @@ function AppToolbar({
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Budget, roadmap, policy, status..."
           />
-        </div>
-        <div className="toolbar-actions">
-          <button type="button" className="secondary-button" onClick={onClearSearch}>
-            Clear
-          </button>
         </div>
       </div>
     </section>
@@ -588,7 +582,7 @@ export function AppShell(model: AppModel) {
         </section>
 
         {activeTab !== 'bishop' ? (
-          <AppToolbar search={search} onClearSearch={() => setSearch('')} onSearchChange={setSearch} />
+          <AppToolbar search={search} onSearchChange={setSearch} />
         ) : null}
 
         {activeTab === 'explorer' ? (
@@ -634,6 +628,10 @@ export function AppShell(model: AppModel) {
             scopedSyncRuns={scopedSyncRuns}
           />
         ) : null}
+
+        <footer className="page-footer" aria-label="Site footer">
+          <span>Nexus · v{version} · © {new Date().getFullYear()}</span>
+        </footer>
       </main>
     </div>
   )

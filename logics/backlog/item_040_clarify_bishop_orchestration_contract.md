@@ -1,10 +1,10 @@
 ## item_040_clarify_bishop_orchestration_contract - Clarify Bishop orchestration contract
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 95%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Backend
 > Reminder: Update status, understanding, confidence, progress, and linked request or task references when you edit this doc.
