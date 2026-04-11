@@ -278,6 +278,17 @@ p {
   height: 100vh;
 }
 
+.page-footer {
+  margin-top: auto;
+  padding: 10px 4px 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  opacity: 0.72;
+  text-align: center;
+  width: 100%;
+}
+
 .topbar {
   display: flex;
   align-items: flex-start;
@@ -449,6 +460,7 @@ p {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 18px;
+  align-items: start;
 }
 
 .section-heading {
