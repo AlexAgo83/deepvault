@@ -94,7 +94,7 @@ export function SyncPanel({
           <div className="runtime-stack runtime-stack-grid">
             <div className="runtime-row">
               <span>Role</span>
-              <select value={role} onChange={(event) => onRoleChange(event.target.value as UserRole)}>
+              <select value={role} title="Select the active access role" onChange={(event) => onRoleChange(event.target.value as UserRole)}>
                 <option value="analyst">analyst</option>
                 <option value="admin">admin</option>
                 <option value="guest">guest</option>
@@ -102,7 +102,7 @@ export function SyncPanel({
             </div>
             <div className="runtime-row">
               <span>Provider</span>
-              <select value={provider} onChange={(event) => onProviderChange(event.target.value as ProviderId)}>
+              <select value={provider} title="Select the Bishop provider" onChange={(event) => onProviderChange(event.target.value as ProviderId)}>
                 {corpusProviders.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
