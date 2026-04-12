@@ -340,6 +340,88 @@ p {
   width: 100%;
 }
 
+/* ── Tooltips ──────────────────────────────────────────────────── */
+
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  background: rgba(31, 26, 22, 0.92);
+  color: #f3eee6;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  padding: 5px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 140ms ease, transform 140ms ease;
+  z-index: 60;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:focus-visible::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Confirm modal ─────────────────────────────────────────────── */
+
+.confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(31, 26, 22, 0.42);
+  backdrop-filter: blur(4px);
+}
+
+.confirm-modal {
+  width: min(460px, 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 20px 60px rgba(31, 26, 22, 0.22);
+  padding: 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.confirm-modal h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.confirm-modal > p {
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 0.9rem;
+}
+
+.confirm-warning {
+  padding: 10px 14px;
+  background: rgba(185, 106, 67, 0.08);
+  border: 1px solid rgba(185, 106, 67, 0.28);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
 .getting-started-backdrop {
   position: fixed;
   inset: 0;
@@ -941,6 +1023,41 @@ th {
 
 .chat-note {
   max-width: 420px;
+}
+
+.sync-controls-panel {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.sync-controls-group {
+  display: grid;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.sync-controls-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+
+.sync-controls-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sync-controls-divider {
+  width: 1px;
+  background: var(--border);
+  align-self: stretch;
+  margin: 0 24px;
+  flex-shrink: 0;
 }
 
 .sync-ops-panel {

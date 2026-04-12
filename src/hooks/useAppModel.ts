@@ -12,9 +12,11 @@ import {
 } from '../lib/deepvault'
 import { useBishopConversation } from './useBishopConversation'
 import { useLiveCorpus } from './useLiveCorpus'
+import { useEntraSettings } from './useEntraSettings'
 import { useProviderSecrets } from './useProviderSecrets'
 import { useSyncOperations } from './useSyncOperations'
 import type { LiveState } from './useLiveCorpus'
+import type { EntraSettings } from './useEntraSettings'
 import type { SyncOperationJob } from './useSyncOperations'
 
 export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
@@ -46,6 +48,9 @@ export interface AppModel {
   providerSecrets: ReturnType<typeof useProviderSecrets>['providerSecrets']
   setProviderSecret: ReturnType<typeof useProviderSecrets>['setApiKey']
   clearProviderSecrets: ReturnType<typeof useProviderSecrets>['clearProviderSecrets']
+  entraSettings: EntraSettings
+  setEntraSetting: ReturnType<typeof useEntraSettings>['setEntraSetting']
+  clearEntraSettings: ReturnType<typeof useEntraSettings>['clearEntraSettings']
   question: string
   setQuestion: Dispatch<SetStateAction<string>>
   isAsking: boolean
@@ -58,6 +63,8 @@ export interface AppModel {
     isRunning: boolean
     lastCompletedJob: SyncOperationJob | null
     startEvaluate: () => void
+    startExportLive: () => void
+    startExportLiveResume: () => void
     startIngest: () => void
     startRefresh: () => void
   }
@@ -98,6 +105,7 @@ export function useAppModel(): AppModel {
   const [search, setSearch] = useState<string>('')
   const [selectedDocId, setSelectedDocId] = useState<string>(corpus.documents[0].id)
   const { providerSecrets, setApiKey: setProviderSecret, clearProviderSecrets } = useProviderSecrets()
+  const { entraSettings, setEntraSetting, clearEntraSettings } = useEntraSettings()
 
   const siteSummaries = useMemo(() => buildSiteSummaries(corpus, role), [corpus, role])
   const scopedCorpus = useMemo(() => buildScopedCorpus(corpus, siteFilter), [corpus, siteFilter])
@@ -133,8 +141,22 @@ export function useAppModel(): AppModel {
     anthropicApiKey: providerSecrets.anthropicApiKey,
     onActivateTab: () => setActiveTab('bishop'),
   })
+  const extraEnv = useMemo(() => {
+    const env: Record<string, string> = {}
+    if (providerSecrets.openaiApiKey) env.OPENAI_API_KEY = providerSecrets.openaiApiKey
+    if (providerSecrets.geminiApiKey) env.GEMINI_API_KEY = providerSecrets.geminiApiKey
+    if (providerSecrets.anthropicApiKey) env.ANTHROPIC_API_KEY = providerSecrets.anthropicApiKey
+    if (entraSettings.appId) env.DEEPVAULT_ENTRA_APP_ID = entraSettings.appId
+    if (entraSettings.tenantId) env.DEEPVAULT_ENTRA_TENANT_ID = entraSettings.tenantId
+    if (entraSettings.secretValue) env.DEEPVAULT_ENTRA_SECRET_VALUE = entraSettings.secretValue
+    if (entraSettings.sites) env.DEEPVAULT_ENTRA_SITES = entraSettings.sites
+    if (entraSettings.siteNames) env.DEEPVAULT_PILOT_SITE_NAMES = entraSettings.siteNames
+    return env
+  }, [providerSecrets, entraSettings])
+
   const syncOperations = useSyncOperations({
     activeScopeLabel,
+    extraEnv,
     provider,
     role,
     visibleDocs: scopedCorpusSummary.visibleSources,
@@ -191,6 +213,9 @@ export function useAppModel(): AppModel {
     providerSecrets,
     setProviderSecret,
     clearProviderSecrets,
+    entraSettings,
+    setEntraSetting,
+    clearEntraSettings,
     question,
     setQuestion,
     isAsking,

@@ -247,28 +247,53 @@ describe('DeepVault app', () => {
   })
 
   it('streams sync operations into the console and tracks recent runs', async () => {
-    vi.useFakeTimers()
+    type MockEventSource = {
+      onmessage: ((e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn((_url: string) => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ jobId: 'test-job-1' }),
+    }))
+
     render(<App />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+
+    // Click opens the confirm modal — confirm to start the operation
     fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
+    expect(confirmDialog).toBeInTheDocument()
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
 
     expect(screen.getByRole('button', { name: 'Cancel job' })).toBeInTheDocument()
 
+    // Flush fetch promise and EventSource setup
+    await act(async () => {})
+
+    // Simulate a stdout line from the real process
     await act(async () => {
-      vi.advanceTimersByTime(220)
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'line', text: 'Starting local ingestion pipeline...' }) } as MessageEvent)
     })
 
-    expect(screen.getAllByText((_, element) => element?.textContent?.includes('Starting local ingestion pipeline.') === true).length).toBeGreaterThan(0)
+    expect(screen.getAllByText((_, element) => element?.textContent?.includes('Starting local ingestion pipeline...') === true).length).toBeGreaterThan(0)
 
+    // Simulate process exit with success
     await act(async () => {
-      vi.advanceTimersByTime(2200)
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'done', exitCode: 0 }) } as MessageEvent)
     })
 
     expect(screen.getAllByText('100%').length).toBeGreaterThan(0)
     expect(screen.getAllByText('completed').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Run ingest').length).toBeGreaterThan(0)
-    vi.useRealTimers()
   })
 
   it('keeps the explorer detail pane within the selected site scope', async () => {
@@ -289,7 +314,7 @@ describe('DeepVault app', () => {
 
     await user.click(screen.getByRole('button', { name: 'Settings' }))
     await user.click(screen.getByRole('button', { name: 'Pilot Site Beta' }))
-    expect(screen.getByText('Runtime')).toBeInTheDocument()
+    expect(screen.getByText('Site scope')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Explorer' }))
 
@@ -307,7 +332,7 @@ describe('DeepVault app', () => {
 
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
     expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
-    expect(screen.queryByText('Runtime')).not.toBeInTheDocument()
+    expect(screen.queryByText('AI providers')).not.toBeInTheDocument()
     expect(screen.queryByText('Site scope')).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Settings' }))

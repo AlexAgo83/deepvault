@@ -265,7 +265,9 @@ export function AppShell(model: AppModel) {
     activeScopeLabel,
     activeTab,
     corpusProviders,
+    clearEntraSettings,
     clearProviderSecrets,
+    entraSettings,
     explorerRows,
     clearBishopHistory,
     handleAsk,
@@ -286,6 +288,7 @@ export function AppShell(model: AppModel) {
     selectedMessage,
     setActiveTab,
     setProvider,
+    setEntraSetting,
     setProviderSecret,
     setQuestion,
     setConversationContextEnabled,
@@ -386,8 +389,11 @@ export function AppShell(model: AppModel) {
             <SettingsPanel
               activeScopeLabel={activeScopeLabel}
               corpusProviders={corpusProviders}
+              entraSettings={entraSettings}
               providerSecrets={providerSecrets}
               onClear={clearProviderSecrets}
+              onClearEntra={clearEntraSettings}
+              onEntraChange={setEntraSetting}
               onKeyChange={setProviderSecret}
               onProviderChange={(value) => setProvider(value)}
               onRoleChange={(value) => setRole(value)}
