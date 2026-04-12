@@ -236,6 +236,7 @@ export function AppShell(model: AppModel) {
     clearBishopHistory,
     handleAsk,
     isAsking,
+    conversationContextEnabled,
     liveState,
     messages,
     provider,
@@ -254,6 +255,7 @@ export function AppShell(model: AppModel) {
     setProvider,
     setProviderSecret,
     setQuestion,
+    setConversationContextEnabled,
     setRole,
     setSearch,
     setSelectedDocId,
@@ -377,9 +379,11 @@ export function AppShell(model: AppModel) {
               clearHistory={clearBishopHistory}
               exportJson={bishopExportHandlers.exportJson}
               exportMarkdown={bishopExportHandlers.exportMarkdown}
+              conversationContextEnabled={conversationContextEnabled}
               isAsking={isAsking}
               messages={messages}
               onQuestionChange={setQuestion}
+              onConversationContextChange={setConversationContextEnabled}
               onSubmit={handleAsk}
               provider={provider}
               question={question}

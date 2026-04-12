@@ -3,7 +3,9 @@ import { orchestrateBishopAnswer } from '../lib/bishop'
 import { type ChatMessage, type Corpus, type ProviderId, type SourceRecord, type UserRole } from '../lib/deepvault'
 
 export const BISHOP_HISTORY_STORAGE_KEY = 'deepvault_bishop_history'
+export const BISHOP_CONTEXT_STORAGE_KEY = 'deepvault_bishop_context_enabled'
 export const BISHOP_HISTORY_LIMIT = 50
+const BISHOP_PROMPT_HISTORY_LIMIT = 12
 
 export interface BishopExportPayload {
   exportedAt: string
@@ -97,6 +99,19 @@ function loadBishopMessages(): ChatMessage[] | null {
   return null
 }
 
+function loadBishopConversationContextEnabled(): boolean {
+  if (typeof window === 'undefined') {
+    return true
+  }
+
+  const raw = window.localStorage.getItem(BISHOP_CONTEXT_STORAGE_KEY)
+  if (raw === null) {
+    return true
+  }
+
+  return raw !== 'false'
+}
+
 function persistBishopMessages(messages: ChatMessage[]): void {
   if (typeof window === 'undefined') {
     return
@@ -107,6 +122,14 @@ function persistBishopMessages(messages: ChatMessage[]): void {
     messages: normalizeBishopMessages(messages),
   }
   window.localStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, JSON.stringify(payload, null, 2))
+}
+
+function persistBishopConversationContextEnabled(enabled: boolean): void {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  window.localStorage.setItem(BISHOP_CONTEXT_STORAGE_KEY, enabled ? 'true' : 'false')
 }
 
 function formatMessageMarkdown(message: ChatMessage): string {
@@ -163,6 +186,9 @@ export function useBishopConversation({
   const [question, setQuestion] = useState('')
   const [isAsking, setIsAsking] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadBishopMessages() || [createBishopSeedMessage()])
+  const [conversationContextEnabled, setConversationContextEnabled] = useState<boolean>(() =>
+    loadBishopConversationContextEnabled(),
+  )
 
   useEffect(() => {
     if (!persistNextChange.current) {
@@ -172,6 +198,10 @@ export function useBishopConversation({
     persistBishopMessages(messages)
   }, [messages])
 
+  useEffect(() => {
+    persistBishopConversationContextEnabled(conversationContextEnabled)
+  }, [conversationContextEnabled])
+
   const handleAsk = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = question.trim()
@@ -179,6 +209,12 @@ export function useBishopConversation({
       return
     }
 
+    const conversationHistory = conversationContextEnabled
+      ? messages
+          .filter((message) => message.id !== 'seed')
+          .slice(-BISHOP_PROMPT_HISTORY_LIMIT)
+          .map(({ role: messageRole, text }) => ({ role: messageRole, text }))
+      : []
     const assistantId = `${Date.now()}-assistant`
     const startedAt = Date.now()
     const askedAt = new Date(startedAt).toISOString()
@@ -225,6 +261,7 @@ export function useBishopConversation({
         openaiApiKey,
         geminiApiKey,
         anthropicApiKey,
+        conversationHistory,
       })
 
       const elapsed = Date.now() - startedAt
@@ -290,6 +327,8 @@ export function useBishopConversation({
     messages,
     selectedMessage,
     handleAsk,
+    conversationContextEnabled,
+    setConversationContextEnabled,
     clearHistory,
     exportJson: () => buildBishopExportJson(messages),
     exportMarkdown: () => buildBishopExportMarkdown(messages),

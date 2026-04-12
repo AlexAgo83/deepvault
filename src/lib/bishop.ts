@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import {
   answerQuestion,
   groundQuestion as buildGrounding,
+  type ChatMessage,
   type AnswerResult,
   type Corpus,
   type GroundingResult,
@@ -14,6 +15,7 @@ export interface BishopPromptContext {
   role: UserRole
   provider: ProviderId
   grounding: GroundingResult
+  conversationHistory?: Array<Pick<ChatMessage, 'role' | 'text'>>
 }
 
 export const groundQuestion = buildGrounding
@@ -29,6 +31,7 @@ export interface BishopOrchestrationOptions {
   anthropicApiKey?: string | null
   bishopModel?: string | null
   anthropicClient?: AnthropicClientLike
+  conversationHistory?: Array<Pick<ChatMessage, 'role' | 'text'>>
 }
 
 export interface BishopOrchestrationResult extends AnswerResult {
@@ -153,6 +156,15 @@ function buildProviderTracePreview(
   return `Local fallback: ${truncateText(answer, 180)}`
 }
 
+function formatConversationHistory(conversationHistory: Array<Pick<ChatMessage, 'role' | 'text'>>): string {
+  return conversationHistory
+    .map((message) => {
+      const speaker = message.role === 'assistant' ? 'Bishop' : 'You'
+      return `- ${speaker}: ${truncateText(message.text, 240)}`
+    })
+    .join('\n')
+}
+
 function augmentResultWithTrace(
   result: AnswerResult,
   mode: BishopOrchestrationResult['mode'],
@@ -178,12 +190,16 @@ export function buildBishopPrompt(context: BishopPromptContext): string {
     (source, index) =>
       `${index + 1}. ${source.title} | ${source.siteName} | ${source.path} | ${source.summary}`,
   )
+  const conversationHistory = context.conversationHistory && context.conversationHistory.length > 0
+    ? ['Conversation history:', formatConversationHistory(context.conversationHistory)]
+    : []
 
   return [
     'You are Bishop, a grounded assistant.',
     `Role: ${context.role}`,
     `Provider: ${context.provider}`,
     `Question: ${context.query}`,
+    ...conversationHistory,
     `Grounding status: ${context.grounding.status}`,
     'Use only the grounded context below.',
     'Sources:',
@@ -201,7 +217,7 @@ function buildBishopSystemPrompt(context: Omit<BishopPromptContext, 'query' | 'g
     'You are Bishop, a grounded assistant.',
     `Role: ${context.role}`,
     `Provider: ${context.provider}`,
-    'Use only the grounded corpus context in the user message.',
+    'Use the conversation history to preserve follow-up context, but keep factual claims grounded in the corpus context in the user message.',
     'Answer in one concise grounded paragraph.',
   ].join('\n')
 }
@@ -500,7 +516,13 @@ export async function orchestrateBishopAnswer(
   const role = options.role || 'analyst'
   const provider = options.provider || 'openai'
   const grounding = buildGrounding(corpus, query, { role, provider, limit: options.limit })
-  const prompt = buildBishopPrompt({ query, role, provider, grounding })
+  const prompt = buildBishopPrompt({
+    query,
+    role,
+    provider,
+    grounding,
+    conversationHistory: options.conversationHistory,
+  })
   const fallback = answerQuestion(corpus, query, { role, provider, limit: options.limit })
   const endpoint = options.endpoint?.trim() || ''
   const fetchImpl = options.fetchImpl || fetch

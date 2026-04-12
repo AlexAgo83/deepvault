@@ -41,6 +41,44 @@ describe('bishop orchestration helpers', () => {
     expect(prompt).toContain('Q3 2025 budget')
   })
 
+  it('includes conversation history in the prompt when provided', () => {
+    const grounding = groundQuestion(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    const prompt = buildBishopPrompt({
+      query: 'What is the budget for Q3 2025?',
+      role: 'analyst',
+      provider: 'openai',
+      grounding,
+      conversationHistory: [
+        { role: 'user', text: 'What did we discuss earlier?' },
+        { role: 'assistant', text: 'We talked about the budget.' },
+      ],
+    })
+
+    expect(prompt).toContain('Conversation history:')
+    expect(prompt).toContain('- You: What did we discuss earlier?')
+    expect(prompt).toContain('- Bishop: We talked about the budget.')
+  })
+
+  it('omits conversation history from the prompt when it is not provided', () => {
+    const grounding = groundQuestion(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    const prompt = buildBishopPrompt({
+      query: 'What is the budget for Q3 2025?',
+      role: 'analyst',
+      provider: 'openai',
+      grounding,
+    })
+
+    expect(prompt).not.toContain('Conversation history:')
+  })
+
   it('keeps denied sources visible in the grounding contract', () => {
     const grounding = groundQuestion(corpus, 'What are the restricted launch notes for the restricted pilot site?', {
       role: 'guest',
@@ -122,6 +160,10 @@ describe('bishop orchestration helpers', () => {
       provider: 'openai',
       openaiApiKey: 'test-openai-key',
       bishopModel: 'gpt-test-model',
+      conversationHistory: [
+        { role: 'user', text: 'What did we discuss earlier?' },
+        { role: 'assistant', text: 'We talked about the budget.' },
+      ],
     })
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
@@ -154,9 +196,12 @@ describe('bishop orchestration helpers', () => {
       max_tokens: 512,
     })
     expect(body.messages[0].role).toBe('system')
-    expect(body.messages[0].content).toContain('Use only the grounded corpus context')
+    expect(body.messages[0].content).toContain('Use the conversation history to preserve follow-up context')
     expect(body.messages[1].role).toBe('user')
     expect(body.messages[1].content).toContain('Use only the grounded context below.')
+    expect(body.messages[1].content).toContain('Conversation history:')
+    expect(body.messages[1].content).toContain('- You: What did we discuss earlier?')
+    expect(body.messages[1].content).toContain('- Bishop: We talked about the budget.')
   })
 
   it('uses Gemini when the provider is gemini and the API key is available', async () => {
@@ -209,7 +254,7 @@ describe('bishop orchestration helpers', () => {
       temperature: 0,
       maxOutputTokens: 512,
     })
-    expect(body.systemInstruction.parts[0].text).toContain('Use only the grounded corpus context')
+    expect(body.systemInstruction.parts[0].text).toContain('Use the conversation history to preserve follow-up context')
     expect(body.contents[0].role).toBe('user')
     expect(body.contents[0].parts[0].text).toContain('Use only the grounded context below.')
   })

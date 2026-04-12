@@ -52,6 +52,7 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'Bishop' }))
     expect(screen.queryByLabelText('Explorer search')).not.toBeInTheDocument()
     await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
+    expect(screen.getByRole('checkbox', { name: 'Keep context' })).toBeChecked()
     await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
 
     expect(screen.getByRole('button', { name: 'Thinking...' })).toBeDisabled()
@@ -59,6 +60,21 @@ describe('DeepVault app', () => {
     expect(await screen.findByText('Orchestration')).toBeInTheDocument()
     expect(await screen.findByText('fallback')).toBeInTheDocument()
     expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
+  })
+
+  it('lets the bishop context toggle be changed from the conversation header', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+
+    const toggle = screen.getByRole('checkbox', { name: 'Keep context' })
+    expect(toggle).toBeChecked()
+
+    await user.click(toggle)
+
+    expect(toggle).not.toBeChecked()
+    expect(localStorage.getItem('deepvault_bishop_context_enabled')).toBe('false')
   })
 
   it('shows the answer trace metrics after bishop responds', async () => {
