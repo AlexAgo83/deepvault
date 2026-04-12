@@ -350,6 +350,7 @@ p {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
+  align-items: start;
 }
 
 .kpi-grid.compact {
@@ -371,11 +372,11 @@ p {
 }
 
 .stat-card {
-  min-height: 120px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  align-self: start;
   transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
 }
 
