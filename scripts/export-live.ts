@@ -8,6 +8,7 @@ import {
   readCliArg,
   readCliFlag,
   readCorpusLikeFile,
+  resolveCheckpointSyncedAt,
 } from './live-export-state'
 import {
   acquireGraphAccessToken,
@@ -16,6 +17,7 @@ import {
   GraphClient,
   exportSiteCorpus,
   type CorpusLike,
+  type CorpusSiteLike,
   type DeepVaultExportConfig,
   writeCorpusFile,
 } from './deepvault-graph'
@@ -25,13 +27,16 @@ async function loadMockCorpus(): Promise<Corpus> {
   return JSON.parse(content) as Corpus
 }
 
-async function runMockExport(outputPath: string): Promise<void> {
+async function runMockExport(outputPath: string, dryRun: boolean): Promise<void> {
   const corpus = await loadMockCorpus()
-  await writeCorpusFile(outputPath, corpus)
   const role = corpus.defaultUserRole || 'analyst'
   const summary = summarizeCorpus(corpus, role)
-  console.log(`Wrote ${outputPath}`)
+  if (!dryRun) {
+    await writeCorpusFile(outputPath, corpus)
+  }
+  console.log(dryRun ? `Dry run target: ${outputPath}` : `Wrote ${outputPath}`)
   console.log(`Mode: mock`)
+  console.log(`Dry run: ${dryRun ? 'yes' : 'no'}`)
   console.log(`Visible documents: ${summary.visibleSources}`)
   console.log(`Pilot sites: ${corpus.sites.length}`)
 }
@@ -40,39 +45,50 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   const token = await acquireGraphAccessToken(config)
   const client = new GraphClient(config.baseUrl, token, config.timeoutSeconds)
   const siteDefinitions = buildSiteDefinitions(config)
-  const resumeCheckpoint = readCliFlag(process.argv, '--resume')
-  const checkpointCorpus = resumeCheckpoint ? await readCorpusLikeFile(liveCheckpointPath) : null
+  const dryRun = readCliFlag(process.argv, '--dry-run')
+  const checkpointCorpus = await readCorpusLikeFile(liveCheckpointPath)
+  const checkpointSyncedAt = resolveCheckpointSyncedAt(checkpointCorpus)
+  const deltaSyncEnabled = Boolean(checkpointCorpus && checkpointSyncedAt)
 
   if (siteDefinitions.length === 0) {
     throw new Error('DEEPVAULT_ENTRA_SITES must list at least one SharePoint site URL.')
   }
 
-  const sites: CorpusLike['sites'] = []
-  const documents: CorpusLike['documents'] = []
-  const siteIds: string[] = []
+  const sites: CorpusLike['sites'] = checkpointCorpus?.sites ? [...checkpointCorpus.sites] : []
+  let documents: CorpusLike['documents'] = checkpointCorpus?.documents ? [...checkpointCorpus.documents] : []
+  const siteIds: string[] = checkpointCorpus?.syncRuns?.[0]?.siteIds ? [...checkpointCorpus.syncRuns[0].siteIds] : []
+  const startedAt = new Date().toISOString()
   let totalLibraries = sites.reduce((sum, site) => sum + site.libraryCount, 0)
   let totalLists = sites.reduce((sum, site) => sum + site.listCount, 0)
-  const startedAt = new Date().toISOString()
+  let skippedDocuments = 0
+  let ingestedDocuments = 0
 
-  if (resumeCheckpoint && checkpointCorpus) {
-    if (checkpointCorpus.sites) {
-      sites.push(...checkpointCorpus.sites)
-      totalLibraries = sites.reduce((sum, site) => sum + site.libraryCount, 0)
-      totalLists = sites.reduce((sum, site) => sum + site.listCount, 0)
+  function upsertDocuments(existingDocuments: CorpusLike['documents'], incomingDocuments: CorpusLike['documents']) {
+    const byId = new Map(existingDocuments.map((document) => [document.id, document]))
+    for (const document of incomingDocuments) {
+      byId.set(document.id, document)
     }
-    if (checkpointCorpus.documents) {
-      documents.push(...checkpointCorpus.documents)
-    }
-    if (checkpointCorpus.syncRuns?.[0]?.siteIds) {
-      siteIds.push(...checkpointCorpus.syncRuns[0].siteIds)
+    return [...byId.values()]
+  }
+
+  function upsertSite(existingSite: CorpusLike['sites'][number]) {
+    const index = sites.findIndex((site) => site.id === existingSite.id || site.url === existingSite.url)
+    if (index >= 0) {
+      sites[index] = existingSite
+    } else {
+      sites.push(existingSite)
     }
   }
 
-  async function writeCheckpoint() {
+  async function writeCheckpoint(syncedAt: string) {
+    if (dryRun) {
+      return
+    }
     await writeCorpusFile(
       liveCheckpointPath,
       buildLiveExportCorpus(config, {
         startedAt,
+        syncedAt,
         sites,
         documents,
         siteIds,
@@ -85,28 +101,27 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   }
 
   for (const definition of siteDefinitions) {
-    const existingSite = resumeCheckpoint ? sites.find((site) => site.url === definition.url) : undefined
-
-    if (existingSite) {
-      console.log(`[${definition.name}] Reusing checkpointed export`)
-      if (!siteIds.includes(existingSite.id)) {
-        siteIds.push(existingSite.id)
-      }
-      continue
-    }
-
     try {
-      console.log(`[${definition.name}] Starting export`)
-      const exported = await exportSiteCorpus(client, definition, (message) => console.log(message))
-      sites.push(exported.site)
-      documents.push(...exported.documents)
-      siteIds.push(exported.site.id)
-      totalLibraries += exported.driveCount
-      totalLists += exported.listCount
-      console.log(`[${definition.name}] Export finished with ${exported.documents.length} documents`)
+      console.log(`[${definition.name}] Starting export${deltaSyncEnabled ? ` (delta from ${checkpointSyncedAt})` : ''}`)
+      const exported = await exportSiteCorpus(
+        client,
+        definition,
+        (message) => console.log(message),
+        { updatedAfter: deltaSyncEnabled ? checkpointSyncedAt : null },
+      )
+      upsertSite(exported.site)
+      documents = upsertDocuments(documents, exported.documents)
+      if (!siteIds.includes(exported.site.id)) {
+        siteIds.push(exported.site.id)
+      }
+      totalLibraries = sites.reduce((sum, site) => sum + site.libraryCount, 0)
+      totalLists = sites.reduce((sum, site) => sum + site.listCount, 0)
+      skippedDocuments += exported.skippedDocuments
+      ingestedDocuments += exported.documents.length
+      console.log(`[${definition.name}] Export finished with ${exported.documents.length} documents (${exported.skippedDocuments} skipped)`)
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
-      sites.push({
+      const fallbackSite: CorpusSiteLike = {
         id: definition.url,
         name: definition.name,
         url: definition.url,
@@ -115,15 +130,20 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
         status: 'restricted',
         access: ['admin'],
         owner: definition.name,
-      })
+      }
+      upsertSite(fallbackSite)
+      totalLibraries = sites.reduce((sum, site) => sum + site.libraryCount, 0)
+      totalLists = sites.reduce((sum, site) => sum + site.listCount, 0)
       console.log(`Skipped ${definition.url}: ${message}`)
     }
 
-    await writeCheckpoint()
+    await writeCheckpoint(new Date().toISOString())
   }
 
+  const syncedAt = new Date().toISOString()
   const corpus = buildLiveExportCorpus(config, {
     startedAt,
+    syncedAt,
     sites,
     documents,
     siteIds,
@@ -134,12 +154,18 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   })
 
   console.log(`Export summary: ${documents.length} documents across ${totalLibraries} libraries and ${totalLists} lists`)
-  await writeCorpusFile(outputPath, corpus)
-  await writeCheckpoint()
+  console.log(`Delta stats: skipped ${skippedDocuments}, ingested ${ingestedDocuments}`)
+  if (dryRun) {
+    console.log('Dry run: no files were written.')
+  } else {
+    await writeCorpusFile(outputPath, corpus)
+    await writeCheckpoint(syncedAt)
+  }
   const role = corpus.defaultUserRole || 'analyst'
   const summary = summarizeCorpus(corpus as Corpus, role)
-  console.log(`Wrote ${outputPath}`)
+  console.log(dryRun ? `Dry run target: ${outputPath}` : `Wrote ${outputPath}`)
   console.log(`Mode: live`)
+  console.log(`Dry run: ${dryRun ? 'yes' : 'no'}`)
   console.log(`Visible documents: ${summary.visibleSources}`)
   console.log(`Pilot sites: ${corpus.sites.length}`)
   console.log(`Libraries: ${totalLibraries}`)
@@ -152,15 +178,17 @@ const mode = normalizeMode(readCliArg(process.argv, '--mode') || process.env.DEE
 const outputPath = resolve(readCliArg(process.argv, '--output') || 'public/live-corpus.json')
 const useMock = mode === 'mock' || readCliFlag(process.argv, '--mock')
 const resumeCheckpoint = readCliFlag(process.argv, '--resume')
+const dryRun = readCliFlag(process.argv, '--dry-run')
 const config = buildDeepVaultExportConfig()
 
 console.log(`Auth mode: ${config.authMode}`)
 console.log(`Client secret loaded: ${config.secretValue ? 'yes' : 'no'}`)
 console.log(`Configured sites: ${config.siteUrls.length}`)
-console.log(`Checkpoint resume: ${resumeCheckpoint ? 'yes' : 'no'}`)
+console.log(`Checkpoint resume flag: ${resumeCheckpoint ? 'yes' : 'no'}`)
+console.log(`Dry run: ${dryRun ? 'yes' : 'no'}`)
 
 if (useMock) {
-  await runMockExport(outputPath)
+  await runMockExport(outputPath, dryRun)
 } else {
   await runLiveExport(config, outputPath)
 }

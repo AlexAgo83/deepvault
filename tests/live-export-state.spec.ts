@@ -7,6 +7,7 @@ import {
   readCliArg,
   readCliFlag,
   readCorpusLikeFile,
+  resolveCheckpointSyncedAt,
 } from '../scripts/live-export-state'
 
 const config = {
@@ -45,6 +46,7 @@ describe('live export state helpers', () => {
   it('builds a live export corpus snapshot', () => {
     const corpus = buildLiveExportCorpus(config, {
       startedAt: '2026-04-11T11:30:00.000Z',
+      syncedAt: '2026-04-11T11:45:00.000Z',
       sites: [
         {
           id: 'site-1',
@@ -95,6 +97,7 @@ describe('live export state helpers', () => {
       chunksWritten: 6,
       notes: 'Checkpointed 1 documents from 2 libraries and 1 lists.',
     })
+    expect(corpus.syncedAt).toBe('2026-04-11T11:45:00.000Z')
     expect(corpus.documents).toHaveLength(1)
   })
 
@@ -120,5 +123,32 @@ describe('live export state helpers', () => {
     await writeFile(resolve('tmp/live-export-state-invalid.json'), JSON.stringify({ defaultUserRole: 'analyst' }, null, 2))
     await expect(readCorpusLikeFile(resolve('tmp/live-export-state-invalid.json'))).resolves.toBeNull()
     await expect(readCorpusLikeFile(resolve('tmp/missing-live-export-state.json'))).resolves.toBeNull()
+  })
+
+  it('resolves checkpoint sync time from syncedAt or finishedAt for compatibility', () => {
+    expect(resolveCheckpointSyncedAt({ defaultUserRole: 'analyst', providers: [], sites: [], syncRuns: [], documents: [], syncedAt: '2026-04-11T11:45:00.000Z' })).toBe(
+      '2026-04-11T11:45:00.000Z',
+    )
+    expect(
+      resolveCheckpointSyncedAt({
+        defaultUserRole: 'analyst',
+        providers: [],
+        sites: [],
+        syncRuns: [
+          {
+            id: 'sync-1',
+            startedAt: '2026-04-11T11:30:00.000Z',
+            finishedAt: '2026-04-11T11:40:00.000Z',
+            scope: 'scope',
+            status: 'synced',
+            siteIds: [],
+            documentsSynced: 0,
+            chunksWritten: 0,
+            notes: 'done',
+          },
+        ],
+        documents: [],
+      }),
+    ).toBe('2026-04-11T11:40:00.000Z')
   })
 })

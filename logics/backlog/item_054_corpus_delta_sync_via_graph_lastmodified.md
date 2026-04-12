@@ -1,10 +1,10 @@
 ## item_054_corpus_delta_sync_via_graph_lastmodified - Corpus delta sync via Graph lastModifiedDateTime
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 85%
 > Confidence: 78%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|corpus-delta-sync-via-graph-lastmodified|req-015-architecture-robustness-and-pro|utiliser-lastmodifieddatetime-du-graph|ac1-export-live-compare-lastmodified
+%% logics-signature: backlog|corpus-delta-sync-via-graph-lastmodified|req-015-architecture-robustness-and-prod|l-export-live-scripts-export-live-ts-fai|ac1-scripts-export-live-ts-compare-lastm
 flowchart TD
     Request[req_015_architecture_robustness_and_product] --> Problem[Full-refresh coûteux sur grands SharePoint]
     Problem --> Scope[Delta sync via lastModifiedDateTime]
@@ -43,6 +43,17 @@ flowchart TD
 - AC3 -> Scope: checkpoint mis à jour. Proof: capture validation evidence in this doc.
 - AC4 -> Scope: compatibilité checkpoint. Proof: capture validation evidence in this doc.
 - AC5 -> Scope: dry-run avec stats. Proof: capture validation evidence in this doc.
+
+# Report
+- Wave 2 completed: `scripts/export-live.ts` now reuses the checkpoint corpus, compares `lastModifiedDateTime` against the last sync time, skips unchanged documents, writes `syncedAt` into the checkpoint, and supports dry-run output without writing files.
+- Validation passed:
+  - `rtk npm run test -- tests/deepvault-graph.spec.ts tests/live-export-state.spec.ts tests/corpus-loader.spec.ts tests/corpus.spec.ts`
+  - `rtk npm run typecheck`
+  - `rtk npm run lint`
+  - `rtk npm run build`
+  - `rtk npm run check`
+  - `rtk npm run export:live -- --mode mock --dry-run --output tmp/export-live-dry-run.json`
+  - `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text`
 
 # Decision framing
 - Product framing: Not needed

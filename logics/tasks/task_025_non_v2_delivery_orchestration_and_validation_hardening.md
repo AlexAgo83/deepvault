@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 80%
+> Progress: 85%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -133,6 +133,7 @@ stateDiagram-v2
 - Wave 3 started: Bishop remote routing now supports OpenAI and Gemini as primary providers while keeping Claude available as a third provider, with provider-specific remote payload tests and fallback coverage.
 - Wave 3 completed: Bishop session persistence and export now cover `localStorage` restore, 50-message cap, Bishop JSON/MD export, Explorer JSON/MD export, and clear-history behavior.
 - Wave 4 started: Graph export and corpus loading are now safer because malformed corpus payloads are rejected explicitly and checkpoint reads ignore invalid payloads instead of silently accepting them.
+- Wave 4 continued: live export now reuses the checkpoint corpus, compares `lastModifiedDateTime` against the last sync, skips unchanged documents, persists `syncedAt`, and reports dry-run stats without writing files.
 - Validation passed: `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
