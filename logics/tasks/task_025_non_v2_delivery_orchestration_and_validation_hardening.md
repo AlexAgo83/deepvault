@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 30%
+> Progress: 40%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -119,8 +119,10 @@ stateDiagram-v2
 # Report
 - Wave 1 started: hardened `fetchLiveCorpus` to reject malformed live corpus payloads, distinguish parse failures from network failures, and keep the mock fallback path explicit.
 - Wave 1 continued: covered `useLiveCorpus` with hook-level tests for successful live promotion and invalid-payload fallback to mock data.
+- Wave 1 checkpointed again: added retrieval and explorer coverage for site-scoped ranking, denied-source exclusion, and top-result ordering.
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
+- Validation passed: `rtk npm run test -- tests/deepvault.spec.ts tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
 - Validation passed: `rtk npm run typecheck`
 - Validation passed: `rtk npm run lint`
 - Validation passed: `rtk npm run build`

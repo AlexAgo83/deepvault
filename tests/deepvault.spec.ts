@@ -3,10 +3,12 @@ import { getMockCorpusBundle } from '../src/data/corpus'
 import {
   answerQuestion,
   buildEvaluationRows,
+  buildExplorerRows,
   buildSharePointFileUrl,
   buildSiteSummaries,
   buildSyncOverview,
   formatUpdatedAt,
+  searchDocuments,
   resolveSharePointFileUrl,
   type Corpus,
   summarizeCorpus,
@@ -75,6 +77,26 @@ describe('deepvault helpers', () => {
     expect(result.status).toBe('answered')
     expect(result.sources).not.toHaveLength(0)
     expect(result.answer).toContain('Q3 2025 budget')
+  })
+
+  it('ranks the strongest explorer match first and keeps the site filter scoped', () => {
+    const explorerRows = buildExplorerRows(corpus, 'q3 2025 budget', { role: 'analyst', siteId: 'pilot-alpha' })
+
+    expect(explorerRows[0].id).toBe('q3-budget')
+    expect(explorerRows.some((row) => row.id === 'q3-budget')).toBe(true)
+    expect(explorerRows.every((row) => row.siteId === 'pilot-alpha')).toBe(true)
+    expect(explorerRows.every((row) => row.siteName === 'Pilot Site Alpha')).toBe(true)
+
+    const rankedMatches = searchDocuments(corpus, 'q3 2025 budget', { role: 'analyst' })
+    expect(rankedMatches[0].document.id).toBe('q3-budget')
+    expect(rankedMatches[0].score).toBeGreaterThan(0)
+  })
+
+  it('keeps denied sources out of explorer rows for restricted content', () => {
+    const explorerRows = buildExplorerRows(corpus, 'restricted launch notes', { role: 'guest' })
+
+    expect(explorerRows).toHaveLength(0)
+    expect(searchDocuments(corpus, 'restricted launch notes', { role: 'guest', includeDenied: true })[0].permitted).toBe(false)
   })
 
   it('summarizes the corpus and formats timestamps', () => {
