@@ -69,6 +69,7 @@ function AppSidebar({
               key={item.id}
               type="button"
               className={`nav-item ${activeTab === item.id ? 'nav-item-active' : ''}`}
+              aria-current={activeTab === item.id ? 'page' : undefined}
               onClick={() => onTabChange(item.id)}
             >
               <span className="nav-item-icon" aria-hidden="true">
