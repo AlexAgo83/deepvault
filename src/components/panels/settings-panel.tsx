@@ -17,7 +17,7 @@ export function SettingsPanel({
       <article className="panel settings-panel">
         <SectionHeading
           title="Settings"
-          subtitle="Configure provider API keys locally in this browser. Bishop will use them when a remote provider is selected."
+          subtitleTooltip="Configure provider API keys locally in this browser. Bishop will use them when a remote provider is selected."
         />
 
         <div className="kpi-grid compact settings-summary-grid">
