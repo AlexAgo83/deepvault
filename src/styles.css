@@ -701,6 +701,17 @@ p {
   background: transparent;
 }
 
+.danger-button {
+  border-color: rgba(185, 60, 50, 0.35);
+  color: #b33c32;
+  background: rgba(185, 60, 50, 0.06);
+}
+
+.danger-button:hover {
+  border-color: rgba(185, 60, 50, 0.6);
+  background: rgba(185, 60, 50, 0.1);
+}
+
 .secondary-button-sm {
   padding: 7px 10px;
   font-size: 0.82rem;
