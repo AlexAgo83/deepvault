@@ -1,10 +1,10 @@
 ## task_025_non_v2_delivery_orchestration_and_validation_hardening - Non-V2 delivery orchestration and validation hardening
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Done
+> Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 100%
+> Progress: 99%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -59,12 +59,12 @@ stateDiagram-v2
 - [x] 3. Execute Wave 2 next and keep it limited to the shell, explorer, runtime, and UI surface work.
 - [x] 4. Execute Wave 3 after that and keep it limited to Bishop orchestration and answer quality work.
 - [x] 5. Execute Wave 4 next and keep it limited to refactoring, resilience, infrastructure hardening, and coverage uplift.
-- [x] 6. Execute Wave 5 last and keep the PWA work behind the earlier stability gates.
+- [ ] 6. Execute Wave 5 last and keep the PWA work behind the earlier stability gates.
 - [x] 7. Keep each wave commit-ready, validate it, and update the linked Logics docs before moving on.
 - [x] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
 - [x] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
 - [x] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
-- [x] FINAL: update the related Logics docs, close the orchestration task, and leave no `V2` scope touched by mistake.
+- [ ] FINAL: update the related Logics docs, close the orchestration task, and leave no `V2` scope touched by mistake.
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -144,4 +144,4 @@ stateDiagram-v2
 - Validation passed: `rtk npm run build`
 - Validation passed: `rtk npm run test -- tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts`
 - Validation passed: `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text`
-- Final closure: the non-`V2` orchestration task is complete, the repository stayed within the excluded `V2` boundary, and the wave checkpoints are now recorded as a commit-ready delivery trail.
+- Correction: Waves 1 to 4 are checkpointed, but Wave 5 remains pending because the PWA work has not been executed yet, so the orchestration task must stay open.
