@@ -64,13 +64,13 @@ export function BishopPanel({
           subtitle="Grounded answers come from the same local retrieval logic used by the explorer."
           actions={
             <>
-              <button type="button" className="secondary-button" onClick={exportJson}>
+              <button type="button" className="secondary-button secondary-button-sm" onClick={exportJson}>
                 Export JSON
               </button>
-              <button type="button" className="secondary-button" onClick={exportMarkdown}>
+              <button type="button" className="secondary-button secondary-button-sm" onClick={exportMarkdown}>
                 Export MD
               </button>
-              <button type="button" className="secondary-button" onClick={clearHistory}>
+              <button type="button" className="secondary-button secondary-button-sm" onClick={clearHistory}>
                 Clear history
               </button>
             </>
