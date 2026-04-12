@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Keep the local and hosted runtimes simple, make derived content durable without duplicating SharePoint, and keep audit, secrets, and retrieval state in the right stores.
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-> Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
+> Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
 > Related task: `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_003_hosted_backend_core_delivery.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
 > Reminder: Keep the storage layout, derived data boundaries, and environment-specific persistence rules aligned with the current local and hosted runtime design. Reviewed during the 2026-04-10 release/doc sync.
 
@@ -58,7 +58,6 @@ For hosted production, prefer Azure Blob Storage, Azure SQL or managed Postgres,
 - `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
 - `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
 - `logics/backlog/item_005_runtime_config_and_operations.md`
-- `logics/backlog/item_013_v2_operations_runbook_and_release_readiness.md`
 - `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
 - `logics/tasks/task_003_hosted_backend_core_delivery.md`
 - `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`

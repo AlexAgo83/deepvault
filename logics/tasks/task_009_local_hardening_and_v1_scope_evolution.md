@@ -1,5 +1,5 @@
 ## task_009_local_hardening_and_v1_scope_evolution - V1 scope evolution — local hardening and live delivery
-> From version: 1.0.1
+> From version: 1.0.2
 > Schema version: 1.0
 > Status: Done
 > Understanding: 97%
@@ -12,7 +12,7 @@
 # Context
 This task represents the evolution of the V1 scope: everything that extends, hardens, and completes the local product without introducing Azure or Teams dependencies.
 The V1 foundations, local surfaces, ingestion, and the baseline evaluation are already shipped.
-What remains in V1 is hardening the live data path, tightening the explorer UX, wiring the live quality gate, and cleaning the backlog and docs so the V1 scope is fully closed before V2 opens.
+What remains in V1 is hardening the live data path, tightening the explorer UX, wiring the live quality gate, and cleaning the backlog and docs so the V1 scope is fully closed.
 The goal is to close V1 with a stable, well-tested local product and a clean slate.
 
 ## What is already done in V1 (do not re-implement)
@@ -45,7 +45,7 @@ stateDiagram-v2
 - [x] **Wave 1 — Incremental live sync and crawl resilience** (`item_014` + `item_017`): implement incremental live sync, resumable export, crawl checkpoints, progress visibility, memory guards, and artifact governance.
 - [x] **Wave 2 — Live explorer site filter alignment** (`item_015`): make the selected site actually bound live explorer results; keep list, detail, and navigation state aligned.
 - [x] **Wave 3 — Live evaluation set and quality gate** (`item_016`): build the live evaluation set, wire the deterministic quality gate, and record a live baseline that reflects exported SharePoint content.
-- [x] **Wave 4 — V1 backlog and doc cleanup** (`item_018`): split any remaining broad items, clean the doc framing, and keep the V1 scope clearly separated from V2 delivery.
+- [x] **Wave 4 — V1 backlog and doc cleanup** (`item_018`): split any remaining broad items, clean the doc framing, and keep the V1 scope clearly closed.
 - [x] After each wave: run the relevant validation commands, update the linked Logics docs, and leave a reviewed commit checkpoint before starting the next wave.
 - [x] Close the task only after all waves are complete, the live validation path is green, and the V1 scope is cleanly closed.
 
@@ -81,7 +81,7 @@ stateDiagram-v2
 - Summary: V1 scope evolution — live sync hardening, explorer UX, live quality gate, and V1 closure. No Azure or Teams dependency.
 - Keywords: V1, local, live export, incremental sync, explorer filter, evaluation gate, cleanup
 - Use when: Use for any work that runs locally without Azure or Teams.
-- Skip when: Skip when the work requires Azure hosting or Teams channel wiring — that is `task_010`.
+- Skip when: Skip when the work requires Azure hosting or Teams channel wiring.
 
 # References
 - `logics/skills/logics-flow-manager/SKILL.md`
@@ -101,7 +101,7 @@ stateDiagram-v2
 - [x] All four waves complete and their backlog items linked back to this task.
 - [x] Each wave passed its relevant validation before the next wave started.
 - [x] The live export, ingest, evaluation, and UI checks are green in the final state.
-- [x] The V1 scope is cleanly closed and clearly separated from V2 delivery in docs and roadmap views.
+- [x] The V1 scope is cleanly closed in docs and roadmap views.
 - [x] Status is `Done` and progress is `100%`.
 
 # Report
@@ -122,5 +122,4 @@ stateDiagram-v2
   - `python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status`
 
 # Notes
-- All Azure, Teams, and hosted backend work has been deliberately moved to `task_010_v2_azure_and_teams_delivery.md`.
-- Do not pull hosted backend or Teams delivery into this task.
+- Keep this task focused on the local V1 closure scope.

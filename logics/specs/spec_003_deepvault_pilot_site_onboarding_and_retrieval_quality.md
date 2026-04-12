@@ -99,7 +99,7 @@ Ranking weights (defined in ADR 014) must not be changed before the evaluation b
 # References
 - `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - `logics/product/prod_001_local_first_development_and_test_strategy.md`
-- `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
+- `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`
 - `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
 - `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
