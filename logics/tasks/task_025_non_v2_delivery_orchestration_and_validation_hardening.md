@@ -2,8 +2,8 @@
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: In progress
-> Understanding: 96%
-> Confidence: 92%
+> Understanding: 97%
+> Confidence: 93%
 > Progress: 99%
 > Complexity: High
 > Theme: General
@@ -142,6 +142,7 @@ stateDiagram-v2
 - Wave 4 completed: extended the Playwright suite with empty-search, guest-restricted Bishop, role switch, and live-mode badge scenarios, then validated both the default and live-mode E2E runs.
 - Wave 5 started: PWA foundation now installs `vite-plugin-pwa`, emits `dist/sw.js`, and ships the manifest plus square icons.
 - Wave 5 continued: the header now captures `beforeinstallprompt` and exposes the install affordance only when the app is installable, with standalone and unsupported-browser hiding covered by tests.
+- Wave 5 continued: the shell now shows a non-blocking update banner when a new service worker is waiting, with explicit dismiss and update actions.
 - Validation passed: `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`

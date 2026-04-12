@@ -1,10 +1,11 @@
-import type { ReactElement } from 'react'
+import { useState, type ReactElement } from 'react'
 import { ErrorBoundary } from './error-boundary'
 import { CompactDateTime, Pill, StatCard } from './app-ui'
 import { useInstallPrompt } from '../hooks'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
 import { BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SyncPanel } from './panels'
 import { version } from '../../package.json'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'Explorer', icon: ExplorerIcon },
@@ -120,6 +121,37 @@ function AppTopbar({
   )
 }
 
+function UpdateBanner() {
+  const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true })
+  const [dismissed, setDismissed] = useState(false)
+
+  if (!needRefresh[0] || dismissed) {
+    return null
+  }
+
+  const update = async () => {
+    await updateServiceWorker(true)
+    setDismissed(true)
+  }
+
+  return (
+    <section className="update-banner" aria-live="polite">
+      <div className="update-banner-copy">
+        <strong>Une nouvelle version est disponible</strong>
+        <span>Recharge pour activer les dernières améliorations et correctifs.</span>
+      </div>
+      <div className="update-banner-actions">
+        <button type="button" className="primary-button" onClick={() => void update()}>
+          Mettre à jour
+        </button>
+        <button type="button" className="secondary-button" onClick={() => setDismissed(true)}>
+          Ignorer
+        </button>
+      </div>
+    </section>
+  )
+}
+
 function AppToolbar({
   search,
   onSearchChange,
@@ -203,6 +235,8 @@ export function AppShell(model: AppModel) {
           provider={provider}
           role={role}
         />
+
+        <UpdateBanner />
 
         <section className="kpi-grid">
           <StatCard

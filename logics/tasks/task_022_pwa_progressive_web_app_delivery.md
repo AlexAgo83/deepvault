@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 88%
 > Confidence: 84%
-> Progress: 50%
+> Progress: 75%
 > Complexity: Medium
 > Theme: Infrastructure / UX / PWA
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -48,7 +48,7 @@ stateDiagram-v2
 - [x] 1. Vérifier la compatibilité de `vite-plugin-pwa` avec la version Vite actuelle (`package.json`) et identifier la version compatible ; préparer ou générer les icônes PWA 192×192 et 512×512.
 - [x] 2. Wave 1 — installer `vite-plugin-pwa` en devDependency ; configurer le plugin dans `vite.config.ts` avec `registerType: 'prompt'`, `devOptions: { enabled: false }` ; créer `public/manifest.webmanifest` avec `name`, `short_name`, `theme_color`, `background_color`, `display: standalone`, icônes ; configurer Workbox avec `CacheFirst` pour assets statiques et `NetworkFirst` pour les appels Graph ; valider que `npm run build` génère `dist/sw.js`.
 - [x] 3. Wave 2 — créer un hook `useInstallPrompt` qui capture `beforeinstallprompt` ; ajouter un composant `<InstallButton>` dans le header ; masquer si `display-mode: standalone` ou si l'événement n'est pas disponible ; masquer après installation.
-- [ ] 4. Wave 3 — utiliser le hook `useRegisterSW` de `vite-plugin-pwa` ; créer un composant `<UpdateBanner>` non-bloquant qui apparaît quand `needRefresh === true` ; bouton "Mettre à jour" appelle `updateServiceWorker(true)` ; bouton "Ignorer" masque le bandeau pour la session.
+- [x] 4. Wave 3 — utiliser le hook `useRegisterSW` de `vite-plugin-pwa` ; créer un composant `<UpdateBanner>` non-bloquant qui apparaît quand `needRefresh === true` ; bouton "Mettre à jour" appelle `updateServiceWorker(true)` ; bouton "Ignorer" masque le bandeau pour la session.
 - [ ] 5. Wave 4 — vérifier que `pilot-corpus.json` est bien inclus dans le cache Workbox (assets statiques) ; implémenter le basculement automatique vers le corpus mock si le mode live échoue en offline ; ajouter l'indicateur visuel "Hors-ligne — corpus mock" ; ajouter un test E2E Playwright offline (`page.context().setOffline(true)`).
 - [ ] 6. Fermer la task en mettant à jour les backlog items et la request liée.
 - [x] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
@@ -108,3 +108,5 @@ stateDiagram-v2
 - Wave 1 validated: `rtk npm run build` generated `dist/sw.js` and `rtk npm run check` passed.
 - Wave 2 completed: the header now captures `beforeinstallprompt`, shows an install button when the app is installable, and hides it in standalone mode or when the API is unavailable.
 - Wave 2 validated: `rtk npm run test -- tests/pwa.spec.tsx tests/app.spec.tsx`, `rtk npm run typecheck`, and `rtk npm run lint` passed.
+- Wave 3 completed: the shell now shows a non-blocking update banner when a refresh is pending, with update and dismiss actions.
+- Wave 3 validated: `rtk npm run test -- tests/pwa.spec.tsx tests/app.spec.tsx`, `rtk npm run typecheck`, and `rtk npm run lint` passed.

@@ -1,10 +1,10 @@
 ## item_057_pwa_update_banner - PWA: update banner
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 90%
 > Confidence: 87%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Low
 > Theme: UX / PWA
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -19,7 +19,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|pwa-update-banner|req-016-pwa-install-and-offline-first|afficher-un-bandeau-de-mise-a-jour|ac1-bandeau-visible-quand-needrefresh-true
+%% logics-signature: backlog|pwa-update-banner|req-016-pwa-install-and-offline-first|sans-bandeau-de-mise-a-jour|ac1-lorsque-needrefresh-est-true-nouveau
 flowchart TD
     Request[req_016_pwa_install_and_offline_first] --> Problem[Nouvelle version SW ignorée par l'utilisateur]
     Problem --> Scope[Bandeau mise à jour]
@@ -73,3 +73,7 @@ flowchart TD
 - Derived from request `req_016_pwa_install_and_offline_first`.
 - Dépend de item_055 (fondation PWA) pour l'accès au hook `useRegisterSW`.
 - `registerType: 'prompt'` dans la config vite-plugin-pwa est nécessaire pour que `needRefresh` soit exposé (vs `autoUpdate` qui bypass le bandeau).
+
+# Report
+- Wave 3 completed: the shell now shows a non-blocking update banner when `needRefresh` is true, with `Mettre à jour` and `Ignorer` actions.
+- Wave 3 validated: `rtk npm run test -- tests/pwa.spec.tsx tests/app.spec.tsx`, `rtk npm run typecheck`, and `rtk npm run lint` passed.
