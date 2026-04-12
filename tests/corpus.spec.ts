@@ -96,4 +96,46 @@ describe('corpus helpers', () => {
       detail: 'Live corpus error: request failed before a response was returned',
     })
   })
+
+  it('returns an error state when the live corpus payload cannot be parsed', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => {
+        throw new Error('invalid json')
+      },
+    })
+
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(fetchLiveCorpus()).resolves.toMatchObject({
+      status: 'error',
+      detail: 'Live corpus error: response body could not be parsed',
+    })
+  })
+
+  it('returns an error state when the live corpus payload has the wrong shape', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        defaultUserRole: 'analyst',
+        providers: [],
+        sites: [],
+        syncRuns: [],
+        documents: [
+          {
+            id: 'doc-1',
+            siteId: 'site-1',
+            kind: 'md',
+          },
+        ],
+      }),
+    })
+
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(fetchLiveCorpus()).resolves.toMatchObject({
+      status: 'error',
+      detail: 'Live corpus error: response payload was not a valid corpus',
+    })
+  })
 })
