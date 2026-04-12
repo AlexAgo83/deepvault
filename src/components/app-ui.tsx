@@ -108,7 +108,7 @@ export function StatCard({
   valueClassName?: string
 }) {
   return (
-    <article className="stat-card" title={note}>
+    <article className="stat-card">
       <div className="stat-label">{label}</div>
       <div className={`stat-value ${valueClassName || ''}`.trim()}>{value}</div>
       <div className="stat-note">{note}</div>

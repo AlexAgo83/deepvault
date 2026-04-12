@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
-import { CompactPathText, Message, PathLabel, SectionHeading } from '../src/components/app-ui'
+import { CompactPathText, Message, PathLabel, SectionHeading, StatCard } from '../src/components/app-ui'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -51,6 +51,14 @@ describe('app ui helpers', () => {
     expect(screen.getByText('Browse the pilot corpus.')).toBeInTheDocument()
     expect(screen.getByText('Export')).toBeInTheDocument()
     expect(screen.getByText('Minimal')).toBeInTheDocument()
+  })
+
+  it('renders stat cards without hover tooltips', () => {
+    render(<StatCard label="Sites in scope" value={3} note="Shared across Explorer, Bishop, and Sync status." />)
+
+    const statCard = screen.getByText('Sites in scope').closest('.stat-card')
+    expect(statCard).not.toHaveAttribute('title')
+    expect(screen.getByText('Shared across Explorer, Bishop, and Sync status.')).toBeInTheDocument()
   })
 
   it('renders messages with and without sources', () => {
