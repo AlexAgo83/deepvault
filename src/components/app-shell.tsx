@@ -303,12 +303,6 @@ export function AppShell(model: AppModel) {
           </section>
         ) : null}
 
-        {activeTab === 'settings' ? (
-          <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
-            <SettingsPanel providerSecrets={providerSecrets} onClear={clearProviderSecrets} onKeyChange={setProviderSecret} />
-          </ErrorBoundary>
-        ) : null}
-
         <section className="kpi-grid">
           <StatCard
             label="Sites in scope"
@@ -332,6 +326,12 @@ export function AppShell(model: AppModel) {
             note="OpenAI, Gemini, and Claude are available in the local abstraction."
           />
         </section>
+
+        {activeTab === 'settings' ? (
+          <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
+            <SettingsPanel providerSecrets={providerSecrets} onClear={clearProviderSecrets} onKeyChange={setProviderSecret} />
+          </ErrorBoundary>
+        ) : null}
 
         {activeTab === 'explorer' ? (
           <AppToolbar search={search} onSearchChange={setSearch} />
