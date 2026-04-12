@@ -5,6 +5,10 @@ import { type CorpusLike, type DeepVaultExportConfig } from './deepvault-graph'
 
 export const liveCheckpointPath = resolve('data/runtime/live-export-checkpoint.json')
 
+export interface LiveExportCheckpoint extends CorpusLike {
+  syncedAt?: string
+}
+
 export function readCliArg(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(name)
   return index >= 0 ? argv[index + 1] : undefined
@@ -26,7 +30,11 @@ export function buildProviderState(): CorpusLike['providers'] {
   ]
 }
 
-export async function readCorpusLikeFile(path: string): Promise<CorpusLike | null> {
+export function resolveCheckpointSyncedAt(checkpoint: LiveExportCheckpoint | null | undefined): string | null {
+  return checkpoint?.syncedAt || checkpoint?.syncRuns?.[0]?.finishedAt || null
+}
+
+export async function readCorpusLikeFile(path: string): Promise<LiveExportCheckpoint | null> {
   try {
     const payload: unknown = JSON.parse(await readFile(path, 'utf8'))
     return isCorpusLike(payload) ? payload : null
@@ -39,6 +47,7 @@ export function buildLiveExportCorpus(
   config: DeepVaultExportConfig,
   data: {
     startedAt: string
+    syncedAt?: string
     sites: CorpusLike['sites']
     documents: CorpusLike['documents']
     siteIds: string[]
@@ -47,16 +56,18 @@ export function buildLiveExportCorpus(
     notes: string
     status: CorpusLike['syncRuns'][number]['status']
   },
-): CorpusLike {
+): LiveExportCheckpoint {
+  const syncedAt = data.syncedAt || new Date().toISOString()
   return {
     defaultUserRole: 'analyst',
     providers: buildProviderState(),
     sites: data.sites,
+    syncedAt,
     syncRuns: [
       {
         id: `sync-${new Date().toISOString().slice(0, 10)}-live`,
         startedAt: data.startedAt,
-        finishedAt: new Date().toISOString(),
+        finishedAt: syncedAt,
         scope: `SharePoint live export from ${config.siteUrls.length} configured site(s)`,
         status: data.status,
         siteIds: data.siteIds,

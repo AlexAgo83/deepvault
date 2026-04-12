@@ -1,10 +1,10 @@
 ## task_019_infrastructure_hardening_graph_and_corpus - Infrastructure hardening: Graph API and corpus
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: In progress
+> Status: Done
 > Understanding: 88%
 > Confidence: 83%
-> Progress: 50%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Infrastructure / Quality
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -61,6 +61,15 @@ stateDiagram-v2
   - `rtk npm run build`
   - `rtk npm run ingest:live -- --mode mock`
   - `rtk npm run export:live -- --mode mock --output tmp/export-live-mock.json`
+- Wave 2 completed: the export flow now compares `lastModifiedDateTime` against the checkpoint sync time, skips unchanged documents, persists `syncedAt`, and exposes dry-run stats without writing files.
+- Validation passed:
+  - `rtk npm run test -- tests/deepvault-graph.spec.ts tests/live-export-state.spec.ts tests/corpus-loader.spec.ts tests/corpus.spec.ts`
+  - `rtk npm run typecheck`
+  - `rtk npm run lint`
+  - `rtk npm run build`
+  - `rtk npm run check`
+  - `rtk npm run export:live -- --mode mock --dry-run --output tmp/export-live-dry-run.json`
+  - `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text`
 
 # Decision framing
 - Product framing: Not needed
