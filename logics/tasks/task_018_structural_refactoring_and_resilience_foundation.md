@@ -1,9 +1,9 @@
 ## task_018_structural_refactoring_and_resilience_foundation - Structural refactoring and resilience foundation
-> From version: 1.0.0
+> From version: 1.0.1
 > Schema version: 1.0
 > Status: In progress
-> Understanding: 91%
-> Confidence: 87%
+> Understanding: 92%
+> Confidence: 89%
 > Progress: 33%
 > Complexity: Medium
 > Theme: Architecture / Quality
@@ -41,7 +41,7 @@ stateDiagram-v2
 # Plan
 - [x] 1. Confirmer les dépendances entre les trois waves (notamment Wave 3 après Wave 1 pour panels/).
 - [x] 2. Wave 1 — extraire `explorer-panel.tsx`, `bishop-panel.tsx`, `sync-panel.tsx` sous `src/components/panels/` ; réduire app-shell.tsx au layout et navigation ; vérifier que `tests/app.spec.tsx` passe sans modification.
-- [ ] 3. Wave 2 — créer `src/lib/scoring.ts` avec les poids et la fonction de scoring ; mettre à jour deepvault.ts pour importer scoring.ts ; ajouter `index.ts` dans `src/lib/`, `src/hooks/`, `src/components/`.
+- [x] 3. Wave 2 — créer `src/lib/scoring.ts` avec les poids et la fonction de scoring ; mettre à jour deepvault.ts pour importer scoring.ts ; ajouter `index.ts` dans `src/lib/`, `src/hooks/`, `src/components/`.
 - [ ] 4. Wave 3 — créer un composant `<ErrorBoundary>` générique dans `src/components/` ; wrapper les trois panels dans app-shell.tsx (ou dans les fichiers panels/ si Wave 1 est faite).
 - [ ] 5. Fermer la task en mettant à jour les backlog items et les requests liés.
 - [ ] CHECKPOINT: laisser chaque wave commit-ready et mettre à jour les docs Logics avant de continuer.
@@ -95,3 +95,5 @@ stateDiagram-v2
 - Wave 1 completed: extracted the Explorer, Bishop, and Sync panels into `src/components/panels/`, leaving `app-shell.tsx` responsible for layout and navigation only.
 - Wave 1 completed: added export helpers for Explorer and Bishop so the app shell no longer owns inline export assembly.
 - Wave 1 completed: validated the split with `rtk npm run test -- tests/app.spec.tsx tests/deepvault-graph.spec.ts tests/live-export-state.spec.ts tests/corpus-loader.spec.ts`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, and `rtk npm run check`.
+- Wave 2 completed: extracted scoring logic into `src/lib/scoring.ts` and re-exported the public surface through `src/lib/index.ts`, `src/hooks/index.ts`, and `src/components/index.ts`.
+- Wave 2 completed: validated the scoring slice with `rtk npm run test -- tests/scoring.spec.ts tests/deepvault.spec.ts tests/app.spec.tsx`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, and `rtk npm run check`.

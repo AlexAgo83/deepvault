@@ -1,4 +1,7 @@
 export { buildEvaluationRows, formatUpdatedAt } from './deepvault-evaluation'
+import { getDocumentScore, normalizeText, tokenize } from './scoring'
+
+export { getDocumentScore, normalizeText, tokenize }
 
 export type UserRole = 'analyst' | 'admin' | 'guest'
 export type ProviderId = 'openai' | 'gemini' | 'anthropic'
@@ -140,55 +143,6 @@ export interface GroundingResult {
   primaryDocumentId: string | null
 }
 
-const STOP_WORDS = new Set([
-  'a',
-  'an',
-  'and',
-  'are',
-  'as',
-  'at',
-  'be',
-  'by',
-  'for',
-  'from',
-  'give',
-  'how',
-  'i',
-  'in',
-  'is',
-  'it',
-  'me',
-  'of',
-  'on',
-  'or',
-  'our',
-  'please',
-  'show',
-  'summarize',
-  'tell',
-  'the',
-  'to',
-  'what',
-  'when',
-  'which',
-  'who',
-  'with',
-  'you',
-])
-
-export function normalizeText(value: string): string {
-  return String(value || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim()
-}
-
-export function tokenize(value: string): string[] {
-  return normalizeText(value)
-    .split(/\s+/)
-    .filter((token) => token && !STOP_WORDS.has(token))
-}
-
 export function canAccessDocument(document: Pick<CorpusDocument, 'access'>, role: UserRole): boolean {
   return document.access.includes(role) || document.access.includes('all')
 }
@@ -229,40 +183,6 @@ export function resolveSharePointFileUrl(
     return null
   }
   return buildSharePointFileUrl(site.url, path)
-}
-
-export function getDocumentScore(document: CorpusDocument, query: string): number {
-  const tokens = tokenize(query)
-  if (tokens.length === 0) {
-    return 1
-  }
-
-  const normalizedTitle = normalizeText(document.title)
-  const normalizedSummary = normalizeText(document.summary)
-  const normalizedContent = normalizeText(document.content)
-  const normalizedTags = normalizeText(document.tags.join(' '))
-  const normalizedPath = normalizeText(document.path)
-
-  let score = 0
-  for (const token of tokens) {
-    if (normalizedTitle.includes(token)) {
-      score += 8
-    }
-    if (normalizedSummary.includes(token)) {
-      score += 6
-    }
-    if (normalizedContent.includes(token)) {
-      score += 4
-    }
-    if (normalizedTags.includes(token)) {
-      score += 5
-    }
-    if (normalizedPath.includes(token)) {
-      score += 2
-    }
-  }
-
-  return score
 }
 
 export function searchDocuments(
