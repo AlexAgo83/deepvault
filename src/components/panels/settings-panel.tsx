@@ -55,6 +55,18 @@ export function SettingsPanel({
               </select>
             </div>
             <div className="runtime-row">
+              <span>Data mode</span>
+              <select
+                value={entraSettings.dataMode}
+                title="Override DEEPVAULT_DATA_MODE for ops scripts"
+                onChange={(event) => onEntraChange('dataMode', event.target.value)}
+              >
+                <option value="">env default</option>
+                <option value="mock">mock</option>
+                <option value="live">live</option>
+              </select>
+            </div>
+            <div className="runtime-row">
               <span>Provider</span>
               <select value={provider} title="Select the Bishop provider" onChange={(event) => onProviderChange(event.target.value as ProviderId)}>
                 {corpusProviders.map((item) => (
