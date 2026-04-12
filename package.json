@@ -21,6 +21,7 @@
     "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run evaluate"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
