@@ -1,10 +1,10 @@
 ## task_019_infrastructure_hardening_graph_and_corpus - Infrastructure hardening: Graph API and corpus
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In progress
 > Understanding: 88%
 > Confidence: 83%
-> Progress: 0%
+> Progress: 50%
 > Complexity: Medium
 > Theme: Infrastructure / Quality
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|infrastructure-hardening-graph-and-corpus|item-049-graph-api-retry-timeout-and-co|1-confirmer-la-compatibilite-du-format|wave-1-run-npm-run-check-et-tester
+%% logics-signature: task|infrastructure-hardening-graph-api-and-c|item-049-graph-api-retry-timeout-and-cor|1-verifier-le-format-de-checkpoint|wave-1-npm-run-check
 stateDiagram-v2
     state "2 backlog items — infrastructure Graph et corpus" as Backlog
     state "1. Confirmer compatibilité checkpoint et dépendances" as Scope
@@ -36,9 +36,9 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Vérifier le format de checkpoint dans `scripts/live-export-state.ts` pour confirmer la compatibilité avec Wave 2 (extension sans breaking change).
-- [ ] 2. Wave 1 — créer un wrapper fetch Graph avec retry (max 3, backoff 1s/2s/4s) sur 429 et 5xx ; ajouter `AbortController` + timeout configurable (défaut 30s) ; ajouter validation de schéma corpus au chargement dans `src/data/corpus.ts`.
-- [ ] 3. Décider Zod vs assertions TypeScript pour la validation corpus (documenter le choix dans un ADR si Zod est ajouté comme dépendance runtime).
+- [x] 1. Vérifier le format de checkpoint dans `scripts/live-export-state.ts` pour confirmer la compatibilité avec Wave 2 (extension sans breaking change).
+- [x] 2. Wave 1 — créer un wrapper fetch Graph avec retry (max 3, backoff 1s/2s/4s) sur 429 et 5xx ; ajouter `AbortController` + timeout configurable (défaut 30s) ; ajouter validation de schéma corpus au chargement dans `src/data/corpus.ts`.
+- [x] 3. Décider Zod vs assertions TypeScript pour la validation corpus (documenter le choix dans un ADR si Zod est ajouté comme dépendance runtime).
 - [ ] 4. Wave 2 — étendre le checkpoint avec un champ `syncedAt` ; filtrer les documents par `lastModifiedDateTime > syncedAt` dans `scripts/export-live.ts` ; ajouter le mode dry-run avec stats (skipped vs ingested).
 - [ ] 5. Fermer la task en mettant à jour les backlog items et les requests liés.
 - [ ] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
@@ -51,6 +51,16 @@ stateDiagram-v2
 # AC Traceability
 - item_049 AC1-AC5 -> Wave 1. Proof: capture validation evidence in this doc.
 - item_054 AC1-AC5 -> Wave 2. Proof: capture validation evidence in this doc.
+
+# Report
+- Wave 1 completed: the live corpus loader now validates malformed payloads, checkpoint corpus reads ignore invalid JSON payloads, and the existing Graph client retry/timeout wrapper is still exercised by the live export flow.
+- Validation passed:
+  - `rtk npm run test -- tests/corpus-loader.spec.ts tests/live-export-state.spec.ts tests/corpus.spec.ts`
+  - `rtk npm run typecheck`
+  - `rtk npm run lint`
+  - `rtk npm run build`
+  - `rtk npm run ingest:live -- --mode mock`
+  - `rtk npm run export:live -- --mode mock --output tmp/export-live-mock.json`
 
 # Decision framing
 - Product framing: Not needed

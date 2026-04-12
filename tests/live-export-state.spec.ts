@@ -117,6 +117,8 @@ describe('live export state helpers', () => {
     )
 
     await expect(readCorpusLikeFile(checkpointPath)).resolves.toMatchObject({ defaultUserRole: 'analyst' })
+    await writeFile(resolve('tmp/live-export-state-invalid.json'), JSON.stringify({ defaultUserRole: 'analyst' }, null, 2))
+    await expect(readCorpusLikeFile(resolve('tmp/live-export-state-invalid.json'))).resolves.toBeNull()
     await expect(readCorpusLikeFile(resolve('tmp/missing-live-export-state.json'))).resolves.toBeNull()
   })
 })

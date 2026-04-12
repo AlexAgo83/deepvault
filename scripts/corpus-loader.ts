@@ -2,6 +2,7 @@ import { access, readFile } from 'node:fs/promises'
 import { constants } from 'node:fs'
 import { resolve } from 'node:path'
 import type { Corpus } from '../src/lib/deepvault'
+import { isCorpusLike } from '../src/data/corpus'
 import { normalizeCorpusMode, type CorpusMode } from '../src/lib/corpus-mode'
 import { loadProjectEnv } from './runtime-env'
 
@@ -39,7 +40,10 @@ export async function loadCorpus(options: CorpusSourceOptions = {}): Promise<{ c
     }
   }
 
-  const corpus = JSON.parse(await readFile(corpusPath, 'utf8')) as Corpus
+  const corpus: unknown = JSON.parse(await readFile(corpusPath, 'utf8'))
+  if (!isCorpusLike(corpus)) {
+    throw new Error(`Invalid corpus at ${corpusPath}: expected a DeepVault corpus payload.`)
+  }
   return { corpus, corpusPath, mode }
 }
 

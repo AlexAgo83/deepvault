@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { isCorpusLike } from '../src/data/corpus'
 import { type CorpusLike, type DeepVaultExportConfig } from './deepvault-graph'
 
 export const liveCheckpointPath = resolve('data/runtime/live-export-checkpoint.json')
@@ -27,7 +28,8 @@ export function buildProviderState(): CorpusLike['providers'] {
 
 export async function readCorpusLikeFile(path: string): Promise<CorpusLike | null> {
   try {
-    return JSON.parse(await readFile(path, 'utf8')) as CorpusLike
+    const payload: unknown = JSON.parse(await readFile(path, 'utf8'))
+    return isCorpusLike(payload) ? payload : null
   } catch {
     return null
   }
