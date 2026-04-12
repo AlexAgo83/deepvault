@@ -25,10 +25,10 @@ export function ExplorerPanel({
           subtitleTooltip="Browse the pilot corpus by site, search term, and source details."
           actions={
             <>
-              <button type="button" className="secondary-button secondary-button-sm" onClick={onExportJson}>
+              <button type="button" className="secondary-button secondary-button-sm" title="Export the explorer results as JSON" onClick={onExportJson}>
                 Export JSON
               </button>
-              <button type="button" className="secondary-button secondary-button-sm" onClick={onExportMarkdown}>
+              <button type="button" className="secondary-button secondary-button-sm" title="Export the explorer results as Markdown" onClick={onExportMarkdown}>
                 Export MD
               </button>
             </>
@@ -40,6 +40,7 @@ export function ExplorerPanel({
               key={document.id}
               type="button"
               className={`document-row ${selectedExplorerDoc?.id === document.id ? 'document-row-active' : ''}`}
+              title={`Open ${document.title}`}
               onClick={() => onSelectDocument(document)}
             >
               <div className="document-row-top">

@@ -64,13 +64,13 @@ export function BishopPanel({
           subtitleTooltip="Grounded answers come from the same local retrieval logic used by the explorer."
           actions={
             <>
-              <button type="button" className="secondary-button secondary-button-sm" onClick={exportJson}>
+              <button type="button" className="secondary-button secondary-button-sm" title="Export the current Bishop conversation as JSON" onClick={exportJson}>
                 Export JSON
               </button>
-              <button type="button" className="secondary-button secondary-button-sm" onClick={exportMarkdown}>
+              <button type="button" className="secondary-button secondary-button-sm" title="Export the current Bishop conversation as Markdown" onClick={exportMarkdown}>
                 Export MD
               </button>
-              <button type="button" className="secondary-button secondary-button-sm" onClick={clearHistory}>
+              <button type="button" className="secondary-button secondary-button-sm" title="Clear Bishop conversation history" onClick={clearHistory}>
                 Clear history
               </button>
             </>
@@ -95,7 +95,7 @@ export function BishopPanel({
             <div className="chat-note">
               Current provider: {provider}. Current role: {role}. No fallback mixing during evaluation.
             </div>
-            <button type="submit" className="primary-button" disabled={isAsking}>
+            <button type="submit" className="primary-button" title="Send the question to Bishop" disabled={isAsking}>
               {isAsking ? 'Thinking...' : 'Ask bishop'}
             </button>
           </div>
@@ -134,6 +134,7 @@ export function BishopPanel({
             <button
               type="button"
               className="trace-confidence-button"
+              title="Toggle the trace preview"
               onClick={() => setShowTracePreview((value) => !value)}
               aria-expanded={showTracePreview}
               disabled={typeof selectedMessage.confidenceScore !== 'number'}

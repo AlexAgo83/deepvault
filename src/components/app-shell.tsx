@@ -104,6 +104,7 @@ function AppSidebar({
               type="button"
               className={`nav-item ${activeTab === item.id ? 'nav-item-active' : ''}`}
               aria-current={activeTab === item.id ? 'page' : undefined}
+              title={`Open ${item.label.toLowerCase()}`}
               onClick={() => onTabChange(item.id)}
             >
               <span className="nav-item-icon" aria-hidden="true">
@@ -122,6 +123,7 @@ function AppSidebar({
             type="button"
             className={`nav-item ${activeTab === 'settings' ? 'nav-item-active' : ''}`}
             aria-current={activeTab === 'settings' ? 'page' : undefined}
+            title="Open settings"
             onClick={() => onTabChange('settings')}
           >
             <span className="nav-item-icon" aria-hidden="true">
@@ -134,7 +136,12 @@ function AppSidebar({
         {!isStandalone && (canInstall || hasPendingUpdate) ? (
           <nav className="nav-list">
             {!isStandalone && canInstall ? (
-              <button type="button" className="nav-item nav-item-action pwa-action-button" onClick={() => void install()}>
+              <button
+                type="button"
+                className="nav-item nav-item-action pwa-action-button"
+                title="Install the app as a standalone application"
+                onClick={() => void install()}
+              >
                 <span className="pwa-action-icon" aria-hidden="true">
                   <PwaInstallIcon />
                 </span>
@@ -142,7 +149,12 @@ function AppSidebar({
               </button>
             ) : null}
             {hasPendingUpdate ? (
-              <button type="button" className="nav-item nav-item-action pwa-action-button" onClick={() => void update()}>
+              <button
+                type="button"
+                className="nav-item nav-item-action pwa-action-button"
+                title="Apply the latest app update"
+                onClick={() => void update()}
+              >
                 <span className="pwa-action-icon" aria-hidden="true">
                   <PwaUpdateIcon />
                 </span>

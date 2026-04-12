@@ -116,6 +116,7 @@ export function SyncPanel({
                 <button
                   type="button"
                   className={`site-chip ${siteFilter === 'all' ? 'site-chip-active' : ''}`}
+                  title="Show all sites"
                   onClick={() => onSiteFilterChange('all')}
                 >
                   All sites
@@ -125,6 +126,7 @@ export function SyncPanel({
                     key={site.id}
                     type="button"
                     className={`site-chip ${siteFilter === site.id ? 'site-chip-active' : ''}`}
+                    title={`Filter to ${site.name}`}
                     onClick={() => onSiteFilterChange(site.id)}
                   >
                     {site.name}
