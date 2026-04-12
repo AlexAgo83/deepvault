@@ -1,5 +1,5 @@
 ## req_002_v2_azure_and_teams_foundation - V2 — Azure and Teams foundation
-> From version: 0.0.1
+> From version: 1.0.0
 > Schema version: 1.0
 > Status: Draft
 > Understanding: 92%
@@ -29,9 +29,13 @@
 %% logics-kind: request
 %% logics-signature: request|v2-azure-and-teams-foundation|deploy-the-shared-hosted-backend-on|ac1-the-request-clearly-scopes-v2
 flowchart TD
-    Trigger[V2 Azure and Teams foundation] --> Need[Deploy the shared hosted backend on]
-    Need --> Outcome[AC1: The request clearly scopes V2]
-    Outcome --> Backlog[Backlog slice]
+    Trigger[V2 Azure and Teams foundation] --> Backend[Deploy shared hosted backend on Azure]
+    Backend --> Bot[Register DeepVault - Gordon Teams bot]
+    Bot --> Identity[Enforce MS identity mapping & permissions]
+    Identity --> LandingZone[Define Azure landing zone]
+    LandingZone --> Runbook[Write operations runbook]
+    Runbook --> Checklist[Define release readiness checklist]
+    Checklist --> Done[Separate from V1 local hardening]
 ```
 
 # Acceptance criteria
