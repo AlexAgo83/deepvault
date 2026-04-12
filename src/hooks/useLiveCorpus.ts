@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { fetchLiveCorpus, getMockCorpusBundle, type CorpusBundle } from '../data/corpus'
 import { type CorpusMode, normalizeCorpusMode } from '../lib/corpus-mode'
 import type { PillTone } from '../components/app-ui'
@@ -12,6 +12,7 @@ export interface LiveState {
 export interface LiveCorpusState {
   corpusBundle: CorpusBundle
   liveState: LiveState
+  refreshCorpus: () => void
 }
 
 function buildIdleState(mode: CorpusMode): LiveState {
@@ -22,6 +23,7 @@ function buildIdleState(mode: CorpusMode): LiveState {
 
 export function useLiveCorpus(requestedModeValue: string | undefined | null): LiveCorpusState {
   const requestedCorpusMode = normalizeCorpusMode(requestedModeValue)
+  const [refreshToken, setRefreshToken] = useState(0)
   const [corpusBundle, setCorpusBundle] = useState<CorpusBundle>(() => getMockCorpusBundle())
   const [liveState, setLiveState] = useState<LiveState>(() => buildIdleState(requestedCorpusMode))
 
@@ -60,7 +62,11 @@ export function useLiveCorpus(requestedModeValue: string | undefined | null): Li
     return () => {
       active = false
     }
-  }, [requestedCorpusMode])
+  }, [refreshToken, requestedCorpusMode])
 
-  return { corpusBundle, liveState }
+  const refreshCorpus = useCallback(() => {
+    setRefreshToken((value) => value + 1)
+  }, [])
+
+  return { corpusBundle, liveState, refreshCorpus }
 }

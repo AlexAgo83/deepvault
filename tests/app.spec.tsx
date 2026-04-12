@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../src/App'
@@ -10,6 +10,7 @@ vi.mock('../src/lib/file-download', () => ({
 
 describe('DeepVault app', () => {
   afterEach(() => {
+    vi.useRealTimers()
     vi.unstubAllGlobals()
     vi.unstubAllEnvs()
     vi.restoreAllMocks()
@@ -222,11 +223,32 @@ describe('DeepVault app', () => {
 
     expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
+    expect(screen.getByText('Evaluation prep')).toBeInTheDocument()
+  })
 
-    const syncCard = screen.getByTitle('Pilot sites synced successfully with permission-aware filtering enabled.')
-    expect(syncCard).toBeInTheDocument()
-    expect(within(syncCard).getByText('17 docs')).toBeInTheDocument()
-    expect(within(syncCard).getByText('102 chunks')).toBeInTheDocument()
+  it('streams sync operations into the console and tracks recent runs', async () => {
+    vi.useFakeTimers()
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
+
+    expect(screen.getByRole('button', { name: 'Cancel job' })).toBeInTheDocument()
+
+    await act(async () => {
+      vi.advanceTimersByTime(220)
+    })
+
+    expect(screen.getAllByText((_, element) => element?.textContent?.includes('Starting local ingestion pipeline.') === true).length).toBeGreaterThan(0)
+
+    await act(async () => {
+      vi.advanceTimersByTime(2200)
+    })
+
+    expect(screen.getAllByText('100%').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('completed').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Run ingest').length).toBeGreaterThan(0)
+    vi.useRealTimers()
   })
 
   it('keeps the explorer detail pane within the selected site scope', async () => {

@@ -13,7 +13,9 @@ import {
 import { useBishopConversation } from './useBishopConversation'
 import { useLiveCorpus } from './useLiveCorpus'
 import { useProviderSecrets } from './useProviderSecrets'
+import { useSyncOperations } from './useSyncOperations'
 import type { LiveState } from './useLiveCorpus'
+import type { SyncOperationJob } from './useSyncOperations'
 
 export type AppTab = 'explorer' | 'bishop' | 'sync' | 'settings'
 
@@ -50,6 +52,16 @@ export interface AppModel {
   isAsking: boolean
   conversationContextEnabled: boolean
   setConversationContextEnabled: Dispatch<SetStateAction<boolean>>
+  syncOperations: {
+    activeJob: SyncOperationJob | null
+    cancelActiveJob: () => void
+    history: SyncOperationJob[]
+    isRunning: boolean
+    lastCompletedJob: SyncOperationJob | null
+    startEvaluate: () => void
+    startIngest: () => void
+    startRefresh: () => void
+  }
   messages: ReturnType<typeof useBishopConversation>['messages']
   selectedMessage: ReturnType<typeof useBishopConversation>['selectedMessage']
   handleAsk: ReturnType<typeof useBishopConversation>['handleAsk']
@@ -78,7 +90,7 @@ function buildScopedCorpus(corpus: Corpus, siteFilter: string): Corpus {
 }
 
 export function useAppModel(): AppModel {
-  const { corpusBundle, liveState } = useLiveCorpus(import.meta.env.VITE_DEEPVAULT_DATA_MODE)
+  const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(import.meta.env.VITE_DEEPVAULT_DATA_MODE)
   const corpus = corpusBundle.corpus
   const [activeTab, setActiveTab] = useState<AppTab>('explorer')
   const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
@@ -98,6 +110,8 @@ export function useAppModel(): AppModel {
     [scopedCorpus, role, search],
   )
   const selectedExplorerDoc = explorerRows.find((document) => document.id === selectedDocId) || explorerRows[0] || null
+  const activeSiteSummary = siteSummaries.find((site) => site.id === siteFilter)
+  const activeScopeLabel = siteFilter === 'all' ? 'All sites' : activeSiteSummary?.name || siteFilter
   const {
     question,
     setQuestion,
@@ -120,6 +134,16 @@ export function useAppModel(): AppModel {
     anthropicApiKey: providerSecrets.anthropicApiKey,
     onActivateTab: () => setActiveTab('bishop'),
   })
+  const syncOperations = useSyncOperations({
+    activeScopeLabel,
+    provider,
+    role,
+    visibleDocs: scopedCorpusSummary.visibleSources,
+    syncedSites: scopedSyncOverview.syncedSites,
+    restrictedSites: scopedSyncOverview.restrictedSites,
+    refreshPolicy: scopedSyncOverview.refreshPolicy,
+    onRefreshCorpus: refreshCorpus,
+  })
 
   useEffect(() => {
     if (explorerRows.length === 0) {
@@ -138,8 +162,6 @@ export function useAppModel(): AppModel {
     document.title = 'Nexus'
   }, [])
 
-  const activeSiteSummary = siteSummaries.find((site) => site.id === siteFilter)
-  const activeScopeLabel = siteFilter === 'all' ? 'All sites' : activeSiteSummary?.name || siteFilter
   const resolveFileHref = useCallback(
     (siteId: string, path: string, webUrl?: string | null) => resolveSharePointFileUrl(corpus, siteId, path, webUrl),
     [corpus],
@@ -176,6 +198,7 @@ export function useAppModel(): AppModel {
     isAsking,
     conversationContextEnabled,
     setConversationContextEnabled,
+    syncOperations,
     messages,
     selectedMessage,
     handleAsk,
