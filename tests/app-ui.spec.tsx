@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { CompactPathText, Message, PathLabel, SectionHeading, StatCard } from '../src/components/app-ui'
 
 afterEach(() => {
@@ -108,5 +109,27 @@ describe('app ui helpers', () => {
     expect(screen.getByText('Bishop')).toBeInTheDocument()
     expect(screen.getByText('You')).toBeInTheDocument()
     expect(resolveFileHref).toHaveBeenCalledWith('site-a', '/Documents/Budget.docx', undefined)
+  })
+
+  it('renders a clickable confidence score in assistant messages', async () => {
+    const user = userEvent.setup()
+    render(
+      <Message
+        message={{
+          id: 'assistant-1',
+          role: 'assistant',
+          text: 'Grounded answer',
+          status: 'answered',
+          sources: [],
+          confidenceScore: 87,
+          providerTracePreview: 'openai response: The answer is grounded and concise.',
+        }}
+        resolveFileHref={vi.fn()}
+      />,
+    )
+
+    const confidenceButton = screen.getByRole('button', { name: '87%' })
+    await user.click(confidenceButton)
+    expect(screen.getByText('openai response: The answer is grounded and concise.')).toBeInTheDocument()
   })
 })

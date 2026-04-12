@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import type { ChatMessage, SourceRecord } from '../lib/deepvault'
 
 export type PillTone = 'neutral' | 'accent' | 'success' | 'danger'
@@ -164,13 +164,30 @@ export function Message({
   message: ChatMessage
   resolveFileHref: (_siteId: string, _path: string, _webUrl?: string | null) => string | null
 }) {
+  const [showTracePreview, setShowTracePreview] = useState(false)
+
+  useEffect(() => {
+    setShowTracePreview(false)
+  }, [message.id])
+
   return (
     <article className={`message message-${message.role}`}>
       <div className="message-meta">
         <strong>{message.role === 'assistant' ? 'Bishop' : 'You'}</strong>
         <span>{message.status ? message.status : ''}</span>
+        {message.role === 'assistant' && typeof message.confidenceScore === 'number' ? (
+          <button
+            type="button"
+            className="message-confidence-button"
+            aria-expanded={showTracePreview}
+            onClick={() => setShowTracePreview((value) => !value)}
+          >
+            {message.confidenceScore}%
+          </button>
+        ) : null}
       </div>
       <p>{message.text}</p>
+      {showTracePreview && message.providerTracePreview ? <div className="message-trace-preview">{message.providerTracePreview}</div> : null}
       {message.sources?.length ? (
         <div className="message-sources">
           {message.sources.map((source) => (
