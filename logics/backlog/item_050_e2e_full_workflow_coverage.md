@@ -1,10 +1,10 @@
 ## item_050_e2e_full_workflow_coverage - E2E full workflow coverage
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 89%
 > Confidence: 85%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Quality
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|e2e-full-workflow-coverage|req-015-architecture-robustness-and-pro|etendre-la-suite-e2e-playwright|ac1-recherche-0-resultats-testee
+%% logics-signature: backlog|e2e-full-workflow-coverage|req-015-architecture-robustness-and-prod|la-suite-e2e-playwright-tests-e2e|ac1-un-test-verifie-qu-une
 flowchart TD
     Request[req_015_architecture_robustness_and_product] --> Problem[Suite E2E trop légère]
     Problem --> Scope[Parcours E2E complets]
@@ -71,3 +71,7 @@ flowchart TD
 # Notes
 - Derived from request `req_015_architecture_robustness_and_product_improvements`.
 - AC4 (switch mock↔live) peut nécessiter une fixture de corpus live minimal — à clarifier avant implémentation.
+
+# Report
+- Item completed: added Playwright coverage for empty search results, guest-restricted Bishop output, role changes from guest to admin, and live-mode badge verification.
+- Validation passed: `rtk npm run e2e` and `VITE_DEEPVAULT_DATA_MODE=live rtk npm run e2e -- tests/e2e/live-mode.spec.ts`.
