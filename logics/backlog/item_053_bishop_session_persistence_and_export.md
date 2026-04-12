@@ -22,13 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|bishop-session-persistence-and-results-e|req-015-architecture-robustness-and-prod|l-historique-de-conversation-bishop-est|ac1-l-historique-de-conversation-bishop
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[Session Bishop perdue au rechargement]
-    Problem --> Scope[Persistance + export]
-    Scope --> AC1[AC1: historique localStorage]
-    Scope --> AC2[AC2: restauration au chargement]
-    Scope --> AC3[AC3: export Bishop JSON/MD]
-    Scope --> AC4[AC4: export Explorer JSON/MD]
-    Scope --> AC5[AC5: bouton effacer historique]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[L historique de conversation Bishop est]
+    Problem --> Scope[Bishop session persistence and results exp]
+    Scope --> Acceptance[AC1: L historique de conversation Bishop]
+    Acceptance --> Tasks[task_021_bishop_intelligence_and_ux]
 ```
 
 # Acceptance criteria

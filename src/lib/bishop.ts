@@ -39,6 +39,7 @@ export interface BishopOrchestrationResult extends AnswerResult {
   prompt: string
   confidenceScore: number
   providerTracePreview: string
+  improvementHint: string
 }
 
 interface AnthropicUsageLike {
@@ -156,6 +157,30 @@ function buildProviderTracePreview(
   return `Local fallback: ${truncateText(answer, 180)}`
 }
 
+function buildImprovementHint(result: Pick<AnswerResult, 'status' | 'sources' | 'deniedSources' | 'chunkCount'>): string {
+  if (result.status === 'no_permitted_sources') {
+    return 'Use a role with access or broaden the site scope to reach the matching sources.'
+  }
+
+  if (result.status === 'no_answer') {
+    return 'Add a document title, site name, or exact phrase from the corpus.'
+  }
+
+  if (result.sources.length === 0) {
+    return 'Add a named source or a clearer document hint to anchor the answer.'
+  }
+
+  if (result.sources.length === 1) {
+    return 'Add a second source, a site name, or a date range to sharpen the answer.'
+  }
+
+  if (result.chunkCount <= 6) {
+    return 'A more specific document title or keyword would improve grounding.'
+  }
+
+  return 'A more specific document title or site name would improve the response.'
+}
+
 function formatConversationHistory(conversationHistory: Array<Pick<ChatMessage, 'role' | 'text'>>): string {
   return conversationHistory
     .map((message) => {
@@ -177,6 +202,7 @@ function augmentResultWithTrace(
     prompt,
     confidenceScore: buildConfidenceScore(result, mode),
     providerTracePreview: buildProviderTracePreview(mode, result.provider, result.answer, errorPreview),
+    improvementHint: buildImprovementHint(result),
   }
 }
 
@@ -534,6 +560,7 @@ export async function orchestrateBishopAnswer(
       prompt,
       confidenceScore: buildConfidenceScore(fallback, 'grounded-only'),
       providerTracePreview: buildProviderTracePreview('grounded-only', fallback.provider, fallback.answer),
+      improvementHint: buildImprovementHint(fallback),
     }
   }
 
@@ -586,6 +613,7 @@ export async function orchestrateBishopAnswer(
         prompt,
         confidenceScore: buildConfidenceScore(fallback, 'fallback'),
         providerTracePreview: buildProviderTracePreview('fallback', fallback.provider, fallback.answer, errorPreview),
+        improvementHint: buildImprovementHint(fallback),
       }
     }
   }
@@ -606,5 +634,6 @@ export async function orchestrateBishopAnswer(
     prompt,
     confidenceScore: buildConfidenceScore(fallback, 'fallback'),
     providerTracePreview: buildProviderTracePreview('fallback', fallback.provider, fallback.answer, remoteAnswer.errorPreview),
+    improvementHint: buildImprovementHint(fallback),
   }
 }

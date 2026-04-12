@@ -22,13 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|bishop-claude-api-integration|req-015-architecture-robustness-and-prod|bishop-remote-mode-est-architecturalemen|ac1-le-remote-mode-bishop-appelle
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[Remote mode Bishop sans LLM réel]
-    Problem --> Scope[Intégration remote multi-provider]
-    Scope --> AC1[AC1: OpenAI/Gemini remotes branchés]
-    Scope --> AC2[AC2: Claude disponible en 3e provider]
-    Scope --> AC3[AC3: prompt caching activé côté Claude]
-    Scope --> AC4[AC4: fallback local si clé absente]
-    Scope --> AC5[AC5: modèle configurable]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[Bishop remote mode est architecturalement]
+    Problem --> Scope[Bishop Claude API integration]
+    Scope --> Acceptance[AC1: Le remote mode Bishop appelle]
+    Acceptance --> Tasks[task_021_bishop_intelligence_and_ux]
 ```
 
 # Acceptance criteria

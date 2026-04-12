@@ -22,11 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|react-error-boundaries-for-panels|req-015-architecture-robustness-and-prod|aucun-error-boundary-react-n-existe|ac1-un-composant-errorboundary-generique
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[Pannes propagées à toute l'app]
-    Problem --> Scope[Error Boundary par panel]
-    Scope --> AC1[AC1: composant ErrorBoundary]
-    Scope --> AC2[AC2: chaque panel wrappé]
-    Scope --> AC3[AC3: message erreur isolé]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[Aucun Error Boundary React n existe]
+    Problem --> Scope[React Error Boundaries for panels]
+    Scope --> Acceptance[AC1: Un composant ErrorBoundary generique]
+    Acceptance --> Tasks[task_018_structural_refactoring_and_resili]
 ```
 
 # Acceptance criteria

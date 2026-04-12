@@ -16,18 +16,16 @@
 %% logics-kind: task
 %% logics-signature: task|sharepoint-file-link-and-file-type-ui-de|item-034-inline-file-type-pill-in-explor|1-deliver-the-inline-file-type|run-the-relevant-automated-tests-for
 stateDiagram-v2
-    state "SharePoint file link and file type UI delivery" as Backlog
-    state "Wave 1: inline file type pill and title row" as Wave1
-    state "Wave 2: native SharePoint file URL and fallback" as Wave2
-    state "Checkpoint the wave in a commit-ready state" as Verify
-    state "Run the relevant automated tests" as Validation
+    state "item_034_inline_file_type_pill_in_explorer" as Backlog
+    state "1. Deliver the inline file type" as Scope
+    state "2. Deliver native SharePoint file URLs" as Build
+    state "3. Checkpoint each wave in a" as Verify
+    state "Run the relevant automated tests for" as Validation
     state "Done report" as Report
     [*] --> Backlog
-    Backlog --> Wave1
-    Wave1 --> Verify
-    Verify --> Validation
-    Validation --> Wave2
-    Wave2 --> Verify
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
     Verify --> Validation
     Validation --> Report
     Report --> [*]

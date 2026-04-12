@@ -98,6 +98,7 @@ describe('bishop orchestration helpers', () => {
 
     expect(result.mode).toBe('fallback')
     expect(result.answer).toContain('Q3 2025 budget')
+    expect(result.improvementHint).toContain('document title')
   })
 
   it('keeps grounded-only answers explicit when the query has no answerable sources', async () => {
@@ -108,6 +109,7 @@ describe('bishop orchestration helpers', () => {
 
     expect(result.mode).toBe('grounded-only')
     expect(result.status).toBe('no_answer')
+    expect(result.improvementHint).toContain('document title')
   })
 
   it('uses a remote orchestration endpoint when it is available', async () => {

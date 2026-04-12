@@ -25,8 +25,9 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'AI stats' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
-    expect(document.querySelectorAll('.nav-item-icon svg')).toHaveLength(4)
+    expect(document.querySelectorAll('.nav-item-icon svg')).toHaveLength(5)
     expect(screen.queryByRole('button', { name: 'Ask Bishop' })).not.toBeInTheDocument()
     expect(screen.queryByText(/Version 1\.0\.0/)).not.toBeInTheDocument()
     expect(screen.queryByText('State')).not.toBeInTheDocument()
@@ -92,7 +93,26 @@ describe('DeepVault app', () => {
     expect(within(answerTrace as HTMLElement).getByText('Chunk count')).toBeInTheDocument()
     expect(within(answerTrace as HTMLElement).getByText('Token count')).toBeInTheDocument()
     expect(within(answerTrace as HTMLElement).getByText('Latency')).toBeInTheDocument()
+    expect(within(answerTrace as HTMLElement).getByText('Need')).toBeInTheDocument()
     await waitFor(() => expect(within(answerTrace as HTMLElement).getByText('answered')).toBeInTheDocument())
+  })
+
+  it('shows AI stats and response hints after Bishop responds', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
+    await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
+    await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')
+
+    await user.click(screen.getByRole('button', { name: 'AI stats' }))
+
+    expect(screen.getByRole('heading', { name: 'AI stats' })).toBeInTheDocument()
+    expect(screen.getByText('Responses')).toBeInTheDocument()
+    expect(screen.getByText('Need hints')).toBeInTheDocument()
+    expect(screen.getByText('What would help next')).toBeInTheDocument()
+    expect(screen.getAllByText(/document title|site name|keyword/i).length).toBeGreaterThan(0)
   })
 
   it('keeps explorer search hidden while bishop is active', async () => {

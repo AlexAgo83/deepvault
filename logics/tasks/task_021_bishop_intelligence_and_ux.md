@@ -23,16 +23,18 @@
 %% logics-kind: task
 %% logics-signature: task|bishop-intelligence-and-ux|item-052-bishop-claude-api-integration|1-confirmer-le-contrat-du-remote|wave-1-npm-run-check
 stateDiagram-v2
-    state "2 backlog items — Bishop produit" as Backlog
-    state "1. Confirmer le contrat Bishop remote + clé API" as Scope
-    state "2. Wave 1: provider switch + Claude prompt caching" as Wave1
-    state "3. Wave 2: persistance session + export" as Wave2
-    state "4. Valider et reporter" as Report
+    state "item_052_bishop_claude_api_integration" as Backlog
+    state "1. Confirmer le contrat du remote" as Scope
+    state "2. Ajouter ANTHROPIC_API_KEY et VITE_BISHO" as Build
+    state "3. Wave 1 installer anthropic-ai sdk" as Verify
+    state "Wave 1 : npm run check" as Validation
+    state "Done report" as Report
     [*] --> Backlog
     Backlog --> Scope
-    Scope --> Wave1
-    Wave1 --> Wave2
-    Wave2 --> Report
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
     Report --> [*]
 ```
 

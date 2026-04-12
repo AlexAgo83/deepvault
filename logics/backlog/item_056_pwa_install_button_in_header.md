@@ -21,12 +21,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|pwa-install-button-in-header|req-016-pwa-install-and-offline-first|il-n-existe-aucun-moyen-d|ac1-le-header-affiche-un-bouton
 flowchart TD
-    Request[req_016_pwa_install_and_offline_first] --> Problem[Installation native impossible depuis UI]
-    Problem --> Scope[Bouton Install dans le header]
-    Scope --> AC1[AC1: bouton visible si installable]
-    Scope --> AC2[AC2: clic déclenche beforeinstallprompt]
-    Scope --> AC3[AC3: bouton masqué si déjà installée]
-    Scope --> AC4[AC4: masqué si API non supportée]
+    Request[req_016_pwa_install_and_offline_first] --> Problem[Il n existe aucun moyen d]
+    Problem --> Scope[PWA: install button in header]
+    Scope --> Acceptance[AC1: Le header affiche un bouton]
+    Acceptance --> Tasks[task_022_pwa_progressive_web_app_delivery]
 ```
 
 # Acceptance criteria

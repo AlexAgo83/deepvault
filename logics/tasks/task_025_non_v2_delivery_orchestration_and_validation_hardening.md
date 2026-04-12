@@ -36,19 +36,17 @@
 %% logics-kind: task
 %% logics-signature: task|non-v2-delivery-orchestration-and-valida|item-000-v1-graph-discovery-and-pilot-sc|1-freeze-the-non-v2-source-set|run-rtk-npm-run-lint-before
 stateDiagram-v2
-    state "Freeze non V2 scope" as Scope
-    state "Wave 1 foundation" as Wave1
-    state "Wave 2 surfaces" as Wave2
-    state "Wave 3 hardening" as Wave3
-    state "Wave 4 PWA and polish" as Wave4
-    state "Validate and report" as Validation
+    state "item_000_v1_graph_discovery_and_pilot_scop" as Backlog
+    state "1. Freeze the non-V2 source set" as Scope
+    state "2. Execute Wave 1 first and" as Build
+    state "3. Execute Wave 2 next and" as Verify
+    state "Run rtk npm run lint before" as Validation
     state "Done report" as Report
-    [*] --> Scope
-    Scope --> Wave1
-    Wave1 --> Wave2
-    Wave2 --> Wave3
-    Wave3 --> Wave4
-    Wave4 --> Validation
+    [*] --> Backlog
+    Backlog --> Scope
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
     Validation --> Report
     Report --> [*]
 ```

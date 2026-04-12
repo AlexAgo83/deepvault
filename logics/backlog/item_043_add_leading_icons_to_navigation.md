@@ -22,12 +22,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|add-leading-icons-to-navigation|req-012-add-leading-icons-to-navigatio|add-a-leading-icon-to-each|ac1-each-primary-navigation-entry-has
+%% logics-signature: backlog|add-leading-icons-to-navigation|req-012-add-leading-icons-to-navigation|add-a-leading-icon-to-each|ac1-each-primary-navigation-entry-has
 flowchart TD
-    Request[req_012_add_leading_icons_to_navigation] --> Problem[Add leading icons to navigation]
-    Problem --> Scope[Navigation icons]
+    Request[req_012_add_leading_icons_to_navigation] --> Problem[Add a leading icon to each]
+    Problem --> Scope[Add leading icons to navigation]
     Scope --> Acceptance[AC1: Each primary navigation entry has]
-    Acceptance --> Tasks[Execution task]
+    Acceptance --> Tasks[task_017_orchestrate_navigation_and_runtim]
 ```
 
 # Acceptance criteria

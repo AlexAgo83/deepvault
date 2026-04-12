@@ -22,12 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|e2e-full-workflow-coverage|req-015-architecture-robustness-and-prod|la-suite-e2e-playwright-tests-e2e|ac1-un-test-verifie-qu-une
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[Suite E2E trop légère]
-    Problem --> Scope[Parcours E2E complets]
-    Scope --> AC1[AC1: recherche 0 résultats]
-    Scope --> AC2[AC2: Bishop sources restricted]
-    Scope --> AC3[AC3: changement de rôle]
-    Scope --> AC4[AC4: switch mock↔live]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[La suite E2E Playwright tests e2e]
+    Problem --> Scope[E2E full workflow coverage]
+    Scope --> Acceptance[AC1: Un test verifie qu une]
+    Acceptance --> Tasks[task_020_test_coverage_expansion]
 ```
 
 # Acceptance criteria

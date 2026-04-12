@@ -22,12 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|graph-api-retry-timeout-and-corpus-valid|req-015-architecture-robustness-and-prod|scripts-deepvault-graph-ts-fait-des-appe|ac1-tous-les-appels-fetch-vers
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[Appels Graph sans retry ni timeout]
-    Problem --> Scope[Retry + timeout + validation corpus]
-    Scope --> AC1[AC1: retry backoff exponentiel]
-    Scope --> AC2[AC2: AbortController + timeout]
-    Scope --> AC3[AC3: validation corpus live]
-    Scope --> AC4[AC4: erreur explicite si corpus malformé]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[scripts deepvault-graph.ts fait des appels]
+    Problem --> Scope[Graph API retry timeout and corpus]
+    Scope --> Acceptance[AC1: Tous les appels fetch vers]
+    Acceptance --> Tasks[task_019_infrastructure_hardening_graph_an]
 ```
 
 # Acceptance criteria

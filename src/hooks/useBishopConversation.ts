@@ -144,6 +144,7 @@ function formatMessageMarkdown(message: ChatMessage): string {
     heading,
     '',
     `Status: ${message.status || 'ready'}`,
+    ...(message.role === 'assistant' && message.improvementHint ? [`Need: ${message.improvementHint}`] : []),
     '',
     message.text,
     '',
@@ -289,6 +290,7 @@ export function useBishopConversation({
                 latencyMs: result.latencyMs,
                 confidenceScore: result.confidenceScore,
                 providerTracePreview: result.providerTracePreview,
+                improvementHint: result.improvementHint,
               }
             : message,
         ),

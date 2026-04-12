@@ -156,6 +156,10 @@ export function BishopPanel({
               {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : 'n/a'}
             </button>
           </div>
+          <div className="detail-row">
+            <span>Need</span>
+            <strong>{selectedMessage.improvementHint || 'n/a'}</strong>
+          </div>
         </div>
         {showTracePreview && selectedMessage.providerTracePreview ? (
           <div className="trace-preview" aria-live="polite">

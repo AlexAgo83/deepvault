@@ -23,12 +23,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|clarify-bishop-orchestration-contract|req-011-audit-de-dette-technique-et-clea|src-lib-bishop-ts-currently-collapses-mu|ac1-the-bishop-orchestration-contract-ex
 flowchart TD
-    Request[req 011 audit] --> Problem[Bishop contract is ambiguous]
+    Request[req_011_audit_de_dette_technique_et_cleanu] --> Problem[src lib bishop.ts currently collapses mult]
     Problem --> Scope[Clarify Bishop orchestration contract]
-    Scope --> States[Explicit states]
-    Scope --> Trace[Clear answer trace]
-    States --> Validate[Bishop tests]
-    Trace --> Validate
+    Scope --> Acceptance[AC1: The Bishop orchestration contract exp]
+    Acceptance --> Tasks[task_016_orchestrate_technical_debt_cleanu]
 ```
 
 # Acceptance criteria

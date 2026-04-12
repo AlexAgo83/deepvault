@@ -22,16 +22,18 @@
 %% logics-kind: task
 %% logics-signature: task|infrastructure-hardening-graph-api-and-c|item-049-graph-api-retry-timeout-and-cor|1-verifier-le-format-de-checkpoint|wave-1-npm-run-check
 stateDiagram-v2
-    state "2 backlog items — infrastructure Graph et corpus" as Backlog
-    state "1. Confirmer compatibilité checkpoint et dépendances" as Scope
-    state "2. Wave 1: retry, timeout, validation corpus" as Wave1
-    state "3. Wave 2: delta sync lastModifiedDateTime" as Wave2
-    state "4. Valider et reporter" as Report
+    state "item_049_graph_api_retry_timeout_and_corpu" as Backlog
+    state "1. Verifier le format de checkpoint" as Scope
+    state "2. Wave 1 creer un wrapper" as Build
+    state "3. Decider Zod vs assertions TypeScript" as Verify
+    state "Wave 1 : npm run check" as Validation
+    state "Done report" as Report
     [*] --> Backlog
     Backlog --> Scope
-    Scope --> Wave1
-    Wave1 --> Wave2
-    Wave2 --> Report
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
     Report --> [*]
 ```
 

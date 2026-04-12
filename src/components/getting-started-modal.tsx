@@ -65,6 +65,10 @@ export function GettingStartedModal({
             <strong>Sync status</strong>
             <span>Track ingestion coverage, refresh timing, and provider readiness.</span>
           </div>
+          <div className="getting-started-item">
+            <strong>AI stats</strong>
+            <span>Review response confidence and the inputs that would help the next answer.</span>
+          </div>
         </div>
 
         <div className="getting-started-actions">

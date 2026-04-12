@@ -21,6 +21,7 @@ It gives you:
 - `Explorer` for browsing sources and inspecting documents
 - `DeepVault - Bishop` for permission-aware grounded Q&A
 - `Sync status` for ingestion state, refresh timing, provenance, and the streamed operations console
+- `AI stats` for response confidence, recent answers, and the inputs that would have helped
 - `Settings` for runtime scope, provider selection, and local API keys
 - a mock corpus for fast local work
 - a live corpus path for testing against real SharePoint exports
@@ -74,6 +75,7 @@ npm run dev
 Open the Vite URL shown in the terminal.
 
 When the app opens, it shows a `Getting started` modal with the project vision and the main navigation areas.
+That modal now introduces `Explorer`, `Bishop`, `Sync status`, `AI stats`, and `Settings`.
 
 If you want to use the live corpus file in the browser:
 
@@ -116,7 +118,13 @@ Use this when you want to work with the bundled mock corpus.
 - verify site counts, visible docs, and refresh metadata
 - use the operations console to run refresh, ingest, or evaluation jobs and follow the streamed log
 
-### 5. Run the local snapshot generators
+### 5. Review AI stats
+
+- switch to `AI stats`
+- inspect recent Bishop responses with their confidence and status
+- review the recurring hints about what input would have improved the answer
+
+### 6. Run the local snapshot generators
 
 ```bash
 npm run ingest
@@ -125,7 +133,7 @@ npm run evaluate
 
 These commands validate the local mock corpus pipeline and the deterministic baseline.
 
-### 6. Run the full local check
+### 7. Run the full local check
 
 ```bash
 npm run check

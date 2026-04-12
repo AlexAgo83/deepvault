@@ -21,13 +21,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|pwa-vite-plugin-pwa-and-workbox-setup|req-016-pwa-install-and-offline-first|aucun-service-worker-ni-manifeste-n|ac1-vite-plugin-pwa-est-ajoute-aux-devde
 flowchart TD
-    Request[req_016_pwa_install_and_offline_first] --> Problem[Fondation PWA absente]
-    Problem --> Scope[vite-plugin-pwa + Workbox + manifeste]
-    Scope --> AC1[AC1: plugin installé et configuré]
-    Scope --> AC2[AC2: SW généré dans dist/]
-    Scope --> AC3[AC3: manifeste valide]
-    Scope --> AC4[AC4: stratégie cache définie]
-    Scope --> AC5[AC5: SW désactivé en dev]
+    Request[req_016_pwa_install_and_offline_first] --> Problem[Aucun service worker ni manifeste n]
+    Problem --> Scope[PWA: vite-plugin-pwa and Workbox setup]
+    Scope --> Acceptance[AC1: vite-plugin-pwa est ajoute aux devDep]
+    Acceptance --> Tasks[task_022_pwa_progressive_web_app_delivery]
 ```
 
 # Acceptance criteria

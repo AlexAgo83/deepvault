@@ -24,8 +24,8 @@
 %% logics-kind: request
 %% logics-signature: request|explorer-file-type-pill-inline-with-docu|keep-the-file-type-visible-as|ac1-the-explorer-card-title-row
 flowchart TD
-    Trigger[Explorer card title row] --> Need[Keep file type as compact pill on same line]
-    Need --> Outcome[AC1: Title and file type share one row]
+    Trigger[Explorer file type pill inline with] --> Need[Keep the file type visible as]
+    Need --> Outcome[AC1: The Explorer card title row]
     Outcome --> Backlog[Backlog slice]
 ```
 

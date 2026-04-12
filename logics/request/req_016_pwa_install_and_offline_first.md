@@ -29,18 +29,9 @@
 %% logics-kind: request
 %% logics-signature: request|pwa-installation-mise-a-jour-et-fonction|rendre-deepvault-nexus-installable-comme|ac1-l-app-affiche-un-bouton
 flowchart TD
-    Trigger[App locale non installable] --> PWA[Activer PWA]
-    PWA --> Manifest[Manifeste + icônes]
-    PWA --> SW[Service worker Workbox]
-    PWA --> Install[Bouton Install dans le header]
-    PWA --> Update[Bandeau mise à jour]
-    SW --> Offline[Cache corpus mock + assets]
-    SW --> Fallback[Fallback offline → mock si live indisponible]
-    Install --> AC1[AC1: installable]
-    Update --> AC2[AC2: mise à jour prompte]
-    Offline --> AC3[AC3: offline mock]
-    Fallback --> AC4[AC4: fallback gracieux]
-    Manifest --> AC5[AC5: manifeste + icônes]
+    Trigger[PWA : installation mise a jour] --> Need[Rendre DeepVault Nexus installable comme a]
+    Need --> Outcome[AC1: L app affiche un bouton]
+    Outcome --> Backlog[Backlog slice]
 ```
 
 # Acceptance criteria

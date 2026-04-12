@@ -28,14 +28,9 @@
 %% logics-kind: request
 %% logics-signature: request|technical-debt-and-structural-cleanup-au|reduce-the-coupling-in-src-app-tsx|ac1-the-audit-scope-is-split
 flowchart TD
-    Audit[Project audit findings] --> Scope[Clarify the cleanup scope]
-    Scope --> Split[Split into bounded backlog slices]
-    Split --> Core[UI and library refactor]
-    Split --> Ops[Export pipeline hardening]
-    Split --> Docs[Workflow and documentation cleanup]
-    Core --> Validate[Validate with existing checks]
-    Ops --> Validate
-    Docs --> Validate
+    Trigger[Technical debt and structural cleanup audi] --> Need[Reduce the coupling in src App.tsx]
+    Need --> Outcome[AC1: The audit scope is split]
+    Outcome --> Backlog[Backlog slice]
 ```
 
 # Acceptance criteria

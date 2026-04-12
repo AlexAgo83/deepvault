@@ -23,12 +23,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|split-deepvault-retrieval-and-evaluation|req-011-audit-de-dette-technique-et-clea|src-lib-deepvault-ts-combines-text-norma|ac1-retrieval-and-scoring-logic-live
 flowchart TD
-    Request[req 011 audit] --> Problem[deepvault helpers are too coupled]
-    Problem --> Scope[Split retrieval and evaluation helpers]
-    Scope --> Retrieval[Retrieval and scoring]
-    Scope --> Eval[Evaluation and formatting]
-    Retrieval --> Validate[Run helper tests]
-    Eval --> Validate
+    Request[req_011_audit_de_dette_technique_et_cleanu] --> Problem[src lib deepvault.ts combines text normali]
+    Problem --> Scope[Split deepvault retrieval and evaluation h]
+    Scope --> Acceptance[AC1: Retrieval and scoring logic live]
+    Acceptance --> Tasks[task_016_orchestrate_technical_debt_cleanu]
 ```
 
 # Acceptance criteria

@@ -23,12 +23,12 @@
 %% logics-kind: task
 %% logics-signature: task|orchestrate-technical-debt-cleanup-waves|item-038-refactor-app-shell-and-ui-state|1-confirm-the-five-sibling-backlog|run-npm-run-lint-and-npm
 stateDiagram-v2
-    state "Cleanup initiative" as Backlog
-    state "1. Confirm scope, dependencies, and linked backlog items" as Scope
-    state "2. Sequence the five waves and keep them separate" as Build
-    state "3. Checkpoint each wave in a commit-ready state" as Verify
-    state "4. Run the relevant automated tests and quality checks" as Validation
-    state "5. Publish the completion report" as Report
+    state "item_038_refactor_app_shell_and_ui_state" as Backlog
+    state "1. Confirm the five sibling backlog" as Scope
+    state "2. Orchestrate the UI and shell" as Build
+    state "3. Keep each wave commit-ready validate" as Verify
+    state "Run npm run lint and npm" as Validation
+    state "Done report" as Report
     [*] --> Backlog
     Backlog --> Scope
     Scope --> Build

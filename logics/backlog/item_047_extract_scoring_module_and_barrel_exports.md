@@ -22,11 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|extract-scoring-module-and-add-barrel-ex|req-015-architecture-robustness-and-prod|les-poids-de-scoring-title-8|ac1-src-lib-scoring-ts-existe-exporte
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[Scoring enterré dans deepvault.ts]
-    Problem --> Scope[scoring.ts + barrel exports]
-    Scope --> AC1[AC1: scoring.ts isolé]
-    Scope --> AC2[AC2: deepvault.ts importe scoring.ts]
-    Scope --> AC3[AC3: barrel exports index.ts]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[Les poids de scoring title 8]
+    Problem --> Scope[Extract scoring module and add barrel]
+    Scope --> Acceptance[AC1: src lib scoring.ts existe exporte]
+    Acceptance --> Tasks[task_018_structural_refactoring_and_resili]
 ```
 
 # Acceptance criteria

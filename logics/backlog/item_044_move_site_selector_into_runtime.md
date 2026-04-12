@@ -22,12 +22,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|move-site-selector-into-runtime|req-013-move-site-selector-into-runtim|move-the-site-selector-into-the|ac1-the-site-selector-appears-in
+%% logics-signature: backlog|move-site-selector-into-runtime|req-013-move-site-selector-into-runtime|move-the-site-selector-into-the|ac1-the-site-selector-appears-in
 flowchart TD
-    Request[req_013_move_site_selector_into_runtime] --> Problem[Move the site selector into runtime]
-    Problem --> Scope[Runtime site selector]
+    Request[req_013_move_site_selector_into_runtime] --> Problem[Move the site selector into the]
+    Problem --> Scope[Move site selector into runtime]
     Scope --> Acceptance[AC1: The site selector appears in]
-    Acceptance --> Tasks[Execution task]
+    Acceptance --> Tasks[task_017_orchestrate_navigation_and_runtim]
 ```
 
 # Acceptance criteria

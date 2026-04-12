@@ -17,7 +17,7 @@ import { useSyncOperations } from './useSyncOperations'
 import type { LiveState } from './useLiveCorpus'
 import type { SyncOperationJob } from './useSyncOperations'
 
-export type AppTab = 'explorer' | 'bishop' | 'sync' | 'settings'
+export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
 
 export type ExplorerRow = CorpusDocument & { score: number; siteName: string }
 

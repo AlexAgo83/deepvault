@@ -22,12 +22,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|move-runtime-under-sync-status|req-014-move-runtime-under-sync-statu|move-the-runtime-controls-into-the|ac1-runtime-controls-are-shown-inside
+%% logics-signature: backlog|move-runtime-under-sync-status|req-014-move-runtime-under-sync-status|move-the-runtime-controls-into-the|ac1-runtime-controls-are-shown-inside
 flowchart TD
-    Request[req_014_move_runtime_under_sync_status] --> Problem[Move runtime under Sync status]
-    Problem --> Scope[Runtime under Sync status]
+    Request[req_014_move_runtime_under_sync_status] --> Problem[Move the runtime controls into the]
+    Problem --> Scope[Move runtime under Sync status]
     Scope --> Acceptance[AC1: Runtime controls are shown inside]
-    Acceptance --> Tasks[Execution task]
+    Acceptance --> Tasks[task_017_orchestrate_navigation_and_runtim]
 ```
 
 # Acceptance criteria
