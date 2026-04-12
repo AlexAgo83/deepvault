@@ -20,6 +20,7 @@ export interface SyncOperationJob {
   progress: number
   startedAt: string
   finishedAt?: string
+  durationMs?: number
   summary: string
   lines: SyncConsoleLine[]
 }
@@ -101,6 +102,38 @@ function formatCommandLine(
   ].join('\n')
 }
 
+const ACTIVE_JOB_SESSION_KEY = 'deepvault_active_job'
+
+type LiveOpKind = 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
+
+interface PersistedActiveJob {
+  serverJobId: string
+  jobId: string
+  kind: LiveOpKind
+  startedAt: string
+}
+
+function persistActiveJob(data: PersistedActiveJob) {
+  sessionStorage.setItem(ACTIVE_JOB_SESSION_KEY, JSON.stringify(data))
+}
+
+function clearPersistedJob() {
+  sessionStorage.removeItem(ACTIVE_JOB_SESSION_KEY)
+}
+
+function readPersistedJob(): PersistedActiveJob | null {
+  try {
+    const raw = sessionStorage.getItem(ACTIVE_JOB_SESSION_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as PersistedActiveJob
+    if (!parsed.serverJobId || !parsed.jobId || !parsed.kind || !parsed.startedAt) return null
+    if (!(parsed.kind in LIVE_OP_DEFS)) return null
+    return parsed
+  } catch {
+    return null
+  }
+}
+
 function detectLineTone(text: string, isError: boolean): SyncConsoleTone {
   if (isError) return 'danger'
   if (/error|fail/i.test(text)) return 'danger'
@@ -142,6 +175,62 @@ export function useSyncOperations({
     eventSourceRef.current?.close()
   }, [clearTimers])
 
+  // On mount: reconnect to a process that was running before a page reload
+  useEffect(() => {
+    const persisted = readPersistedJob()
+    if (!persisted) return
+
+    const def = LIVE_OP_DEFS[persisted.kind]
+
+    const job: SyncOperationJob = {
+      id: persisted.jobId,
+      kind: persisted.kind,
+      label: def.label,
+      command: def.command,
+      status: 'running',
+      progress: 0,
+      startedAt: persisted.startedAt,
+      summary: `${def.label} running.`,
+      lines: [makeLine('Reconnecting to running process…', 'muted')],
+    }
+
+    setActiveJob(job)
+    serverJobIdRef.current = persisted.serverJobId
+
+    let lineCount = 0
+    const es = new EventSource(`/api/ops/stream/${persisted.serverJobId}`)
+    eventSourceRef.current = es
+
+    es.onmessage = (event: MessageEvent<string>) => {
+      const data = JSON.parse(event.data) as { type: string; text?: string; isError?: boolean; exitCode?: number }
+      if (data.type === 'line' && data.text) {
+        lineCount++
+        const progress = Math.min(95, Math.round((lineCount / def.estimatedLines) * 100))
+        patchActiveJob(persisted.jobId, (current) => ({
+          ...current,
+          progress,
+          lines: [...current.lines, makeLine(data.text!, detectLineTone(data.text!, data.isError ?? false))],
+        }))
+      } else if (data.type === 'done') {
+        const success = data.exitCode === 0
+        clearPersistedJob()
+        finalizeJob(persisted.jobId, success ? 'completed' : 'failed', success ? def.summary : `${def.label} failed.`)
+        es.close()
+        eventSourceRef.current = null
+        serverJobIdRef.current = null
+      }
+    }
+
+    es.onerror = () => {
+      clearPersistedJob()
+      finalizeJob(persisted.jobId, 'failed', `Could not reconnect to ${def.label}.`)
+      es.close()
+      eventSourceRef.current = null
+      serverJobIdRef.current = null
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // intentionally runs once on mount only
+
   const pushTimer = useCallback((callback: () => void, delayMs: number) => {
     const timer = window.setTimeout(callback, delayMs)
     timersRef.current.push(timer)
@@ -169,6 +258,7 @@ export function useSyncOperations({
         status,
         progress: status === 'completed' ? 100 : current.progress,
         finishedAt: new Date().toISOString(),
+        durationMs: Date.now() - new Date(current.startedAt).getTime(),
         summary,
         lines: [
           ...current.lines,
@@ -271,6 +361,7 @@ export function useSyncOperations({
 
       const { jobId: serverJobId } = await response.json() as { jobId: string }
       serverJobIdRef.current = serverJobId
+      persistActiveJob({ serverJobId, jobId, kind, startedAt: job.startedAt })
 
       let lineCount = 0
       const es = new EventSource(`/api/ops/stream/${serverJobId}`)
@@ -290,6 +381,7 @@ export function useSyncOperations({
           }))
         } else if (data.type === 'done') {
           const success = data.exitCode === 0
+          clearPersistedJob()
           finalizeJob(jobId, success ? 'completed' : 'failed', success ? def.summary : `${def.label} failed.`)
           es.close()
           eventSourceRef.current = null
@@ -298,6 +390,7 @@ export function useSyncOperations({
       }
 
       es.onerror = () => {
+        clearPersistedJob()
         finalizeJob(jobId, 'failed', `${def.label} failed.`)
         es.close()
         eventSourceRef.current = null
@@ -322,6 +415,7 @@ export function useSyncOperations({
       void fetch(`/api/ops/cancel/${serverJobIdRef.current}`, { method: 'POST' })
       serverJobIdRef.current = null
     }
+    clearPersistedJob()
 
     finalizeJob(current.id, 'cancelled', `${current.label} cancelled.`)
   }, [clearTimers, finalizeJob])

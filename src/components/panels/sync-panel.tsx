@@ -1,4 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+
+function formatDuration(ms: number): string {
+  const s = Math.floor(ms / 1000)
+  if (s < 60) return `${s}s`
+  return `${Math.floor(s / 60)}m ${s % 60}s`
+}
 import { Pill, SectionHeading, StatCard } from '../app-ui'
 import { ConfirmModal } from '../confirm-modal'
 import { formatUpdatedAt } from '../../lib/deepvault'
@@ -69,6 +75,18 @@ export function SyncPanel({
   const currentJob = syncOperations.activeJob
   const currentLines = currentJob?.lines || []
   const [pendingOp, setPendingOp] = useState<OpsKey | null>(null)
+  const [elapsed, setElapsed] = useState<number>(0)
+
+  useEffect(() => {
+    if (currentJob?.status !== 'running') {
+      setElapsed(0)
+      return
+    }
+    const start = new Date(currentJob.startedAt).getTime()
+    setElapsed(Date.now() - start)
+    const id = window.setInterval(() => setElapsed(Date.now() - start), 1000)
+    return () => window.clearInterval(id)
+  }, [currentJob?.id, currentJob?.status])
 
   useEffect(() => {
     const node = consoleRef.current
@@ -202,7 +220,7 @@ export function SyncPanel({
             syncOperations.isRunning ? (
               <button
                 type="button"
-                className="secondary-button secondary-button-sm"
+                className="secondary-button secondary-button-sm danger-button"
                 data-tooltip="Stop the running operation"
                 onClick={syncOperations.cancelActiveJob}
               >
@@ -224,6 +242,16 @@ export function SyncPanel({
           <div className="detail-row">
             <span>Progress</span>
             <strong>{currentJob ? `${currentJob.progress}%` : '0%'}</strong>
+          </div>
+          <div className="detail-row">
+            <span>Duration</span>
+            <strong>
+              {currentJob?.status === 'running'
+                ? formatDuration(elapsed)
+                : currentJob?.durationMs != null
+                  ? formatDuration(currentJob.durationMs)
+                  : '—'}
+            </strong>
           </div>
         </div>
 
@@ -263,6 +291,7 @@ export function SyncPanel({
                   <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
                   <span>{job.command}</span>
                   <span>{job.progress}%</span>
+                  {job.durationMs != null ? <span>{formatDuration(job.durationMs)}</span> : null}
                 </div>
                 <p>{job.summary}</p>
               </article>
