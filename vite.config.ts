@@ -14,7 +14,9 @@ export default defineConfig({
       includeAssets: ['icon.svg', 'pwa-icon-192.svg', 'pwa-icon-512.svg', 'manifest.webmanifest'],
       manifest: false,
       workbox: {
+        clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,svg,webmanifest}'],
+        skipWaiting: true,
         runtimeCaching: [
           {
             urlPattern: ({ request, url }) =>

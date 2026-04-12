@@ -1,5 +1,5 @@
 ## req_000_v0_bootstrap_and_initial_foundations - V0 — Bootstrap and initial foundations
-> From version: 0.0.3
+> From version: 0.0.4
 > Schema version: 1.0
 > Status: Done
 > Understanding: 99%
@@ -13,7 +13,6 @@
 - `Nexus` is the internal tooling and orchestration brain in this repository.
 - `DeepVault - Navy` is the local exploration UI.
 - `DeepVault - Bishop` is the local LLM chatbot.
-- `DeepVault - Gordon` is the Teams chatbot.
 
 # Needs
 - Connect to Microsoft Graph and discover the initial SharePoint sites, libraries, and lists.
@@ -24,7 +23,7 @@
 - Define how the system should sync, refresh, and filter content as SharePoint changes.
 - Allow the pilot site list to be updated through environment configuration.
 - Record observability and audit signals for ingestion runs, retrieval decisions, and chat answers.
-- Define the local runtime and hosted runtime so the chatbot surface can evolve without rewriting the product.
+- Define the local runtime so the chatbot surface can evolve without rewriting the product.
 - Write the initial ADRs and product briefs that align the full team on architecture and product direction.
 - Deliver the V1 local product: explorer, chatbot, sync visibility, ingestion, and retrieval evaluation.
 
@@ -39,12 +38,11 @@ Validated context at kickoff:
 
 Key product decisions made during this phase:
 - Local phase stays local-only: explorer and chatbot in `DeepVault - Navy` and `DeepVault - Bishop`.
-- Hosted phase moves the backend to a hosted service and adds a Teams chatbot channel.
 - Ingestion runs autonomously; LLM chat access verifies the current user's rights before answering.
 - Knowledge base is hybrid: source objects + chunked text for retrieval.
 - Retrieval filters by user permissions before context reaches the LLM.
 - Chat backend is provider-agnostic: routes through OpenAI API or Gemini API behind a single abstraction.
-- `DeepVault - Bishop` ships first locally; `DeepVault - Gordon` becomes the primary channel once the backend is hosted.
+- `DeepVault - Bishop` ships first locally.
 
 Default decisions made:
 - Sync cadence: incremental daily refresh, with manual refresh on demand.
@@ -71,12 +69,12 @@ flowchart TD
 - AC7: The future Microsoft account-based user rights model is acknowledged.
 - AC8: `DeepVault - Navy` is defined as a required part of the product direction.
 - AC9: The hybrid ingestion and chunked retrieval model for the knowledge base is captured.
-- AC10: The `DeepVault - Bishop` chatbot path is explicitly allowed, with `DeepVault - Gordon` as a later integration.
+- AC10: The `DeepVault - Bishop` chatbot path is explicitly allowed.
 - AC11: The chat backend routes through OpenAI API or Gemini API behind a single abstraction.
 - AC12: The layered path from Graph ingestion to normalization, storage, retrieval, and answer generation is defined.
 - AC13: Permission-aware retrieval is explicitly called out so unauthorized content never reaches the LLM context.
 - AC14: Observability and audit needs for ingestion runs, retrieval decisions, and chat answers are captured.
-- AC15: The local runtime is explicitly distinguished from the hosted backend plus Teams channel.
+- AC15: The local runtime is explicitly distinguished from the hosted backend.
 - AC16: All initial ADRs and product briefs are written and committed.
 - AC17: V1 local delivery is complete: explorer, Bishop chat, sync visibility, ingestion, and retrieval evaluation.
 
@@ -90,12 +88,10 @@ flowchart TD
 - Product brief(s):
   - `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
   - `logics/product/prod_001_local_first_development_and_test_strategy.md`
-  - `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
 - Architecture decision(s):
   - `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`
   - `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`
   - `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`
-  - `logics/architecture/adr_004_teams_bot_architecture_for_llm_chat.md`
   - `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`
   - `logics/architecture/adr_006_runtime_configuration_and_operations.md`
   - `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`
@@ -104,7 +100,9 @@ flowchart TD
   - `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`
   - `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
   - `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-  - `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
+  - `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
+  - `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
+  - `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
 
 # Specs
 - `logics/specs/spec_000_deepvault_navy_experience_and_state_matrix.md`
@@ -117,7 +115,7 @@ flowchart TD
 - Summary: Bootstrap request for DeepVault — initial foundations, ADRs, product briefs, and V1 local delivery. Closed.
 - Keywords: bootstrap, v0, kickoff, foundations, ADR, product brief, V1, local, ingestion, retrieval
 - Use when: Use when tracing the origin of a product or architecture decision back to the initial kickoff.
-- Skip when: Skip when the work is about V1 scope evolution or V2 delivery — use req_001 or req_002 instead.
+- Skip when: Skip when the work is about V1 scope evolution.
 
 # Backlog
 - `item_000_v1_graph_discovery_and_pilot_scope` — Done
@@ -139,5 +137,5 @@ flowchart TD
 
 # Report
 - V1 local delivery complete: explorer, Bishop chat, sync view, ingestion snapshot, and OpenAI baseline evaluation all pass.
-- All initial ADRs (001–013) and product briefs (prod_000, prod_001, prod_002) written and committed.
+- All initial ADRs and product briefs written and committed.
 - Baseline evaluation stored at `data/eval/v1_baseline_2026-04-10.json` — 100% pass rate on OpenAI.

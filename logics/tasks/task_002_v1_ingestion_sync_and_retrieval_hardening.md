@@ -1,5 +1,5 @@
 ## task_002_v1_ingestion_sync_and_retrieval_hardening - V1 — Ingestion, sync, and retrieval hardening
-> From version: 0.0.0
+> From version: 0.0.1
 > Schema version: 1.0
 > Status: Done
 > Understanding: 96%
@@ -12,7 +12,7 @@
 # Context
 This task hardens the data path that feeds the SharePoint knowledge product.
 It covers Graph ingestion, incremental sync, hybrid knowledge storage, and permission-aware retrieval so the system can stay current and safe to query.
-The goal is to make the data layer reliable before the hosted backend and Teams channel are layered on top.
+The goal is to make the data layer reliable before any future expansion is layered on top.
 
 ```mermaid
 %% logics-kind: task
@@ -61,7 +61,7 @@ stateDiagram-v2
 - Architecture follow-up: Keep the ingestion, sync, and retrieval ADRs aligned with implementation.
 
 # Links
-- Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
+- Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
 - Backlog item(s): `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
 - Request(s): `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`

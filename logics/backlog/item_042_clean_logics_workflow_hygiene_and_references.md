@@ -1,5 +1,5 @@
 ## item_042_clean_logics_workflow_hygiene_and_references - Clean Logics workflow hygiene and references
-> From version: 1.0.0
+> From version: 1.0.1
 > Schema version: 1.0
 > Status: Done
 > Understanding: 96%
@@ -77,7 +77,7 @@ flowchart TD
 - Source file: `logics/request/req_011_audit_de_dette_technique_et_cleanup_structurel.md`.
 - Keep this slice focused on documentation and workflow integrity only.
 - Duplicate candidates reviewed in the current audit include:
-  - `item_004_v2_teams_bot_chat_and_permissions` and `item_012_v2_teams_bot_channel_and_permissions` as a same-layer naming conflict that should be renamed or merged if work starts.
+  - the old Teams backlog items as a same-layer naming conflict that should be renamed or merged if work starts.
   - `item_001_v1_sharepoint_ingestion_and_sync_pipeline` and `adr_002_sharepoint_ingestion_and_sync_pipeline` as an expected request-versus-architecture overlap.
   - `item_003_v1_explorer_ui_for_sharepoint_navigation` and `item_008_v1_local_explorer_shell_and_navigation` as related but separable explorer slices.
 - The goal is to keep the workflow readable and intentionally differentiated, not to eliminate all semantic overlap across layers.

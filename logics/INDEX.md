@@ -20,7 +20,7 @@
 | [Sub](architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md) | Minimum threshold | Proposed |  | architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md |
 | [adr_015_deepvault_security_audit_logging_and_retention_boundaries](architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md) | DeepVault security audit logging and retention boundaries | Proposed |  | architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md |
 | [adr_016_deepvault_persistence_and_storage_layout](architecture/adr_016_deepvault_persistence_and_storage_layout.md) | DeepVault persistence and storage layout | Proposed |  | architecture/adr_016_deepvault_persistence_and_storage_layout.md |
-| [adr_017_bishop_llm_orchestration_after_local_grounding](architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md) | Bishop LLM orchestration after local grounding | Proposed |  | architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md |
+| [adr_017_bishop_llm_orchestration_after_local_grounding](architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md) | Bishop LLM orchestration after local grounding | Accepted |  | architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md |
 | [adr_018_split_the_app_shell_and_ui_state_boundaries](architecture/adr_018_split_the_app_shell_and_ui_state_boundaries.md) | Split the app shell and UI state boundaries | Proposed |  | architecture/adr_018_split_the_app_shell_and_ui_state_boundaries.md |
 | [adr_019_split_deepvault_retrieval_and_evaluation_helpers](architecture/adr_019_split_deepvault_retrieval_and_evaluation_helpers.md) | Split DeepVault retrieval and evaluation helpers | Proposed |  | architecture/adr_019_split_deepvault_retrieval_and_evaluation_helpers.md |
 | [adr_020_clarify_bishop_orchestration_states_and_response_contract](architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md) | Clarify Bishop orchestration states and response contract | Proposed |  | architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md |
@@ -30,9 +30,8 @@
 
 | Doc | Title | Status | Progress | Path |
 |---|---|---|---|---|
-| [prod_000_sharepoint_knowledge_graph_product_vision](product/prod_000_sharepoint_knowledge_graph_product_vision.md) | V2: Hosted industrialization and Teams readiness | Proposed |  | product/prod_000_sharepoint_knowledge_graph_product_vision.md |
+| [prod_000_sharepoint_knowledge_graph_product_vision](product/prod_000_sharepoint_knowledge_graph_product_vision.md) | V1: Local development and validation | Proposed |  | product/prod_000_sharepoint_knowledge_graph_product_vision.md |
 | [prod_001_local_first_development_and_test_strategy](product/prod_001_local_first_development_and_test_strategy.md) | DeepVault - Navy local-first development and test strategy | Active |  | product/prod_001_local_first_development_and_test_strategy.md |
-| [prod_002_hosted_production_strategy_with_teams_at_the_end](product/prod_002_hosted_production_strategy_with_teams_at_the_end.md) | DeepVault - Gordon hosted production strategy | Proposed |  | product/prod_002_hosted_production_strategy_with_teams_at_the_end.md |
 | [prod_003_navigation_and_runtime_control_clarity](product/prod_003_navigation_and_runtime_control_clarity.md) | Navigation and runtime control clarity | Proposed |  | product/prod_003_navigation_and_runtime_control_clarity.md |
 
 ## Requests
@@ -41,7 +40,6 @@
 |---|---|---|---|---|
 | [req_000_v0_bootstrap_and_initial_foundations](request/req_000_v0_bootstrap_and_initial_foundations.md) | V0 — Bootstrap and initial foundations | Done |  | request/req_000_v0_bootstrap_and_initial_foundations.md |
 | [req_001_v1_local_hardening_and_scope_evolution](request/req_001_v1_local_hardening_and_scope_evolution.md) | V1 — Local hardening and scope evolution | Done |  | request/req_001_v1_local_hardening_and_scope_evolution.md |
-| [req_002_v2_azure_and_teams_foundation](request/req_002_v2_azure_and_teams_foundation.md) | V2 — Azure and Teams foundation | Draft |  | request/req_002_v2_azure_and_teams_foundation.md |
 | [req_003_nexus_v1_1_ui_and_product_polish](request/req_003_nexus_v1_1_ui_and_product_polish.md) | Nexus V1.1.0 shell and product polish | Done |  | request/req_003_nexus_v1_1_ui_and_product_polish.md |
 | [req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up](request/req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up.md) | Nexus V1.1 remaining polish and Bishop UX follow-up | Done |  | request/req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up.md |
 | [req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core](request/req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core.md) | Coverage uplift for corpus mode, live fetch, and deepvault core | Done |  | request/req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core.md |
@@ -54,6 +52,8 @@
 | [req_012_add_leading_icons_to_navigation](request/req_012_add_leading_icons_to_navigation.md) | Add leading icons to navigation | Done |  | request/req_012_add_leading_icons_to_navigation.md |
 | [req_013_move_site_selector_into_runtime](request/req_013_move_site_selector_into_runtime.md) | Move site selector into runtime | Done |  | request/req_013_move_site_selector_into_runtime.md |
 | [req_014_move_runtime_under_sync_status](request/req_014_move_runtime_under_sync_status.md) | Move runtime under Sync status | Done |  | request/req_014_move_runtime_under_sync_status.md |
+| [req_015_architecture_robustness_and_product_improvements](request/req_015_architecture_robustness_and_product_improvements.md) | Architecture, robustesse et évolution produit | Done |  | request/req_015_architecture_robustness_and_product_improvements.md |
+| [req_016_pwa_install_and_offline_first](request/req_016_pwa_install_and_offline_first.md) | PWA : installation, mise à jour et fonctionnement hors-ligne | Done |  | request/req_016_pwa_install_and_offline_first.md |
 
 ## Backlog
 
@@ -63,16 +63,12 @@
 | [item_001_v1_sharepoint_ingestion_and_sync_pipeline](backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md) | V1 — SharePoint ingestion and sync pipeline | Done | 100% | backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md |
 | [item_002_v1_hybrid_knowledge_store_and_retrieval](backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md) | V1 — Hybrid knowledge store and retrieval | Done | 100% | backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md |
 | [item_003_v1_explorer_ui_for_sharepoint_navigation](backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md) | V1 — DeepVault - Navy explorer UI for SharePoint navigation | Done | 100% | backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md |
-| [item_004_v2_teams_bot_chat_and_permissions](backlog/item_004_v2_teams_bot_chat_and_permissions.md) | V2 — DeepVault - Gordon chat and permissions | Ready | 0% | backlog/item_004_v2_teams_bot_chat_and_permissions.md |
 | [item_005_v1_runtime_config_and_operations](backlog/item_005_v1_runtime_config_and_operations.md) | V1 — Runtime config and operations | Done | 100% | backlog/item_005_v1_runtime_config_and_operations.md |
 | [item_006_v1_local_companion_app_for_explorer_and_chat](backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md) | V1 — DeepVault - Navy app for explorer and chat | Done | 100% | backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md |
 | [item_007_v1_llm_provider_abstraction_for_openai_and_gemini](backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md) | V1 — DeepVault - Bishop LLM provider abstraction for OpenAI and Gemini | Done | 100% | backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md |
 | [item_008_v1_local_explorer_shell_and_navigation](backlog/item_008_v1_local_explorer_shell_and_navigation.md) | V1 — DeepVault - Navy explorer shell and navigation | Done | 100% | backlog/item_008_v1_local_explorer_shell_and_navigation.md |
 | [item_009_v1_local_chat_surface_and_answer_flow](backlog/item_009_v1_local_chat_surface_and_answer_flow.md) | V1 — DeepVault - Bishop chat surface and answer flow | Done | 100% | backlog/item_009_v1_local_chat_surface_and_answer_flow.md |
 | [item_010_v1_local_sync_status_and_operational_view](backlog/item_010_v1_local_sync_status_and_operational_view.md) | V1 — DeepVault - Navy sync status and operational view | Done | 100% | backlog/item_010_v1_local_sync_status_and_operational_view.md |
-| [item_011_v2_hosted_backend_core](backlog/item_011_v2_hosted_backend_core.md) | V2 — Hosted backend core | Ready | 0% | backlog/item_011_v2_hosted_backend_core.md |
-| [item_012_v2_teams_bot_channel_and_permissions](backlog/item_012_v2_teams_bot_channel_and_permissions.md) | V2 — DeepVault - Gordon channel and permissions | Ready | 0% | backlog/item_012_v2_teams_bot_channel_and_permissions.md |
-| [item_013_v2_operations_runbook_and_release_readiness](backlog/item_013_v2_operations_runbook_and_release_readiness.md) | V2 — Operations runbook and release readiness | Ready | 0% | backlog/item_013_v2_operations_runbook_and_release_readiness.md |
 | [item_014_v1_incremental_live_sync_and_resumable_export](backlog/item_014_v1_incremental_live_sync_and_resumable_export.md) | V1 — Incremental live sync and resumable export | Done | 100% | backlog/item_014_v1_incremental_live_sync_and_resumable_export.md |
 | [item_015_v1_live_explorer_site_filter_alignment](backlog/item_015_v1_live_explorer_site_filter_alignment.md) | V1 — Live explorer site filter alignment | Done | 100% | backlog/item_015_v1_live_explorer_site_filter_alignment.md |
 | [item_016_v1_live_evaluation_set_and_quality_gate](backlog/item_016_v1_live_evaluation_set_and_quality_gate.md) | V1 — Live evaluation set and quality gate | Done | 100% | backlog/item_016_v1_live_evaluation_set_and_quality_gate.md |
@@ -105,6 +101,19 @@
 | [item_043_add_leading_icons_to_navigation](backlog/item_043_add_leading_icons_to_navigation.md) | Add leading icons to navigation | Done | 100% | backlog/item_043_add_leading_icons_to_navigation.md |
 | [item_044_move_site_selector_into_runtime](backlog/item_044_move_site_selector_into_runtime.md) | Move site selector into runtime | Done | 100% | backlog/item_044_move_site_selector_into_runtime.md |
 | [item_045_move_runtime_under_sync_status](backlog/item_045_move_runtime_under_sync_status.md) | Move runtime under Sync status | Done | 100% | backlog/item_045_move_runtime_under_sync_status.md |
+| [item_046_split_app_shell_into_panel_components](backlog/item_046_split_app_shell_into_panel_components.md) | Split app-shell into panel components | Done | 100% | backlog/item_046_split_app_shell_into_panel_components.md |
+| [item_047_extract_scoring_module_and_barrel_exports](backlog/item_047_extract_scoring_module_and_barrel_exports.md) | Extract scoring module and add barrel exports | Done | 100% | backlog/item_047_extract_scoring_module_and_barrel_exports.md |
+| [item_048_react_error_boundaries_for_panels](backlog/item_048_react_error_boundaries_for_panels.md) | React Error Boundaries for panels | Done | 100% | backlog/item_048_react_error_boundaries_for_panels.md |
+| [item_049_graph_api_retry_timeout_and_corpus_validation](backlog/item_049_graph_api_retry_timeout_and_corpus_validation.md) | Graph API retry, timeout and corpus validation | Done | 100% | backlog/item_049_graph_api_retry_timeout_and_corpus_validation.md |
+| [item_050_e2e_full_workflow_coverage](backlog/item_050_e2e_full_workflow_coverage.md) | E2E full workflow coverage | Done | 100% | backlog/item_050_e2e_full_workflow_coverage.md |
+| [item_051_unit_tests_scoring_and_bishop_contract](backlog/item_051_unit_tests_scoring_and_bishop_contract.md) | Unit tests for scoring and Bishop fallback contract | Done | 100% | backlog/item_051_unit_tests_scoring_and_bishop_contract.md |
+| [item_052_bishop_claude_api_integration](backlog/item_052_bishop_claude_api_integration.md) | Bishop Claude API integration | Done | 100% | backlog/item_052_bishop_claude_api_integration.md |
+| [item_053_bishop_session_persistence_and_export](backlog/item_053_bishop_session_persistence_and_export.md) | Bishop session persistence and results export | Done | 100% | backlog/item_053_bishop_session_persistence_and_export.md |
+| [item_054_corpus_delta_sync_via_graph_lastmodified](backlog/item_054_corpus_delta_sync_via_graph_lastmodified.md) | Corpus delta sync via Graph lastModifiedDateTime | Done | 100% | backlog/item_054_corpus_delta_sync_via_graph_lastmodified.md |
+| [item_055_pwa_vite_plugin_and_workbox_setup](backlog/item_055_pwa_vite_plugin_and_workbox_setup.md) | PWA: vite-plugin-pwa and Workbox setup | Done | 100% | backlog/item_055_pwa_vite_plugin_and_workbox_setup.md |
+| [item_056_pwa_install_button_in_header](backlog/item_056_pwa_install_button_in_header.md) | PWA: install button in header | Done | 100% | backlog/item_056_pwa_install_button_in_header.md |
+| [item_057_pwa_update_banner](backlog/item_057_pwa_update_banner.md) | PWA: update banner | Done | 100% | backlog/item_057_pwa_update_banner.md |
+| [item_058_pwa_offline_cache_and_mock_fallback](backlog/item_058_pwa_offline_cache_and_mock_fallback.md) | PWA: offline cache and mock corpus fallback | Done | 100% | backlog/item_058_pwa_offline_cache_and_mock_fallback.md |
 
 ## Tasks
 
@@ -115,7 +124,6 @@
 | [task_005_v1_local_development_and_validation_milestone](tasks/task_005_v1_local_development_and_validation_milestone.md) | V1 — Local development and validation milestone | Done | 100% | tasks/task_005_v1_local_development_and_validation_milestone.md |
 | [Pre](tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md) | evaluation checklist (must pass before starting) | Done | 100% | tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md |
 | [task_009_local_hardening_and_v1_scope_evolution](tasks/task_009_local_hardening_and_v1_scope_evolution.md) | What is already done in V1 (do not re-implement) | Done | 100% | tasks/task_009_local_hardening_and_v1_scope_evolution.md |
-| [task_010_v2_azure_and_teams_delivery](tasks/task_010_v2_azure_and_teams_delivery.md) | V2 Azure and Teams delivery | Draft | 0% | tasks/task_010_v2_azure_and_teams_delivery.md |
 | [task_011_nexus_v1_1_shell_and_live_state_delivery](tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md) | Nexus V1.1 shell and live state delivery | Done | 100% | tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md |
 | [task_012_nexus_v1_1_remaining_polish_orchestration](tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md) | Nexus V1.1 remaining polish orchestration | Done | 100% | tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md |
 | [task_013_coverage_and_explorer_polish_orchestration](tasks/task_013_coverage_and_explorer_polish_orchestration.md) | Coverage and explorer polish orchestration | Done | 100% | tasks/task_013_coverage_and_explorer_polish_orchestration.md |
@@ -123,3 +131,9 @@
 | [task_015_sharepoint_file_link_and_file_type_ui_delivery](tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md) | SharePoint file link and file type UI delivery | Done | 100% | tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md |
 | [task_016_orchestrate_technical_debt_cleanup_waves](tasks/task_016_orchestrate_technical_debt_cleanup_waves.md) | Orchestrate technical debt cleanup waves | Done | 100% | tasks/task_016_orchestrate_technical_debt_cleanup_waves.md |
 | [task_017_orchestrate_navigation_and_runtime_ui_changes](tasks/task_017_orchestrate_navigation_and_runtime_ui_changes.md) | Orchestrate navigation and runtime UI changes | Done | 100% | tasks/task_017_orchestrate_navigation_and_runtime_ui_changes.md |
+| [task_018_structural_refactoring_and_resilience_foundation](tasks/task_018_structural_refactoring_and_resilience_foundation.md) | Structural refactoring and resilience foundation | Done | 100% | tasks/task_018_structural_refactoring_and_resilience_foundation.md |
+| [task_019_infrastructure_hardening_graph_and_corpus](tasks/task_019_infrastructure_hardening_graph_and_corpus.md) | Infrastructure hardening: Graph API and corpus | Done | 100% | tasks/task_019_infrastructure_hardening_graph_and_corpus.md |
+| [task_020_test_coverage_expansion](tasks/task_020_test_coverage_expansion.md) | Test coverage expansion | Done | 100% | tasks/task_020_test_coverage_expansion.md |
+| [task_021_bishop_intelligence_and_ux](tasks/task_021_bishop_intelligence_and_ux.md) | Bishop intelligence and UX | Done | 100% | tasks/task_021_bishop_intelligence_and_ux.md |
+| [task_022_pwa_progressive_web_app_delivery](tasks/task_022_pwa_progressive_web_app_delivery.md) | PWA progressive web app delivery | Done | 100% | tasks/task_022_pwa_progressive_web_app_delivery.md |
+| [task_025_non_v2_delivery_orchestration_and_validation_hardening](tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md) | Wave map | Done | 100% | tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md |

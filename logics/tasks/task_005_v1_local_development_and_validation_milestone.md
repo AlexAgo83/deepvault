@@ -1,5 +1,5 @@
 ## task_005_v1_local_development_and_validation_milestone - V1 — Local development and validation milestone
-> From version: 1.0.1
+> From version: 1.0.2
 > Schema version: 1.0
 > Status: Done
 > Understanding: 97%
@@ -38,7 +38,7 @@ stateDiagram-v2
 - [x] Ship `DeepVault - Navy`, `DeepVault - Bishop`, and local sync visibility as one coherent local flow.
 - [x] Harden ingestion, sync, retrieval, and provider abstraction for local validation.
 - [x] Run the retrieval evaluation set (task_008) and confirm the quality gate passes.
-- [x] Generate the project README covering: what DeepVault is, the three surfaces (Navy/Bishop/Gordon), local setup steps, environment variables required (referencing `.env.local`), how to run ingestion, how to run the local app, and how to run the evaluation set.
+- [x] Generate the project README covering: what DeepVault is, the two local surfaces (Navy/Bishop), local setup steps, environment variables required (referencing `.env.local`), how to run ingestion, how to run the local app, and how to run the evaluation set.
 - [x] Validate the V1 path end-to-end and confirm it is ready for the hosted milestone.
 
 # Delivery checkpoints

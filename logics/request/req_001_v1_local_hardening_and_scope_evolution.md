@@ -1,5 +1,5 @@
 ## req_001_v1_local_hardening_and_scope_evolution - V1 — Local hardening and scope evolution
-> From version: 1.0.0
+> From version: 1.0.1
 > Schema version: 1.0
 > Status: Done
 > Understanding: 98%
@@ -13,7 +13,7 @@
 - Make the DeepVault - Navy site filter behave consistently in the live explorer so the selected site actually bounds visible results.
 - Define a live evaluation set and quality gate that reflects exported SharePoint content, not only the mock corpus.
 - Harden large-site crawling with checkpoints, pagination visibility, bounded memory behavior, and predictable progress reporting.
-- Define retention and redaction rules for generated live artifacts and business content before moving toward hosted V2 work.
+- Define retention and redaction rules for generated live artifacts and business content before any future expansion.
 - Clean up the remaining V1 backlog and doc framing so the open work is split into clearer, smaller slices.
 
 # Context
@@ -21,7 +21,7 @@
 - The live exporter can generate `public/live-corpus.json` but currently rebuilds too much on each run.
 - Live test runs exposed a UX gap where site filtering in the explorer did not clearly constrain the rendered results.
 - The current evaluation flow still reflects the mock corpus more than the live corpus.
-- Live exports can contain business content, so local generated artifacts need clear handling rules before V2 expands scope.
+- Live exports can contain business content, so local generated artifacts need clear handling rules before any future expansion.
 - This request is about stabilizing the live local path and closing the V1 scope cleanly — not about implementing the hosted backend or Teams channel.
 
 ```mermaid
@@ -72,7 +72,7 @@ flowchart TD
 - Summary: V1 scope evolution request — live corpus hardening, explorer UX, live quality gate, and cleanup. No Azure or Teams.
 - Keywords: V1, local, live corpus, incremental sync, explorer, evaluation, retention, cleanup
 - Use when: Use when splitting V1 live hardening into backlog items before hosted backend work starts.
-- Skip when: Skip when the work is about hosted backend, Teams, or V2 delivery — use req_002 instead.
+- Skip when: Skip when the work is about hosted backend or Teams.
 
 # Backlog
 - `item_014_v1_incremental_live_sync_and_resumable_export`
