@@ -3,11 +3,13 @@ import { Message, SectionHeading, SourceCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 
 export function BishopPanel({
+  conversationContextEnabled,
   clearHistory,
   exportJson,
   exportMarkdown,
   messages,
   question,
+  onConversationContextChange,
   onQuestionChange,
   isAsking,
   onSubmit,
@@ -16,11 +18,13 @@ export function BishopPanel({
   selectedMessage,
   resolveFileHref,
 }: {
+  conversationContextEnabled: boolean
   clearHistory: () => void
   exportJson: () => void
   exportMarkdown: () => void
   messages: AppModel['messages']
   question: string
+  onConversationContextChange: (_value: boolean) => void
   onQuestionChange: (_value: string) => void
   isAsking: boolean
   onSubmit: (_event: FormEvent<HTMLFormElement>) => void
@@ -82,7 +86,17 @@ export function BishopPanel({
           ))}
         </div>
         <form className="chat-form" onSubmit={onSubmit}>
-          <label htmlFor="question">Ask a question</label>
+          <div className="chat-form-head">
+            <label htmlFor="question">Ask a question</label>
+            <label className="chat-context-toggle" title="Keep previous Bishop turns in the prompt">
+              <input
+                type="checkbox"
+                checked={conversationContextEnabled}
+                onChange={(event) => onConversationContextChange(event.target.checked)}
+              />
+              <span>Keep context</span>
+            </label>
+          </div>
           <textarea
             id="question"
             value={question}

@@ -23,11 +23,13 @@ describe('BishopPanel scroll behavior', () => {
     const messages = [createMessage('seed', 'Seed'), createMessage('1', 'First'), createMessage('2', 'Second')]
     const { container, rerender } = render(
       <BishopPanel
+        conversationContextEnabled={true}
         clearHistory={vi.fn()}
         exportJson={vi.fn()}
         exportMarkdown={vi.fn()}
         messages={messages}
         question=""
+        onConversationContextChange={vi.fn()}
         onQuestionChange={vi.fn()}
         isAsking={false}
         onSubmit={vi.fn()}
@@ -46,11 +48,13 @@ describe('BishopPanel scroll behavior', () => {
     Object.defineProperty(messageList, 'scrollHeight', { configurable: true, value: 340 })
     rerender(
       <BishopPanel
+        conversationContextEnabled={true}
         clearHistory={vi.fn()}
         exportJson={vi.fn()}
         exportMarkdown={vi.fn()}
         messages={[...messages, createMessage('3', 'Latest')]}
         question=""
+        onConversationContextChange={vi.fn()}
         onQuestionChange={vi.fn()}
         isAsking={false}
         onSubmit={vi.fn()}
@@ -68,11 +72,13 @@ describe('BishopPanel scroll behavior', () => {
     const messages = [createMessage('seed', 'Seed'), createMessage('1', 'First'), createMessage('2', 'Second')]
     const { container, rerender } = render(
       <BishopPanel
+        conversationContextEnabled={true}
         clearHistory={vi.fn()}
         exportJson={vi.fn()}
         exportMarkdown={vi.fn()}
         messages={messages}
         question=""
+        onConversationContextChange={vi.fn()}
         onQuestionChange={vi.fn()}
         isAsking={false}
         onSubmit={vi.fn()}
@@ -92,11 +98,13 @@ describe('BishopPanel scroll behavior', () => {
     fireEvent.scroll(messageList)
     rerender(
       <BishopPanel
+        conversationContextEnabled={true}
         clearHistory={vi.fn()}
         exportJson={vi.fn()}
         exportMarkdown={vi.fn()}
         messages={[...messages, createMessage('3', 'Latest')]}
         question=""
+        onConversationContextChange={vi.fn()}
         onQuestionChange={vi.fn()}
         isAsking={false}
         onSubmit={vi.fn()}
@@ -117,11 +125,13 @@ describe('BishopPanel confidence trace', () => {
 
     render(
       <BishopPanel
+        conversationContextEnabled={true}
         clearHistory={vi.fn()}
         exportJson={vi.fn()}
         exportMarkdown={vi.fn()}
         messages={[createMessage('seed', 'Seed'), createMessage('assistant-1', 'Answer')]}
         question=""
+        onConversationContextChange={vi.fn()}
         onQuestionChange={vi.fn()}
         isAsking={false}
         onSubmit={vi.fn()}

@@ -48,6 +48,8 @@ export interface AppModel {
   question: string
   setQuestion: Dispatch<SetStateAction<string>>
   isAsking: boolean
+  conversationContextEnabled: boolean
+  setConversationContextEnabled: Dispatch<SetStateAction<boolean>>
   messages: ReturnType<typeof useBishopConversation>['messages']
   selectedMessage: ReturnType<typeof useBishopConversation>['selectedMessage']
   handleAsk: ReturnType<typeof useBishopConversation>['handleAsk']
@@ -100,6 +102,8 @@ export function useAppModel(): AppModel {
     question,
     setQuestion,
     isAsking,
+    conversationContextEnabled,
+    setConversationContextEnabled,
     messages,
     selectedMessage,
     handleAsk,
@@ -170,6 +174,8 @@ export function useAppModel(): AppModel {
     question,
     setQuestion,
     isAsking,
+    conversationContextEnabled,
+    setConversationContextEnabled,
     messages,
     selectedMessage,
     handleAsk,
