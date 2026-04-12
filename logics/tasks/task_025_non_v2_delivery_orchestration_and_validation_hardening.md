@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 50%
+> Progress: 60%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -121,10 +121,12 @@ stateDiagram-v2
 - Wave 1 continued: covered `useLiveCorpus` with hook-level tests for successful live promotion and invalid-payload fallback to mock data.
 - Wave 1 checkpointed again: added retrieval and explorer coverage for site-scoped ranking, denied-source exclusion, and top-result ordering.
 - Wave 1 checkpointed again: added app-level coverage that keeps the explorer detail pane scoped when the site filter changes.
+- Wave 1 checkpointed again: covered `useLiveCorpus` reset behavior when live mode is not requested, ensuring the hook stays on mock data without making a fetch call.
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
 - Validation passed: `rtk npm run test -- tests/deepvault.spec.ts tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
 - Validation passed: `rtk npm run test -- tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
+- Validation passed: `rtk npm run test -- tests/live-corpus-hook.spec.tsx tests/corpus.spec.ts`
 - Validation passed: `rtk npm run typecheck`
 - Validation passed: `rtk npm run lint`
 - Validation passed: `rtk npm run build`

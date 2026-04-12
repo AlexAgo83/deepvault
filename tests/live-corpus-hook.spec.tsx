@@ -57,4 +57,16 @@ describe('useLiveCorpus', () => {
     expect(screen.getByTestId('label')).toHaveTextContent('Live error')
     expect(screen.getByTestId('detail')).toHaveTextContent('not a valid corpus')
   })
+
+  it('resets to mock data immediately when live mode is not requested', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    render(<LiveCorpusProbe mode="mock" />)
+
+    await waitFor(() => expect(screen.getByTestId('mode')).toHaveTextContent('mock'))
+    expect(screen.getByTestId('label')).toHaveTextContent('Mock data')
+    expect(screen.getByTestId('detail')).toHaveTextContent('Mock corpus selected')
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
 })
