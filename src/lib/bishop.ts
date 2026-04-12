@@ -24,6 +24,8 @@ export interface BishopOrchestrationOptions {
   limit?: number
   endpoint?: string | null
   fetchImpl?: typeof fetch
+  openaiApiKey?: string | null
+  geminiApiKey?: string | null
   anthropicApiKey?: string | null
   bishopModel?: string | null
   anthropicClient?: AnthropicClientLike
@@ -59,7 +61,41 @@ interface AnthropicClientLike {
   }
 }
 
-const DEFAULT_BISHOP_MODEL = 'claude-sonnet-4-6'
+interface OpenAIChoiceLike {
+  message?: {
+    content?: string | null
+  }
+}
+
+interface OpenAIResponseLike {
+  choices?: OpenAIChoiceLike[]
+  usage?: {
+    prompt_tokens?: number
+    completion_tokens?: number
+  }
+}
+
+interface GeminiPartLike {
+  text?: string
+}
+
+interface GeminiContentLike {
+  parts?: GeminiPartLike[]
+}
+
+interface GeminiResponseLike {
+  candidates?: Array<{
+    content?: GeminiContentLike
+  }>
+  usageMetadata?: {
+    promptTokenCount?: number
+    candidatesTokenCount?: number
+  }
+}
+
+const DEFAULT_OPENAI_MODEL = 'gpt-4.1-mini'
+const DEFAULT_GEMINI_MODEL = 'gemini-2.0-flash'
+const DEFAULT_ANTHROPIC_MODEL = 'claude-sonnet-4-6'
 const PROMPT_CACHING_BETA = 'prompt-caching-2024-07-31'
 
 export function buildBishopPrompt(context: BishopPromptContext): string {
@@ -131,10 +167,163 @@ function readEnvValue(name: string): string {
   return (fromImportMeta || fromProcess || '').trim()
 }
 
-function getAnthropicRuntimeConfig(options: BishopOrchestrationOptions): { apiKey: string; model: string } {
+function getProviderRuntimeConfig(
+  provider: ProviderId,
+  options: BishopOrchestrationOptions,
+): { apiKey: string; model: string } {
+  const modelOverride = options.bishopModel?.trim() || readEnvValue('VITE_BISHOP_MODEL')
+
+  if (provider === 'openai') {
+    return {
+      apiKey: options.openaiApiKey?.trim() || readEnvValue('OPENAI_API_KEY'),
+      model: modelOverride || DEFAULT_OPENAI_MODEL,
+    }
+  }
+
+  if (provider === 'gemini') {
+    return {
+      apiKey: options.geminiApiKey?.trim() || readEnvValue('GEMINI_API_KEY'),
+      model: modelOverride || DEFAULT_GEMINI_MODEL,
+    }
+  }
+
   return {
     apiKey: options.anthropicApiKey?.trim() || readEnvValue('ANTHROPIC_API_KEY'),
-    model: options.bishopModel?.trim() || readEnvValue('VITE_BISHOP_MODEL') || DEFAULT_BISHOP_MODEL,
+    model: modelOverride || DEFAULT_ANTHROPIC_MODEL,
+  }
+}
+
+async function runOpenAIRemoteAnswer(
+  _query: string,
+  role: UserRole,
+  provider: ProviderId,
+  _grounding: GroundingResult,
+  prompt: string,
+  options: BishopOrchestrationOptions,
+  fallback: AnswerResult,
+): Promise<BishopOrchestrationResult | null> {
+  const { apiKey, model } = getProviderRuntimeConfig('openai', options)
+  if (!apiKey) {
+    return null
+  }
+
+  const startedAt = Date.now()
+  const systemPrompt = buildBishopSystemPrompt({ role, provider })
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${apiKey}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0,
+        max_tokens: 512,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt },
+        ],
+      }),
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const payload = (await response.json()) as OpenAIResponseLike
+    const answer = payload.choices?.[0]?.message?.content?.trim() || fallback.answer
+    const usage = payload.usage
+    const tokenCount = (usage?.prompt_tokens || 0) + (usage?.completion_tokens || 0)
+
+    return {
+      status: fallback.status,
+      provider: fallback.provider,
+      query: fallback.query,
+      answer,
+      sources: fallback.sources,
+      deniedSources: fallback.deniedSources,
+      chunkCount: _grounding.chunkCount,
+      tokenCount: tokenCount > 0 ? tokenCount : fallback.tokenCount,
+      latencyMs: Date.now() - startedAt,
+      mode: 'remote',
+      prompt,
+    }
+  } catch {
+    return null
+  }
+}
+
+async function runGeminiRemoteAnswer(
+  _query: string,
+  role: UserRole,
+  provider: ProviderId,
+  grounding: GroundingResult,
+  prompt: string,
+  options: BishopOrchestrationOptions,
+  fallback: AnswerResult,
+): Promise<BishopOrchestrationResult | null> {
+  const { apiKey, model } = getProviderRuntimeConfig('gemini', options)
+  if (!apiKey) {
+    return null
+  }
+
+  const startedAt = Date.now()
+  const systemPrompt = buildBishopSystemPrompt({ role, provider })
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{ text: systemPrompt }],
+        },
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: prompt }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0,
+          maxOutputTokens: 512,
+        },
+      }),
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const payload = (await response.json()) as GeminiResponseLike
+    const answer =
+      payload.candidates?.[0]?.content?.parts
+        ?.map((part) => part.text?.trim() || '')
+        .filter(Boolean)
+        .join('\n')
+        .trim() || fallback.answer
+    const usage = payload.usageMetadata
+    const tokenCount = (usage?.promptTokenCount || 0) + (usage?.candidatesTokenCount || 0)
+
+    return {
+      status: fallback.status,
+      provider: fallback.provider,
+      query: fallback.query,
+      answer,
+      sources: fallback.sources,
+      deniedSources: fallback.deniedSources,
+      chunkCount: grounding.chunkCount,
+      tokenCount: tokenCount > 0 ? tokenCount : fallback.tokenCount,
+      latencyMs: Date.now() - startedAt,
+      mode: 'remote',
+      prompt,
+    }
+  } catch {
+    return null
   }
 }
 
@@ -147,7 +336,7 @@ async function runAnthropicRemoteAnswer(
   options: BishopOrchestrationOptions,
   fallback: AnswerResult,
 ): Promise<BishopOrchestrationResult | null> {
-  const { apiKey, model } = getAnthropicRuntimeConfig(options)
+  const { apiKey, model } = getProviderRuntimeConfig('anthropic', options)
   if (!apiKey) {
     return null
   }
@@ -274,7 +463,12 @@ export async function orchestrateBishopAnswer(
     }
   }
 
-  const remoteAnswer = await runAnthropicRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
+  const remoteAnswer =
+    provider === 'openai'
+      ? await runOpenAIRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
+      : provider === 'gemini'
+        ? await runGeminiRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
+        : await runAnthropicRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
   if (remoteAnswer) {
     return remoteAnswer
   }

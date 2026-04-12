@@ -1,10 +1,15 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getMockCorpusBundle } from '../src/data/corpus'
 import { buildBishopPrompt, groundQuestion, orchestrateBishopAnswer } from '../src/lib/bishop'
 
 const corpus = getMockCorpusBundle().corpus
 
 describe('bishop orchestration helpers', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+  })
+
   it('grounds inventory style questions before any LLM call', () => {
     const grounding = groundQuestion(corpus, 'What SharePoint sites are available for the Finance team?', {
       role: 'analyst',
@@ -93,6 +98,120 @@ describe('bishop orchestration helpers', () => {
     expect(result.latencyMs).toBe(84)
   })
 
+  it('uses OpenAI when the provider is openai and the API key is available', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [
+          {
+            message: {
+              content: 'OpenAI remote answer.',
+            },
+          },
+        ],
+        usage: {
+          prompt_tokens: 111,
+          completion_tokens: 22,
+        },
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+      openaiApiKey: 'test-openai-key',
+      bishopModel: 'gpt-test-model',
+    })
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(result.mode).toBe('remote')
+    expect(result.answer).toBe('OpenAI remote answer.')
+    expect(result.chunkCount).toBeGreaterThan(0)
+    expect(result.tokenCount).toBe(133)
+
+    const [url, init] = fetchMock.mock.calls[0]
+    expect(url).toBe('https://api.openai.com/v1/chat/completions')
+    expect(init).toMatchObject({
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer test-openai-key',
+        'content-type': 'application/json',
+      },
+    })
+
+    const body = JSON.parse(init.body as string) as {
+      model: string
+      temperature: number
+      max_tokens: number
+      messages: Array<{ role: string; content: string }>
+    }
+    expect(body).toMatchObject({
+      model: 'gpt-test-model',
+      temperature: 0,
+      max_tokens: 512,
+    })
+    expect(body.messages[0].role).toBe('system')
+    expect(body.messages[0].content).toContain('Use only the grounded corpus context')
+    expect(body.messages[1].role).toBe('user')
+    expect(body.messages[1].content).toContain('Use only the grounded context below.')
+  })
+
+  it('uses Gemini when the provider is gemini and the API key is available', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'Gemini remote answer.' }],
+            },
+          },
+        ],
+        usageMetadata: {
+          promptTokenCount: 88,
+          candidatesTokenCount: 34,
+        },
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'gemini',
+      geminiApiKey: 'test-gemini-key',
+      bishopModel: 'gemini-test-model',
+    })
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(result.mode).toBe('remote')
+    expect(result.answer).toBe('Gemini remote answer.')
+    expect(result.chunkCount).toBeGreaterThan(0)
+    expect(result.tokenCount).toBe(122)
+
+    const [url, init] = fetchMock.mock.calls[0]
+    expect(url).toBe('https://generativelanguage.googleapis.com/v1beta/models/gemini-test-model:generateContent?key=test-gemini-key')
+    expect(init).toMatchObject({
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+
+    const body = JSON.parse(init.body as string) as {
+      generationConfig: { temperature: number; maxOutputTokens: number }
+      systemInstruction: { parts: Array<{ text: string }> }
+      contents: Array<{ role: string; parts: Array<{ text: string }> }>
+    }
+    expect(body.generationConfig).toMatchObject({
+      temperature: 0,
+      maxOutputTokens: 512,
+    })
+    expect(body.systemInstruction.parts[0].text).toContain('Use only the grounded corpus context')
+    expect(body.contents[0].role).toBe('user')
+    expect(body.contents[0].parts[0].text).toContain('Use only the grounded context below.')
+  })
+
   it('uses Anthropic Claude when the API key is available', async () => {
     const createMock = vi.fn().mockResolvedValue({
       content: [{ type: 'text', text: 'Claude remote answer.' }],
@@ -111,7 +230,7 @@ describe('bishop orchestration helpers', () => {
 
     const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
       role: 'analyst',
-      provider: 'openai',
+      provider: 'anthropic',
       anthropicApiKey: 'test-api-key',
       bishopModel: 'claude-test-model',
       anthropicClient: anthropicClient as never,

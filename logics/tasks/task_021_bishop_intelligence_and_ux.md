@@ -1,10 +1,10 @@
 ## task_021_bishop_intelligence_and_ux - Bishop intelligence and UX
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: In progress
-> Understanding: 87%
-> Confidence: 82%
-> Progress: 30%
+> Status: Done
+> Understanding: 94%
+> Confidence: 90%
+> Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -13,19 +13,19 @@
 - Orchestrate deux waves produit sur Bishop issues de `req_015_architecture_robustness_and_product_improvements`.
 - Ces waves font évoluer Bishop d'un outil de recherche déterministe vers un assistant conversationnel persistant avec export.
 - Recommended wave order :
-  1. `item_052_bishop_claude_api_integration` — brancher Claude API sur le remote mode Bishop avec prompt caching
+  1. `item_052_bishop_claude_api_integration` — brancher le remote mode Bishop sur les providers LLM réels, avec OpenAI/Gemini en chemins principaux et Claude conservé comme 3e provider avec prompt caching
   2. `item_053_bishop_session_persistence_and_export` — persistance session localStorage + boutons export JSON/MD
 - Wave 1 est le changement le plus structurant (nouveau provider LLM) ; Wave 2 est additive et moins risquée.
-- Wave 1 nécessite `ANTHROPIC_API_KEY` dans l'environnement — documenter dans `.env.exemple` avant de démarrer.
+- Wave 1 nécessite les clés provider correspondantes dans l'environnement — documenter `OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` et `VITE_BISHOP_MODEL` dans `.env.exemple` avant de démarrer.
 - L'orchestration layer dans `src/lib/bishop.ts` est déjà en place — le remote mode et le fallback local existent.
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|bishop-intelligence-and-ux|item-052-bishop-claude-api-integration|1-confirmer-le-contrat-du-remote|wave-1-run-npm-run-check
+%% logics-signature: task|bishop-intelligence-and-ux|item-052-bishop-claude-api-integration|1-confirmer-le-contrat-du-remote|wave-1-npm-run-check
 stateDiagram-v2
     state "2 backlog items — Bishop produit" as Backlog
     state "1. Confirmer le contrat Bishop remote + clé API" as Scope
-    state "2. Wave 1: intégration Claude API + prompt caching" as Wave1
+    state "2. Wave 1: provider switch + Claude prompt caching" as Wave1
     state "3. Wave 2: persistance session + export" as Wave2
     state "4. Valider et reporter" as Report
     [*] --> Backlog
@@ -39,10 +39,10 @@ stateDiagram-v2
 # Plan
 - [x] 1. Confirmer le contrat du remote mode Bishop dans `src/lib/bishop.ts` (format de l'appel, format de réponse attendu) et relire `adr_017_bishop_llm_orchestration_after_local_grounding`.
 - [x] 2. Ajouter `ANTHROPIC_API_KEY` et `VITE_BISHOP_MODEL` au fichier `.env.exemple` avec documentation.
-- [ ] 3. Wave 1 — installer `@anthropic-ai/sdk` ; implémenter l'appel Claude dans le remote mode Bishop avec le corpus groundé comme contexte ; activer le prompt caching (system prompt + corpus groundé marqués `cache_control: ephemeral`) ; vérifier le fallback local si la clé est absente.
-- [ ] 4. Décider le system prompt Bishop (ton, format de réponse, règles de citation sources) — le documenter dans le code ou un fichier dédié.
-- [ ] 5. Wave 2 — persister l'historique Bishop dans `localStorage` (clé `deepvault_bishop_history`, max 50 messages) ; restaurer au chargement ; ajouter un bouton "Exporter" sur Bishop (JSON + MD) et sur Explorer (JSON) ; ajouter un bouton "Effacer l'historique".
-- [ ] 6. Fermer la task en mettant à jour les backlog items et les requests liés.
+- [x] 3. Wave 1 — installer `@anthropic-ai/sdk` ; implémenter le remote mode Bishop multi-provider avec OpenAI/Gemini comme chemins principaux et Claude en troisième option ; activer le prompt caching côté Claude (system prompt + corpus groundé marqués `cache_control: ephemeral`) ; vérifier le fallback local si la clé est absente.
+- [x] 4. Décider le system prompt Bishop (ton, format de réponse, règles de citation sources) — le documenter dans le code ou un fichier dédié.
+- [x] 5. Wave 2 — persister l'historique Bishop dans `localStorage` (clé `deepvault_bishop_history`, max 50 messages) ; restaurer au chargement ; ajouter un bouton "Exporter" sur Bishop (JSON + MD) et sur Explorer (JSON) ; ajouter un bouton "Effacer l'historique".
+- [x] 6. Fermer la task en mettant à jour les backlog items et les requests liés.
 - [ ] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
 - [ ] GATE: ne pas fermer Wave 1 avant que le fallback local (sans clé API) passe `npm run check` ; ne pas fermer Wave 2 avant que `npm run check` passe.
 
@@ -89,6 +89,10 @@ stateDiagram-v2
 - [ ] Chaque wave a laissé un checkpoint commit-ready.
 - [ ] Status à `Done` et progress à `100%`.
 # Report
-- Wave 0: prerequisite architecture contract confirmed and environment variables for Bishop Claude integration documented.
-- Wave 1 started: Bishop remote mode now prefers `@anthropic-ai/sdk` when `ANTHROPIC_API_KEY` is available, keeps the legacy endpoint path for compatibility, and preserves local fallback when no key is present.
+- Wave 0: prerequisite architecture contract confirmed and environment variables for Bishop remote integration documented.
+- Wave 1 started: Bishop remote mode now routes through OpenAI/Gemini first and keeps Claude available as a third provider with prompt caching when `ANTHROPIC_API_KEY` is available; the legacy endpoint path remains available for compatibility, and the local fallback stays in place when no key is present.
+- Wave 1 checkpointed again: provider routing and contract tests now cover OpenAI, Gemini, and Claude with provider-specific remote payloads and fallback coverage.
+- Wave 2 completed: Bishop conversation history now persists in `localStorage` with a 50-message cap, restores on load, exports Bishop JSON/MD and Explorer JSON/MD, and supports clearing the saved history.
 - Validation passed for the Wave 1 slice: `rtk npm run test -- tests/bishop.spec.ts tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, `npm run evaluate` (run with elevated execution to avoid the sandbox IPC restriction in `tsx`).
+- Validation passed for the Wave 1 checkpoint: `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).
+- Validation passed for the Wave 2 slice: `rtk npm run test -- tests/app.spec.tsx tests/bishop.spec.ts tests/live-export-state.spec.ts tests/deepvault.spec.ts tests/corpus.spec.ts`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, `rtk npm run evaluate`, `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).

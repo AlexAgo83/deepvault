@@ -47,6 +47,9 @@ export interface AppModel {
   messages: ReturnType<typeof useBishopConversation>['messages']
   selectedMessage: ReturnType<typeof useBishopConversation>['selectedMessage']
   handleAsk: ReturnType<typeof useBishopConversation>['handleAsk']
+  clearBishopHistory: ReturnType<typeof useBishopConversation>['clearHistory']
+  exportBishopJson: ReturnType<typeof useBishopConversation>['exportJson']
+  exportBishopMarkdown: ReturnType<typeof useBishopConversation>['exportMarkdown']
   resolveFileHref: (_siteId: string, _path: string, _webUrl?: string | null) => string | null
 }
 
@@ -95,6 +98,9 @@ export function useAppModel(): AppModel {
     messages,
     selectedMessage,
     handleAsk,
+    clearHistory: clearBishopHistory,
+    exportJson: exportBishopJson,
+    exportMarkdown: exportBishopMarkdown,
   } = useBishopConversation({
     corpus: scopedCorpus,
     role,
@@ -156,6 +162,9 @@ export function useAppModel(): AppModel {
     messages,
     selectedMessage,
     handleAsk,
+    clearBishopHistory,
+    exportBishopJson,
+    exportBishopMarkdown,
     resolveFileHref,
   }
 }

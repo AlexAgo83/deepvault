@@ -2,12 +2,18 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../src/App'
+import { downloadTextFile } from '../src/lib/file-download'
+
+vi.mock('../src/lib/file-download', () => ({
+  downloadTextFile: vi.fn(),
+}))
 
 describe('DeepVault app', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
     vi.unstubAllEnvs()
     vi.restoreAllMocks()
+    localStorage.clear()
   })
 
   it('renders the explorer shell', async () => {
@@ -54,7 +60,7 @@ describe('DeepVault app', () => {
     expect(within(answerTrace as HTMLElement).getByText('Chunk count')).toBeInTheDocument()
     expect(within(answerTrace as HTMLElement).getByText('Token count')).toBeInTheDocument()
     expect(within(answerTrace as HTMLElement).getByText('Latency')).toBeInTheDocument()
-    expect(within(answerTrace as HTMLElement).getByText('answered')).toBeInTheDocument()
+    await waitFor(() => expect(within(answerTrace as HTMLElement).getByText('answered')).toBeInTheDocument())
   })
 
   it('keeps explorer search hidden while bishop is active', async () => {
@@ -176,5 +182,67 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
 
     expect(await screen.findByText('No relevant content was found in the indexed pilot corpus.')).toBeInTheDocument()
+  })
+
+  it('restores bishop history from localStorage', async () => {
+    const user = userEvent.setup()
+    localStorage.setItem(
+      'deepvault_bishop_history',
+      JSON.stringify({
+        exportedAt: '2026-04-12T00:00:00.000Z',
+        messages: [
+          {
+            id: 'seed',
+            role: 'assistant',
+            text: 'Ask a question about the pilot corpus, or switch to the explorer to inspect a source directly.',
+            status: 'ready',
+            sources: [],
+            createdAt: '2026-04-12T00:00:00.000Z',
+          },
+          {
+            id: 'saved-answer',
+            role: 'assistant',
+            text: 'Saved Bishop answer.',
+            status: 'answered',
+            sources: [],
+            createdAt: '2026-04-12T00:01:00.000Z',
+          },
+        ],
+      }),
+    )
+
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    expect(screen.getByText('Saved Bishop answer.')).toBeInTheDocument()
+  })
+
+  it('exports Bishop and Explorer data and clears Bishop history', async () => {
+    const user = userEvent.setup()
+    const mockedDownload = vi.mocked(downloadTextFile)
+
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    await user.click(screen.getByRole('button', { name: 'Export JSON' }))
+
+    expect(mockedDownload).toHaveBeenCalledWith(
+      expect.stringContaining('deepvault-bishop-'),
+      expect.stringContaining('"messages"'),
+      'application/json',
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Clear history' }))
+    expect(localStorage.getItem('deepvault_bishop_history')).toBeNull()
+    expect(screen.getByText('Ask a question about the pilot corpus, or switch to the explorer to inspect a source directly.')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Explorer' }))
+    await user.click(screen.getByRole('button', { name: 'Export MD' }))
+
+    expect(mockedDownload).toHaveBeenCalledWith(
+      expect.stringContaining('deepvault-explorer-'),
+      expect.stringContaining('# Explorer results export'),
+      'text/markdown',
+    )
   })
 })

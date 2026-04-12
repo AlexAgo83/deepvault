@@ -21,6 +21,7 @@ export function buildProviderState(): CorpusLike['providers'] {
   return [
     { id: 'openai', name: 'OpenAI', ready: Boolean(process.env.OPENAI_API_KEY) },
     { id: 'gemini', name: 'Gemini', ready: Boolean(process.env.GEMINI_API_KEY) },
+    { id: 'anthropic', name: 'Claude', ready: Boolean(process.env.ANTHROPIC_API_KEY) },
   ]
 }
 

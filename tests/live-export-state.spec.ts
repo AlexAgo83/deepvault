@@ -85,6 +85,7 @@ describe('live export state helpers', () => {
     expect(corpus.providers).toEqual([
       { id: 'openai', name: 'OpenAI', ready: false },
       { id: 'gemini', name: 'Gemini', ready: false },
+      { id: 'anthropic', name: 'Claude', ready: false },
     ])
     expect(corpus.syncRuns[0]).toMatchObject({
       scope: 'SharePoint live export from 1 configured site(s)',

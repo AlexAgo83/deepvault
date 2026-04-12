@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 45%
+> Progress: 75%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -57,7 +57,7 @@ stateDiagram-v2
 - [x] 1. Freeze the non-V2 source set and confirm the exact request, backlog, and task coverage to be orchestrated.
 - [x] 2. Execute Wave 1 first and keep it limited to the local companion, ingestion, sync, retrieval, and evaluation baseline.
 - [x] 3. Execute Wave 2 next and keep it limited to the shell, explorer, runtime, and UI surface work.
-- [ ] 4. Execute Wave 3 after that and keep it limited to Bishop orchestration and answer quality work.
+- [x] 4. Execute Wave 3 after that and keep it limited to Bishop orchestration and answer quality work.
 - [ ] 5. Execute Wave 4 next and keep it limited to refactoring, resilience, infrastructure hardening, and coverage uplift.
 - [ ] 6. Execute Wave 5 last and keep the PWA work behind the earlier stability gates.
 - [ ] 7. Keep each wave commit-ready, validate it, and update the linked Logics docs before moving on.
@@ -130,6 +130,9 @@ stateDiagram-v2
 - Wave 2 checkpointed again: added live fallback badge coverage so the shell reflects missing live corpus data when live mode is requested.
 - Wave 2 checkpointed again: added sync panel note and count coverage with a scoped assertion on the recent run card so the displayed sync metrics stay anchored to the correct run.
 - Wave 2 checkpointed again: added answer-trace coverage so the Bishop response panel now waits for the final answer before validating status, chunk, token, and latency metrics.
+- Wave 3 started: Bishop remote routing now supports OpenAI and Gemini as primary providers while keeping Claude available as a third provider, with provider-specific remote payload tests and fallback coverage.
+- Wave 3 completed: Bishop session persistence and export now cover `localStorage` restore, 50-message cap, Bishop JSON/MD export, Explorer JSON/MD export, and clear-history behavior.
+- Validation passed: `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
 - Validation passed: `rtk npm run test -- tests/deepvault.spec.ts tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`

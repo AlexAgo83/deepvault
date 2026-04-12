@@ -116,13 +116,14 @@ export function StatCard({
   )
 }
 
-export function SectionHeading({ title, subtitle }: { title: string; subtitle?: ReactNode }) {
+export function SectionHeading({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; actions?: ReactNode }) {
   return (
     <div className="section-heading">
       <div>
         <h2>{title}</h2>
         {subtitle ? <p>{subtitle}</p> : null}
       </div>
+      {actions ? <div className="section-heading-actions">{actions}</div> : null}
     </div>
   )
 }

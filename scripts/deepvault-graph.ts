@@ -74,7 +74,7 @@ export interface CorpusSiteLike {
 
 export interface CorpusLike {
   defaultUserRole: 'analyst' | 'admin' | 'guest'
-  providers: Array<{ id: 'openai' | 'gemini'; name: string; ready: boolean }>
+  providers: Array<{ id: 'openai' | 'gemini' | 'anthropic'; name: string; ready: boolean }>
   sites: CorpusSiteLike[]
   syncRuns: Array<{
     id: string

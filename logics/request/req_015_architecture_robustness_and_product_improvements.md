@@ -2,8 +2,8 @@
 > From version: 1.0.0
 > Schema version: 1.0
 > Status: Draft
-> Understanding: 90%
-> Confidence: 85%
+> Understanding: 93%
+> Confidence: 90%
 > Complexity: High
 > Theme: Architecture / Quality / Product
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.
@@ -17,7 +17,7 @@
 - Valider le schéma du corpus live au chargement (Zod ou assertions TypeScript) pour détecter tôt les données malformées.
 - Étendre la suite E2E Playwright avec des parcours fonctionnels complets.
 - Ajouter des tests unitaires pour la logique de scoring et des tests de contrat pour le fallback Bishop.
-- Brancher un provider LLM réel (Claude via @anthropic-ai/sdk) sur le remote mode de Bishop.
+- Brancher les providers LLM réels déjà disponibles sur le remote mode de Bishop, avec OpenAI/Gemini comme chemins principaux et Claude en troisième option via `@anthropic-ai/sdk`.
 - Persister la session Bishop (localStorage/IndexedDB) pour retrouver l'historique après rechargement.
 - Ajouter un bouton export des résultats (conversation Bishop, résultats Explorer) en JSON/MD.
 - Implémenter un delta sync corpus via lastModifiedDateTime du Graph API pour éviter les full-refresh.
@@ -36,7 +36,7 @@
 
 ```mermaid
 %% logics-kind: request
-%% logics-signature: request|architecture-robustness-product|architecture-robustesse-et-evolution|ac1-app-shell-eclate
+%% logics-signature: request|architecture-robustesse-et-evolution-pro|eclater-app-shell-tsx-639-lignes-en-sous|ac1-app-shell-tsx-est-reduit-au-layout
 flowchart TD
     Trigger[Analyse du projet post-v1.0] --> Arch[Axe 1: Architecture]
     Trigger --> Robust[Axe 2: Robustesse]
@@ -65,7 +65,7 @@ flowchart TD
 - AC6: Le corpus live est validé au chargement ; les données malformées lèvent une erreur explicite avec le champ fautif identifié.
 - AC7: La suite E2E couvre : recherche 0 résultats, Bishop avec sources restricted, changement de rôle avec vérification du compte sources, switch mock↔live.
 - AC8: Les tests unitaires couvrent le scoring pour query vide, document sans titre, stop words seuls ; les tests Bishop couvrent le fallback sur 500 remote.
-- AC9: Bishop remote mode appelle Claude (`claude-sonnet-4-6` ou configurable) via `@anthropic-ai/sdk` avec prompt caching ; le fallback local reste actif si la clé API est absente.
+- AC9: Bishop remote mode appelle le provider sélectionné via le contrat de Bishop, avec OpenAI/Gemini comme chemins principaux et Claude comme troisième provider via `@anthropic-ai/sdk`; le fallback local reste actif si la clé API correspondante est absente.
 - AC10: L'historique de conversation Bishop est persisté dans `localStorage` et restauré au chargement de la page.
 - AC11: Un bouton "Exporter" sur le panel Bishop et sur les résultats Explorer permet de télécharger les données en JSON ou Markdown.
 - AC12: L'export live utilise `lastModifiedDateTime` pour n'ingérer que les documents modifiés depuis le dernier checkpoint.
@@ -113,6 +113,6 @@ flowchart TD
 
 # AI Context
 - Summary: Amélioration structurelle, robustesse, tests et évolution produit de DeepVault Nexus post-v1.0.
-- Keywords: refactoring, error boundary, graph api, retry, scoring, e2e, claude api, bishop, corpus, delta sync, export, persistance
+- Keywords: refactoring, error boundary, graph api, retry, scoring, e2e, openai api, gemini api, claude api, bishop, corpus, delta sync, export, persistance
 - Use when: Use when planning the next wave of improvements after v1.0 stabilization.
 - Skip when: Skip when the work is a hotfix or targets a single isolated component.

@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { orchestrateBishopAnswer } from '../lib/bishop'
-import { type ChatMessage, type Corpus, type ProviderId, type UserRole } from '../lib/deepvault'
+import { type ChatMessage, type Corpus, type ProviderId, type SourceRecord, type UserRole } from '../lib/deepvault'
+
+export const BISHOP_HISTORY_STORAGE_KEY = 'deepvault_bishop_history'
+export const BISHOP_HISTORY_LIMIT = 50
+
+export interface BishopExportPayload {
+  exportedAt: string
+  messages: ChatMessage[]
+}
 
 export interface UseBishopConversationOptions {
   corpus: Corpus
@@ -8,6 +16,133 @@ export interface UseBishopConversationOptions {
   provider: ProviderId
   endpoint?: string | null
   onActivateTab?: () => void
+}
+
+function createBishopSeedMessage(): ChatMessage {
+  return {
+    id: 'seed',
+    role: 'assistant',
+    text: 'Ask a question about the pilot corpus, or switch to the explorer to inspect a source directly.',
+    status: 'ready',
+    sources: [],
+    createdAt: new Date().toISOString(),
+  }
+}
+
+function isSourceRecordLike(value: unknown): value is SourceRecord {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as SourceRecord).id === 'string' &&
+    typeof (value as SourceRecord).title === 'string' &&
+    typeof (value as SourceRecord).siteId === 'string' &&
+    typeof (value as SourceRecord).siteName === 'string' &&
+    typeof (value as SourceRecord).path === 'string' &&
+    typeof (value as SourceRecord).updatedAt === 'string' &&
+    typeof (value as SourceRecord).author === 'string' &&
+    typeof (value as SourceRecord).score === 'number' &&
+    typeof (value as SourceRecord).summary === 'string' &&
+    typeof (value as SourceRecord).snippet === 'string' &&
+    typeof (value as SourceRecord).source === 'string'
+  )
+}
+
+function isChatMessageLike(value: unknown): value is ChatMessage {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as ChatMessage).id === 'string' &&
+    ((value as ChatMessage).role === 'user' || (value as ChatMessage).role === 'assistant') &&
+    typeof (value as ChatMessage).text === 'string' &&
+    typeof (value as ChatMessage).status === 'string' &&
+    Array.isArray((value as ChatMessage).sources) &&
+    (value as ChatMessage).sources.every(isSourceRecordLike)
+  )
+}
+
+function normalizeBishopMessages(messages: ChatMessage[]): ChatMessage[] {
+  const seed = messages.find((message) => message.id === 'seed') || createBishopSeedMessage()
+  const tail = messages.filter((message) => message.id !== seed.id)
+  return [seed, ...tail.slice(-(BISHOP_HISTORY_LIMIT - 1))]
+}
+
+function loadBishopMessages(): ChatMessage[] | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const raw = window.localStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)
+  if (!raw) {
+    return null
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    if (Array.isArray(parsed)) {
+      const messages = parsed.filter(isChatMessageLike)
+      return messages.length ? normalizeBishopMessages(messages) : null
+    }
+
+    if (typeof parsed === 'object' && parsed !== null && Array.isArray((parsed as { messages?: unknown }).messages)) {
+      const messages = ((parsed as { messages: unknown[] }).messages).filter(isChatMessageLike)
+      return messages.length ? normalizeBishopMessages(messages) : null
+    }
+  } catch {
+    return null
+  }
+
+  return null
+}
+
+function persistBishopMessages(messages: ChatMessage[]): void {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const payload: BishopExportPayload = {
+    exportedAt: new Date().toISOString(),
+    messages: normalizeBishopMessages(messages),
+  }
+  window.localStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, JSON.stringify(payload, null, 2))
+}
+
+function formatMessageMarkdown(message: ChatMessage): string {
+  const timestamp = message.createdAt ? ` (${new Date(message.createdAt).toISOString()})` : ''
+  const heading = message.role === 'assistant' ? `### Bishop${timestamp}` : `### You${timestamp}`
+  const sources =
+    message.sources?.length > 0
+      ? message.sources.map((source) => `- ${source.title} | ${source.siteName} | ${source.path}`).join('\n')
+      : '- none'
+
+  return [
+    heading,
+    '',
+    `Status: ${message.status || 'ready'}`,
+    '',
+    message.text,
+    '',
+    'Sources:',
+    sources,
+  ].join('\n')
+}
+
+export function buildBishopExportJson(messages: ChatMessage[]): string {
+  const payload: BishopExportPayload = {
+    exportedAt: new Date().toISOString(),
+    messages: normalizeBishopMessages(messages),
+  }
+  return JSON.stringify(payload, null, 2)
+}
+
+export function buildBishopExportMarkdown(messages: ChatMessage[]): string {
+  const normalizedMessages = normalizeBishopMessages(messages)
+  return [
+    '# Bishop conversation export',
+    '',
+    `Exported at ${new Date().toISOString()}`,
+    '',
+    ...normalizedMessages.flatMap((message) => [formatMessageMarkdown(message), '']),
+  ].join('\n')
 }
 
 export function useBishopConversation({
@@ -18,17 +153,18 @@ export function useBishopConversation({
   onActivateTab,
 }: UseBishopConversationOptions) {
   const answerTimers = useRef<number[]>([])
+  const persistNextChange = useRef(true)
   const [question, setQuestion] = useState('')
   const [isAsking, setIsAsking] = useState(false)
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'seed',
-      role: 'assistant',
-      text: 'Ask a question about the pilot corpus, or switch to the explorer to inspect a source directly.',
-      status: 'ready',
-      sources: [],
-    },
-  ])
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadBishopMessages() || [createBishopSeedMessage()])
+
+  useEffect(() => {
+    if (!persistNextChange.current) {
+      persistNextChange.current = true
+      return
+    }
+    persistBishopMessages(messages)
+  }, [messages])
 
   const handleAsk = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -39,18 +175,22 @@ export function useBishopConversation({
 
     const assistantId = `${Date.now()}-assistant`
     const startedAt = Date.now()
+    const askedAt = new Date(startedAt).toISOString()
     setIsAsking(true)
-    setMessages((current) => [
-      ...current,
-      { id: `${Date.now()}-user`, role: 'user', text: trimmed, status: '', sources: [] },
-      {
-        id: assistantId,
-        role: 'assistant',
-        text: 'Bishop is drafting the answer from grounded sources.',
-        status: 'draft',
-        sources: [],
-      },
-    ])
+    setMessages((current) =>
+      normalizeBishopMessages([
+        ...current,
+        { id: `${Date.now()}-user`, role: 'user', text: trimmed, status: '', sources: [], createdAt: askedAt },
+        {
+          id: assistantId,
+          role: 'assistant',
+          text: 'Bishop is drafting the answer from grounded sources.',
+          status: 'draft',
+          sources: [],
+          createdAt: askedAt,
+        },
+      ]),
+    )
     setQuestion('')
     onActivateTab?.()
 
@@ -111,6 +251,15 @@ export function useBishopConversation({
     }
   }
 
+  const clearHistory = () => {
+    setQuestion('')
+    persistNextChange.current = false
+    setMessages([createBishopSeedMessage()])
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
+    }
+  }
+
   useEffect(
     () => () => {
       for (const timer of answerTimers.current) {
@@ -130,5 +279,8 @@ export function useBishopConversation({
     messages,
     selectedMessage,
     handleAsk,
+    clearHistory,
+    exportJson: () => buildBishopExportJson(messages),
+    exportMarkdown: () => buildBishopExportMarkdown(messages),
   }
 }
