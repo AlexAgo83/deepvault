@@ -1,5 +1,5 @@
 ## item_013_v2_operations_runbook_and_release_readiness - V2 — Operations runbook and release readiness
-> From version: 0.0.4
+> From version: 1.0.0
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 94%
@@ -50,13 +50,16 @@ flowchart TD
 - Product brief(s): `logics/product/prod_002_hosted_production_strategy_with_teams_at_the_end.md`
 - Architecture decision(s): `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
 - Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-- Primary task(s): `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
+- Primary task(s): `task_024_v2_operations_runbook_and_release_readiness`
 
 # AI Context
 - Summary: V2 operations runbook and release readiness for DeepVault
 - Keywords: operations, runbook, release, readiness, rollback, secrets
 - Use when: Use when implementing or reviewing the V2 launch readiness slice.
 - Skip when: Skip when the change is unrelated to this delivery slice or its linked request.
+# Used by
+- `logics/tasks/task_024_v2_operations_runbook_and_release_readiness.md`
+
 # Priority
 - Impact: High
 - Urgency: High

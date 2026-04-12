@@ -1,5 +1,5 @@
 ## req_001_v1_local_hardening_and_scope_evolution - V1 — Local hardening and scope evolution
-> From version: 1.0.2
+> From version: 1.0.0
 > Schema version: 1.0
 > Status: Done
 > Understanding: 98%
@@ -28,9 +28,13 @@
 %% logics-kind: request
 %% logics-signature: request|v1-local-hardening-and-scope-evolution|keep-live-corpus-generation-incremental-|ac1-the-request-clearly-frames-the
 flowchart TD
-    Trigger[V1 Local hardening and scope evolution] --> Need[Keep live corpus generation incremental an]
-    Need --> Outcome[AC1: The request clearly frames the]
-    Outcome --> Backlog[Backlog slice]
+    Trigger[V1 Local hardening and scope evolution] --> Incremental[Keep live corpus generation incremental]
+    Incremental --> Filter[Align site filter with visible results]
+    Filter --> Eval[Define live evaluation set and quality gate]
+    Eval --> Harden[Harden large-site crawling with checkpoints]
+    Harden --> Retention[Define retention and redaction rules]
+    Retention --> Cleanup[Cleanup remaining V1 backlog]
+    Cleanup --> Separate[Keep work separate from hosted backend]
 ```
 
 # Acceptance criteria

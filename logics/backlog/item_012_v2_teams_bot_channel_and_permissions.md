@@ -1,5 +1,5 @@
 ## item_012_v2_teams_bot_channel_and_permissions - V2 — DeepVault - Gordon channel and permissions
-> From version: 0.0.1
+> From version: 1.0.0
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
@@ -53,13 +53,16 @@ flowchart TD
 - Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`
 - Related backlog: `logics/backlog/item_004_teams_bot_chat_and_permissions.md`
 - Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-- Primary task(s): (none yet)
+- Primary task(s): `task_023_v2_hosted_backend_and_teams_bot_delivery`
 
 # AI Context
 - Summary: DeepVault - Gordon channel and permissions
 - Keywords: teams, bot, permissions, identity, hosted backend, chat
 - Use when: Use when implementing `DeepVault - Gordon`.
 - Skip when: Skip when the change is about local-only runtime work.
+
+# Used by
+- `logics/tasks/task_023_v2_hosted_backend_and_teams_bot_delivery.md`
 
 # Priority
 - Impact: High

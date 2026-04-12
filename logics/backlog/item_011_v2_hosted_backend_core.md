@@ -1,5 +1,5 @@
 ## item_011_v2_hosted_backend_core - V2 — Hosted backend core
-> From version: 0.0.1
+> From version: 1.0.0
 > Schema version: 1.0
 > Status: Ready
 > Understanding: 95%
@@ -51,13 +51,16 @@ flowchart TD
 - Architecture decision(s): `logics/architecture/adr_013_hosted_backend_and_teams_chat_channel.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
 - Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`
 - Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-- Primary task(s): (none yet)
+- Primary task(s): `task_023_v2_hosted_backend_and_teams_bot_delivery`
 
 # AI Context
 - Summary: Hosted backend core
 - Keywords: hosted backend, api, shared runtime, retrieval, orchestration
 - Use when: Use when implementing the backend core.
 - Skip when: Skip when the change is about local-only UI work.
+
+# Used by
+- `logics/tasks/task_023_v2_hosted_backend_and_teams_bot_delivery.md`
 
 # Priority
 - Impact: High
