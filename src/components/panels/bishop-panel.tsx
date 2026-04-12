@@ -1,4 +1,4 @@
-import { type FormEvent, useLayoutEffect, useRef, useState } from 'react'
+import { type FormEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Message, SectionHeading, SourceCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 
@@ -31,6 +31,7 @@ export function BishopPanel({
 }) {
   const messageListRef = useRef<HTMLDivElement | null>(null)
   const [stickToBottom, setStickToBottom] = useState(true)
+  const [showTracePreview, setShowTracePreview] = useState(false)
 
   const updateStickToBottom = () => {
     const node = messageListRef.current
@@ -50,6 +51,10 @@ export function BishopPanel({
 
     node.scrollTop = Math.max(0, node.scrollHeight - node.clientHeight)
   }, [messages, stickToBottom])
+
+  useEffect(() => {
+    setShowTracePreview(false)
+  }, [selectedMessage.id])
 
   return (
     <section className="content-grid bishop-grid">
@@ -124,7 +129,24 @@ export function BishopPanel({
             <span>Latency</span>
             <strong>{selectedMessage.latencyMs || 0} ms</strong>
           </div>
+          <div className="detail-row detail-row-action">
+            <span>Confidence</span>
+            <button
+              type="button"
+              className="trace-confidence-button"
+              onClick={() => setShowTracePreview((value) => !value)}
+              aria-expanded={showTracePreview}
+              disabled={typeof selectedMessage.confidenceScore !== 'number'}
+            >
+              {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : 'n/a'}
+            </button>
+          </div>
         </div>
+        {showTracePreview && selectedMessage.providerTracePreview ? (
+          <div className="trace-preview" aria-live="polite">
+            {selectedMessage.providerTracePreview}
+          </div>
+        ) : null}
         <div className="source-list">
           {(selectedMessage.sources || []).map((source) => (
             <SourceCard key={source.id} source={source} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />

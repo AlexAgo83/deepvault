@@ -129,6 +129,8 @@ describe('bishop orchestration helpers', () => {
     expect(result.answer).toBe('OpenAI remote answer.')
     expect(result.chunkCount).toBeGreaterThan(0)
     expect(result.tokenCount).toBe(133)
+    expect(result.confidenceScore).toBeGreaterThan(70)
+    expect(result.providerTracePreview).toContain('OpenAI remote answer.')
 
     const [url, init] = fetchMock.mock.calls[0]
     expect(url).toBe('https://api.openai.com/v1/chat/completions')
@@ -294,6 +296,7 @@ describe('bishop orchestration helpers', () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
+      text: async () => 'upstream unavailable',
       json: async () => ({
         answer: '',
       }),
@@ -309,5 +312,7 @@ describe('bishop orchestration helpers', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
     expect(result.mode).toBe('fallback')
     expect(result.answer).toContain('Q3 2025 budget')
+    expect(result.confidenceScore).toBeGreaterThan(0)
+    expect(result.providerTracePreview).toContain('status 500')
   })
 })

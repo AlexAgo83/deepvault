@@ -625,6 +625,42 @@ p {
   font-weight: 600;
 }
 
+.detail-row-action {
+  align-items: center;
+}
+
+.trace-confidence-button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--accent);
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trace-confidence-button:hover {
+  border-color: var(--accent);
+}
+
+.trace-confidence-button:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.trace-preview {
+  border: 1px solid rgba(185, 106, 67, 0.2);
+  border-radius: 12px;
+  background: rgba(245, 240, 232, 0.75);
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  padding: 10px 12px;
+  margin: 12px 0 0;
+}
+
 .table-wrap {
   overflow: auto;
   margin-top: 18px;
