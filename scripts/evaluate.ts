@@ -67,41 +67,60 @@ function buildLiveEvaluationRows(liveCorpus: Corpus): EvaluationRow[] {
 }
 
 const rows = mode === 'live' ? buildLiveEvaluationRows(corpus) : buildEvaluationRows()
-const results = await Promise.all(
-  rows.map(async (row) => {
-    const answer = await orchestrateBishopAnswer(corpus, row.query, { role: row.role, provider: 'openai', limit: 3 })
-    const sourceIds = answer.sources.map((source) => source.id)
-    const deniedSourceIds = answer.deniedSources.map((source) => source.id)
-    const pass =
-      answer.status === row.expectedStatus &&
-      (row.expectedStatus === 'answered'
-        ? row.expectedSourceId
-          ? sourceIds.includes(row.expectedSourceId)
-          : answer.sources.length > 0
-        : true) &&
-      (row.expectedStatus === 'no_permitted_sources'
-        ? row.expectedSourceId
-          ? deniedSourceIds.includes(row.expectedSourceId)
-          : true
-        : true)
 
-    return {
-      query_id: row.id,
-      query: row.query,
-      expected_source_id: row.expectedSourceId,
-      expected_status: row.expectedStatus,
-      provider: answer.provider,
-      status: answer.status,
-      orchestration_mode: answer.mode,
-      chunk_count: answer.chunkCount,
-      token_count: answer.tokenCount,
-      source_count: answer.sources.length,
-      latency_ms: answer.latencyMs,
-      source_ids: sourceIds,
-      pass,
-    }
-  }),
-)
+console.log(`Running ${rows.length} evaluation queries against ${mode ?? 'mock'} corpus...`)
+
+const results: Array<{
+  query_id: string
+  query: string
+  expected_source_id: string | null
+  expected_status: string
+  provider: string
+  status: string
+  orchestration_mode: string
+  chunk_count: number
+  token_count: number
+  source_count: number
+  latency_ms: number
+  source_ids: string[]
+  pass: boolean
+}> = []
+
+for (const row of rows) {
+  const answer = await orchestrateBishopAnswer(corpus, row.query, { role: row.role, provider: 'openai', limit: 10 })
+  const sourceIds = answer.sources.map((source) => source.id)
+  const deniedSourceIds = answer.deniedSources.map((source) => source.id)
+  const pass =
+    answer.status === row.expectedStatus &&
+    (row.expectedStatus === 'answered'
+      ? row.expectedSourceId
+        ? sourceIds.includes(row.expectedSourceId)
+        : answer.sources.length > 0
+      : true) &&
+    (row.expectedStatus === 'no_permitted_sources'
+      ? row.expectedSourceId
+        ? deniedSourceIds.includes(row.expectedSourceId)
+        : true
+      : true)
+
+  console.log(`[${row.id}] ${pass ? 'pass' : 'fail'} — ${answer.status} (${answer.latencyMs}ms, ${answer.chunkCount} chunks)`)
+
+  results.push({
+    query_id: row.id,
+    query: row.query,
+    expected_source_id: row.expectedSourceId,
+    expected_status: row.expectedStatus,
+    provider: answer.provider,
+    status: answer.status,
+    orchestration_mode: answer.mode,
+    chunk_count: answer.chunkCount,
+    token_count: answer.tokenCount,
+    source_count: answer.sources.length,
+    latency_ms: answer.latencyMs,
+    source_ids: sourceIds,
+    pass,
+  })
+}
 
 const passCount = results.filter((result) => result.pass).length
 const passRate = Number((passCount / results.length).toFixed(2))
