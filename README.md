@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4C8BF5" alt="MIT License" /></a>
-  <img src="https://img.shields.io/badge/version-v1.0.0-4C8BF5" alt="Version 1.0.0" />
+  <img src="https://img.shields.io/badge/version-v1.1.0-4C8BF5" alt="Version 1.1.0" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript Strict" />
   <img src="https://img.shields.io/badge/local--first-deepvault-0F766E" alt="Local first" />
