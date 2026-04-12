@@ -40,6 +40,23 @@ describe('DeepVault app', () => {
     expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
   })
 
+  it('shows the answer trace metrics after bishop responds', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
+    await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
+    await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')
+
+    const answerTrace = screen.getByText('Answer trace').closest('aside')
+    expect(answerTrace).not.toBeNull()
+    expect(within(answerTrace as HTMLElement).getByText('Chunk count')).toBeInTheDocument()
+    expect(within(answerTrace as HTMLElement).getByText('Token count')).toBeInTheDocument()
+    expect(within(answerTrace as HTMLElement).getByText('Latency')).toBeInTheDocument()
+    expect(within(answerTrace as HTMLElement).getByText('answered')).toBeInTheDocument()
+  })
+
   it('keeps explorer search hidden while bishop is active', async () => {
     const user = userEvent.setup()
     render(<App />)
