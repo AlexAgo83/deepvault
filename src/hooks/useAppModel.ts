@@ -42,7 +42,6 @@ export interface AppModel {
   scopedCorpusSummary: ReturnType<typeof summarizeCorpus>
   scopedSiteSummaries: ReturnType<typeof buildSiteSummaries>
   scopedSyncOverview: ReturnType<typeof buildSyncOverview>
-  scopedSyncRuns: Corpus['syncRuns']
   explorerRows: ExplorerRow[]
   providerSecrets: ReturnType<typeof useProviderSecrets>['providerSecrets']
   setProviderSecret: ReturnType<typeof useProviderSecrets>['setApiKey']
@@ -188,7 +187,6 @@ export function useAppModel(): AppModel {
     scopedCorpusSummary,
     scopedSiteSummaries,
     scopedSyncOverview,
-    scopedSyncRuns: scopedCorpus.syncRuns,
     explorerRows,
     providerSecrets,
     setProviderSecret,

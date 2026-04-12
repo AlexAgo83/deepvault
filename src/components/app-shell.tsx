@@ -349,7 +349,20 @@ export function AppShell(model: AppModel) {
 
         {activeTab === 'settings' ? (
           <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
-            <SettingsPanel providerSecrets={providerSecrets} onClear={clearProviderSecrets} onKeyChange={setProviderSecret} />
+            <SettingsPanel
+              activeScopeLabel={activeScopeLabel}
+              corpusProviders={corpusProviders}
+              providerSecrets={providerSecrets}
+              onClear={clearProviderSecrets}
+              onKeyChange={setProviderSecret}
+              onProviderChange={(value) => setProvider(value)}
+              onRoleChange={(value) => setRole(value)}
+              onSiteFilterChange={setSiteFilter}
+              provider={provider}
+              role={role}
+              siteFilter={siteFilter}
+              siteSummaries={siteSummaries}
+            />
           </ErrorBoundary>
         ) : null}
 
@@ -397,15 +410,6 @@ export function AppShell(model: AppModel) {
         {activeTab === 'sync' ? (
           <ErrorBoundary fallback={<div className="empty-state">Sync panel failed to render.</div>}>
             <SyncPanel
-              activeScopeLabel={activeScopeLabel}
-              corpusProviders={corpusProviders}
-              onProviderChange={(value) => setProvider(value)}
-              onRoleChange={(value) => setRole(value)}
-              onSiteFilterChange={setSiteFilter}
-              provider={provider}
-              role={role}
-              siteFilter={siteFilter}
-              siteSummaries={siteSummaries}
               scopedCorpusSummary={scopedCorpusSummary}
               scopedSiteSummaries={scopedSiteSummaries}
               scopedSyncOverview={scopedSyncOverview}

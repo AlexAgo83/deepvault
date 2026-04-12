@@ -606,6 +606,14 @@ p {
   margin-bottom: 2px;
 }
 
+.settings-main-column,
+.sync-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
 .settings-panel {
   display: grid;
   gap: 18px;
