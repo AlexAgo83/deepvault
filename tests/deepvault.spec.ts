@@ -144,6 +144,18 @@ describe('deepvault helpers', () => {
     expect(searchDocuments(corpus, 'restricted launch notes', { role: 'guest', includeDenied: true })[0].permitted).toBe(false)
   })
 
+  it('filters search results by site and respects the result limit', () => {
+    const alphaResults = searchDocuments(corpus, 'project', { role: 'analyst', siteId: 'pilot-alpha', limit: 2 })
+    const betaResults = searchDocuments(corpus, 'policy', { role: 'analyst', siteId: 'pilot-beta', limit: 2 })
+
+    expect(alphaResults).toHaveLength(2)
+    expect(betaResults).toHaveLength(2)
+    expect(alphaResults.every((entry) => entry.document.siteId === 'pilot-alpha')).toBe(true)
+    expect(betaResults.every((entry) => entry.document.siteId === 'pilot-beta')).toBe(true)
+    expect(alphaResults[0].score).toBeGreaterThanOrEqual(alphaResults[1].score)
+    expect(betaResults[0].score).toBeGreaterThanOrEqual(betaResults[1].score)
+  })
+
   it('scores title matches ahead of broader content matches', () => {
     const rankedMatches = searchDocuments(corpus, 'q3 2025 budget approval', { role: 'analyst', limit: 3 })
 

@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 90%
+> Progress: 95%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -125,6 +125,7 @@ stateDiagram-v2
 - Wave 1 checkpointed again: added sync-summary coverage for latest-run selection and pending-site behavior with no sync history.
 - Wave 1 checkpointed again: added role-scoped summary coverage for guest and admin so sync and corpus counts stay truthful across access levels.
 - Wave 1 checkpointed again: added retrieval scoring coverage so title-led matches and permitted results stay in the expected order.
+- Wave 1 checkpointed again: added search result coverage for site filters and result limits so query scope stays bounded.
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
 - Validation passed: `rtk npm run test -- tests/deepvault.spec.ts tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
