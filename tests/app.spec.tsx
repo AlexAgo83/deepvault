@@ -1,9 +1,15 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../src/App'
 
 describe('DeepVault app', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.unstubAllEnvs()
+    vi.restoreAllMocks()
+  })
+
   it('renders the explorer shell', async () => {
     render(<App />)
 
@@ -59,6 +65,25 @@ describe('DeepVault app', () => {
 
     expect(screen.getByRole('button', { name: 'Explorer' })).not.toHaveAttribute('aria-current')
     expect(screen.getByRole('button', { name: 'Sync status' })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('shows the live fallback badge when live corpus data is missing', async () => {
+    const user = userEvent.setup()
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      json: async () => {
+        throw new Error('should not be called')
+      },
+    })
+
+    vi.stubEnv('VITE_DEEPVAULT_DATA_MODE', 'live')
+    vi.stubGlobal('fetch', fetchMock)
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    expect(await screen.findByText('Live fallback')).toBeInTheDocument()
+    expect(screen.getByTitle('Live corpus missing, fallback to mock')).toBeInTheDocument()
   })
 
   it('keeps the explorer detail pane within the selected site scope', async () => {
