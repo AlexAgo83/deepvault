@@ -1,10 +1,10 @@
 ## task_025_non_v2_delivery_orchestration_and_validation_hardening - Non-V2 delivery orchestration and validation hardening
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: In progress
-> Understanding: 97%
-> Confidence: 93%
-> Progress: 99%
+> Status: Done
+> Understanding: 98%
+> Confidence: 94%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -60,7 +60,7 @@ stateDiagram-v2
 - [x] 4. Execute Wave 3 after that and keep it limited to Bishop orchestration and answer quality work.
 - [x] 5. Execute Wave 4 next and keep it limited to refactoring, resilience, infrastructure hardening, and coverage uplift.
 - [x] 6. Execute Wave 5 last and keep the PWA work behind the earlier stability gates.
-- [ ] 7. Keep each wave commit-ready, validate it, and update the linked Logics docs before moving on.
+- [x] 7. Keep each wave commit-ready, validate it, and update the linked Logics docs before moving on.
 - [x] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
 - [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
 - [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
@@ -143,6 +143,9 @@ stateDiagram-v2
 - Wave 5 started: PWA foundation now installs `vite-plugin-pwa`, emits `dist/sw.js`, and ships the manifest plus square icons.
 - Wave 5 continued: the header now captures `beforeinstallprompt` and exposes the install affordance only when the app is installable, with standalone and unsupported-browser hiding covered by tests.
 - Wave 5 continued: the shell now shows a non-blocking update banner when a new service worker is waiting, with explicit dismiss and update actions.
+- Wave 5 completed: the offline fallback now serves the bundled mock corpus when live mode is unavailable offline, shows the offline indicator, and the Playwright offline coverage passes.
+- Wave 5 validated: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx tests/app.spec.tsx`, `rtk npm run e2e`, and `VITE_DEEPVAULT_DATA_MODE=live rtk npm run e2e -- tests/e2e/live-mode.spec.ts` passed.
+- Final closure: the linked PWA request, backlog items, and delivery task are all marked `Done`, and the non-V2 orchestration program is complete.
 - Validation passed: `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`

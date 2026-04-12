@@ -1,10 +1,10 @@
 ## item_058_pwa_offline_cache_and_mock_fallback - PWA: offline cache and mock corpus fallback
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 88%
 > Confidence: 83%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Infrastructure / PWA
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -19,7 +19,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|pwa-offline-cache-and-mock-fallback|req-016-pwa-install-and-offline-first|mettre-en-cache-assets-corpus-mock|ac1-app-charge-hors-ligne
+%% logics-signature: backlog|pwa-offline-cache-and-mock-corpus-fallba|req-016-pwa-install-and-offline-first|sans-cache-service-worker-l-app|ac1-avec-le-reseau-coupe-apres
 flowchart TD
     Request[req_016_pwa_install_and_offline_first] --> Problem[App non disponible hors-ligne]
     Problem --> Scope[Cache assets + fallback mock]
@@ -79,3 +79,7 @@ flowchart TD
 - Dépend de item_055 (fondation PWA) — le cache Workbox doit être configuré avant d'ajouter le fallback mock.
 - `pilot-corpus.json` est bundlé dans l'app, il sera naturellement dans le cache assets Workbox sans configuration supplémentaire si inclus dans le build output.
 - `page.context().setOffline(true)` est l'API Playwright pour simuler le mode hors-ligne en test.
+
+# Report
+- Wave 4 completed: the app now falls back to the bundled mock corpus when live mode is unavailable offline, shows the offline indicator, and the offline Playwright scenario proves the cached app boots without network.
+- Wave 4 validated: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx tests/app.spec.tsx`, `rtk npm run e2e`, and `VITE_DEEPVAULT_DATA_MODE=live rtk npm run e2e -- tests/e2e/live-mode.spec.ts` passed.

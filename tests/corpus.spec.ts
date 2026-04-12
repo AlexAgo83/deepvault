@@ -86,6 +86,17 @@ describe('corpus helpers', () => {
     })
   })
 
+  it('returns an offline state when the live corpus request fails without a network connection', async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new Error('network down'))
+    vi.stubGlobal('fetch', fetchMock)
+    vi.stubGlobal('navigator', { onLine: false })
+
+    await expect(fetchLiveCorpus()).resolves.toMatchObject({
+      status: 'offline',
+      detail: 'Live corpus unavailable offline, fallback to mock',
+    })
+  })
+
   it('returns an error state when the live corpus request throws', async () => {
     const fetchMock = vi.fn().mockRejectedValue(new Error('network down'))
 

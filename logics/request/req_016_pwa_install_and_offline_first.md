@@ -1,9 +1,9 @@
 ## req_016_pwa_install_and_offline_first - PWA : installation, mise à jour et fonctionnement hors-ligne
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
-> Understanding: 88%
-> Confidence: 82%
+> Status: Done
+> Understanding: 93%
+> Confidence: 90%
 > Complexity: Medium
 > Theme: Infrastructure / UX
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.
@@ -27,7 +27,7 @@
 
 ```mermaid
 %% logics-kind: request
-%% logics-signature: request|pwa-install-and-offline-first|pwa-installation-mise-a-jour-et-fonctionnement|ac1-app-installable-depuis-navigateur
+%% logics-signature: request|pwa-installation-mise-a-jour-et-fonction|rendre-deepvault-nexus-installable-comme|ac1-l-app-affiche-un-bouton
 flowchart TD
     Trigger[App locale non installable] --> PWA[Activer PWA]
     PWA --> Manifest[Manifeste + icônes]
@@ -96,3 +96,7 @@ flowchart TD
 - Keywords: pwa, service worker, workbox, vite-plugin-pwa, manifest, install, offline, cache, update banner, beforeinstallprompt
 - Use when: Use when implementing PWA capabilities, install flow, update notifications, or offline corpus support.
 - Skip when: Skip when the work targets Bishop orchestration, corpus data models, or Graph export logic.
+
+# Report
+- The PWA request is fully delivered: install button, update banner, offline mock fallback, Workbox cache strategy, and offline Playwright coverage are implemented and validated.
+- The request is now closed after Wave 4 completed and the linked backlog items and task were marked `Done`.
