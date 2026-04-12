@@ -245,7 +245,6 @@ export function AppShell(model: AppModel) {
     resolveFileHref,
     role,
     scopedCorpusSummary,
-    scopedSyncRuns,
     scopedSiteSummaries,
     scopedSyncOverview,
     search,
@@ -262,6 +261,7 @@ export function AppShell(model: AppModel) {
     setSiteFilter,
     siteFilter,
     siteSummaries,
+    syncOperations,
   } = model
   const installPrompt = useInstallPrompt()
   const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true })
@@ -409,7 +409,7 @@ export function AppShell(model: AppModel) {
               scopedCorpusSummary={scopedCorpusSummary}
               scopedSiteSummaries={scopedSiteSummaries}
               scopedSyncOverview={scopedSyncOverview}
-              scopedSyncRuns={scopedSyncRuns}
+              syncOperations={syncOperations}
             />
           </ErrorBoundary>
         ) : null}
