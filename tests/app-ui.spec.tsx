@@ -53,12 +53,12 @@ describe('app ui helpers', () => {
     expect(screen.getByText('Minimal')).toBeInTheDocument()
   })
 
-  it('renders stat cards without hover tooltips', () => {
+  it('renders stat cards with hover tooltips', () => {
     render(<StatCard label="Sites in scope" value={3} note="Shared across Explorer, Bishop, and Sync status." />)
 
     const statCard = screen.getByText('Sites in scope').closest('.stat-card')
-    expect(statCard).not.toHaveAttribute('title')
-    expect(screen.getByText('Shared across Explorer, Bishop, and Sync status.')).toBeInTheDocument()
+    expect(statCard).toHaveAttribute('title', 'Shared across Explorer, Bishop, and Sync status.')
+    expect(screen.queryByText('Shared across Explorer, Bishop, and Sync status.')).not.toBeInTheDocument()
   })
 
   it('renders messages with and without sources', () => {
