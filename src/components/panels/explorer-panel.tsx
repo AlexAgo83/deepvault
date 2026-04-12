@@ -20,20 +20,20 @@ export function ExplorerPanel({
   return (
     <section className="content-grid">
       <article className="panel">
-        <SectionHeading
-          title="Explorer"
-          subtitle="Browse the pilot corpus by site, search term, and source details."
-          actions={
-            <>
-              <button type="button" className="secondary-button" onClick={onExportJson}>
-                Export JSON
-              </button>
-              <button type="button" className="secondary-button" onClick={onExportMarkdown}>
-                Export MD
-              </button>
-            </>
-          }
-        />
+            <SectionHeading
+              title="Explorer"
+              subtitle="Browse the pilot corpus by site, search term, and source details."
+              actions={
+                <>
+                  <button type="button" className="secondary-button secondary-button-sm" onClick={onExportJson}>
+                    Export JSON
+                  </button>
+                  <button type="button" className="secondary-button secondary-button-sm" onClick={onExportMarkdown}>
+                    Export MD
+                  </button>
+                </>
+              }
+            />
         <div className="document-list">
           {explorerRows.map((document) => (
             <button

@@ -596,6 +596,12 @@ p {
   background: transparent;
 }
 
+.secondary-button-sm {
+  padding: 7px 10px;
+  font-size: 0.82rem;
+  border-radius: 9px;
+}
+
 .settings-grid {
   margin-bottom: 2px;
 }
