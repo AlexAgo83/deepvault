@@ -296,9 +296,23 @@ p {
   gap: 24px;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .topbar-badges {
+  display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 8px;
+}
+
+.install-button {
+  white-space: nowrap;
 }
 
 .topbar h1 {

@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { ErrorBoundary } from './error-boundary'
 import { CompactDateTime, Pill, StatCard } from './app-ui'
+import { useInstallPrompt } from '../hooks'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
 import { BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SyncPanel } from './panels'
 import { version } from '../../package.json'
@@ -80,6 +81,9 @@ function AppTopbar({
   liveStateLabel,
   liveStateTone,
   liveStateDetail,
+  canInstall,
+  install,
+  isStandalone,
   provider,
   role,
 }: {
@@ -87,20 +91,30 @@ function AppTopbar({
   liveStateLabel: string
   liveStateTone: AppModel['liveState']['tone']
   liveStateDetail: string
+  canInstall: boolean
+  install: () => Promise<void>
+  isStandalone: boolean
   provider: string
   role: string
 }) {
   return (
     <header className="topbar">
       <div />
-      <div className="topbar-badges">
-        <Pill tone={liveStateTone} title={liveStateDetail}>
-          {liveStateLabel}
-        </Pill>
-        <Pill tone="success">Synced</Pill>
-        <Pill tone="neutral">{activeScopeLabel}</Pill>
-        <Pill tone="neutral">{provider}</Pill>
-        <Pill tone="accent">{role}</Pill>
+      <div className="topbar-actions">
+        {!isStandalone && canInstall ? (
+          <button type="button" className="secondary-button install-button" onClick={() => void install()}>
+            Installer l'app
+          </button>
+        ) : null}
+        <div className="topbar-badges">
+          <Pill tone={liveStateTone} title={liveStateDetail}>
+            {liveStateLabel}
+          </Pill>
+          <Pill tone="success">Synced</Pill>
+          <Pill tone="neutral">{activeScopeLabel}</Pill>
+          <Pill tone="neutral">{provider}</Pill>
+          <Pill tone="accent">{role}</Pill>
+        </div>
       </div>
     </header>
   )
@@ -163,6 +177,7 @@ export function AppShell(model: AppModel) {
     siteFilter,
     siteSummaries,
   } = model
+  const installPrompt = useInstallPrompt()
 
   const explorerExportHandlers = createExplorerExportHandlers({
     activeScopeLabel,
@@ -179,9 +194,12 @@ export function AppShell(model: AppModel) {
       <main className="main-content">
         <AppTopbar
           activeScopeLabel={activeScopeLabel}
+          canInstall={installPrompt.canInstall}
           liveStateDetail={liveState.detail}
           liveStateLabel={liveState.label}
           liveStateTone={liveState.tone}
+          install={installPrompt.install}
+          isStandalone={installPrompt.isStandalone}
           provider={provider}
           role={role}
         />
