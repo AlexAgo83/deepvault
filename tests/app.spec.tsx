@@ -267,7 +267,7 @@ describe('DeepVault app', () => {
       expect(pathLabel.textContent).not.toContain('/')
     }
 
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
     await user.click(screen.getByRole('button', { name: 'Pilot Site Beta' }))
     expect(screen.getByText('Runtime')).toBeInTheDocument()
 
@@ -278,7 +278,7 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('heading', { name: 'Known SSO implementation issues' })).toBeInTheDocument()
   })
 
-  it('shows the sync tab runtime panel and the empty explorer state for an impossible filter', async () => {
+  it('shows the sync tab without runtime controls and the empty explorer state for an impossible filter', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -287,9 +287,10 @@ describe('DeepVault app', () => {
 
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
     expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
-    expect(screen.getByText('Runtime')).toBeInTheDocument()
-    expect(screen.getByText('Site scope')).toBeInTheDocument()
+    expect(screen.queryByText('Runtime')).not.toBeInTheDocument()
+    expect(screen.queryByText('Site scope')).not.toBeInTheDocument()
 
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
     await user.click(screen.getByRole('button', { name: 'Restricted Pilot Site' }))
 
     await user.click(screen.getByRole('button', { name: 'Explorer' }))
@@ -303,7 +304,7 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
     await user.click(screen.getByRole('button', { name: 'Restricted Pilot Site' }))
     await user.click(screen.getByRole('button', { name: 'Bishop' }))
     await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')

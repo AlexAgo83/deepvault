@@ -26,7 +26,7 @@ test.describe('DeepVault workflows', () => {
 
   test('keeps restricted Bishop sources hidden for guest users', async ({ page }) => {
     await openApp(page)
-    await page.getByRole('button', { name: 'Sync status' }).click()
+    await page.getByRole('button', { name: 'Settings' }).click()
     await runtimeSelect(page, 'Role').selectOption('guest')
 
     await page.getByRole('button', { name: 'Bishop' }).click()
@@ -41,14 +41,17 @@ test.describe('DeepVault workflows', () => {
 
   test('increases visible sources when switching from guest to admin', async ({ page }) => {
     await openApp(page)
-    await page.getByRole('button', { name: 'Sync status' }).click()
+    await page.getByRole('button', { name: 'Settings' }).click()
 
     const visibleSources = page.locator('.stat-card').filter({ hasText: 'Visible sources' }).locator('.stat-value')
 
     await runtimeSelect(page, 'Role').selectOption('guest')
+    await page.getByRole('button', { name: 'Sync status' }).click()
     await expect(visibleSources).toHaveText('0')
 
+    await page.getByRole('button', { name: 'Settings' }).click()
     await runtimeSelect(page, 'Role').selectOption('admin')
+    await page.getByRole('button', { name: 'Sync status' }).click()
     await expect(visibleSources).not.toHaveText('0')
   })
 })
