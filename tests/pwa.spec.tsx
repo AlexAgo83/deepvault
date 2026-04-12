@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../src/App'
@@ -98,6 +98,7 @@ describe('PWA install prompt', () => {
     })
 
     const installButton = await screen.findByRole('button', { name: "Installer l'app" })
+    expect(within(screen.getByRole('banner')).queryByRole('button', { name: "Installer l'app" })).not.toBeInTheDocument()
     await user.click(installButton)
 
     expect(prompt).toHaveBeenCalledTimes(1)
@@ -126,6 +127,7 @@ describe('PWA update banner', () => {
     render(<App />)
 
     expect(await screen.findByText('Une nouvelle version est disponible')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Mettre à jour' })).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Mettre à jour' }))
 
@@ -133,15 +135,15 @@ describe('PWA update banner', () => {
     await waitFor(() => expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument())
   })
 
-  it('dismisses the banner without updating the service worker', async () => {
+  it('keeps the update banner informational instead of exposing a dismiss action', async () => {
     const user = userEvent.setup()
     setPwaRegisterState(true)
     render(<App />)
 
     await screen.findByText('Une nouvelle version est disponible')
-    await user.click(screen.getByRole('button', { name: 'Ignorer' }))
-
-    expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Ignorer' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Mettre à jour' }))
+    await waitFor(() => expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument())
   })
 
   it('keeps the banner hidden when no refresh is pending', () => {
