@@ -269,6 +269,29 @@ p {
   padding: 8px 10px;
 }
 
+.message-need {
+  display: grid;
+  gap: 2px;
+  margin-top: 10px;
+  padding: 9px 11px;
+  border-left: 2px solid var(--accent-2);
+  border-radius: 10px;
+  background: rgba(76, 125, 90, 0.06);
+}
+
+.message-need strong {
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.message-need span {
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
 .runtime-row select,
 .toolbar-search input,
 .chat-form textarea {
@@ -923,6 +946,44 @@ th {
 .sync-ops-panel {
   display: grid;
   gap: 16px;
+}
+
+.ai-stats-main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.ai-stats-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.ai-response-list {
+  display: grid;
+  gap: 12px;
+}
+
+.ai-response-card {
+  display: grid;
+  gap: 10px;
+}
+
+.ai-response-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.ai-response-need {
+  margin-top: 2px;
+}
+
+.ai-need-row {
+  align-items: flex-start;
 }
 
 .sync-ops-summary {

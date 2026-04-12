@@ -23,12 +23,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|refactor-app-shell-and-ui-state|req-011-audit-de-dette-technique-et-clea|src-app-tsx-is-too-large-and|ac1-src-app-tsx-is-decomposed-into
 flowchart TD
-    Request[req 011 audit] --> Problem[App shell is too large]
+    Request[req_011_audit_de_dette_technique_et_cleanu] --> Problem[src App.tsx is too large and]
     Problem --> Scope[Refactor app shell and UI state]
-    Scope --> Shell[Smaller shell components]
-    Scope --> Hooks[Focused UI hooks]
-    Shell --> Validate[Run app and e2e checks]
-    Hooks --> Validate
+    Scope --> Acceptance[AC1: src App.tsx is decomposed into]
+    Acceptance --> Tasks[task_016_orchestrate_technical_debt_cleanu]
 ```
 
 # Acceptance criteria

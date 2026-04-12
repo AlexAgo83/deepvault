@@ -23,18 +23,18 @@
 %% logics-kind: task
 %% logics-signature: task|structural-refactoring-and-resilience-fo|item-046-split-app-shell-into-panel-comp|1-confirmer-les-dependances-entre-les|wave-1-npm-run-check
 stateDiagram-v2
-    state "3 backlog items — refactoring structurel" as Backlog
-    state "1. Confirmer l'ordre et les dépendances" as Scope
-    state "2. Wave 1: split app-shell en panels/" as Wave1
-    state "3. Wave 2: scoring.ts + barrel exports" as Wave2
-    state "4. Wave 3: Error Boundaries" as Wave3
-    state "5. Valider et reporter" as Report
+    state "item_046_split_app_shell_into_panel_compon" as Backlog
+    state "1. Confirmer les dependances entre les" as Scope
+    state "2. Wave 1 extraire explorer-panel.tsx bish" as Build
+    state "3. Wave 2 creer src lib" as Verify
+    state "Wave 1 : npm run check" as Validation
+    state "Done report" as Report
     [*] --> Backlog
     Backlog --> Scope
-    Scope --> Wave1
-    Wave1 --> Wave2
-    Wave2 --> Wave3
-    Wave3 --> Report
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
     Report --> [*]
 ```
 

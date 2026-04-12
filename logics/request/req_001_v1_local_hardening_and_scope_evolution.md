@@ -28,13 +28,9 @@
 %% logics-kind: request
 %% logics-signature: request|v1-local-hardening-and-scope-evolution|keep-live-corpus-generation-incremental-|ac1-the-request-clearly-frames-the
 flowchart TD
-    Trigger[V1 Local hardening and scope evolution] --> Incremental[Keep live corpus generation incremental]
-    Incremental --> Filter[Align site filter with visible results]
-    Filter --> Eval[Define live evaluation set and quality gate]
-    Eval --> Harden[Harden large-site crawling with checkpoints]
-    Harden --> Retention[Define retention and redaction rules]
-    Retention --> Cleanup[Cleanup remaining V1 backlog]
-    Cleanup --> Separate[Keep work separate from hosted backend]
+    Trigger[V1 Local hardening and scope evolution] --> Need[Keep live corpus generation incremental an]
+    Need --> Outcome[AC1: The request clearly frames the]
+    Outcome --> Backlog[Backlog slice]
 ```
 
 # Acceptance criteria

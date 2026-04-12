@@ -24,11 +24,8 @@
 %% logics-kind: request
 %% logics-signature: request|move-site-selector-into-runtime|move-the-site-selector-into-the|ac1-the-site-selector-appears-in
 flowchart TD
-    Trigger[Sidebar site selector] --> Need[Move it into runtime]
-    Need --> Value[Make corpus scope explicit]
-    Need --> Constraints[Keep behavior and keyboard flow stable]
-    Value --> Outcome[AC1: Site selector is part of runtime]
-    Constraints --> Outcome
+    Trigger[Move site selector into runtime] --> Need[Move the site selector into the]
+    Need --> Outcome[AC1: The site selector appears in]
     Outcome --> Backlog[Backlog slice]
 ```
 

@@ -29,7 +29,7 @@ flowchart TD
     Request[req_009_explorer_file_type_pill_inline_wit] --> Problem[Keep the file type visible as]
     Problem --> Scope[Compact title row spacing and regression]
     Scope --> Acceptance[AC1: The Explorer card title row]
-    Acceptance --> Tasks[Execution task]
+    Acceptance --> Tasks[task_015_sharepoint_file_link_and_file_typ]
 ```
 
 # Acceptance criteria

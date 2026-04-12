@@ -197,6 +197,12 @@ export function Message({
         ) : null}
       </div>
       <p>{message.text}</p>
+      {message.role === 'assistant' && message.improvementHint ? (
+        <div className="message-need">
+          <strong>What would help next</strong>
+          <span>{message.improvementHint}</span>
+        </div>
+      ) : null}
       {showTracePreview && message.providerTracePreview ? <div className="message-trace-preview">{message.providerTracePreview}</div> : null}
       {message.sources?.length ? (
         <div className="message-sources">

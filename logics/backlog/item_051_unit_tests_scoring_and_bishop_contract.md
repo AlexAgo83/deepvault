@@ -22,12 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|unit-tests-for-scoring-and-bishop-fallba|req-015-architecture-robustness-and-prod|la-logique-de-scoring-poids-par|ac1-un-test-verifie-que-scorer
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[Cas limites scoring et fallback Bishop non testés]
-    Problem --> Scope[Tests unitaires scoring + Bishop]
-    Scope --> AC1[AC1: scoring query vide]
-    Scope --> AC2[AC2: scoring doc sans titre]
-    Scope --> AC3[AC3: stop words seuls]
-    Scope --> AC4[AC4: Bishop fallback sur 500]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[La logique de scoring poids par]
+    Problem --> Scope[Unit tests for scoring and Bishop]
+    Scope --> Acceptance[AC1: Un test verifie que scorer]
+    Acceptance --> Tasks[task_020_test_coverage_expansion]
 ```
 
 # Acceptance criteria

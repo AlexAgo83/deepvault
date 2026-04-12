@@ -24,11 +24,8 @@
 %% logics-kind: request
 %% logics-signature: request|move-runtime-under-sync-status|move-the-runtime-controls-into-the|ac1-runtime-controls-are-shown-inside
 flowchart TD
-    Trigger[Runtime controls in sidebar] --> Need[Move them under Sync status]
-    Need --> Value[Group operational context]
-    Need --> Constraints[Keep behavior and access stable]
-    Value --> Outcome[AC1: Runtime controls appear in Sync status]
-    Constraints --> Outcome
+    Trigger[Move runtime under Sync status] --> Need[Move the runtime controls into the]
+    Need --> Outcome[AC1: Runtime controls are shown inside]
     Outcome --> Backlog[Backlog slice]
 ```
 

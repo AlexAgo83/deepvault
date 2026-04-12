@@ -26,21 +26,18 @@
 %% logics-kind: task
 %% logics-signature: task|pwa-progressive-web-app-delivery|item-055-pwa-vite-plugin-and-workbox-set|1-verifier-la-compatibilite-de-vite-plug|wave-1-npm-run-build
 stateDiagram-v2
-    state "4 backlog items — PWA delivery" as Backlog
-    state "1. Vérifier compatibilité Vite 6 + préparer icônes" as Scope
-    state "2. Wave 1: fondation PWA (vite-plugin-pwa + manifeste)" as Wave1
-    state "3. Wave 2: bouton Install" as Wave2
-    state "4. Wave 3: bandeau mise à jour" as Wave3
-    state "5. Wave 4: cache offline + fallback mock" as Wave4
-    state "6. Valider et reporter" as Report
+    state "item_055_pwa_vite_plugin_and_workbox_setup" as Backlog
+    state "1. Verifier la compatibilite de vite-plugi" as Scope
+    state "2. Wave 1 installer vite-plugin-pwa en" as Build
+    state "3. Wave 2 creer un hook" as Verify
+    state "Wave 1 : npm run build" as Validation
+    state "Done report" as Report
     [*] --> Backlog
     Backlog --> Scope
-    Scope --> Wave1
-    Wave1 --> Wave2
-    Wave1 --> Wave3
-    Wave2 --> Wave4
-    Wave3 --> Wave4
-    Wave4 --> Report
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
     Report --> [*]
 ```
 

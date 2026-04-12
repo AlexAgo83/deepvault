@@ -23,12 +23,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|clean-logics-workflow-hygiene-and-refere|req-011-audit-de-dette-technique-et-clea|the-logics-workflow-has-stale-or|ac1-logics-index-md-no-longer-contains
 flowchart TD
-    Request[req 011 audit] --> Problem[Workflow docs are inconsistent]
-    Problem --> Scope[Clean Logics hygiene and references]
-    Scope --> Index[Fix index and relationships]
-    Scope --> Duplicates[Review duplicate scope docs]
-    Index --> Validate[Run lint and review checks]
-    Duplicates --> Validate
+    Request[req_011_audit_de_dette_technique_et_cleanu] --> Problem[The Logics workflow has stale or]
+    Problem --> Scope[Clean Logics workflow hygiene and referenc]
+    Scope --> Acceptance[AC1: logics INDEX.md no longer contains]
+    Acceptance --> Tasks[task_016_orchestrate_technical_debt_cleanu]
 ```
 
 # Acceptance criteria

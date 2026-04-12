@@ -22,12 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|corpus-delta-sync-via-graph-lastmodified|req-015-architecture-robustness-and-prod|l-export-live-scripts-export-live-ts-fai|ac1-scripts-export-live-ts-compare-lastm
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[Full-refresh coûteux sur grands SharePoint]
-    Problem --> Scope[Delta sync via lastModifiedDateTime]
-    Scope --> AC1[AC1: comparaison lastModifiedDateTime]
-    Scope --> AC2[AC2: seuls les docs modifiés ingérés]
-    Scope --> AC3[AC3: checkpoint mis à jour]
-    Scope --> AC4[AC4: compatibilité checkpoint existant]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[L export live scripts export-live.ts fait]
+    Problem --> Scope[Corpus delta sync via Graph lastModifiedDa]
+    Scope --> Acceptance[AC1: scripts export-live.ts compare lastMo]
+    Acceptance --> Tasks[task_019_infrastructure_hardening_graph_an]
 ```
 
 # Acceptance criteria

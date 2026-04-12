@@ -23,11 +23,8 @@
 %% logics-kind: request
 %% logics-signature: request|add-leading-icons-to-navigation|add-a-leading-icon-to-each|ac1-each-primary-navigation-entry-has
 flowchart TD
-    Trigger[Sidebar navigation] --> Need[Add leading icons]
-    Need --> Value[Improve scanability]
-    Need --> Constraints[Keep labels and keyboard flow]
-    Value --> Outcome[AC1: Each primary entry has an icon]
-    Constraints --> Outcome
+    Trigger[Add leading icons to navigation] --> Need[Add a leading icon to each]
+    Need --> Outcome[AC1: Each primary navigation entry has]
     Outcome --> Backlog[Backlog slice]
 ```
 

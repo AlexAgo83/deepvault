@@ -21,12 +21,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|pwa-update-banner|req-016-pwa-install-and-offline-first|sans-bandeau-de-mise-a-jour|ac1-lorsque-needrefresh-est-true-nouveau
 flowchart TD
-    Request[req_016_pwa_install_and_offline_first] --> Problem[Nouvelle version SW ignorée par l'utilisateur]
-    Problem --> Scope[Bandeau mise à jour]
-    Scope --> AC1[AC1: bandeau visible si needRefresh]
-    Scope --> AC2[AC2: clic Mettre à jour recharge]
-    Scope --> AC3[AC3: bouton fermer sans MAJ]
-    Scope --> AC4[AC4: non-bloquant]
+    Request[req_016_pwa_install_and_offline_first] --> Problem[Sans bandeau de mise a jour]
+    Problem --> Scope[PWA: update banner]
+    Scope --> Acceptance[AC1: Lorsque needRefresh est true nouveau]
+    Acceptance --> Tasks[task_022_pwa_progressive_web_app_delivery]
 ```
 
 # Acceptance criteria

@@ -22,16 +22,18 @@
 %% logics-kind: task
 %% logics-signature: task|test-coverage-expansion|item-050-e2e-full-workflow-coverage|1-verifier-si-task-018-wave-2|wave-1-npm-run-test-coverage
 stateDiagram-v2
-    state "2 backlog items — couverture tests" as Backlog
-    state "1. Confirmer les prérequis (scoring.ts extrait ?)" as Scope
-    state "2. Wave 1: tests unitaires scoring + Bishop" as Wave1
-    state "3. Wave 2: tests E2E parcours complets" as Wave2
-    state "4. Valider seuils coverage et reporter" as Report
+    state "item_050_e2e_full_workflow_coverage" as Backlog
+    state "1. Verifier si task_018 Wave 2" as Scope
+    state "2. Wave 1 ajouter dans Vitest" as Build
+    state "3. Valider npm run test:coverage maintient" as Verify
+    state "Wave 1 : npm run test:coverage" as Validation
+    state "Done report" as Report
     [*] --> Backlog
     Backlog --> Scope
-    Scope --> Wave1
-    Wave1 --> Wave2
-    Wave2 --> Report
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
     Report --> [*]
 ```
 

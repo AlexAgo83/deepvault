@@ -21,13 +21,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|pwa-offline-cache-and-mock-corpus-fallba|req-016-pwa-install-and-offline-first|sans-cache-service-worker-l-app|ac1-avec-le-reseau-coupe-apres
 flowchart TD
-    Request[req_016_pwa_install_and_offline_first] --> Problem[App non disponible hors-ligne]
-    Problem --> Scope[Cache assets + fallback mock]
-    Scope --> AC1[AC1: app charge hors-ligne]
-    Scope --> AC2[AC2: corpus mock interrogeable offline]
-    Scope --> AC3[AC3: fallback auto si live absent]
-    Scope --> AC4[AC4: indicateur visuel offline]
-    Scope --> AC5[AC5: test E2E offline]
+    Request[req_016_pwa_install_and_offline_first] --> Problem[Sans cache service worker l app]
+    Problem --> Scope[PWA: offline cache and mock corpus]
+    Scope --> Acceptance[AC1: Avec le reseau coupe apres]
+    Acceptance --> Tasks[task_022_pwa_progressive_web_app_delivery]
 ```
 
 # Acceptance criteria

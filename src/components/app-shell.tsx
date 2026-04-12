@@ -4,14 +4,13 @@ import { CompactDateTime, Pill, StatCard } from './app-ui'
 import { GettingStartedModal } from './getting-started-modal'
 import { useInstallPrompt } from '../hooks'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
-import { BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
+import { AIStatsPanel, BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
 import { version } from '../../package.json'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 const NAV_ITEMS = [
   { id: 'explorer', label: 'Explorer', icon: ExplorerIcon },
   { id: 'bishop', label: 'Bishop', icon: BishopIcon },
-  { id: 'sync', label: 'Sync status', icon: SyncIcon },
 ] as const satisfies ReadonlyArray<{ id: AppTab; label: string; icon: () => ReactElement }>
 
 function ExplorerIcon() {
@@ -47,6 +46,17 @@ function SettingsIcon() {
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
       <path d="M8.3 4.4 10 3.5l1.7.9 1.9-.2.8 1.8 1.6 1.1-.4 1.9.4 1.9-1.6 1.1-.8 1.8-1.9-.2-1.7.9-1.7-.9-1.9.2-.8-1.8-1.6-1.1.4-1.9-.4-1.9 1.6-1.1.8-1.8z" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
       <circle cx="10" cy="10" r="1.9" fill="none" stroke="currentColor" strokeWidth="1.2" />
+    </svg>
+  )
+}
+
+function StatsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5 15.25V9.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M9.5 15.25V5.75" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M14 15.25V11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M4.5 15.25h11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   )
 }
@@ -119,6 +129,30 @@ function AppSidebar({
       <div className="sidebar-section">
         <div className="sidebar-label">Application</div>
         <nav className="nav-list">
+          <button
+            type="button"
+            className={`nav-item ${activeTab === 'sync' ? 'nav-item-active' : ''}`}
+            aria-current={activeTab === 'sync' ? 'page' : undefined}
+            title="Open sync status"
+            onClick={() => onTabChange('sync')}
+          >
+            <span className="nav-item-icon" aria-hidden="true">
+              <SyncIcon />
+            </span>
+            Sync status
+          </button>
+          <button
+            type="button"
+            className={`nav-item ${activeTab === 'ai-stats' ? 'nav-item-active' : ''}`}
+            aria-current={activeTab === 'ai-stats' ? 'page' : undefined}
+            title="Open AI stats"
+            onClick={() => onTabChange('ai-stats')}
+          >
+            <span className="nav-item-icon" aria-hidden="true">
+              <StatsIcon />
+            </span>
+            AI stats
+          </button>
           <button
             type="button"
             className={`nav-item ${activeTab === 'settings' ? 'nav-item-active' : ''}`}
@@ -415,6 +449,12 @@ export function AppShell(model: AppModel) {
               scopedSyncOverview={scopedSyncOverview}
               syncOperations={syncOperations}
             />
+          </ErrorBoundary>
+        ) : null}
+
+        {activeTab === 'ai-stats' ? (
+          <ErrorBoundary fallback={<div className="empty-state">AI stats panel failed to render.</div>}>
+            <AIStatsPanel messages={messages} />
           </ErrorBoundary>
         ) : null}
 

@@ -22,11 +22,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|split-app-shell-into-panel-components|req-015-architecture-robustness-and-prod|src-components-app-shell-tsx-a-639-ligne|ac1-src-components-app-shell-tsx-contien
 flowchart TD
-    Request[req_015_architecture_robustness_and_product] --> Problem[app-shell.tsx trop large]
-    Problem --> Scope[Extraire panels/ séparés]
-    Scope --> AC1[AC1: app-shell réduit au layout + nav]
-    Scope --> AC2[AC2: 3 fichiers panels/ créés]
-    Scope --> AC3[AC3: tests passent sans régression]
+    Request[req_015_architecture_robustness_and_produc] --> Problem[src components app-shell.tsx a 639 lignes]
+    Problem --> Scope[Split app-shell into panel components]
+    Scope --> Acceptance[AC1: src components app-shell.tsx contient]
+    Acceptance --> Tasks[task_018_structural_refactoring_and_resili]
 ```
 
 # Acceptance criteria

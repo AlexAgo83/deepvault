@@ -25,8 +25,8 @@
 %% logics-kind: request
 %% logics-signature: request|fix-sharepoint-file-links-in-explorer|open-sharepoint-files-from-explorer-with|ac1-clicking-a-file-from-explorer
 flowchart TD
-    Trigger[Explorer file click] --> Need[Open SharePoint web page for the file]
-    Need --> Outcome[AC1: Click opens the native file web URL]
+    Trigger[Fix SharePoint file links in Explorer] --> Need[Open SharePoint files from Explorer with]
+    Need --> Outcome[AC1: Clicking a file from Explorer]
     Outcome --> Backlog[Backlog slice]
 ```
 

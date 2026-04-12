@@ -29,7 +29,7 @@ flowchart TD
     Request[req_010_fix_sharepoint_file_links_in_explo] --> Problem[Open SharePoint files from Explorer with]
     Problem --> Scope[Fallback file link resolution and link]
     Scope --> Acceptance[AC1: Clicking a file from Explorer]
-    Acceptance --> Tasks[Execution task]
+    Acceptance --> Tasks[task_015_sharepoint_file_link_and_file_typ]
 ```
 
 # Acceptance criteria

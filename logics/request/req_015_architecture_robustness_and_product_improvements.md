@@ -38,22 +38,9 @@
 %% logics-kind: request
 %% logics-signature: request|architecture-robustesse-et-evolution-pro|eclater-app-shell-tsx-639-lignes-en-sous|ac1-app-shell-tsx-est-reduit-au-layout
 flowchart TD
-    Trigger[Analyse du projet post-v1.0] --> Arch[Axe 1: Architecture]
-    Trigger --> Robust[Axe 2: Robustesse]
-    Trigger --> Tests[Axe 3: Tests]
-    Trigger --> Product[Axe 4: Évolution produit]
-    Arch --> AC1[AC1: app-shell éclaté]
-    Arch --> AC2[AC2: scoring.ts isolé]
-    Arch --> AC3[AC3: barrel exports]
-    Robust --> AC4[AC4: Error Boundaries]
-    Robust --> AC5[AC5: retry + timeout Graph]
-    Robust --> AC6[AC6: validation corpus]
-    Tests --> AC7[AC7: E2E parcours complets]
-    Tests --> AC8[AC8: tests scoring + Bishop contrat]
-    Product --> AC9[AC9: LLM branché sur Bishop]
-    Product --> AC10[AC10: persistance session]
-    Product --> AC11[AC11: export résultats]
-    Product --> AC12[AC12: delta sync corpus]
+    Trigger[Architecture robustesse et evolution produ] --> Need[Eclater app-shell.tsx 639 lignes en sous-c]
+    Need --> Outcome[AC1: app-shell.tsx est reduit au layout]
+    Outcome --> Backlog[Backlog slice]
 ```
 
 # Acceptance criteria

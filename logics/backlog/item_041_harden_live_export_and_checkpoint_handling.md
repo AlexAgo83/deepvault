@@ -23,12 +23,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|harden-live-export-and-checkpoint-handli|req-011-audit-de-dette-technique-et-clea|scripts-export-live-ts-and-scripts-deepv|ac1-the-live-export-flow-has
 flowchart TD
-    Request[req 011 audit] --> Problem[Live export is hard to reason about]
-    Problem --> Scope[Harden export and checkpoint handling]
-    Scope --> Export[Export flow]
-    Scope --> Checkpoint[Checkpoint flow]
-    Export --> Validate[Run live export checks]
-    Checkpoint --> Validate
+    Request[req_011_audit_de_dette_technique_et_cleanu] --> Problem[scripts export-live.ts and scripts deepvau]
+    Problem --> Scope[Harden live export and checkpoint handling]
+    Scope --> Acceptance[AC1: The live export flow has]
+    Acceptance --> Tasks[task_016_orchestrate_technical_debt_cleanu]
 ```
 
 # Acceptance criteria

@@ -22,20 +22,20 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-navigation-and-runtime-ui-ch|item-043-add-leading-icons-to-navigatio|1-confirm-the-product-framing-dependenci|wave-1-run-ui-focused-tests-and
+%% logics-signature: task|orchestrate-navigation-and-runtime-ui-ch|item-043-add-leading-icons-to-navigation|1-confirm-the-product-framing-dependenci|wave-1-run-ui-focused-tests-and
 stateDiagram-v2
-    state "Navigation and runtime UI changes" as Backlog
-    state "1. Confirm scope, order, and wave boundaries" as Scope
-    state "2. Wave 1: navigation icons" as Wave1
-    state "3. Wave 2: site selector in runtime" as Wave2
-    state "4. Wave 3: runtime under Sync status" as Wave3
-    state "5. Validate and report" as Report
+    state "item_043_add_leading_icons_to_navigation" as Backlog
+    state "1. Confirm the product framing dependencie" as Scope
+    state "2. Wave 1: deliver the navigation" as Build
+    state "3. Wave 2: move the site" as Verify
+    state "Wave 1: run UI-focused tests and" as Validation
+    state "Done report" as Report
     [*] --> Backlog
     Backlog --> Scope
-    Scope --> Wave1
-    Wave1 --> Wave2
-    Wave2 --> Wave3
-    Wave3 --> Report
+    Scope --> Build
+    Build --> Verify
+    Verify --> Validation
+    Validation --> Report
     Report --> [*]
 ```
 

@@ -91,6 +91,7 @@ export interface ChatMessage {
   latencyMs?: number
   confidenceScore?: number
   providerTracePreview?: string
+  improvementHint?: string
 }
 
 export interface EvaluationRow {
