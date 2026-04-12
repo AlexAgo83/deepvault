@@ -86,6 +86,21 @@ describe('DeepVault app', () => {
     expect(screen.getByTitle('Live corpus missing, fallback to mock')).toBeInTheDocument()
   })
 
+  it('renders sync run notes and counts in the sync panel', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+
+    expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
+    expect(screen.getByText('Synced sites')).toBeInTheDocument()
+
+    const syncCard = screen.getByTitle('Pilot sites synced successfully with permission-aware filtering enabled.')
+    expect(syncCard).toBeInTheDocument()
+    expect(within(syncCard).getByText('17 docs')).toBeInTheDocument()
+    expect(within(syncCard).getByText('102 chunks')).toBeInTheDocument()
+  })
+
   it('keeps the explorer detail pane within the selected site scope', async () => {
     const user = userEvent.setup()
     render(<App />)
