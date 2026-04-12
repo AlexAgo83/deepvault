@@ -209,29 +209,8 @@ p {
   border-radius: var(--radius-sm);
   background: linear-gradient(180deg, rgba(245, 240, 232, 0.6), rgba(255, 253, 249, 0.95));
   padding: 14px;
-  margin: 14px 0 18px;
   display: grid;
   gap: 14px;
-}
-
-.runtime-panel-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.runtime-panel-title {
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-.runtime-panel-head p {
-  color: var(--muted);
-  line-height: 1.5;
 }
 
 .runtime-stack-grid {
@@ -517,6 +496,13 @@ p {
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 18px;
   align-items: start;
+}
+
+.sync-main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
 }
 
 .section-heading {
