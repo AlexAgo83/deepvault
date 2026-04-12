@@ -68,10 +68,10 @@ export function GettingStartedModal({
         </div>
 
         <div className="getting-started-actions">
-          <button ref={closeButtonRef} type="button" className="primary-button" onClick={onClose}>
+          <button ref={closeButtonRef} type="button" className="primary-button" title="Start using DeepVault" onClick={onClose}>
             Start exploring
           </button>
-          <button type="button" className="secondary-button" onClick={onClose}>
+          <button type="button" className="secondary-button" title="Dismiss the getting started modal" onClick={onClose}>
             Close
           </button>
         </div>

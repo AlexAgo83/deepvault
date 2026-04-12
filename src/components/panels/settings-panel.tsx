@@ -66,7 +66,7 @@ export function SettingsPanel({
         </div>
 
         <div className="settings-actions">
-          <button type="button" className="secondary-button" onClick={onClear}>
+          <button type="button" className="secondary-button" title="Remove stored provider API keys from this browser" onClick={onClear}>
             Clear stored keys
           </button>
         </div>
