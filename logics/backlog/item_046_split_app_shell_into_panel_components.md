@@ -1,10 +1,10 @@
 ## item_046_split_app_shell_into_panel_components - Split app-shell into panel components
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 92%
 > Confidence: 88%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Architecture
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|split-app-shell-into-panel-components|req-015-architecture-robustness-and-pro|split-app-shell-tsx-639-lignes-en|ac1-app-shell-tsx-est-reduit-au-layout
+%% logics-signature: backlog|split-app-shell-into-panel-components|req-015-architecture-robustness-and-prod|src-components-app-shell-tsx-a-639-ligne|ac1-src-components-app-shell-tsx-contien
 flowchart TD
     Request[req_015_architecture_robustness_and_product] --> Problem[app-shell.tsx trop large]
     Problem --> Scope[Extraire panels/ séparés]
@@ -72,3 +72,12 @@ flowchart TD
 # Notes
 - Derived from request `req_015_architecture_robustness_and_product_improvements`.
 - Prerequisite for item_048 (Error Boundaries) qui wrappera les composants panels/ une fois extraits.
+
+# Report
+- Wave 1 completed: `src/components/app-shell.tsx` no longer inlines the Explorer, Bishop, or Sync panel JSX.
+- Wave 1 completed: extracted `src/components/panels/explorer-panel.tsx`, `bishop-panel.tsx`, and `sync-panel.tsx`, plus export helpers for the app shell.
+- Validation passed: `rtk npm run test -- tests/app.spec.tsx tests/deepvault-graph.spec.ts tests/live-export-state.spec.ts tests/corpus-loader.spec.ts`
+- Validation passed: `rtk npm run typecheck`
+- Validation passed: `rtk npm run lint`
+- Validation passed: `rtk npm run build`
+- Validation passed: `rtk npm run check`

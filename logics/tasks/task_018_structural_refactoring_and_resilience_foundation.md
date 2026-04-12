@@ -1,10 +1,10 @@
 ## task_018_structural_refactoring_and_resilience_foundation - Structural refactoring and resilience foundation
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In progress
 > Understanding: 91%
 > Confidence: 87%
-> Progress: 0%
+> Progress: 33%
 > Complexity: Medium
 > Theme: Architecture / Quality
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -21,7 +21,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|structural-refactoring-and-resilience-fo|item-046-split-app-shell-into-panel-com|1-confirmer-les-dependances-et-lorde|wave-1-run-npm-run-check-apres-chaque
+%% logics-signature: task|structural-refactoring-and-resilience-fo|item-046-split-app-shell-into-panel-comp|1-confirmer-les-dependances-entre-les|wave-1-npm-run-check
 stateDiagram-v2
     state "3 backlog items — refactoring structurel" as Backlog
     state "1. Confirmer l'ordre et les dépendances" as Scope
@@ -39,8 +39,8 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirmer les dépendances entre les trois waves (notamment Wave 3 après Wave 1 pour panels/).
-- [ ] 2. Wave 1 — extraire `explorer-panel.tsx`, `bishop-panel.tsx`, `sync-panel.tsx` sous `src/components/panels/` ; réduire app-shell.tsx au layout et navigation ; vérifier que `tests/app.spec.tsx` passe sans modification.
+- [x] 1. Confirmer les dépendances entre les trois waves (notamment Wave 3 après Wave 1 pour panels/).
+- [x] 2. Wave 1 — extraire `explorer-panel.tsx`, `bishop-panel.tsx`, `sync-panel.tsx` sous `src/components/panels/` ; réduire app-shell.tsx au layout et navigation ; vérifier que `tests/app.spec.tsx` passe sans modification.
 - [ ] 3. Wave 2 — créer `src/lib/scoring.ts` avec les poids et la fonction de scoring ; mettre à jour deepvault.ts pour importer scoring.ts ; ajouter `index.ts` dans `src/lib/`, `src/hooks/`, `src/components/`.
 - [ ] 4. Wave 3 — créer un composant `<ErrorBoundary>` générique dans `src/components/` ; wrapper les trois panels dans app-shell.tsx (ou dans les fichiers panels/ si Wave 1 est faite).
 - [ ] 5. Fermer la task en mettant à jour les backlog items et les requests liés.
@@ -92,3 +92,6 @@ stateDiagram-v2
 - [ ] Chaque wave a laissé un checkpoint commit-ready.
 - [ ] Status à `Done` et progress à `100%`.
 # Report
+- Wave 1 completed: extracted the Explorer, Bishop, and Sync panels into `src/components/panels/`, leaving `app-shell.tsx` responsible for layout and navigation only.
+- Wave 1 completed: added export helpers for Explorer and Bishop so the app shell no longer owns inline export assembly.
+- Wave 1 completed: validated the split with `rtk npm run test -- tests/app.spec.tsx tests/deepvault-graph.spec.ts tests/live-export-state.spec.ts tests/corpus-loader.spec.ts`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, and `rtk npm run check`.

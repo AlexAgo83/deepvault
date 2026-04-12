@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 85%
+> Progress: 88%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -134,6 +134,7 @@ stateDiagram-v2
 - Wave 3 completed: Bishop session persistence and export now cover `localStorage` restore, 50-message cap, Bishop JSON/MD export, Explorer JSON/MD export, and clear-history behavior.
 - Wave 4 started: Graph export and corpus loading are now safer because malformed corpus payloads are rejected explicitly and checkpoint reads ignore invalid payloads instead of silently accepting them.
 - Wave 4 continued: live export now reuses the checkpoint corpus, compares `lastModifiedDateTime` against the last sync, skips unchanged documents, persists `syncedAt`, and reports dry-run stats without writing files.
+- Wave 4 continued: split `src/components/app-shell.tsx` into dedicated panel components and export helpers so the shell now owns only layout/navigation while the panels can be tested independently.
 - Validation passed: `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
@@ -149,4 +150,4 @@ stateDiagram-v2
 - Validation passed: `rtk npm run build`
 - Validation passed: `rtk npm run test -- tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts`
 - Validation passed: `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text`
-- Correction: Waves 1 and 2 are complete, while Waves 3 to 5 remain open because Bishop, refactoring, and PWA work still need execution.
+- Correction: Waves 1, 2, and 3 are complete, Wave 4 is in progress, and Wave 5 remains open until the PWA work is delivered.
