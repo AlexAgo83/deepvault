@@ -471,6 +471,14 @@ p {
   margin-bottom: 14px;
 }
 
+.section-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .section-heading h2 {
   font-size: 1.3rem;
   margin-bottom: 4px;

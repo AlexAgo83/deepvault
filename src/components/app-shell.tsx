@@ -11,6 +11,7 @@ import {
   StatCard,
 } from './app-ui'
 import { formatUpdatedAt, type ProviderId, type UserRole } from '../lib/deepvault'
+import { downloadTextFile } from '../lib/file-download'
 import type { AppModel, AppTab, ExplorerRow } from '../hooks/useAppModel'
 import { version } from '../../package.json'
 
@@ -140,21 +141,86 @@ function AppToolbar({
   )
 }
 
+function buildExplorerExportJson({
+  activeScopeLabel,
+  explorerRows,
+  search,
+  selectedExplorerDoc,
+}: {
+  activeScopeLabel: string
+  explorerRows: ExplorerRow[]
+  search: string
+  selectedExplorerDoc: ExplorerRow | null
+}) {
+  return JSON.stringify(
+    {
+      exportedAt: new Date().toISOString(),
+      activeScopeLabel,
+      search,
+      selectedDocumentId: selectedExplorerDoc?.id || null,
+      results: explorerRows,
+    },
+    null,
+    2,
+  )
+}
+
+function buildExplorerExportMarkdown({
+  activeScopeLabel,
+  explorerRows,
+  search,
+  selectedExplorerDoc,
+}: {
+  activeScopeLabel: string
+  explorerRows: ExplorerRow[]
+  search: string
+  selectedExplorerDoc: ExplorerRow | null
+}) {
+  return [
+    '# Explorer results export',
+    '',
+    `Exported at ${new Date().toISOString()}`,
+    `Scope: ${activeScopeLabel}`,
+    `Search: ${search || 'all sources'}`,
+    `Selected document: ${selectedExplorerDoc?.title || 'none'}`,
+    '',
+    '## Results',
+    ...explorerRows.map((row) => `- ${row.title} | ${row.siteName} | score ${row.score} | ${row.path}`),
+  ].join('\n')
+}
+
 function ExplorerPanel({
   explorerRows,
   selectedExplorerDoc,
   onSelectDocument,
+  onExportJson,
+  onExportMarkdown,
   resolveFileHref,
 }: {
   explorerRows: ExplorerRow[]
   selectedExplorerDoc: ExplorerRow | null
   onSelectDocument: (_document: ExplorerRow) => void
+  onExportJson: () => void
+  onExportMarkdown: () => void
   resolveFileHref: AppModel['resolveFileHref']
 }) {
   return (
     <section className="content-grid">
       <article className="panel">
-        <SectionHeading title="Explorer" subtitle="Browse the pilot corpus by site, search term, and source details." />
+        <SectionHeading
+          title="Explorer"
+          subtitle="Browse the pilot corpus by site, search term, and source details."
+          actions={
+            <>
+              <button type="button" className="secondary-button" onClick={onExportJson}>
+                Export JSON
+              </button>
+              <button type="button" className="secondary-button" onClick={onExportMarkdown}>
+                Export MD
+              </button>
+            </>
+          }
+        />
         <div className="document-list">
           {explorerRows.map((document) => (
             <button
@@ -247,6 +313,9 @@ function ExplorerPanel({
 }
 
 function BishopPanel({
+  clearHistory,
+  exportJson,
+  exportMarkdown,
   messages,
   question,
   onQuestionChange,
@@ -257,6 +326,9 @@ function BishopPanel({
   selectedMessage,
   resolveFileHref,
 }: {
+  clearHistory: () => void
+  exportJson: () => void
+  exportMarkdown: () => void
   messages: AppModel['messages']
   question: string
   onQuestionChange: (_value: string) => void
@@ -273,6 +345,19 @@ function BishopPanel({
         <SectionHeading
           title="Bishop"
           subtitle="Grounded answers come from the same local retrieval logic used by the explorer."
+          actions={
+            <>
+              <button type="button" className="secondary-button" onClick={exportJson}>
+                Export JSON
+              </button>
+              <button type="button" className="secondary-button" onClick={exportMarkdown}>
+                Export MD
+              </button>
+              <button type="button" className="secondary-button" onClick={clearHistory}>
+                Clear history
+              </button>
+            </>
+          }
         />
         <div className="message-list">
           {messages.map((message) => (
@@ -518,8 +603,11 @@ export function AppShell(model: AppModel) {
     activeTab,
     corpusProviders,
     explorerRows,
+    clearBishopHistory,
     handleAsk,
     isAsking,
+    exportBishopJson,
+    exportBishopMarkdown,
     liveState,
     messages,
     provider,
@@ -578,7 +666,7 @@ export function AppShell(model: AppModel) {
           <StatCard
             label="Provider readiness"
             value={corpusProviders.filter((item) => item.ready).length}
-            note="OpenAI and Gemini are both available in the local abstraction."
+            note="OpenAI, Gemini, and Claude are available in the local abstraction."
           />
         </section>
 
@@ -593,6 +681,20 @@ export function AppShell(model: AppModel) {
               setSelectedDocId(document.id)
               setActiveTab('explorer')
             }}
+            onExportJson={() =>
+              downloadTextFile(
+                `deepvault-explorer-${new Date().toISOString().slice(0, 10)}.json`,
+                buildExplorerExportJson({ activeScopeLabel, explorerRows, search, selectedExplorerDoc }),
+                'application/json',
+              )
+            }
+            onExportMarkdown={() =>
+              downloadTextFile(
+                `deepvault-explorer-${new Date().toISOString().slice(0, 10)}.md`,
+                buildExplorerExportMarkdown({ activeScopeLabel, explorerRows, search, selectedExplorerDoc }),
+                'text/markdown',
+              )
+            }
             resolveFileHref={resolveFileHref}
             selectedExplorerDoc={selectedExplorerDoc}
           />
@@ -600,6 +702,21 @@ export function AppShell(model: AppModel) {
 
         {activeTab === 'bishop' ? (
           <BishopPanel
+            clearHistory={clearBishopHistory}
+            exportJson={() =>
+              downloadTextFile(
+                `deepvault-bishop-${new Date().toISOString().slice(0, 10)}.json`,
+                exportBishopJson(),
+                'application/json',
+              )
+            }
+            exportMarkdown={() =>
+              downloadTextFile(
+                `deepvault-bishop-${new Date().toISOString().slice(0, 10)}.md`,
+                exportBishopMarkdown(),
+                'text/markdown',
+              )
+            }
             isAsking={isAsking}
             messages={messages}
             onQuestionChange={setQuestion}

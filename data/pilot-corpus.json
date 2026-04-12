@@ -2,7 +2,8 @@
   "defaultUserRole": "analyst",
   "providers": [
     { "id": "openai", "name": "OpenAI", "ready": true },
-    { "id": "gemini", "name": "Gemini", "ready": true }
+    { "id": "gemini", "name": "Gemini", "ready": true },
+    { "id": "anthropic", "name": "Claude", "ready": true }
   ],
   "sites": [
     {

@@ -1,10 +1,10 @@
 ## item_053_bishop_session_persistence_and_export - Bishop session persistence and results export
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 87%
-> Confidence: 84%
-> Progress: 0%
+> Status: Done
+> Understanding: 95%
+> Confidence: 92%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Product / UX
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|bishop-session-persistence-and-export|req-015-architecture-robustness-and-pro|persister-la-session-bishop-et-ajouter|ac1-historique-bishop-persiste-localstorage
+%% logics-signature: backlog|bishop-session-persistence-and-results-e|req-015-architecture-robustness-and-prod|l-historique-de-conversation-bishop-est|ac1-l-historique-de-conversation-bishop
 flowchart TD
     Request[req_015_architecture_robustness_and_product] --> Problem[Session Bishop perdue au rechargement]
     Problem --> Scope[Persistance + export]

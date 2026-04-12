@@ -1,11 +1,11 @@
 ## adr_017_bishop_llm_orchestration_after_local_grounding - Bishop LLM orchestration after local grounding
-> Date: 2026-04-10
+> Date: 2026-04-12
 > Status: Accepted
-> Drivers: Keep grounding local, add a real LLM layer later, preserve permission checks, and keep Bishop testable.
+> Drivers: Keep grounding local, add a real LLM layer later, preserve permission checks, keep Bishop testable, and support a three-provider Bishop contract.
 > Related request: `req_008_bishop_llm_orchestration_after_local_grounding`, `req_015_architecture_robustness_and_product_improvements`
 > Related backlog: `item_031_bishop_grounding_contract_and_response_shape`, `item_032_bishop_llm_orchestration_and_fallback`, `item_033_bishop_trace_status_and_evaluation_coverage`, `item_052_bishop_claude_api_integration`, `item_053_bishop_session_persistence_and_export`
 > Related task: `task_014_bishop_llm_orchestration_delivery`, `task_021_bishop_intelligence_and_ux`
-> Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
+> Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc. Reviewed after the Bishop provider switch on 2026-04-12.
 
 # Overview
 Keep document retrieval and permission filtering in the local DeepVault layer.
@@ -48,7 +48,8 @@ Add a dedicated Bishop orchestration layer, either in a backend endpoint or a cl
 Let the UI remain a thin interaction shell that collects the question and renders status, traces, and sources.
 Use the local retrieval result as the only input to the LLM so permissions and grounding remain enforced before generation.
 Keep a local fallback path so the app degrades gracefully when the model provider is unavailable.
-The first implementation should use `@anthropic-ai/sdk` behind `ANTHROPIC_API_KEY` and a `VITE_BISHOP_MODEL` runtime setting.
+The remote layer should support the existing OpenAI and Gemini providers first, while keeping Claude available as a third provider behind `ANTHROPIC_API_KEY`.
+The provider-specific path can use `VITE_BISHOP_MODEL` as a runtime override, and Claude should keep prompt caching enabled.
 
 # Alternatives considered
 - Keep the current local answer synthesis only.

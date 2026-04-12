@@ -1,7 +1,7 @@
 export { buildEvaluationRows, formatUpdatedAt } from './deepvault-evaluation'
 
 export type UserRole = 'analyst' | 'admin' | 'guest'
-export type ProviderId = 'openai' | 'gemini'
+export type ProviderId = 'openai' | 'gemini' | 'anthropic'
 
 export interface ProviderRecord {
   id: ProviderId
@@ -80,6 +80,7 @@ export interface ChatMessage {
   text: string
   status: string
   sources: SourceRecord[]
+  createdAt?: string
   provider?: ProviderId
   orchestrationMode?: 'remote' | 'fallback' | 'grounded-only'
   chunkCount?: number
