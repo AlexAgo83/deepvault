@@ -40,6 +40,21 @@ describe('deepvault helpers', () => {
     expect(overview.lastRun?.notes).toContain('permission-aware filtering')
   })
 
+  it('scopes sync overview counts by role', () => {
+    const guestOverview = buildSyncOverview(corpus, 'guest')
+    const adminOverview = buildSyncOverview(corpus, 'admin')
+
+    expect(guestOverview.documentCount).toBe(0)
+    expect(guestOverview.chunkCount).toBe(0)
+    expect(guestOverview.syncedSites).toBe(2)
+    expect(guestOverview.restrictedSites).toBe(1)
+
+    expect(adminOverview.documentCount).toBe(18)
+    expect(adminOverview.chunkCount).toBe(108)
+    expect(adminOverview.syncedSites).toBe(2)
+    expect(adminOverview.restrictedSites).toBe(1)
+  })
+
   it('builds site summaries with permission-aware counts', () => {
     const siteSummaries = buildSiteSummaries(corpus, 'guest')
 
@@ -136,6 +151,18 @@ describe('deepvault helpers', () => {
     expect(summary.visibleSources).toBe(17)
     expect(summary.deniedSources).toBe(1)
     expect(formatUpdatedAt('2025-06-12T10:00:00Z')).toContain('2025')
+  })
+
+  it('scopes corpus summary counts by role', () => {
+    const guestSummary = summarizeCorpus(corpus, 'guest')
+    const adminSummary = summarizeCorpus(corpus, 'admin')
+
+    expect(guestSummary.sourcesIndexed).toBe(18)
+    expect(guestSummary.visibleSources).toBe(0)
+    expect(guestSummary.deniedSources).toBe(18)
+
+    expect(adminSummary.visibleSources).toBe(18)
+    expect(adminSummary.deniedSources).toBe(0)
   })
 
   it('prefers the native webUrl and falls back to a safe SharePoint path', () => {
