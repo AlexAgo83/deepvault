@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import { ErrorBoundary } from './error-boundary'
 import { CompactDateTime, Pill, StatCard } from './app-ui'
 import { useInstallPrompt } from '../hooks'
@@ -41,12 +41,43 @@ function SyncIcon() {
   )
 }
 
+function PwaInstallIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M10 4v8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M6.5 8.5 10 12l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 15h10" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function PwaUpdateIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.5 7.75A6 6 0 0 1 10 5.75c2.05 0 3.88 1 5 2.55" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M14.5 5.75v2.7h-2.7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14.5 12.25A6 6 0 0 1 10 14.25c-2.05 0-3.88-1-5-2.55" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M5.5 14.25v-2.7h2.7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function AppSidebar({
   activeTab,
+  canInstall,
+  hasPendingUpdate,
+  install,
+  isStandalone,
+  update,
   onTabChange,
 }: {
   activeTab: AppTab
+  canInstall: boolean
+  hasPendingUpdate: boolean
+  install: () => Promise<void>
+  isStandalone: boolean
   onTabChange: (_tab: AppTab) => void
+  update: () => Promise<void>
 }) {
   return (
     <aside className="sidebar">
@@ -73,6 +104,30 @@ function AppSidebar({
           ))}
         </nav>
       </div>
+
+      {!isStandalone && (canInstall || hasPendingUpdate) ? (
+        <div className="sidebar-section">
+          <div className="sidebar-label">Application</div>
+          <nav className="nav-list">
+            {!isStandalone && canInstall ? (
+              <button type="button" className="nav-item nav-item-action pwa-action-button" onClick={() => void install()}>
+                <span className="pwa-action-icon" aria-hidden="true">
+                  <PwaInstallIcon />
+                </span>
+                Installer l'app
+              </button>
+            ) : null}
+            {hasPendingUpdate ? (
+              <button type="button" className="nav-item nav-item-action pwa-action-button" onClick={() => void update()}>
+                <span className="pwa-action-icon" aria-hidden="true">
+                  <PwaUpdateIcon />
+                </span>
+                Mettre à jour
+              </button>
+            ) : null}
+          </nav>
+        </div>
+      ) : null}
     </aside>
   )
 }
@@ -82,9 +137,6 @@ function AppTopbar({
   liveStateLabel,
   liveStateTone,
   liveStateDetail,
-  canInstall,
-  install,
-  isStandalone,
   provider,
   role,
 }: {
@@ -92,9 +144,6 @@ function AppTopbar({
   liveStateLabel: string
   liveStateTone: AppModel['liveState']['tone']
   liveStateDetail: string
-  canInstall: boolean
-  install: () => Promise<void>
-  isStandalone: boolean
   provider: string
   role: string
 }) {
@@ -102,11 +151,6 @@ function AppTopbar({
     <header className="topbar">
       <div />
       <div className="topbar-actions">
-        {!isStandalone && canInstall ? (
-          <button type="button" className="secondary-button install-button" onClick={() => void install()}>
-            Installer l'app
-          </button>
-        ) : null}
         <div className="topbar-badges">
           <Pill tone={liveStateTone} title={liveStateDetail}>
             {liveStateLabel}
@@ -118,37 +162,6 @@ function AppTopbar({
         </div>
       </div>
     </header>
-  )
-}
-
-function UpdateBanner() {
-  const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true })
-  const [dismissed, setDismissed] = useState(false)
-
-  if (!needRefresh[0] || dismissed) {
-    return null
-  }
-
-  const update = async () => {
-    await updateServiceWorker(true)
-    setDismissed(true)
-  }
-
-  return (
-    <section className="update-banner" aria-live="polite">
-      <div className="update-banner-copy">
-        <strong>Une nouvelle version est disponible</strong>
-        <span>Recharge pour activer les dernières améliorations et correctifs.</span>
-      </div>
-      <div className="update-banner-actions">
-        <button type="button" className="primary-button" onClick={() => void update()}>
-          Mettre à jour
-        </button>
-        <button type="button" className="secondary-button" onClick={() => setDismissed(true)}>
-          Ignorer
-        </button>
-      </div>
-    </section>
   )
 }
 
@@ -210,6 +223,20 @@ export function AppShell(model: AppModel) {
     siteSummaries,
   } = model
   const installPrompt = useInstallPrompt()
+  const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true })
+  const hasPendingUpdate = needRefresh[0]
+  const [updateBannerDismissed, setUpdateBannerDismissed] = useState(false)
+
+  useEffect(() => {
+    if (!hasPendingUpdate) {
+      setUpdateBannerDismissed(false)
+    }
+  }, [hasPendingUpdate])
+
+  const updateApp = async () => {
+    await updateServiceWorker(true)
+    setUpdateBannerDismissed(true)
+  }
 
   const explorerExportHandlers = createExplorerExportHandlers({
     activeScopeLabel,
@@ -221,22 +248,34 @@ export function AppShell(model: AppModel) {
 
   return (
     <div className="app-shell">
-      <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <AppSidebar
+        activeTab={activeTab}
+        canInstall={installPrompt.canInstall}
+        hasPendingUpdate={hasPendingUpdate}
+        install={installPrompt.install}
+        isStandalone={installPrompt.isStandalone}
+        onTabChange={setActiveTab}
+        update={updateApp}
+      />
 
       <main className="main-content">
         <AppTopbar
           activeScopeLabel={activeScopeLabel}
-          canInstall={installPrompt.canInstall}
           liveStateDetail={liveState.detail}
           liveStateLabel={liveState.label}
           liveStateTone={liveState.tone}
-          install={installPrompt.install}
-          isStandalone={installPrompt.isStandalone}
           provider={provider}
           role={role}
         />
 
-        <UpdateBanner />
+        {hasPendingUpdate && !updateBannerDismissed ? (
+          <section className="update-banner" aria-live="polite">
+            <div className="update-banner-copy">
+              <strong>Une nouvelle version est disponible</strong>
+              <span>Le bouton de mise à jour se trouve dans le menu.</span>
+            </div>
+          </section>
+        ) : null}
 
         <section className="kpi-grid">
           <StatCard
