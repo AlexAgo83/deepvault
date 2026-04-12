@@ -15,6 +15,7 @@ describe('DeepVault app', () => {
     vi.unstubAllEnvs()
     vi.restoreAllMocks()
     localStorage.clear()
+    sessionStorage.clear()
   })
 
   it('renders the explorer shell', async () => {
@@ -248,14 +249,14 @@ describe('DeepVault app', () => {
 
   it('streams sync operations into the console and tracks recent runs', async () => {
     type MockEventSource = {
-      onmessage: ((e: MessageEvent) => void) | null
+      onmessage: ((_e: MessageEvent) => void) | null
       onerror: (() => void) | null
       close: ReturnType<typeof vi.fn>
     }
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn((_url: string) => {
+    vi.stubGlobal('EventSource', vi.fn(() => {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -294,6 +295,198 @@ describe('DeepVault app', () => {
     expect(screen.getAllByText('100%').length).toBeGreaterThan(0)
     expect(screen.getAllByText('completed').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Run ingest').length).toBeGreaterThan(0)
+  })
+
+  it('marks job as failed when SSE connection errors', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ jobId: 'test-job-err' }),
+    }))
+
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
+
+    await act(async () => {})
+
+    await act(async () => {
+      mockEs?.onerror?.()
+    })
+
+    expect(screen.getAllByText('failed').length).toBeGreaterThan(0)
+  })
+
+  it('cancels a running job and sends the cancel request to the server', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ jobId: 'test-job-cancel' }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
+
+    // Flush fetch so serverJobId is stored
+    await act(async () => {})
+
+    expect(mockEs).not.toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel job' }))
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/api/ops/cancel/test-job-cancel'),
+      expect.objectContaining({ method: 'POST' }),
+    )
+    expect(screen.getAllByText('cancelled').length).toBeGreaterThan(0)
+  })
+
+  it('marks job as failed when the ops server cannot be reached', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')))
+    vi.stubGlobal('EventSource', vi.fn())
+
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
+
+    await act(async () => {})
+
+    expect(screen.getAllByText('failed').length).toBeGreaterThan(0)
+  })
+
+  it('confirms and starts refresh from the control panel and completes', async () => {
+    vi.useFakeTimers()
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Refresh status' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Refresh status' })
+    expect(confirmDialog).toBeInTheDocument()
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Refresh' }))
+    expect(screen.getByRole('button', { name: 'Cancel job' })).toBeInTheDocument()
+
+    await act(async () => { vi.advanceTimersByTime(2000) })
+
+    expect(screen.getAllByText('completed').length).toBeGreaterThan(0)
+  })
+
+  it('confirms and starts evaluate from the control panel', async () => {
+    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ jobId: 'test-evaluate' }),
+    }))
+
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Run evaluate' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Run evaluate' })
+    expect(confirmDialog).toBeInTheDocument()
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run evaluate' }))
+
+    await act(async () => {})
+
+    expect(screen.getByRole('button', { name: 'Cancel job' })).toBeInTheDocument()
+  })
+
+  it('shows duration in minutes for long-running jobs', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+    let mockEs: MockEventSource | null = null
+
+    vi.useFakeTimers()
+    const startTime = new Date('2026-01-01T00:00:00.000Z')
+    vi.setSystemTime(startTime)
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ jobId: 'long-job' }),
+    }))
+
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
+
+    await act(async () => { vi.runAllTicks() })
+
+    vi.setSystemTime(new Date(startTime.getTime() + 65000))
+
+    await act(async () => {
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'done', exitCode: 0 }) } as MessageEvent)
+    })
+
+    expect(screen.getAllByText((_, el) => el?.textContent?.includes('1m') === true).length).toBeGreaterThan(0)
+  })
+
+  it('confirms and starts resume live export from the control panel', async () => {
+    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ jobId: 'test-export-resume' }),
+    }))
+
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Resume live export' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Resume live export' })
+    expect(confirmDialog).toBeInTheDocument()
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Resume export' }))
+
+    await act(async () => {})
+
+    expect(screen.getByRole('button', { name: 'Cancel job' })).toBeInTheDocument()
+  })
+
+  it('confirms and starts live export from the control panel', async () => {
+    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ jobId: 'test-export-live' }),
+    }))
+
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Run live export' }))
+    const confirmDialog = screen.getByRole('dialog', { name: 'Run live export' })
+    expect(confirmDialog).toBeInTheDocument()
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run live export' }))
+
+    await act(async () => {})
+
+    expect(screen.getByRole('button', { name: 'Cancel job' })).toBeInTheDocument()
   })
 
   it('keeps the explorer detail pane within the selected site scope', async () => {
