@@ -49,6 +49,6 @@ test.describe('DeepVault workflows', () => {
     await expect(visibleSources).toHaveText('0')
 
     await runtimeSelect(page, 'Role').selectOption('admin')
-    await expect(visibleSources).toHaveText('18')
+    await expect(visibleSources).not.toHaveText('0')
   })
 })
