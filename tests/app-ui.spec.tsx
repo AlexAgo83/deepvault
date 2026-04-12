@@ -76,6 +76,8 @@ describe('app ui helpers', () => {
                 score: 12,
                 summary: 'Budget summary',
                 snippet: 'Budget summary',
+                tags: ['finance'],
+                access: ['analyst'],
                 source: 'sharepoint',
               },
             ],
