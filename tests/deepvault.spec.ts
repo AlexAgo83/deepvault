@@ -36,6 +36,8 @@ describe('deepvault helpers', () => {
     expect(overview.syncedSites).toBe(2)
     expect(overview.restrictedSites).toBe(1)
     expect(overview.lastRun?.status).toBe('synced')
+    expect(overview.lastRun?.id).toBe('sync-2026-04-10-01')
+    expect(overview.lastRun?.notes).toContain('permission-aware filtering')
   })
 
   it('builds site summaries with permission-aware counts', () => {
@@ -44,6 +46,34 @@ describe('deepvault helpers', () => {
     expect(siteSummaries).toHaveLength(3)
     expect(siteSummaries.find((site) => site.id === 'restricted-pilot')).toMatchObject({
       status: 'restricted',
+      permittedDocumentCount: 0,
+    })
+  })
+
+  it('marks a site without sync history as pending', () => {
+    const syntheticCorpus: Corpus = {
+      ...corpus,
+      sites: [
+        ...corpus.sites,
+        {
+          id: 'no-sync-site',
+          name: 'No Sync Site',
+          url: 'https://example.sharepoint.com/sites/no-sync',
+          libraryCount: 1,
+          listCount: 0,
+          status: 'pending' as const,
+          access: ['analyst', 'admin'] as const,
+          owner: 'Ops',
+        },
+      ],
+    }
+
+    const siteSummaries = buildSiteSummaries(syntheticCorpus, 'analyst')
+
+    expect(siteSummaries.find((site) => site.id === 'no-sync-site')).toMatchObject({
+      lastRefresh: null,
+      lastRefreshStatus: 'pending',
+      documentCount: 0,
       permittedDocumentCount: 0,
     })
   })
