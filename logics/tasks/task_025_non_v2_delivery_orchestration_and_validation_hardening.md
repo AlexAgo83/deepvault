@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 92%
+> Progress: 95%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -136,6 +136,8 @@ stateDiagram-v2
 - Wave 4 continued: live export now reuses the checkpoint corpus, compares `lastModifiedDateTime` against the last sync, skips unchanged documents, persists `syncedAt`, and reports dry-run stats without writing files.
 - Wave 4 continued: split `src/components/app-shell.tsx` into dedicated panel components and export helpers so the shell now owns only layout/navigation while the panels can be tested independently.
 - Wave 4 continued: extracted scoring helpers into `src/lib/scoring.ts`, added barrel exports for `src/lib/`, `src/hooks/`, and `src/components/`, and kept the retrieval behavior unchanged.
+- Wave 4 continued: wrapped Explorer, Bishop, and Sync in distinct Error Boundaries and verified that a rendering failure stays isolated to the panel that throws.
+- Wave 4 continued: wrapped Explorer, Bishop, and Sync in distinct Error Boundaries and verified that a rendering failure stays isolated to the panel that throws.
 - Validation passed: `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`

@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { ErrorBoundary } from './error-boundary'
 import { CompactDateTime, Pill, StatCard } from './app-ui'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
 import { BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SyncPanel } from './panels'
@@ -214,52 +215,58 @@ export function AppShell(model: AppModel) {
         ) : null}
 
         {activeTab === 'explorer' ? (
-          <ExplorerPanel
-            explorerRows={explorerRows}
-            onSelectDocument={(document) => {
-              setSelectedDocId(document.id)
-              setActiveTab('explorer')
-            }}
-            onExportJson={explorerExportHandlers.exportJson}
-            onExportMarkdown={explorerExportHandlers.exportMarkdown}
-            resolveFileHref={resolveFileHref}
-            selectedExplorerDoc={selectedExplorerDoc}
-          />
+          <ErrorBoundary fallback={<div className="empty-state">Explorer panel failed to render.</div>}>
+            <ExplorerPanel
+              explorerRows={explorerRows}
+              onSelectDocument={(document) => {
+                setSelectedDocId(document.id)
+                setActiveTab('explorer')
+              }}
+              onExportJson={explorerExportHandlers.exportJson}
+              onExportMarkdown={explorerExportHandlers.exportMarkdown}
+              resolveFileHref={resolveFileHref}
+              selectedExplorerDoc={selectedExplorerDoc}
+            />
+          </ErrorBoundary>
         ) : null}
 
         {activeTab === 'bishop' ? (
-          <BishopPanel
-            clearHistory={clearBishopHistory}
-            exportJson={bishopExportHandlers.exportJson}
-            exportMarkdown={bishopExportHandlers.exportMarkdown}
-            isAsking={isAsking}
-            messages={messages}
-            onQuestionChange={setQuestion}
-            onSubmit={handleAsk}
-            provider={provider}
-            question={question}
-            resolveFileHref={resolveFileHref}
-            role={role}
-            selectedMessage={selectedMessage}
-          />
+          <ErrorBoundary fallback={<div className="empty-state">Bishop panel failed to render.</div>}>
+            <BishopPanel
+              clearHistory={clearBishopHistory}
+              exportJson={bishopExportHandlers.exportJson}
+              exportMarkdown={bishopExportHandlers.exportMarkdown}
+              isAsking={isAsking}
+              messages={messages}
+              onQuestionChange={setQuestion}
+              onSubmit={handleAsk}
+              provider={provider}
+              question={question}
+              resolveFileHref={resolveFileHref}
+              role={role}
+              selectedMessage={selectedMessage}
+            />
+          </ErrorBoundary>
         ) : null}
 
         {activeTab === 'sync' ? (
-          <SyncPanel
-            activeScopeLabel={activeScopeLabel}
-            corpusProviders={corpusProviders}
-            onProviderChange={(value) => setProvider(value)}
-            onRoleChange={(value) => setRole(value)}
-            onSiteFilterChange={setSiteFilter}
-            provider={provider}
-            role={role}
-            siteFilter={siteFilter}
-            siteSummaries={siteSummaries}
-            scopedCorpusSummary={scopedCorpusSummary}
-            scopedSiteSummaries={scopedSiteSummaries}
-            scopedSyncOverview={scopedSyncOverview}
-            scopedSyncRuns={scopedSyncRuns}
-          />
+          <ErrorBoundary fallback={<div className="empty-state">Sync panel failed to render.</div>}>
+            <SyncPanel
+              activeScopeLabel={activeScopeLabel}
+              corpusProviders={corpusProviders}
+              onProviderChange={(value) => setProvider(value)}
+              onRoleChange={(value) => setRole(value)}
+              onSiteFilterChange={setSiteFilter}
+              provider={provider}
+              role={role}
+              siteFilter={siteFilter}
+              siteSummaries={siteSummaries}
+              scopedCorpusSummary={scopedCorpusSummary}
+              scopedSiteSummaries={scopedSiteSummaries}
+              scopedSyncOverview={scopedSyncOverview}
+              scopedSyncRuns={scopedSyncRuns}
+            />
+          </ErrorBoundary>
         ) : null}
 
         <footer className="page-footer" aria-label="Site footer">

@@ -1,10 +1,10 @@
 ## task_018_structural_refactoring_and_resilience_foundation - Structural refactoring and resilience foundation
 > From version: 1.0.1
 > Schema version: 1.0
-> Status: In progress
+> Status: Done
 > Understanding: 92%
 > Confidence: 89%
-> Progress: 33%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Architecture / Quality
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -42,11 +42,11 @@ stateDiagram-v2
 - [x] 1. Confirmer les dépendances entre les trois waves (notamment Wave 3 après Wave 1 pour panels/).
 - [x] 2. Wave 1 — extraire `explorer-panel.tsx`, `bishop-panel.tsx`, `sync-panel.tsx` sous `src/components/panels/` ; réduire app-shell.tsx au layout et navigation ; vérifier que `tests/app.spec.tsx` passe sans modification.
 - [x] 3. Wave 2 — créer `src/lib/scoring.ts` avec les poids et la fonction de scoring ; mettre à jour deepvault.ts pour importer scoring.ts ; ajouter `index.ts` dans `src/lib/`, `src/hooks/`, `src/components/`.
-- [ ] 4. Wave 3 — créer un composant `<ErrorBoundary>` générique dans `src/components/` ; wrapper les trois panels dans app-shell.tsx (ou dans les fichiers panels/ si Wave 1 est faite).
-- [ ] 5. Fermer la task en mettant à jour les backlog items et les requests liés.
-- [ ] CHECKPOINT: laisser chaque wave commit-ready et mettre à jour les docs Logics avant de continuer.
+- [x] 4. Wave 3 — créer un composant `<ErrorBoundary>` générique dans `src/components/` ; wrapper les trois panels dans app-shell.tsx (ou dans les fichiers panels/ si Wave 1 est faite).
+- [x] 5. Fermer la task en mettant à jour les backlog items et les requests liés.
+- [x] CHECKPOINT: laisser chaque wave commit-ready et mettre à jour les docs Logics avant de continuer.
 - [ ] CHECKPOINT: si le runtime Logics est actif, lancer `python logics/skills/logics.py flow assist commit-all` après chaque wave.
-- [ ] GATE: ne pas fermer une wave avant que `npm run check` passe.
+- [x] GATE: ne pas fermer une wave avant que `npm run check` passe.
 
 # Delivery checkpoints
 - Après Wave 1 : `npm run check` passe, app-shell.tsx < 200 lignes.
@@ -97,3 +97,5 @@ stateDiagram-v2
 - Wave 1 completed: validated the split with `rtk npm run test -- tests/app.spec.tsx tests/deepvault-graph.spec.ts tests/live-export-state.spec.ts tests/corpus-loader.spec.ts`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, and `rtk npm run check`.
 - Wave 2 completed: extracted scoring logic into `src/lib/scoring.ts` and re-exported the public surface through `src/lib/index.ts`, `src/hooks/index.ts`, and `src/components/index.ts`.
 - Wave 2 completed: validated the scoring slice with `rtk npm run test -- tests/scoring.spec.ts tests/deepvault.spec.ts tests/app.spec.tsx`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, and `rtk npm run check`.
+- Wave 3 completed: added `src/components/error-boundary.tsx`, wrapped the Explorer, Bishop, and Sync panels in distinct boundaries, and covered the isolation behavior with `tests/error-boundary.spec.tsx`.
+- Wave 3 completed: validated the boundary slice with `rtk npm run test -- tests/error-boundary.spec.tsx tests/app.spec.tsx tests/scoring.spec.ts tests/deepvault.spec.ts` and `rtk npm run check`.
