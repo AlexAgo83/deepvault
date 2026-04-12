@@ -136,7 +136,7 @@ export function useSyncOperations({
     return timer
   }, [])
 
-  const patchActiveJob = useCallback((jobId: string, patch: (current: SyncOperationJob) => SyncOperationJob) => {
+  const patchActiveJob = useCallback((jobId: string, patch: (_current: SyncOperationJob) => SyncOperationJob) => {
     setActiveJob((current) => {
       if (!current || current.id !== jobId) {
         return current

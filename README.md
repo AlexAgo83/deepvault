@@ -18,9 +18,10 @@ It is designed to help you validate the experience end to end before a hosted ba
 
 It gives you:
 
-- `DeepVault - Navy` for browsing sources and inspecting documents
+- `Explorer` for browsing sources and inspecting documents
 - `DeepVault - Bishop` for permission-aware grounded Q&A
-- sync visibility for ingestion state, refresh timing, and provenance
+- `Sync status` for ingestion state, refresh timing, provenance, and the streamed operations console
+- `Settings` for runtime scope, provider selection, and local API keys
 - a mock corpus for fast local work
 - a live corpus path for testing against real SharePoint exports
 
@@ -72,6 +73,8 @@ npm run dev
 
 Open the Vite URL shown in the terminal.
 
+When the app opens, it shows a `Getting started` modal with the project vision and the main navigation areas.
+
 If you want to use the live corpus file in the browser:
 
 ```bash
@@ -93,22 +96,25 @@ npm run dev
 
 Use this when you want to work with the bundled mock corpus.
 
-### 2. Inspect sources in Navy
+### 2. Inspect sources in Explorer
 
+- use `Settings` to change the active role, provider, and site scope
 - use the site filter to narrow the corpus
 - search for titles, tags, or keywords
 - click a document card to inspect its metadata, summary, and excerpt
 
 ### 3. Ask Bishop
 
-- switch to `DeepVault - Bishop`
+- switch to `Bishop`
 - ask a grounded question about the corpus
+- optionally keep conversation context enabled so Bishop reuses previous turns
 - check the answer trace for sources, chunk count, token count, and latency
 
 ### 4. Check sync status
 
 - switch to `Sync status`
 - verify site counts, visible docs, and refresh metadata
+- use the operations console to run refresh, ingest, or evaluation jobs and follow the streamed log
 
 ### 5. Run the local snapshot generators
 
