@@ -73,6 +73,7 @@ describe('DeepVault app', () => {
 
     expect(screen.queryAllByText('Q3 2025 budget approval')).toHaveLength(0)
     expect(screen.getAllByText('Remote access security requirements').length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { name: 'Known SSO implementation issues' })).toBeInTheDocument()
   })
 
   it('shows the sync tab runtime panel and the empty explorer state for an impossible filter', async () => {
