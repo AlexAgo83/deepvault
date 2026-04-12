@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, render } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { BishopPanel } from '../src/components/panels'
 
 function createMessage(id: string, text: string) {
@@ -107,5 +108,40 @@ describe('BishopPanel scroll behavior', () => {
     )
 
     expect(messageList.scrollTop).toBe(20)
+  })
+})
+
+describe('BishopPanel confidence trace', () => {
+  it('shows the confidence score and reveals the provider trace when clicked', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <BishopPanel
+        clearHistory={vi.fn()}
+        exportJson={vi.fn()}
+        exportMarkdown={vi.fn()}
+        messages={[createMessage('seed', 'Seed'), createMessage('assistant-1', 'Answer')]}
+        question=""
+        onQuestionChange={vi.fn()}
+        isAsking={false}
+        onSubmit={vi.fn()}
+        provider="openai"
+        role="analyst"
+        selectedMessage={{
+          id: 'assistant-1',
+          status: 'answered',
+          provider: 'openai',
+          orchestrationMode: 'remote',
+          sources: [],
+          confidenceScore: 84,
+          providerTracePreview: 'openai response: This is a truncated answer preview from the provider.',
+        } as never}
+        resolveFileHref={vi.fn().mockReturnValue(null)}
+      />,
+    )
+
+    expect(screen.getByRole('button', { name: '84%' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '84%' }))
+    expect(screen.getByText('openai response: This is a truncated answer preview from the provider.')).toBeInTheDocument()
   })
 })

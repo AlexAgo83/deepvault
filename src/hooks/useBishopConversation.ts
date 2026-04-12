@@ -241,6 +241,8 @@ export function useBishopConversation({
                 chunkCount: result.chunkCount,
                 tokenCount: result.tokenCount,
                 latencyMs: result.latencyMs,
+                confidenceScore: result.confidenceScore,
+                providerTracePreview: result.providerTracePreview,
               }
             : message,
         ),

@@ -89,6 +89,8 @@ export interface ChatMessage {
   chunkCount?: number
   tokenCount?: number
   latencyMs?: number
+  confidenceScore?: number
+  providerTracePreview?: string
 }
 
 export interface EvaluationRow {

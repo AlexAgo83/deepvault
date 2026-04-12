@@ -34,6 +34,8 @@ export interface BishopOrchestrationOptions {
 export interface BishopOrchestrationResult extends AnswerResult {
   mode: 'remote' | 'fallback' | 'grounded-only'
   prompt: string
+  confidenceScore: number
+  providerTracePreview: string
 }
 
 interface AnthropicUsageLike {
@@ -97,6 +99,79 @@ const DEFAULT_OPENAI_MODEL = 'gpt-4.1-mini'
 const DEFAULT_GEMINI_MODEL = 'gemini-2.0-flash'
 const DEFAULT_ANTHROPIC_MODEL = 'claude-sonnet-4-6'
 const PROMPT_CACHING_BETA = 'prompt-caching-2024-07-31'
+
+function truncateText(value: string, maxLength = 180): string {
+  const normalized = value.replace(/\s+/g, ' ').trim()
+  if (normalized.length <= maxLength) {
+    return normalized
+  }
+
+  return `${normalized.slice(0, maxLength - 1).trimEnd()}…`
+}
+
+function clampConfidence(value: number): number {
+  return Math.max(0, Math.min(100, Math.round(value)))
+}
+
+function buildConfidenceScore(
+  result: Pick<AnswerResult, 'status' | 'sources' | 'deniedSources' | 'chunkCount'>,
+  mode: BishopOrchestrationResult['mode'],
+): number {
+  let score = mode === 'remote' ? 76 : mode === 'grounded-only' ? 61 : 54
+  score += Math.min(14, result.sources.length * 4)
+  score += Math.min(8, Math.round(result.chunkCount / 2))
+
+  if (result.status === 'answered') {
+    score += 6
+  } else if (result.status === 'no_permitted_sources') {
+    score -= 10
+  } else {
+    score -= 4
+  }
+
+  if (result.deniedSources.length > result.sources.length) {
+    score -= 2
+  }
+
+  return clampConfidence(score)
+}
+
+function buildProviderTracePreview(
+  mode: BishopOrchestrationResult['mode'],
+  provider: ProviderId,
+  answer: string,
+  errorPreview?: string | null,
+): string {
+  if (errorPreview) {
+    return `${provider} error: ${truncateText(errorPreview, 180)}`
+  }
+
+  if (mode === 'remote') {
+    return `${provider} response: ${truncateText(answer, 180)}`
+  }
+
+  return `Local fallback: ${truncateText(answer, 180)}`
+}
+
+function augmentResultWithTrace(
+  result: AnswerResult,
+  mode: BishopOrchestrationResult['mode'],
+  prompt: string,
+  errorPreview?: string | null,
+): BishopOrchestrationResult {
+  return {
+    ...result,
+    mode,
+    prompt,
+    confidenceScore: buildConfidenceScore(result, mode),
+    providerTracePreview: buildProviderTracePreview(mode, result.provider, result.answer, errorPreview),
+  }
+}
+
+interface RemoteAttemptResult {
+  result: BishopOrchestrationResult | null
+  errorPreview?: string | null
+}
 
 export function buildBishopPrompt(context: BishopPromptContext): string {
   const sourceLines = context.grounding.sources.map(
@@ -201,10 +276,10 @@ async function runOpenAIRemoteAnswer(
   prompt: string,
   options: BishopOrchestrationOptions,
   fallback: AnswerResult,
-): Promise<BishopOrchestrationResult | null> {
+): Promise<RemoteAttemptResult> {
   const { apiKey, model } = getProviderRuntimeConfig('openai', options)
   if (!apiKey) {
-    return null
+    return { result: null, errorPreview: 'OpenAI API key missing' }
   }
 
   const startedAt = Date.now()
@@ -229,7 +304,11 @@ async function runOpenAIRemoteAnswer(
     })
 
     if (!response.ok) {
-      return null
+      const errorText = await response.text().catch(() => '')
+      return {
+        result: null,
+        errorPreview: `HTTP ${response.status}${errorText.trim() ? `: ${errorText.trim()}` : ''}`,
+      }
     }
 
     const payload = (await response.json()) as OpenAIResponseLike
@@ -238,6 +317,8 @@ async function runOpenAIRemoteAnswer(
     const tokenCount = (usage?.prompt_tokens || 0) + (usage?.completion_tokens || 0)
 
     return {
+      result: augmentResultWithTrace(
+        {
       status: fallback.status,
       provider: fallback.provider,
       query: fallback.query,
@@ -247,11 +328,13 @@ async function runOpenAIRemoteAnswer(
       chunkCount: _grounding.chunkCount,
       tokenCount: tokenCount > 0 ? tokenCount : fallback.tokenCount,
       latencyMs: Date.now() - startedAt,
-      mode: 'remote',
-      prompt,
+    },
+        'remote',
+        prompt,
+      ),
     }
   } catch {
-    return null
+    return { result: null, errorPreview: 'OpenAI request failed' }
   }
 }
 
@@ -263,10 +346,10 @@ async function runGeminiRemoteAnswer(
   prompt: string,
   options: BishopOrchestrationOptions,
   fallback: AnswerResult,
-): Promise<BishopOrchestrationResult | null> {
+): Promise<RemoteAttemptResult> {
   const { apiKey, model } = getProviderRuntimeConfig('gemini', options)
   if (!apiKey) {
-    return null
+    return { result: null, errorPreview: 'Gemini API key missing' }
   }
 
   const startedAt = Date.now()
@@ -296,7 +379,11 @@ async function runGeminiRemoteAnswer(
     })
 
     if (!response.ok) {
-      return null
+      const errorText = await response.text().catch(() => '')
+      return {
+        result: null,
+        errorPreview: `HTTP ${response.status}${errorText.trim() ? `: ${errorText.trim()}` : ''}`,
+      }
     }
 
     const payload = (await response.json()) as GeminiResponseLike
@@ -310,6 +397,8 @@ async function runGeminiRemoteAnswer(
     const tokenCount = (usage?.promptTokenCount || 0) + (usage?.candidatesTokenCount || 0)
 
     return {
+      result: augmentResultWithTrace(
+        {
       status: fallback.status,
       provider: fallback.provider,
       query: fallback.query,
@@ -319,11 +408,13 @@ async function runGeminiRemoteAnswer(
       chunkCount: grounding.chunkCount,
       tokenCount: tokenCount > 0 ? tokenCount : fallback.tokenCount,
       latencyMs: Date.now() - startedAt,
-      mode: 'remote',
-      prompt,
+    },
+        'remote',
+        prompt,
+      ),
     }
   } catch {
-    return null
+    return { result: null, errorPreview: 'Gemini request failed' }
   }
 }
 
@@ -335,10 +426,10 @@ async function runAnthropicRemoteAnswer(
   prompt: string,
   options: BishopOrchestrationOptions,
   fallback: AnswerResult,
-): Promise<BishopOrchestrationResult | null> {
+): Promise<RemoteAttemptResult> {
   const { apiKey, model } = getProviderRuntimeConfig('anthropic', options)
   if (!apiKey) {
-    return null
+    return { result: null, errorPreview: 'Anthropic API key missing' }
   }
 
   const client = options.anthropicClient || new Anthropic({ apiKey })
@@ -380,6 +471,8 @@ async function runAnthropicRemoteAnswer(
     const tokenCount = (usage?.input_tokens || 0) + (usage?.output_tokens || 0)
 
     return {
+      result: augmentResultWithTrace(
+        {
       status: fallback.status,
       provider: fallback.provider,
       query: fallback.query,
@@ -389,11 +482,13 @@ async function runAnthropicRemoteAnswer(
       chunkCount: grounding.chunkCount,
       tokenCount: tokenCount > 0 ? tokenCount : fallback.tokenCount,
       latencyMs: Date.now() - startedAt,
-      mode: 'remote',
-      prompt,
+    },
+        'remote',
+        prompt,
+      ),
     }
   } catch {
-    return null
+    return { result: null, errorPreview: 'Anthropic request failed' }
   }
 }
 
@@ -415,6 +510,8 @@ export async function orchestrateBishopAnswer(
       ...fallback,
       mode: 'grounded-only',
       prompt,
+      confidenceScore: buildConfidenceScore(fallback, 'grounded-only'),
+      providerTracePreview: buildProviderTracePreview('grounded-only', fallback.provider, fallback.answer),
     }
   }
 
@@ -435,30 +532,38 @@ export async function orchestrateBishopAnswer(
       })
 
       if (!response.ok) {
-        throw new Error(`Bishop orchestration failed with status ${response.status}`)
+        const errorText = await response.text().catch(() => '')
+        throw new Error(`Bishop orchestration failed with status ${response.status}${errorText.trim() ? `: ${errorText.trim()}` : ''}`)
       }
 
       const payload = (await response.json()) as Partial<AnswerResult> & { answer?: string }
       const answer = typeof payload.answer === 'string' && payload.answer.trim() ? payload.answer.trim() : fallback.answer
 
-      return {
-        status: fallback.status,
-        provider: payload.provider || fallback.provider,
-        query: fallback.query,
-        answer,
-        sources: fallback.sources,
-        deniedSources: fallback.deniedSources,
-        chunkCount: payload.chunkCount ?? fallback.chunkCount,
-        tokenCount: payload.tokenCount ?? fallback.tokenCount,
-        latencyMs: payload.latencyMs ?? fallback.latencyMs,
-        mode: 'remote',
+      const result = augmentResultWithTrace(
+        {
+          status: fallback.status,
+          provider: payload.provider || fallback.provider,
+          query: fallback.query,
+          answer,
+          sources: fallback.sources,
+          deniedSources: fallback.deniedSources,
+          chunkCount: payload.chunkCount ?? fallback.chunkCount,
+          tokenCount: payload.tokenCount ?? fallback.tokenCount,
+          latencyMs: payload.latencyMs ?? fallback.latencyMs,
+        },
+        'remote',
         prompt,
-      }
-    } catch {
+      )
+
+      return result
+    } catch (error) {
+      const errorPreview = error instanceof Error ? error.message : 'Remote orchestration endpoint failed'
       return {
         ...fallback,
         mode: 'fallback',
         prompt,
+        confidenceScore: buildConfidenceScore(fallback, 'fallback'),
+        providerTracePreview: buildProviderTracePreview('fallback', fallback.provider, fallback.answer, errorPreview),
       }
     }
   }
@@ -467,15 +572,17 @@ export async function orchestrateBishopAnswer(
     provider === 'openai'
       ? await runOpenAIRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
       : provider === 'gemini'
-        ? await runGeminiRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
+      ? await runGeminiRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
         : await runAnthropicRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
-  if (remoteAnswer) {
-    return remoteAnswer
+  if (remoteAnswer.result) {
+    return remoteAnswer.result
   }
 
   return {
     ...fallback,
     mode: 'fallback',
     prompt,
+    confidenceScore: buildConfidenceScore(fallback, 'fallback'),
+    providerTracePreview: buildProviderTracePreview('fallback', fallback.provider, fallback.answer, remoteAnswer.errorPreview),
   }
 }
