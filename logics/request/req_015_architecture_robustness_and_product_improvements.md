@@ -1,9 +1,9 @@
 ## req_015_architecture_robustness_and_product_improvements - Architecture, robustesse et évolution produit
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Draft
-> Understanding: 93%
-> Confidence: 90%
+> Status: Done
+> Understanding: 98%
+> Confidence: 95%
 > Complexity: High
 > Theme: Architecture / Quality / Product
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.
@@ -74,8 +74,8 @@ flowchart TD
 - [x] Problem statement est explicite et l'impact utilisateur est clair.
 - [x] Périmètre (in/out) est défini.
 - [x] Les critères d'acceptance sont testables.
-- [ ] Découpage en backlog items à faire avant de démarrer.
-- [ ] Dépendances inter-axes identifiées (AC9 dépend de AC1 pour isolation Bishop).
+- [x] Découpage en backlog items à faire avant de démarrer.
+- [x] Dépendances inter-axes identifiées (AC9 dépend de AC1 pour isolation Bishop).
 
 # Scope
 **In scope**
@@ -116,3 +116,7 @@ flowchart TD
 - Keywords: refactoring, error boundary, graph api, retry, scoring, e2e, openai api, gemini api, claude api, bishop, corpus, delta sync, export, persistance
 - Use when: Use when planning the next wave of improvements after v1.0 stabilization.
 - Skip when: Skip when the work is a hotfix or targets a single isolated component.
+
+# Report
+- The request is fully delivered: app-shell refactoring, scoring extraction, barrel exports, panel error boundaries, Graph hardening, live corpus validation, E2E coverage, Bishop provider integration, session persistence, exports, and corpus delta sync are all implemented.
+- The request is closed after the derived backlog items and execution tasks were completed and validated.
