@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 95%
+> Progress: 96%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -126,13 +126,16 @@ stateDiagram-v2
 - Wave 1 checkpointed again: added role-scoped summary coverage for guest and admin so sync and corpus counts stay truthful across access levels.
 - Wave 1 checkpointed again: added retrieval scoring coverage so title-led matches and permitted results stay in the expected order.
 - Wave 1 checkpointed again: added search result coverage for site filters and result limits so query scope stays bounded.
+- Wave 2 started: added navigation accessibility coverage for the active tab state so shell behavior stays explicit for users and tests.
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
 - Validation passed: `rtk npm run test -- tests/deepvault.spec.ts tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
 - Validation passed: `rtk npm run test -- tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
+- Validation passed: `rtk npm run test -- tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts`
 - Validation passed: `rtk npm run test -- tests/live-corpus-hook.spec.tsx tests/corpus.spec.ts`
 - Validation passed: `rtk npm run test -- tests/deepvault.spec.ts tests/corpus.spec.ts`
 - Validation passed: `rtk npm run test -- tests/deepvault.spec.ts tests/corpus.spec.ts`
+- Validation passed: `rtk npm run test -- tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts`
 - Validation passed: `rtk npm run typecheck`
 - Validation passed: `rtk npm run lint`
 - Validation passed: `rtk npm run build`

@@ -49,6 +49,18 @@ describe('DeepVault app', () => {
     expect(screen.getByLabelText('Explorer search')).toBeInTheDocument()
   })
 
+  it('marks the active navigation tab for accessibility', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByRole('button', { name: 'Explorer' })).toHaveAttribute('aria-current', 'page')
+
+    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+
+    expect(screen.getByRole('button', { name: 'Explorer' })).not.toHaveAttribute('aria-current')
+    expect(screen.getByRole('button', { name: 'Sync status' })).toHaveAttribute('aria-current', 'page')
+  })
+
   it('keeps the explorer detail pane within the selected site scope', async () => {
     const user = userEvent.setup()
     render(<App />)
