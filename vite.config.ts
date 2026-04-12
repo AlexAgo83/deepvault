@@ -13,7 +13,7 @@ export default defineConfig({
         interface OpsJob {
           proc: ReturnType<typeof spawn>
           lines: string[]
-          listeners: Set<(data: string) => void>
+          listeners: Set<(_data: string) => void>
           done: boolean
         }
 

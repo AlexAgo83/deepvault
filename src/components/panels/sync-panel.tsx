@@ -86,7 +86,7 @@ export function SyncPanel({
     setElapsed(Date.now() - start)
     const id = window.setInterval(() => setElapsed(Date.now() - start), 1000)
     return () => window.clearInterval(id)
-  }, [currentJob?.id, currentJob?.status])
+  }, [currentJob?.id, currentJob?.status, currentJob?.startedAt])
 
   useEffect(() => {
     const node = consoleRef.current
