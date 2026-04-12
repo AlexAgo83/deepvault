@@ -58,6 +58,19 @@ describe('useLiveCorpus', () => {
     expect(screen.getByTestId('detail')).toHaveTextContent('not a valid corpus')
   })
 
+  it('falls back to mock data with an offline indicator when the live corpus request fails offline', async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new Error('network down'))
+
+    vi.stubGlobal('fetch', fetchMock)
+    vi.stubGlobal('navigator', { onLine: false })
+
+    render(<LiveCorpusProbe mode="live" />)
+
+    await waitFor(() => expect(screen.getByTestId('mode')).toHaveTextContent('mock'))
+    expect(screen.getByTestId('label')).toHaveTextContent('Offline — corpus mock')
+    expect(screen.getByTestId('detail')).toHaveTextContent('Hors-ligne — corpus mock actif')
+  })
+
   it('resets to mock data immediately when live mode is not requested', async () => {
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)

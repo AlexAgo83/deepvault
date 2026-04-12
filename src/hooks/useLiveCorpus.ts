@@ -46,9 +46,14 @@ export function useLiveCorpus(requestedModeValue: string | undefined | null): Li
       }
       setCorpusBundle(getMockCorpusBundle())
       setLiveState({
-        label: result.status === 'missing' ? 'Live fallback' : 'Live error',
-        detail: result.detail,
-        tone: result.status === 'missing' ? 'accent' : 'danger',
+        label: result.status === 'offline' ? 'Offline — corpus mock' : result.status === 'missing' ? 'Live fallback' : 'Live error',
+        detail:
+          result.status === 'offline'
+            ? 'Hors-ligne — corpus mock actif'
+            : result.status === 'missing'
+              ? result.detail
+              : result.detail,
+        tone: result.status === 'missing' || result.status === 'offline' ? 'accent' : 'danger',
       })
     })
 

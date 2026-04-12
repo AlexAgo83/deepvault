@@ -109,6 +109,22 @@ describe('DeepVault app', () => {
     expect(screen.getByTitle('Live corpus missing, fallback to mock')).toBeInTheDocument()
   })
 
+  it('shows the offline corpus fallback indicator when live mode is selected without network', async () => {
+    const user = userEvent.setup()
+    const fetchMock = vi.fn().mockRejectedValue(new Error('network down'))
+
+    vi.stubEnv('VITE_DEEPVAULT_DATA_MODE', 'live')
+    vi.stubGlobal('fetch', fetchMock)
+    vi.stubGlobal('navigator', { onLine: false })
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    expect(await screen.findByText('Offline — corpus mock')).toBeInTheDocument()
+    expect(screen.getByTitle('Hors-ligne — corpus mock actif')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Explorer' }))
+    expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
+  })
+
   it('renders sync run notes and counts in the sync panel', async () => {
     const user = userEvent.setup()
     render(<App />)

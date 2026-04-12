@@ -10,6 +10,7 @@ export interface CorpusBundle {
 export type LiveCorpusFetchResult =
   | { status: 'loaded'; corpus: Corpus; detail: string }
   | { status: 'missing'; detail: string }
+  | { status: 'offline'; detail: string }
   | { status: 'error'; detail: string }
 
 export function getMockCorpusBundle(): CorpusBundle {
@@ -103,6 +104,9 @@ export async function fetchLiveCorpus(): Promise<LiveCorpusFetchResult> {
       return { status: 'error', detail: 'Live corpus error: response body could not be parsed' }
     }
   } catch {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      return { status: 'offline', detail: 'Live corpus unavailable offline, fallback to mock' }
+    }
     return { status: 'error', detail: 'Live corpus error: request failed before a response was returned' }
   }
 }
