@@ -1,10 +1,10 @@
 ## task_020_test_coverage_expansion - Test coverage expansion
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: In progress
+> Status: Done
 > Understanding: 90%
 > Confidence: 87%
-> Progress: 50%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Quality
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -39,11 +39,11 @@ stateDiagram-v2
 - [x] 1. Vérifier si `task_018` Wave 2 (scoring.ts) est réalisée — adapter le fichier spec cible en conséquence (`tests/scoring.spec.ts` si oui, `tests/deepvault.spec.ts` extension si non).
 - [x] 2. Wave 1 — ajouter dans Vitest : (a) test scoring query vide → score 0 sans exception ; (b) test scoring doc sans `title` → pas de crash ; (c) test stop words seuls → 0 résultats ; (d) test Bishop fallback sur remote 500 → fallback local activé avec résultat valide.
 - [x] 3. Valider `npm run test:coverage` maintient les seuils (90% lignes, 85% branches, 80% fonctions) après Wave 1.
-- [ ] 4. Wave 2 — ajouter dans Playwright (`tests/e2e/`) : (a) recherche sans résultats ; (b) rôle guest + sources restricted Bishop ; (c) changement rôle guest → admin et vérification du compte sources ; (d) switch mock↔live et vérification indicateur de mode.
-- [ ] 5. Décider si AC4 Wave 2 (switch live) utilise un corpus live fixture ou est conditionnel à l'env.
-- [ ] 6. Fermer la task en mettant à jour les backlog items et les requests liés.
-- [ ] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
-- [ ] GATE: ne pas fermer Wave 1 avant que `npm run test:coverage` passe les seuils ; ne pas fermer Wave 2 avant que `npm run e2e` passe.
+- [x] 4. Wave 2 — ajouter dans Playwright (`tests/e2e/`) : (a) recherche sans résultats ; (b) rôle guest + sources restricted Bishop ; (c) changement rôle guest → admin et vérification du compte sources ; (d) switch mock↔live et vérification indicateur de mode.
+- [x] 5. Décider si AC4 Wave 2 (switch live) utilise un corpus live fixture ou est conditionnel à l'env.
+- [x] 6. Fermer la task en mettant à jour les backlog items et les requests liés.
+- [x] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
+- [x] GATE: ne pas fermer Wave 1 avant que `npm run test:coverage` passe les seuils ; ne pas fermer Wave 2 avant que `npm run e2e` passe.
 
 # Delivery checkpoints
 - Après Wave 1 : `rtk npm run test:coverage` passe les seuils (90/85/80), les tests unitaires Bishop/scoring sont verts.
@@ -85,4 +85,5 @@ stateDiagram-v2
 # Report
 - Wave 1 completed: added Vitest coverage for scoring query-empty and stop-word-only behavior, Bishop remote 500 fallback, and Anthropic provider failure branches while keeping the code surface unchanged.
 - Wave 1 validated: `rtk npm run test:coverage` now passes with global coverage above the required thresholds.
-- Wave 2 remains open: Playwright E2E scenarios are still pending.
+- Wave 2 completed: added Playwright coverage for empty search results, guest-restricted Bishop output, role changes from guest to admin, and live-mode badge verification.
+- Wave 2 validated: `rtk npm run e2e` and `VITE_DEEPVAULT_DATA_MODE=live rtk npm run e2e -- tests/e2e/live-mode.spec.ts` both passed.
