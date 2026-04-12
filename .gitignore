@@ -10,7 +10,7 @@ playwright-report/
 test-results/
 .playwright-cli/
 data/runtime/
-data/eval/*.live.json
+data/eval/
 data/live-corpus.json
 public/live-corpus.json
 logics/.cache/
