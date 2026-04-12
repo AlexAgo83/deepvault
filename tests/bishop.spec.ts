@@ -93,6 +93,52 @@ describe('bishop orchestration helpers', () => {
     expect(result.latencyMs).toBe(84)
   })
 
+  it('uses Anthropic Claude when the API key is available', async () => {
+    const createMock = vi.fn().mockResolvedValue({
+      content: [{ type: 'text', text: 'Claude remote answer.' }],
+      usage: {
+        input_tokens: 123,
+        output_tokens: 45,
+      },
+    })
+    const anthropicClient = {
+      beta: {
+        messages: {
+          create: createMock,
+        },
+      },
+    }
+
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+      anthropicApiKey: 'test-api-key',
+      bishopModel: 'claude-test-model',
+      anthropicClient: anthropicClient as never,
+    })
+
+    expect(createMock).toHaveBeenCalledTimes(1)
+    expect(result.mode).toBe('remote')
+    expect(result.answer).toBe('Claude remote answer.')
+    expect(result.chunkCount).toBeGreaterThan(0)
+    expect(result.tokenCount).toBe(168)
+
+    const [request] = createMock.mock.calls[0]
+    expect(request).toMatchObject({
+      model: 'claude-test-model',
+      max_tokens: 512,
+      temperature: 0,
+      betas: ['prompt-caching-2024-07-31'],
+    })
+    expect((request as { system: Array<{ cache_control?: { type?: string } }> }).system[0].cache_control).toEqual({
+      type: 'ephemeral',
+    })
+    expect(
+      (request as { messages: Array<{ content: Array<{ cache_control?: { type?: string } }> }> }).messages[0].content[1]
+        .cache_control,
+    ).toEqual({ type: 'ephemeral' })
+  })
+
   it('falls back locally when the remote orchestration endpoint returns a bad status', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,

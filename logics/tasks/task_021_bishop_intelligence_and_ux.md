@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 87%
 > Confidence: 82%
-> Progress: 5%
+> Progress: 30%
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -90,3 +90,5 @@ stateDiagram-v2
 - [ ] Status à `Done` et progress à `100%`.
 # Report
 - Wave 0: prerequisite architecture contract confirmed and environment variables for Bishop Claude integration documented.
+- Wave 1 started: Bishop remote mode now prefers `@anthropic-ai/sdk` when `ANTHROPIC_API_KEY` is available, keeps the legacy endpoint path for compatibility, and preserves local fallback when no key is present.
+- Validation passed for the Wave 1 slice: `rtk npm run test -- tests/bishop.spec.ts tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, `npm run evaluate` (run with elevated execution to avoid the sandbox IPC restriction in `tsx`).
