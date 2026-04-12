@@ -61,6 +61,7 @@ export function BishopPanel({
       <article className="panel chat-panel">
         <SectionHeading
           title="Bishop"
+          subtitleTooltip="Grounded answers come from the same local retrieval logic used by the explorer."
           actions={
             <>
               <button type="button" className="secondary-button secondary-button-sm" onClick={exportJson}>

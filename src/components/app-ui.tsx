@@ -115,11 +115,21 @@ export function StatCard({
   )
 }
 
-export function SectionHeading({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; actions?: ReactNode }) {
+export function SectionHeading({
+  title,
+  subtitle,
+  subtitleTooltip,
+  actions,
+}: {
+  title: string
+  subtitle?: ReactNode
+  subtitleTooltip?: string
+  actions?: ReactNode
+}) {
   return (
     <div className="section-heading">
       <div>
-        <h2 title={typeof subtitle === 'string' ? subtitle : undefined}>{title}</h2>
+        <h2 title={subtitleTooltip}>{title}</h2>
         {subtitle ? <p>{subtitle}</p> : null}
       </div>
       {actions ? <div className="section-heading-actions">{actions}</div> : null}

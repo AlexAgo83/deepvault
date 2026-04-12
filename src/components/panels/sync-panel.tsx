@@ -35,7 +35,7 @@ export function SyncPanel({
     <section className="content-grid sync-grid">
       <div className="sync-main-column">
         <article className="panel">
-          <SectionHeading title="Sync status" subtitle="Refresh state, ingestion coverage, and operational signals." />
+          <SectionHeading title="Sync status" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
           <div className="kpi-grid compact">
             <StatCard
               label="Synced sites"
@@ -89,7 +89,7 @@ export function SyncPanel({
         </article>
 
         <article className="panel runtime-panel">
-          <SectionHeading title="Runtime" subtitle="Execution context shared by Explorer, Bishop, and Sync status." />
+          <SectionHeading title="Runtime" subtitleTooltip="Execution context shared by Explorer, Bishop, and Sync status." />
           <Pill tone="accent">{activeScopeLabel}</Pill>
           <div className="runtime-stack runtime-stack-grid">
             <div className="runtime-row">
@@ -137,7 +137,7 @@ export function SyncPanel({
       </div>
 
       <aside className="panel">
-        <SectionHeading title="Recent sync runs" subtitle="Hover each run for the full note." />
+        <SectionHeading title="Recent sync runs" subtitleTooltip="Hover each run for the full note." />
         <div className="sync-list">
           {scopedSyncRuns.map((run) => (
             <article key={run.id} className="sync-card" title={run.notes}>
