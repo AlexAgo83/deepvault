@@ -1,4 +1,4 @@
-import { type FormEvent } from 'react'
+import { type FormEvent, useLayoutEffect, useRef, useState } from 'react'
 import { Message, SectionHeading, SourceCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 
@@ -29,6 +29,28 @@ export function BishopPanel({
   selectedMessage: AppModel['selectedMessage']
   resolveFileHref: AppModel['resolveFileHref']
 }) {
+  const messageListRef = useRef<HTMLDivElement | null>(null)
+  const [stickToBottom, setStickToBottom] = useState(true)
+
+  const updateStickToBottom = () => {
+    const node = messageListRef.current
+    if (!node) {
+      return
+    }
+
+    const distanceFromBottom = node.scrollHeight - node.scrollTop - node.clientHeight
+    setStickToBottom(distanceFromBottom <= 24)
+  }
+
+  useLayoutEffect(() => {
+    const node = messageListRef.current
+    if (!node || !stickToBottom) {
+      return
+    }
+
+    node.scrollTop = Math.max(0, node.scrollHeight - node.clientHeight)
+  }, [messages, stickToBottom])
+
   return (
     <section className="content-grid bishop-grid">
       <article className="panel chat-panel">
@@ -49,7 +71,7 @@ export function BishopPanel({
             </>
           }
         />
-        <div className="message-list">
+        <div className="message-list" ref={messageListRef} onScroll={updateStickToBottom}>
           {messages.map((message) => (
             <Message key={message.id} message={message} resolveFileHref={resolveFileHref} />
           ))}
