@@ -32,9 +32,29 @@ function createBeforeInstallPromptEvent(outcome: 'accepted' | 'dismissed' = 'acc
   return { event, prompt }
 }
 
+function setPwaRegisterState(needRefresh: boolean) {
+  const mock = (globalThis as typeof globalThis & {
+    __pwaRegisterSWMock?: {
+      needRefresh: boolean
+      offlineReady: boolean
+      updateServiceWorker: ReturnType<typeof vi.fn>
+    }
+  }).__pwaRegisterSWMock
+
+  if (!mock) {
+    throw new Error('PWA register mock is not available')
+  }
+
+  mock.needRefresh = needRefresh
+  mock.offlineReady = false
+  mock.updateServiceWorker.mockClear()
+  return mock
+}
+
 afterEach(() => {
   vi.unstubAllGlobals()
   vi.restoreAllMocks()
+  setPwaRegisterState(false)
 })
 
 describe('PWA manifest', () => {
@@ -96,5 +116,38 @@ describe('PWA install prompt', () => {
     render(<App />)
 
     expect(screen.queryByRole('button', { name: "Installer l'app" })).not.toBeInTheDocument()
+  })
+})
+
+describe('PWA update banner', () => {
+  it('shows the update banner when a refresh is pending and hides it after update', async () => {
+    const user = userEvent.setup()
+    const mock = setPwaRegisterState(true)
+    render(<App />)
+
+    expect(await screen.findByText('Une nouvelle version est disponible')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Mettre à jour' }))
+
+    expect(mock.updateServiceWorker).toHaveBeenCalledWith(true)
+    await waitFor(() => expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument())
+  })
+
+  it('dismisses the banner without updating the service worker', async () => {
+    const user = userEvent.setup()
+    setPwaRegisterState(true)
+    render(<App />)
+
+    await screen.findByText('Une nouvelle version est disponible')
+    await user.click(screen.getByRole('button', { name: 'Ignorer' }))
+
+    expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument()
+  })
+
+  it('keeps the banner hidden when no refresh is pending', () => {
+    setPwaRegisterState(false)
+    render(<App />)
+
+    expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument()
   })
 })
