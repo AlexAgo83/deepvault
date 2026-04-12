@@ -1,10 +1,10 @@
 ## task_021_bishop_intelligence_and_ux - Bishop intelligence and UX
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In progress
 > Understanding: 87%
 > Confidence: 82%
-> Progress: 0%
+> Progress: 5%
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -21,7 +21,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|bishop-intelligence-and-ux|item-052-bishop-claude-api-integration|1-confirmer-le-contrat-dappel-bishop|wave-1-run-npm-run-check-verifier-fallback
+%% logics-signature: task|bishop-intelligence-and-ux|item-052-bishop-claude-api-integration|1-confirmer-le-contrat-du-remote|wave-1-run-npm-run-check
 stateDiagram-v2
     state "2 backlog items — Bishop produit" as Backlog
     state "1. Confirmer le contrat Bishop remote + clé API" as Scope
@@ -37,8 +37,8 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirmer le contrat du remote mode Bishop dans `src/lib/bishop.ts` (format de l'appel, format de réponse attendu) et relire `adr_017_bishop_llm_orchestration_after_local_grounding`.
-- [ ] 2. Ajouter `ANTHROPIC_API_KEY` et `VITE_BISHOP_MODEL` au fichier `.env.exemple` avec documentation.
+- [x] 1. Confirmer le contrat du remote mode Bishop dans `src/lib/bishop.ts` (format de l'appel, format de réponse attendu) et relire `adr_017_bishop_llm_orchestration_after_local_grounding`.
+- [x] 2. Ajouter `ANTHROPIC_API_KEY` et `VITE_BISHOP_MODEL` au fichier `.env.exemple` avec documentation.
 - [ ] 3. Wave 1 — installer `@anthropic-ai/sdk` ; implémenter l'appel Claude dans le remote mode Bishop avec le corpus groundé comme contexte ; activer le prompt caching (system prompt + corpus groundé marqués `cache_control: ephemeral`) ; vérifier le fallback local si la clé est absente.
 - [ ] 4. Décider le system prompt Bishop (ton, format de réponse, règles de citation sources) — le documenter dans le code ou un fichier dédié.
 - [ ] 5. Wave 2 — persister l'historique Bishop dans `localStorage` (clé `deepvault_bishop_history`, max 50 messages) ; restaurer au chargement ; ajouter un bouton "Exporter" sur Bishop (JSON + MD) et sur Explorer (JSON) ; ajouter un bouton "Effacer l'historique".
@@ -89,3 +89,4 @@ stateDiagram-v2
 - [ ] Chaque wave a laissé un checkpoint commit-ready.
 - [ ] Status à `Done` et progress à `100%`.
 # Report
+- Wave 0: prerequisite architecture contract confirmed and environment variables for Bishop Claude integration documented.
