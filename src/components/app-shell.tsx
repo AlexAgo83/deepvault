@@ -3,7 +3,7 @@ import { ErrorBoundary } from './error-boundary'
 import { CompactDateTime, Pill, StatCard } from './app-ui'
 import { useInstallPrompt } from '../hooks'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
-import { BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SyncPanel } from './panels'
+import { BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
 import { version } from '../../package.json'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
@@ -37,6 +37,15 @@ function SyncIcon() {
       <path d="M5.25 7.25A6.12 6.12 0 0 1 10 5.25c2.12 0 4.02 1.08 5.16 2.72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="M14.5 5.75v2.9h-2.9M14.75 12.75A6.12 6.12 0 0 1 10 14.75c-2.12 0-4.02-1.08-5.16-2.72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="M5.5 14.25v-2.9h2.9" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function SettingsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M8.3 4.4 10 3.5l1.7.9 1.9-.2.8 1.8 1.6 1.1-.4 1.9.4 1.9-1.6 1.1-.8 1.8-1.9-.2-1.7.9-1.7-.9-1.9.2-.8-1.8-1.6-1.1.4-1.9-.4-1.9 1.6-1.1.8-1.8z" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+      <circle cx="10" cy="10" r="1.9" fill="none" stroke="currentColor" strokeWidth="1.2" />
     </svg>
   )
 }
@@ -105,9 +114,23 @@ function AppSidebar({
         </nav>
       </div>
 
-      {!isStandalone && (canInstall || hasPendingUpdate) ? (
-        <div className="sidebar-section">
-          <div className="sidebar-label">Application</div>
+      <div className="sidebar-section">
+        <div className="sidebar-label">Application</div>
+        <nav className="nav-list">
+          <button
+            type="button"
+            className={`nav-item ${activeTab === 'settings' ? 'nav-item-active' : ''}`}
+            aria-current={activeTab === 'settings' ? 'page' : undefined}
+            onClick={() => onTabChange('settings')}
+          >
+            <span className="nav-item-icon" aria-hidden="true">
+              <SettingsIcon />
+            </span>
+            Settings
+          </button>
+        </nav>
+
+        {!isStandalone && (canInstall || hasPendingUpdate) ? (
           <nav className="nav-list">
             {!isStandalone && canInstall ? (
               <button type="button" className="nav-item nav-item-action pwa-action-button" onClick={() => void install()}>
@@ -126,8 +149,8 @@ function AppSidebar({
               </button>
             ) : null}
           </nav>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </aside>
   )
 }
@@ -195,6 +218,7 @@ export function AppShell(model: AppModel) {
     activeScopeLabel,
     activeTab,
     corpusProviders,
+    clearProviderSecrets,
     explorerRows,
     clearBishopHistory,
     handleAsk,
@@ -202,6 +226,7 @@ export function AppShell(model: AppModel) {
     liveState,
     messages,
     provider,
+    providerSecrets,
     question,
     resolveFileHref,
     role,
@@ -214,6 +239,7 @@ export function AppShell(model: AppModel) {
     selectedMessage,
     setActiveTab,
     setProvider,
+    setProviderSecret,
     setQuestion,
     setRole,
     setSearch,
@@ -275,6 +301,12 @@ export function AppShell(model: AppModel) {
               <span>Le bouton de mise à jour se trouve dans le menu.</span>
             </div>
           </section>
+        ) : null}
+
+        {activeTab === 'settings' ? (
+          <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
+            <SettingsPanel providerSecrets={providerSecrets} onClear={clearProviderSecrets} onKeyChange={setProviderSecret} />
+          </ErrorBoundary>
         ) : null}
 
         <section className="kpi-grid">

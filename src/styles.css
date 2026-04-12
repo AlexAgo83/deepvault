@@ -522,6 +522,46 @@ p {
   background: transparent;
 }
 
+.settings-grid {
+  margin-bottom: 2px;
+}
+
+.settings-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.settings-form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.settings-field {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.settings-field input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 10px 12px;
+}
+
+.settings-field input:focus {
+  outline: 2px solid rgba(185, 106, 67, 0.18);
+  border-color: var(--accent);
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
