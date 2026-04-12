@@ -1,10 +1,10 @@
 ## item_048_react_error_boundaries_for_panels - React Error Boundaries for panels
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 93%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Low
 > Theme: Architecture / Quality
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|react-error-boundaries-for-panels|req-015-architecture-robustness-and-pro|ajouter-des-error-boundaries-react|ac1-composant-errorboundary-generique-existe
+%% logics-signature: backlog|react-error-boundaries-for-panels|req-015-architecture-robustness-and-prod|aucun-error-boundary-react-n-existe|ac1-un-composant-errorboundary-generique
 flowchart TD
     Request[req_015_architecture_robustness_and_product] --> Problem[Pannes propagées à toute l'app]
     Problem --> Scope[Error Boundary par panel]
@@ -72,3 +72,8 @@ flowchart TD
 # Notes
 - Derived from request `req_015_architecture_robustness_and_product_improvements`.
 - Peut être réalisé avant item_046 (split app-shell) — le wrapping se fait dans app-shell.tsx directement si les panels ne sont pas encore extraits.
+
+# Report
+- Wave 3 completed: added `src/components/error-boundary.tsx` and wrapped Explorer, Bishop, and Sync in distinct boundaries inside `src/components/app-shell.tsx`.
+- Wave 3 completed: added `tests/error-boundary.spec.tsx` to verify a panel failure is isolated while a sibling boundary still renders normally.
+- Wave 3 completed: validated the slice with `rtk npm run test -- tests/error-boundary.spec.tsx tests/app.spec.tsx tests/scoring.spec.ts tests/deepvault.spec.ts` and `rtk npm run check`.
