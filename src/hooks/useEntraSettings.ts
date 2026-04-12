@@ -8,6 +8,7 @@ export interface EntraSettings {
   secretValue: string
   sites: string
   siteNames: string
+  dataMode: '' | 'mock' | 'live'
 }
 
 const EMPTY: EntraSettings = {
@@ -16,6 +17,7 @@ const EMPTY: EntraSettings = {
   secretValue: '',
   sites: '',
   siteNames: '',
+  dataMode: '',
 }
 
 function readEntraSettings(): EntraSettings {
@@ -32,6 +34,7 @@ function readEntraSettings(): EntraSettings {
       secretValue: parsed.secretValue?.trim() || '',
       sites: parsed.sites?.trim() || '',
       siteNames: parsed.siteNames?.trim() || '',
+      dataMode: parsed.dataMode === 'mock' || parsed.dataMode === 'live' ? parsed.dataMode : '',
     }
   } catch {
     return EMPTY
