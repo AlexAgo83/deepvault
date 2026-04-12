@@ -1,10 +1,10 @@
 ## item_047_extract_scoring_module_and_barrel_exports - Extract scoring module and add barrel exports
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 90%
 > Confidence: 87%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Low
 > Theme: Architecture
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|extract-scoring-module-and-barrel-exports|req-015-architecture-robustness-and-pro|extraire-la-logique-de-scoring-de|ac1-scoring-ts-existe-et-exporte
+%% logics-signature: backlog|extract-scoring-module-and-add-barrel-ex|req-015-architecture-robustness-and-prod|les-poids-de-scoring-title-8|ac1-src-lib-scoring-ts-existe-exporte
 flowchart TD
     Request[req_015_architecture_robustness_and_product] --> Problem[Scoring enterré dans deepvault.ts]
     Problem --> Scope[scoring.ts + barrel exports]
@@ -69,3 +69,8 @@ flowchart TD
 # Notes
 - Derived from request `req_015_architecture_robustness_and_product_improvements`.
 - Item_051 (tests scoring) dépend de cet item — extraire scoring.ts d'abord rend les tests unitaires isolés plus naturels.
+
+# Report
+- Wave 2 completed: extracted the scoring weights and tokenization logic into `src/lib/scoring.ts`.
+- Wave 2 completed: added `src/lib/index.ts`, `src/hooks/index.ts`, and `src/components/index.ts` barrel exports.
+- Wave 2 completed: validated the slice with `rtk npm run test -- tests/scoring.spec.ts tests/deepvault.spec.ts tests/app.spec.tsx`, `rtk npm run typecheck`, `rtk npm run lint`, `rtk npm run build`, and `rtk npm run check`.
