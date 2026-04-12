@@ -1,17 +1,56 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Pill, SectionHeading, StatCard } from '../app-ui'
+import { ConfirmModal } from '../confirm-modal'
 import { formatUpdatedAt } from '../../lib/deepvault'
 import type { AppModel } from '../../hooks/useAppModel'
 
+type OpsKey = 'ingest' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
+
+const OPS_CONFIG: Record<OpsKey, {
+  label: string
+  tooltip: string
+  description: string
+  warning?: string
+  confirmLabel: string
+}> = {
+  ingest: {
+    label: 'Run ingest',
+    tooltip: 'Write sync snapshot from current corpus',
+    description: 'Reads the current corpus and writes a new sync state snapshot to data/runtime/sync-state.json. Fast, local operation — no network calls.',
+    confirmLabel: 'Run ingest',
+  },
+  evaluate: {
+    label: 'Run evaluate',
+    tooltip: 'Score retrieval quality against expected answers',
+    description: 'Runs the evaluation pipeline and scores retrieval quality against a set of expected answers. Writes a baseline report to data/eval/.',
+    warning: 'This makes API calls to OpenAI and may incur usage costs.',
+    confirmLabel: 'Run evaluate',
+  },
+  refresh: {
+    label: 'Refresh status',
+    tooltip: 'Reload corpus state in the app',
+    description: 'Reloads the corpus state in the app and updates site coverage, freshness, and provider readiness signals. No files are written.',
+    confirmLabel: 'Refresh',
+  },
+  exportLive: {
+    label: 'Run live export',
+    tooltip: 'Full SharePoint export via Microsoft Graph',
+    description: 'Connects to SharePoint via Microsoft Graph and exports the full corpus from all configured sites. The existing checkpoint will be overwritten.',
+    warning: 'Full export — may take several minutes depending on corpus size. Requires Entra credentials configured in Settings.',
+    confirmLabel: 'Run live export',
+  },
+  exportLiveResume: {
+    label: 'Resume live export',
+    tooltip: 'Delta sync from last checkpoint',
+    description: 'Resumes from the last checkpoint and only fetches documents modified since the previous export. Faster than a full export and preserves unchanged documents.',
+    warning: 'Requires a valid checkpoint on disk. If no checkpoint exists the export will fall back to a full run.',
+    confirmLabel: 'Resume export',
+  },
+}
+
 function getJobTone(status: string) {
-  if (status === 'completed') {
-    return 'success'
-  }
-
-  if (status === 'failed' || status === 'cancelled') {
-    return 'danger'
-  }
-
+  if (status === 'completed') return 'success'
+  if (status === 'failed' || status === 'cancelled') return 'danger'
   return 'accent'
 }
 
@@ -29,18 +68,38 @@ export function SyncPanel({
   const consoleRef = useRef<HTMLDivElement | null>(null)
   const currentJob = syncOperations.activeJob
   const currentLines = currentJob?.lines || []
+  const [pendingOp, setPendingOp] = useState<OpsKey | null>(null)
 
   useEffect(() => {
     const node = consoleRef.current
-    if (!node) {
-      return
-    }
-
+    if (!node) return
     node.scrollTop = node.scrollHeight
   }, [currentJob?.id, currentLines.length])
 
+  function confirm(op: OpsKey) {
+    setPendingOp(null)
+    if (op === 'ingest') syncOperations.startIngest()
+    else if (op === 'evaluate') syncOperations.startEvaluate()
+    else if (op === 'refresh') syncOperations.startRefresh()
+    else if (op === 'exportLive') syncOperations.startExportLive()
+    else if (op === 'exportLiveResume') syncOperations.startExportLiveResume()
+  }
+
+  const pending = pendingOp ? OPS_CONFIG[pendingOp] : null
+
   return (
     <section className="sync-stack">
+      {pending ? (
+        <ConfirmModal
+          title={pending.label}
+          description={pending.description}
+          warning={pending.warning}
+          confirmLabel={pending.confirmLabel}
+          onConfirm={() => confirm(pendingOp!)}
+          onCancel={() => setPendingOp(null)}
+        />
+      ) : null}
+
       <article className="panel">
         <SectionHeading title="Sync status" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
         <div className="kpi-grid compact">
@@ -95,50 +154,61 @@ export function SyncPanel({
         </div>
       </article>
 
+      <article className="panel sync-controls-panel">
+        <div className="sync-controls-group">
+          <span className="sync-controls-label">Local pipeline</span>
+          <div className="sync-controls-actions">
+            {(['ingest', 'evaluate'] as OpsKey[]).map((op) => (
+              <button
+                key={op}
+                type="button"
+                className="secondary-button secondary-button-sm"
+                data-tooltip={OPS_CONFIG[op].tooltip}
+                onClick={() => setPendingOp(op)}
+                disabled={syncOperations.isRunning}
+              >
+                {OPS_CONFIG[op].label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="sync-controls-divider" />
+
+        <div className="sync-controls-group">
+          <span className="sync-controls-label">SharePoint sync</span>
+          <div className="sync-controls-actions">
+            {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
+              <button
+                key={op}
+                type="button"
+                className="secondary-button secondary-button-sm"
+                data-tooltip={OPS_CONFIG[op].tooltip}
+                onClick={() => setPendingOp(op)}
+                disabled={syncOperations.isRunning}
+              >
+                {OPS_CONFIG[op].label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </article>
+
       <article className="panel sync-ops-panel">
         <SectionHeading
           title="Operations console"
-          subtitleTooltip="Launch sync commands and follow the streamed execution log."
+          subtitleTooltip="Follow the streamed execution log for the active operation."
           actions={
-            <>
+            syncOperations.isRunning ? (
               <button
                 type="button"
                 className="secondary-button secondary-button-sm"
-                title="Refresh the current sync snapshot"
-                onClick={syncOperations.startRefresh}
-                disabled={syncOperations.isRunning}
+                data-tooltip="Stop the running operation"
+                onClick={syncOperations.cancelActiveJob}
               >
-                Refresh status
+                Cancel job
               </button>
-              <button
-                type="button"
-                className="secondary-button secondary-button-sm"
-                title="Run local ingestion for the current corpus snapshot"
-                onClick={syncOperations.startIngest}
-                disabled={syncOperations.isRunning}
-              >
-                Run ingest
-              </button>
-              <button
-                type="button"
-                className="secondary-button secondary-button-sm"
-                title="Run the evaluation pipeline against the current snapshot"
-                onClick={syncOperations.startEvaluate}
-                disabled={syncOperations.isRunning}
-              >
-                Run evaluate
-              </button>
-              {syncOperations.isRunning ? (
-                <button
-                  type="button"
-                  className="secondary-button secondary-button-sm"
-                  title="Cancel the running operation"
-                  onClick={syncOperations.cancelActiveJob}
-                >
-                  Cancel job
-                </button>
-              ) : null}
-            </>
+            ) : null
           }
         />
 

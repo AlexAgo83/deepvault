@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-export type SyncOperationKind = 'refresh' | 'ingest' | 'evaluate'
+export type SyncOperationKind = 'refresh' | 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
 export type SyncOperationStatus = 'running' | 'completed' | 'failed' | 'cancelled'
 export type SyncConsoleTone = 'muted' | 'normal' | 'success' | 'danger'
 
@@ -26,6 +26,7 @@ export interface SyncOperationJob {
 
 export interface UseSyncOperationsOptions {
   activeScopeLabel: string
+  extraEnv: Record<string, string>
   provider: string
   role: string
   visibleDocs: number
@@ -37,51 +38,46 @@ export interface UseSyncOperationsOptions {
 
 const JOB_HISTORY_LIMIT = 5
 
-const JOB_DEFINITIONS: Record<
-  SyncOperationKind,
-  {
-    command: string
-    label: string
-    summary: string
-    steps: Array<{ delayMs: number; progress: number; text: string; tone?: SyncConsoleTone }>
-  }
-> = {
-  refresh: {
-    command: 'refresh status',
-    label: 'Refresh status',
-    summary: 'Refreshed the current corpus snapshot.',
-    steps: [
-      { delayMs: 140, progress: 12, text: 'Refreshing the current corpus snapshot...', tone: 'muted' },
-      { delayMs: 420, progress: 32, text: 'Reading the latest live corpus state and scope filters...', tone: 'muted' },
-      { delayMs: 860, progress: 68, text: 'Updating site coverage, freshness, and readiness signals...', tone: 'normal' },
-      { delayMs: 1320, progress: 100, text: 'Refresh completed successfully.', tone: 'success' },
-    ],
-  },
+// Refresh is simulated: calls onRefreshCorpus() in-app, fake timer steps for UX feedback.
+const REFRESH_DEF = {
+  command: 'refresh status',
+  label: 'Refresh status',
+  summary: 'Refreshed the current corpus snapshot.',
+  steps: [
+    { delayMs: 140, progress: 12, text: 'Refreshing the current corpus snapshot...', tone: 'muted' as SyncConsoleTone },
+    { delayMs: 420, progress: 32, text: 'Reading the latest live corpus state and scope filters...', tone: 'muted' as SyncConsoleTone },
+    { delayMs: 860, progress: 68, text: 'Updating site coverage, freshness, and readiness signals...', tone: 'normal' as SyncConsoleTone },
+    { delayMs: 1320, progress: 100, text: 'Refresh completed successfully.', tone: 'success' as SyncConsoleTone },
+  ],
+}
+
+// Ingest, evaluate, and export-live run real scripts via the ops-server Vite plugin.
+const LIVE_OP_DEFS = {
   ingest: {
     command: 'npm run ingest',
     label: 'Run ingest',
     summary: 'Wrote a new local sync snapshot.',
-    steps: [
-      { delayMs: 140, progress: 10, text: 'Starting local ingestion pipeline...', tone: 'muted' },
-      { delayMs: 420, progress: 28, text: 'Scanning pilot sites and permission-aware documents...', tone: 'muted' },
-      { delayMs: 860, progress: 56, text: 'Writing chunks and refresh metadata to the local snapshot...', tone: 'normal' },
-      { delayMs: 1320, progress: 82, text: 'Verifying corpus coverage and source indexing...', tone: 'normal' },
-      { delayMs: 1780, progress: 100, text: 'Ingest finished successfully.', tone: 'success' },
-    ],
+    estimatedLines: 5,
   },
   evaluate: {
     command: 'npm run evaluate',
     label: 'Run evaluate',
     summary: 'Generated the baseline evaluation report.',
-    steps: [
-      { delayMs: 140, progress: 8, text: 'Starting evaluation against the current corpus snapshot...', tone: 'muted' },
-      { delayMs: 480, progress: 24, text: 'Loading expected answers and retrieval targets...', tone: 'muted' },
-      { delayMs: 900, progress: 48, text: 'Scoring grounded answers and tracking missed coverage...', tone: 'normal' },
-      { delayMs: 1360, progress: 76, text: 'Computing pass rate and provider comparisons...', tone: 'normal' },
-      { delayMs: 1840, progress: 100, text: 'Evaluation report generated successfully.', tone: 'success' },
-    ],
+    estimatedLines: 40,
   },
-}
+  'export-live': {
+    command: 'npm run export:live',
+    label: 'Run live export',
+    summary: 'Exported live corpus from SharePoint.',
+    estimatedLines: 50,
+  },
+  'export-live-resume': {
+    command: 'npm run export:live -- --resume',
+    label: 'Resume live export',
+    summary: 'Resumed live export from last checkpoint.',
+    estimatedLines: 50,
+  },
+} as const
 
 function makeLine(text: string, tone: SyncConsoleTone = 'normal'): SyncConsoleLine {
   return {
@@ -92,7 +88,10 @@ function makeLine(text: string, tone: SyncConsoleTone = 'normal'): SyncConsoleLi
   }
 }
 
-function formatCommandLine(command: string, context: Pick<UseSyncOperationsOptions, 'activeScopeLabel' | 'provider' | 'role' | 'visibleDocs' | 'syncedSites' | 'restrictedSites' | 'refreshPolicy'>): string {
+function formatCommandLine(
+  command: string,
+  context: Pick<UseSyncOperationsOptions, 'activeScopeLabel' | 'provider' | 'role' | 'visibleDocs' | 'syncedSites' | 'restrictedSites' | 'refreshPolicy'>,
+): string {
   return [
     `$ ${command}`,
     `Scope: ${context.activeScopeLabel}`,
@@ -102,8 +101,16 @@ function formatCommandLine(command: string, context: Pick<UseSyncOperationsOptio
   ].join('\n')
 }
 
+function detectLineTone(text: string, isError: boolean): SyncConsoleTone {
+  if (isError) return 'danger'
+  if (/error|fail/i.test(text)) return 'danger'
+  if (/success|finished|completed|wrote/i.test(text)) return 'success'
+  return 'normal'
+}
+
 export function useSyncOperations({
   activeScopeLabel,
+  extraEnv,
   provider,
   role,
   visibleDocs,
@@ -116,6 +123,8 @@ export function useSyncOperations({
   const [jobHistory, setJobHistory] = useState<SyncOperationJob[]>([])
   const timersRef = useRef<number[]>([])
   const activeJobRef = useRef<SyncOperationJob | null>(null)
+  const eventSourceRef = useRef<EventSource | null>(null)
+  const serverJobIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     activeJobRef.current = activeJob
@@ -128,7 +137,10 @@ export function useSyncOperations({
     timersRef.current = []
   }, [])
 
-  useEffect(() => () => clearTimers(), [clearTimers])
+  useEffect(() => () => {
+    clearTimers()
+    eventSourceRef.current?.close()
+  }, [clearTimers])
 
   const pushTimer = useCallback((callback: () => void, delayMs: number) => {
     const timer = window.setTimeout(callback, delayMs)
@@ -177,52 +189,124 @@ export function useSyncOperations({
     [],
   )
 
-  const runOperation = useCallback(
-    (kind: SyncOperationKind) => {
-      if (activeJobRef.current?.status === 'running') {
+  // Simulated operation — refresh only (drives onRefreshCorpus, fake timer UX).
+  const runRefresh = useCallback(() => {
+    if (activeJobRef.current?.status === 'running') {
+      return
+    }
+
+    clearTimers()
+    const jobId = `refresh-${Date.now()}`
+    const startedAt = new Date().toISOString()
+
+    const job: SyncOperationJob = {
+      id: jobId,
+      kind: 'refresh',
+      label: REFRESH_DEF.label,
+      command: REFRESH_DEF.command,
+      status: 'running',
+      progress: 0,
+      startedAt,
+      summary: 'Refresh status started.',
+      lines: [makeLine(formatCommandLine(REFRESH_DEF.command, { activeScopeLabel, provider, role, visibleDocs, syncedSites, restrictedSites, refreshPolicy }), 'muted')],
+    }
+
+    setActiveJob(job)
+    void Promise.resolve(onRefreshCorpus())
+
+    REFRESH_DEF.steps.forEach((step) => {
+      pushTimer(() => {
+        patchActiveJob(jobId, (current) => ({
+          ...current,
+          progress: step.progress,
+          lines: [...current.lines, makeLine(step.text, step.tone)],
+        }))
+      }, step.delayMs)
+    })
+
+    const totalDelay = Math.max(...REFRESH_DEF.steps.map((step) => step.delayMs))
+    pushTimer(() => finalizeJob(jobId, 'completed', REFRESH_DEF.summary), totalDelay + 90)
+  }, [activeScopeLabel, clearTimers, finalizeJob, onRefreshCorpus, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, pushTimer])
+
+  // Live operation — ingest, evaluate, export-live, and export-live-resume spawn real scripts via the ops-server Vite plugin.
+  const runLiveOperation = useCallback((kind: 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume') => {
+    if (activeJobRef.current?.status === 'running') {
+      return
+    }
+
+    clearTimers()
+    eventSourceRef.current?.close()
+    eventSourceRef.current = null
+
+    const def = LIVE_OP_DEFS[kind]
+    const jobId = `${kind}-${Date.now()}`
+    const startedAt = new Date().toISOString()
+
+    const job: SyncOperationJob = {
+      id: jobId,
+      kind,
+      label: def.label,
+      command: def.command,
+      status: 'running',
+      progress: 0,
+      startedAt,
+      summary: `${def.label} started.`,
+      lines: [makeLine(formatCommandLine(def.command, { activeScopeLabel, provider, role, visibleDocs, syncedSites, restrictedSites, refreshPolicy }), 'muted')],
+    }
+
+    setActiveJob(job)
+
+    async function start() {
+      let response: Response
+      try {
+        response = await fetch('/api/ops/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind, env: extraEnv }),
+        })
+      } catch {
+        finalizeJob(jobId, 'failed', 'Could not reach the ops server. Make sure you are running the Vite dev server.')
         return
       }
 
-      clearTimers()
-      const definition = JOB_DEFINITIONS[kind]
-      const jobId = `${kind}-${Date.now()}`
-      const startedAt = new Date().toISOString()
-      const initialLines = [
-        makeLine(formatCommandLine(definition.command, { activeScopeLabel, provider, role, visibleDocs, syncedSites, restrictedSites, refreshPolicy }), 'muted'),
-      ]
+      const { jobId: serverJobId } = await response.json() as { jobId: string }
+      serverJobIdRef.current = serverJobId
 
-      const job: SyncOperationJob = {
-        id: jobId,
-        kind,
-        label: definition.label,
-        command: definition.command,
-        status: 'running',
-        progress: 0,
-        startedAt,
-        summary: `${definition.label} started.`,
-        lines: initialLines,
-      }
+      let lineCount = 0
+      const es = new EventSource(`/api/ops/stream/${serverJobId}`)
+      eventSourceRef.current = es
 
-      setActiveJob(job)
-      if (kind === 'refresh') {
-        void Promise.resolve(onRefreshCorpus())
-      }
+      es.onmessage = (event: MessageEvent<string>) => {
+        const data = JSON.parse(event.data) as { type: string; text?: string; isError?: boolean; exitCode?: number }
 
-      definition.steps.forEach((step) => {
-        pushTimer(() => {
+        if (data.type === 'line' && data.text) {
+          lineCount++
+          const progress = Math.min(95, Math.round((lineCount / def.estimatedLines) * 100))
+          const tone = detectLineTone(data.text, data.isError ?? false)
           patchActiveJob(jobId, (current) => ({
             ...current,
-            progress: step.progress,
-            lines: [...current.lines, makeLine(step.text, step.tone || 'normal')],
+            progress,
+            lines: [...current.lines, makeLine(data.text!, tone)],
           }))
-        }, step.delayMs)
-      })
+        } else if (data.type === 'done') {
+          const success = data.exitCode === 0
+          finalizeJob(jobId, success ? 'completed' : 'failed', success ? def.summary : `${def.label} failed.`)
+          es.close()
+          eventSourceRef.current = null
+          serverJobIdRef.current = null
+        }
+      }
 
-      const totalDelay = Math.max(...definition.steps.map((step) => step.delayMs))
-      pushTimer(() => finalizeJob(jobId, 'completed', definition.summary), totalDelay + 90)
-    },
-    [activeScopeLabel, clearTimers, finalizeJob, onRefreshCorpus, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, pushTimer],
-  )
+      es.onerror = () => {
+        finalizeJob(jobId, 'failed', `${def.label} failed.`)
+        es.close()
+        eventSourceRef.current = null
+        serverJobIdRef.current = null
+      }
+    }
+
+    void start()
+  }, [activeScopeLabel, clearTimers, extraEnv, finalizeJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs])
 
   const cancelActiveJob = useCallback(() => {
     const current = activeJobRef.current
@@ -231,12 +315,22 @@ export function useSyncOperations({
     }
 
     clearTimers()
+    eventSourceRef.current?.close()
+    eventSourceRef.current = null
+
+    if (serverJobIdRef.current) {
+      void fetch(`/api/ops/cancel/${serverJobIdRef.current}`, { method: 'POST' })
+      serverJobIdRef.current = null
+    }
+
     finalizeJob(current.id, 'cancelled', `${current.label} cancelled.`)
   }, [clearTimers, finalizeJob])
 
-  const startRefresh = useCallback(() => runOperation('refresh'), [runOperation])
-  const startIngest = useCallback(() => runOperation('ingest'), [runOperation])
-  const startEvaluate = useCallback(() => runOperation('evaluate'), [runOperation])
+  const startRefresh = useCallback(() => runRefresh(), [runRefresh])
+  const startIngest = useCallback(() => runLiveOperation('ingest'), [runLiveOperation])
+  const startEvaluate = useCallback(() => runLiveOperation('evaluate'), [runLiveOperation])
+  const startExportLive = useCallback(() => runLiveOperation('export-live'), [runLiveOperation])
+  const startExportLiveResume = useCallback(() => runLiveOperation('export-live-resume'), [runLiveOperation])
 
   const lastCompletedJob = useMemo(() => {
     if (activeJob?.status === 'completed' || activeJob?.status === 'failed' || activeJob?.status === 'cancelled') {
@@ -252,6 +346,8 @@ export function useSyncOperations({
     isRunning: activeJob?.status === 'running',
     lastCompletedJob,
     startEvaluate,
+    startExportLive,
+    startExportLiveResume,
     startIngest,
     startRefresh,
   }
