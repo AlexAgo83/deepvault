@@ -119,7 +119,7 @@ export function SectionHeading({ title, subtitle, actions }: { title: string; su
   return (
     <div className="section-heading">
       <div>
-        <h2>{title}</h2>
+        <h2 title={typeof subtitle === 'string' ? subtitle : undefined}>{title}</h2>
         {subtitle ? <p>{subtitle}</p> : null}
       </div>
       {actions ? <div className="section-heading-actions">{actions}</div> : null}
