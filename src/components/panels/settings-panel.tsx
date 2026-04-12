@@ -73,7 +73,10 @@ export function SettingsPanel({
       </article>
 
       <aside className="panel">
-        <SectionHeading title="How it works" subtitle="The app passes these local keys into Bishop when the matching provider is selected." />
+        <SectionHeading
+          title="How it works"
+          subtitleTooltip="The app passes these local keys into Bishop when the matching provider is selected."
+        />
         <div className="detail-stack">
           <div className="detail-row">
             <span>Storage</span>
