@@ -262,7 +262,7 @@ export function AppShell(model: AppModel) {
           />
         </section>
 
-        {activeTab !== 'bishop' ? (
+        {activeTab === 'explorer' ? (
           <AppToolbar search={search} onSearchChange={setSearch} />
         ) : null}
 

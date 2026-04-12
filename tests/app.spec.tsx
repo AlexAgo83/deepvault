@@ -172,6 +172,7 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    expect(screen.queryByLabelText('Explorer search')).not.toBeInTheDocument()
 
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
     expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
