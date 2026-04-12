@@ -33,16 +33,64 @@ export function SyncPanel({
 }) {
   return (
     <section className="content-grid sync-grid">
-      <article className="panel">
-        <SectionHeading title="Sync status" subtitle="Refresh state, ingestion coverage, and operational signals." />
-        <div className="runtime-panel">
-          <div className="runtime-panel-head">
-            <div>
-              <div className="runtime-panel-title">Runtime</div>
-              <p>Execution context shared by Explorer, Bishop, and Sync status.</p>
-            </div>
-            <Pill tone="accent">{activeScopeLabel}</Pill>
+      <div className="sync-main-column">
+        <article className="panel">
+          <SectionHeading title="Sync status" subtitle="Refresh state, ingestion coverage, and operational signals." />
+          <div className="kpi-grid compact">
+            <StatCard
+              label="Synced sites"
+              value={scopedSyncOverview.syncedSites}
+              note="Sites currently in a synced state within the active scope."
+            />
+            <StatCard
+              label="Restricted sites"
+              value={scopedSyncOverview.restrictedSites}
+              note="Sites visible only to privileged roles within the active scope."
+            />
+            <StatCard
+              label="Visible sources"
+              value={scopedCorpusSummary.visibleSources}
+              note="Sources accessible to the selected role and scope."
+            />
+            <StatCard
+              label="Denied sources"
+              value={scopedCorpusSummary.deniedSources}
+              note="Sources excluded by permission-aware retrieval in scope."
+            />
           </div>
+
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Site</th>
+                  <th>Status</th>
+                  <th>Documents</th>
+                  <th>Chunks</th>
+                  <th>Last refresh</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scopedSiteSummaries.map((site) => (
+                  <tr key={site.id}>
+                    <td>
+                      <strong>{site.name}</strong>
+                      <div className="table-subtitle">{site.owner}</div>
+                    </td>
+                    <td>{site.lastRefreshStatus}</td>
+                    <td>{site.permittedDocumentCount}</td>
+                    <td>{site.chunkCount}</td>
+                    <td>{site.lastRefresh ? formatUpdatedAt(site.lastRefresh) : 'n/a'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article className="panel runtime-panel">
+          <SectionHeading title="Runtime" subtitle="Execution context shared by Explorer, Bishop, and Sync status." />
+          <Pill tone="accent">{activeScopeLabel}</Pill>
           <div className="runtime-stack runtime-stack-grid">
             <div className="runtime-row">
               <span>Role</span>
@@ -85,58 +133,8 @@ export function SyncPanel({
               </div>
             </div>
           </div>
-        </div>
-        <div className="kpi-grid compact">
-          <StatCard
-            label="Synced sites"
-            value={scopedSyncOverview.syncedSites}
-            note="Sites currently in a synced state within the active scope."
-          />
-          <StatCard
-            label="Restricted sites"
-            value={scopedSyncOverview.restrictedSites}
-            note="Sites visible only to privileged roles within the active scope."
-          />
-          <StatCard
-            label="Visible sources"
-            value={scopedCorpusSummary.visibleSources}
-            note="Sources accessible to the selected role and scope."
-          />
-          <StatCard
-            label="Denied sources"
-            value={scopedCorpusSummary.deniedSources}
-            note="Sources excluded by permission-aware retrieval in scope."
-          />
-        </div>
-
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Site</th>
-                <th>Status</th>
-                <th>Documents</th>
-                <th>Chunks</th>
-                <th>Last refresh</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scopedSiteSummaries.map((site) => (
-                <tr key={site.id}>
-                  <td>
-                    <strong>{site.name}</strong>
-                    <div className="table-subtitle">{site.owner}</div>
-                  </td>
-                  <td>{site.lastRefreshStatus}</td>
-                  <td>{site.permittedDocumentCount}</td>
-                  <td>{site.chunkCount}</td>
-                  <td>{site.lastRefresh ? formatUpdatedAt(site.lastRefresh) : 'n/a'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </article>
+        </article>
+      </div>
 
       <aside className="panel">
         <SectionHeading title="Recent sync runs" subtitle="Hover each run for the full note." />
