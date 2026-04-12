@@ -1,10 +1,10 @@
 ## item_049_graph_api_retry_timeout_and_corpus_validation - Graph API retry, timeout and corpus validation
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 91%
 > Confidence: 87%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Quality / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|graph-api-retry-timeout-and-corpus-valid|req-015-architecture-robustness-and-pro|rendre-les-appels-graph-robustes|ac1-wrapper-fetch-graph-avec-retry
+%% logics-signature: backlog|graph-api-retry-timeout-and-corpus-valid|req-015-architecture-robustness-and-prod|scripts-deepvault-graph-ts-fait-des-appe|ac1-tous-les-appels-fetch-vers
 flowchart TD
     Request[req_015_architecture_robustness_and_product] --> Problem[Appels Graph sans retry ni timeout]
     Problem --> Scope[Retry + timeout + validation corpus]
@@ -43,6 +43,16 @@ flowchart TD
 - AC3 -> Scope: validation schéma corpus. Proof: capture validation evidence in this doc.
 - AC4 -> Scope: erreur explicite. Proof: capture validation evidence in this doc.
 - AC5 -> Scope: scripts livrent avec wrappers. Proof: capture validation evidence in this doc.
+
+# Report
+- Wave 1 completed: the corpus loader now rejects malformed payloads with an explicit error, checkpoint corpus reads ignore invalid payloads, and the existing Graph client retry/timeout behavior remains in place.
+- Validation passed:
+  - `rtk npm run test -- tests/corpus-loader.spec.ts tests/live-export-state.spec.ts tests/corpus.spec.ts`
+  - `rtk npm run typecheck`
+  - `rtk npm run lint`
+  - `rtk npm run build`
+  - `rtk npm run ingest:live -- --mode mock`
+  - `rtk npm run export:live -- --mode mock --output tmp/export-live-mock.json`
 
 # Decision framing
 - Product framing: Not needed
