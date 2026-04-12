@@ -12,9 +12,10 @@ import {
 } from '../lib/deepvault'
 import { useBishopConversation } from './useBishopConversation'
 import { useLiveCorpus } from './useLiveCorpus'
+import { useProviderSecrets } from './useProviderSecrets'
 import type { LiveState } from './useLiveCorpus'
 
-export type AppTab = 'explorer' | 'bishop' | 'sync'
+export type AppTab = 'explorer' | 'bishop' | 'sync' | 'settings'
 
 export type ExplorerRow = CorpusDocument & { score: number; siteName: string }
 
@@ -41,6 +42,9 @@ export interface AppModel {
   scopedSyncOverview: ReturnType<typeof buildSyncOverview>
   scopedSyncRuns: Corpus['syncRuns']
   explorerRows: ExplorerRow[]
+  providerSecrets: ReturnType<typeof useProviderSecrets>['providerSecrets']
+  setProviderSecret: ReturnType<typeof useProviderSecrets>['setApiKey']
+  clearProviderSecrets: ReturnType<typeof useProviderSecrets>['clearProviderSecrets']
   question: string
   setQuestion: Dispatch<SetStateAction<string>>
   isAsking: boolean
@@ -80,6 +84,7 @@ export function useAppModel(): AppModel {
   const [siteFilter, setSiteFilter] = useState<string>('all')
   const [search, setSearch] = useState<string>('')
   const [selectedDocId, setSelectedDocId] = useState<string>(corpus.documents[0].id)
+  const { providerSecrets, setApiKey: setProviderSecret, clearProviderSecrets } = useProviderSecrets()
 
   const siteSummaries = useMemo(() => buildSiteSummaries(corpus, role), [corpus, role])
   const scopedCorpus = useMemo(() => buildScopedCorpus(corpus, siteFilter), [corpus, siteFilter])
@@ -106,6 +111,9 @@ export function useAppModel(): AppModel {
     role,
     provider,
     endpoint: import.meta.env.VITE_BISHOP_LLM_ENDPOINT,
+    openaiApiKey: providerSecrets.openaiApiKey,
+    geminiApiKey: providerSecrets.geminiApiKey,
+    anthropicApiKey: providerSecrets.anthropicApiKey,
     onActivateTab: () => setActiveTab('bishop'),
   })
 
@@ -156,6 +164,9 @@ export function useAppModel(): AppModel {
     scopedSyncOverview,
     scopedSyncRuns: scopedCorpus.syncRuns,
     explorerRows,
+    providerSecrets,
+    setProviderSecret,
+    clearProviderSecrets,
     question,
     setQuestion,
     isAsking,

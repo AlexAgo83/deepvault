@@ -15,6 +15,9 @@ export interface UseBishopConversationOptions {
   role: UserRole
   provider: ProviderId
   endpoint?: string | null
+  openaiApiKey?: string | null
+  geminiApiKey?: string | null
+  anthropicApiKey?: string | null
   onActivateTab?: () => void
 }
 
@@ -150,6 +153,9 @@ export function useBishopConversation({
   role,
   provider,
   endpoint,
+  openaiApiKey,
+  geminiApiKey,
+  anthropicApiKey,
   onActivateTab,
 }: UseBishopConversationOptions) {
   const answerTimers = useRef<number[]>([])
@@ -216,6 +222,9 @@ export function useBishopConversation({
         provider,
         limit: 3,
         endpoint,
+        openaiApiKey,
+        geminiApiKey,
+        anthropicApiKey,
       })
 
       const elapsed = Date.now() - startedAt

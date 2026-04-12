@@ -23,7 +23,8 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
-    expect(document.querySelectorAll('.nav-item-icon svg')).toHaveLength(3)
+    expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
+    expect(document.querySelectorAll('.nav-item-icon svg')).toHaveLength(4)
     expect(screen.queryByRole('button', { name: 'Ask Bishop' })).not.toBeInTheDocument()
     expect(screen.queryByText(/Version 1\.0\.0/)).not.toBeInTheDocument()
     expect(screen.queryByText('State')).not.toBeInTheDocument()
@@ -88,6 +89,64 @@ describe('DeepVault app', () => {
 
     expect(screen.getByRole('button', { name: 'Explorer' })).not.toHaveAttribute('aria-current')
     expect(screen.getByRole('button', { name: 'Sync status' })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('opens settings and persists provider keys locally', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+
+    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getByLabelText('OpenAI API key')).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('OpenAI API key'), 'test-openai-key')
+
+    expect(JSON.parse(localStorage.getItem('deepvault_provider_secrets') || '{}')).toMatchObject({
+      openaiApiKey: 'test-openai-key',
+      geminiApiKey: '',
+      anthropicApiKey: '',
+    })
+  })
+
+  it('uses the configured OpenAI key when Bishop calls the provider', async () => {
+    const user = userEvent.setup()
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [
+          {
+            message: {
+              content: 'OpenAI remote answer.',
+            },
+          },
+        ],
+        usage: {
+          prompt_tokens: 111,
+          completion_tokens: 22,
+        },
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    await user.type(screen.getByLabelText('OpenAI API key'), 'test-openai-key')
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
+    await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
+
+    expect(await screen.findByText('OpenAI remote answer.')).toBeInTheDocument()
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.openai.com/v1/chat/completions',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          authorization: 'Bearer test-openai-key',
+        }),
+      }),
+    )
   })
 
   it('shows the live fallback badge when live corpus data is missing', async () => {

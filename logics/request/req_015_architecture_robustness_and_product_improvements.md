@@ -1,9 +1,9 @@
 ## req_015_architecture_robustness_and_product_improvements - Architecture, robustesse et évolution produit
-> From version: 1.0.0
+> From version: 1.0.1
 > Schema version: 1.0
 > Status: Done
-> Understanding: 98%
-> Confidence: 95%
+> Understanding: 99%
+> Confidence: 96%
 > Complexity: High
 > Theme: Architecture / Quality / Product
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.
@@ -118,5 +118,6 @@ flowchart TD
 - Skip when: Skip when the work is a hotfix or targets a single isolated component.
 
 # Report
+- Added a browser-local Settings surface in the application menu so OpenAI, Gemini, and Anthropic API keys can be configured without editing environment files during local use; Bishop now reads those keys from localStorage when the matching provider is selected.
 - The request is fully delivered: app-shell refactoring, scoring extraction, barrel exports, panel error boundaries, Graph hardening, live corpus validation, E2E coverage, Bishop provider integration, session persistence, exports, and corpus delta sync are all implemented.
 - The request is closed after the derived backlog items and execution tasks were completed and validated.
