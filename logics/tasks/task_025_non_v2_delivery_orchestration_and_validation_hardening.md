@@ -1,10 +1,10 @@
 ## task_025_non_v2_delivery_orchestration_and_validation_hardening - Non-V2 delivery orchestration and validation hardening
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 30%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -117,3 +117,10 @@ stateDiagram-v2
 - [ ] Status is `Done` and progress is `100%`.
 
 # Report
+- Wave 1 started: hardened `fetchLiveCorpus` to reject malformed live corpus payloads, distinguish parse failures from network failures, and keep the mock fallback path explicit.
+- Wave 1 continued: covered `useLiveCorpus` with hook-level tests for successful live promotion and invalid-payload fallback to mock data.
+- Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
+- Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
+- Validation passed: `rtk npm run typecheck`
+- Validation passed: `rtk npm run lint`
+- Validation passed: `rtk npm run build`
