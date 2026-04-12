@@ -7,4 +7,10 @@ interface ImportMetaEnv {
   readonly VITE_DEEPVAULT_DATA_MODE?: string
 }
 
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[]
+  prompt: () => Promise<void> | void
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
+}
+
 declare module '*.css'

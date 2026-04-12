@@ -1,10 +1,10 @@
 ## item_056_pwa_install_button_in_header - PWA: install button in header
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 91%
 > Confidence: 88%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Low
 > Theme: UX / PWA
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -19,7 +19,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|pwa-install-button-in-header|req-016-pwa-install-and-offline-first|afficher-un-bouton-installer-dans-le|ac1-bouton-installer-visible-dans-header
+%% logics-signature: backlog|pwa-install-button-in-header|req-016-pwa-install-and-offline-first|il-n-existe-aucun-moyen-d|ac1-le-header-affiche-un-bouton
 flowchart TD
     Request[req_016_pwa_install_and_offline_first] --> Problem[Installation native impossible depuis UI]
     Problem --> Scope[Bouton Install dans le header]
@@ -75,3 +75,7 @@ flowchart TD
 - Derived from request `req_016_pwa_install_and_offline_first`.
 - Dépend de item_055 (fondation PWA + manifeste) — le manifeste doit être valide pour que `beforeinstallprompt` soit déclenché.
 - L'API `beforeinstallprompt` n'est pas supportée sur Safari/iOS — le bouton sera naturellement masqué sans code spécifique.
+
+# Report
+- Wave 2 completed: the header now captures `beforeinstallprompt`, shows an install button when the app is installable, and hides it in standalone mode or when the API is unavailable.
+- Wave 2 validated: `rtk npm run test -- tests/pwa.spec.tsx tests/app.spec.tsx`, `rtk npm run typecheck`, and `rtk npm run lint` passed.
