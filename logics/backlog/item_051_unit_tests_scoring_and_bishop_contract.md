@@ -1,10 +1,10 @@
 ## item_051_unit_tests_scoring_and_bishop_contract - Unit tests for scoring and Bishop fallback contract
 > From version: 1.0.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 90%
 > Confidence: 88%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Low
 > Theme: Quality
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,7 +20,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|unit-tests-scoring-and-bishop-contract|req-015-architecture-robustness-and-pro|ajouter-des-tests-unitaires-pour-la|ac1-scoring-query-vide-testee
+%% logics-signature: backlog|unit-tests-for-scoring-and-bishop-fallba|req-015-architecture-robustness-and-prod|la-logique-de-scoring-poids-par|ac1-un-test-verifie-que-scorer
 flowchart TD
     Request[req_015_architecture_robustness_and_product] --> Problem[Cas limites scoring et fallback Bishop non testés]
     Problem --> Scope[Tests unitaires scoring + Bishop]
@@ -71,3 +71,7 @@ flowchart TD
 # Notes
 - Derived from request `req_015_architecture_robustness_and_product_improvements`.
 - Idéalement réalisé après item_047 (scoring.ts extrait) pour des tests mieux isolés.
+
+# Report
+- Item completed: added Vitest coverage for scoring query-empty and stop-word-only behavior, Bishop remote 500 fallback, and additional Bishop provider failure branches.
+- Validation passed: `rtk npm run test:coverage` with global coverage above the required thresholds after the new tests landed.

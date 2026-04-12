@@ -258,10 +258,42 @@ describe('bishop orchestration helpers', () => {
     ).toEqual({ type: 'ephemeral' })
   })
 
-  it('falls back locally when the remote orchestration endpoint returns a bad status', async () => {
+  it('falls back locally when Anthropic is selected without an API key', async () => {
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'anthropic',
+    })
+
+    expect(result.mode).toBe('fallback')
+    expect(result.answer).toContain('Q3 2025 budget')
+  })
+
+  it('falls back locally when the Anthropic client throws', async () => {
+    const createMock = vi.fn().mockRejectedValue(new Error('anthropic unavailable'))
+    const anthropicClient = {
+      beta: {
+        messages: {
+          create: createMock,
+        },
+      },
+    }
+
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'anthropic',
+      anthropicApiKey: 'test-api-key',
+      anthropicClient: anthropicClient as never,
+    })
+
+    expect(createMock).toHaveBeenCalledTimes(1)
+    expect(result.mode).toBe('fallback')
+    expect(result.answer).toContain('Q3 2025 budget')
+  })
+
+  it('falls back locally when the remote orchestration endpoint returns 500', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
-      status: 502,
+      status: 500,
       json: async () => ({
         answer: '',
       }),

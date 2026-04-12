@@ -30,4 +30,31 @@ describe('scoring helpers', () => {
 
     expect(titleMatch).toBeGreaterThan(contentMatch)
   })
+
+  it('returns zero for empty or stop-word-only queries without throwing', () => {
+    expect(
+      getDocumentScore(
+        {
+          title: 'Q3 Budget',
+          summary: 'Pilot budget summary',
+          content: 'Budget content',
+          tags: ['finance'],
+          path: '/Documents/Q3 Budget.docx',
+        },
+        '',
+      ),
+    ).toBe(0)
+    expect(
+      getDocumentScore(
+        {
+          title: '',
+          summary: 'Pilot budget summary',
+          content: 'Budget content',
+          tags: ['finance'],
+          path: '/Documents/Q3 Budget.docx',
+        },
+        'the and of',
+      ),
+    ).toBe(0)
+  })
 })

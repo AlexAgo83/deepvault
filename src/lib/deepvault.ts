@@ -194,6 +194,25 @@ export function searchDocuments(
   const siteId = options.siteId || 'all'
   const limit = options.limit || 8
   const includeDenied = Boolean(options.includeDenied)
+  const trimmedQuery = query.trim()
+  const queryTokens = tokenize(query)
+
+  if (trimmedQuery.length === 0) {
+    return corpusData.documents
+      .filter((document) => siteId === 'all' || document.siteId === siteId)
+      .map((document) => ({
+        document,
+        score: 1,
+        permitted: canAccessDocument(document, role),
+      }))
+      .filter((entry) => includeDenied || entry.permitted)
+      .sort((left, right) => new Date(right.document.updatedAt).getTime() - new Date(left.document.updatedAt).getTime())
+      .slice(0, limit)
+  }
+
+  if (queryTokens.length === 0) {
+    return []
+  }
 
   const scored = corpusData.documents
     .filter((document) => siteId === 'all' || document.siteId === siteId)

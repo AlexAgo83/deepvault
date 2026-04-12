@@ -27,4 +27,14 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText('Explorer failed')).toBeInTheDocument()
     expect(screen.getByText('Safe panel')).toBeInTheDocument()
   })
+
+  it('renders the default fallback when no custom fallback is provided', () => {
+    render(
+      <ErrorBoundary>
+        <ThrowingPanel />
+      </ErrorBoundary>,
+    )
+
+    expect(screen.getByText('Something went wrong while rendering this panel.')).toBeInTheDocument()
+  })
 })
