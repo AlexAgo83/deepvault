@@ -56,7 +56,7 @@ export function getDocumentScore(document: {
 }, query: string): number {
   const tokens = tokenize(query)
   if (tokens.length === 0) {
-    return 1
+    return 0
   }
 
   const normalizedTitle = normalizeText(document.title)

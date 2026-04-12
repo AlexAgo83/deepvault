@@ -4,7 +4,7 @@
 > Status: In progress
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 95%
+> Progress: 96%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -138,6 +138,7 @@ stateDiagram-v2
 - Wave 4 continued: extracted scoring helpers into `src/lib/scoring.ts`, added barrel exports for `src/lib/`, `src/hooks/`, and `src/components/`, and kept the retrieval behavior unchanged.
 - Wave 4 continued: wrapped Explorer, Bishop, and Sync in distinct Error Boundaries and verified that a rendering failure stays isolated to the panel that throws.
 - Wave 4 continued: wrapped Explorer, Bishop, and Sync in distinct Error Boundaries and verified that a rendering failure stays isolated to the panel that throws.
+- Wave 4 continued: expanded the unit-test coverage slice with scoring edge cases and Bishop fallback branches, then re-ran `rtk npm run test:coverage` successfully above the threshold.
 - Validation passed: `rtk npm run check` (run with elevated execution to clear the `tsx` IPC sandbox restriction).
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/bishop.spec.ts`
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx`
@@ -152,5 +153,6 @@ stateDiagram-v2
 - Validation passed: `rtk npm run lint`
 - Validation passed: `rtk npm run build`
 - Validation passed: `rtk npm run test -- tests/app.spec.tsx tests/deepvault.spec.ts tests/corpus.spec.ts`
+- Validation passed: `rtk npm run test:coverage`
 - Validation passed: `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text`
 - Correction: Waves 1, 2, and 3 are complete, Wave 4 is in progress, and Wave 5 remains open until the PWA work is delivered.
