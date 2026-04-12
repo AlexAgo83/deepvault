@@ -144,6 +144,14 @@ describe('deepvault helpers', () => {
     expect(searchDocuments(corpus, 'restricted launch notes', { role: 'guest', includeDenied: true })[0].permitted).toBe(false)
   })
 
+  it('scores title matches ahead of broader content matches', () => {
+    const rankedMatches = searchDocuments(corpus, 'q3 2025 budget approval', { role: 'analyst', limit: 3 })
+
+    expect(rankedMatches[0].document.id).toBe('q3-budget')
+    expect(rankedMatches[0].score).toBeGreaterThan(rankedMatches[1].score)
+    expect(rankedMatches.every((entry) => entry.permitted)).toBe(true)
+  })
+
   it('summarizes the corpus and formats timestamps', () => {
     const summary = summarizeCorpus(corpus, 'analyst')
 
