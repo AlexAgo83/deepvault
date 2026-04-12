@@ -20,20 +20,20 @@ export function ExplorerPanel({
   return (
     <section className="content-grid">
       <article className="panel">
-            <SectionHeading
-              title="Explorer"
-              subtitle="Browse the pilot corpus by site, search term, and source details."
-              actions={
-                <>
-                  <button type="button" className="secondary-button secondary-button-sm" onClick={onExportJson}>
-                    Export JSON
-                  </button>
-                  <button type="button" className="secondary-button secondary-button-sm" onClick={onExportMarkdown}>
-                    Export MD
-                  </button>
-                </>
-              }
-            />
+        <SectionHeading
+          title="Explorer"
+          subtitleTooltip="Browse the pilot corpus by site, search term, and source details."
+          actions={
+            <>
+              <button type="button" className="secondary-button secondary-button-sm" onClick={onExportJson}>
+                Export JSON
+              </button>
+              <button type="button" className="secondary-button secondary-button-sm" onClick={onExportMarkdown}>
+                Export MD
+              </button>
+            </>
+          }
+        />
         <div className="document-list">
           {explorerRows.map((document) => (
             <button
@@ -111,11 +111,11 @@ export function ExplorerPanel({
               </p>
             </div>
           </>
-        ) : (
+      ) : (
           <>
             <SectionHeading
               title="No visible document"
-              subtitle="Choose a site with matching results to inspect its details."
+              subtitleTooltip="Choose a site with matching results to inspect its details."
             />
             <div className="empty-state">No permitted sources match the current site filter.</div>
           </>
