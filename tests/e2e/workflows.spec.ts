@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
+import { openApp as openDeepVaultApp } from './helpers'
 
 async function openApp(page: Page) {
-  await page.goto('/')
-  await expect(page.getByRole('button', { name: 'Explorer' })).toBeVisible()
+  await openDeepVaultApp(page)
 }
 
 function runtimeSelect(page: Page, label: string) {

@@ -317,6 +317,80 @@ p {
   width: 100%;
 }
 
+.getting-started-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(31, 26, 22, 0.42);
+  backdrop-filter: blur(6px);
+}
+
+.getting-started-modal {
+  width: min(760px, 100%);
+  border: 1px solid rgba(255, 253, 249, 0.25);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(185, 106, 67, 0.14), transparent 32%),
+    linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(246, 241, 234, 0.98));
+  box-shadow: 0 28px 80px rgba(31, 26, 22, 0.28);
+  color: var(--text);
+  padding: 28px;
+  display: grid;
+  gap: 18px;
+}
+
+.getting-started-eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.getting-started-modal h2 {
+  font-size: clamp(1.8rem, 1.6vw + 1rem, 2.5rem);
+  line-height: 1.08;
+}
+
+.getting-started-modal p {
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 1rem;
+  max-width: 64ch;
+}
+
+.getting-started-list {
+  display: grid;
+  gap: 12px;
+}
+
+.getting-started-item {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 253, 249, 0.8);
+}
+
+.getting-started-item strong {
+  font-size: 0.98rem;
+}
+
+.getting-started-item span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.getting-started-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .topbar {
   display: flex;
   align-items: flex-start;
@@ -976,5 +1050,25 @@ code {
   .kpi-grid.compact,
   .content-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .getting-started-backdrop {
+    padding: 14px;
+    align-items: end;
+  }
+
+  .getting-started-modal {
+    border-radius: 20px 20px 14px 14px;
+    padding: 22px;
+  }
+
+  .getting-started-actions {
+    justify-content: stretch;
+  }
+
+  .getting-started-actions > button {
+    flex: 1 1 0;
   }
 }

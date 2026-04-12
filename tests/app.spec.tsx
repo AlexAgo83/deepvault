@@ -20,6 +20,7 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await waitFor(() => expect(document.title).toBe('Nexus'))
+    expect(screen.getByRole('dialog', { name: /getting started/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
@@ -29,6 +30,19 @@ describe('DeepVault app', () => {
     expect(screen.queryByText(/Version 1\.0\.0/)).not.toBeInTheDocument()
     expect(screen.queryByText('State')).not.toBeInTheDocument()
     expect(screen.queryByText('Pilot sites')).not.toBeInTheDocument()
+  })
+
+  it('opens the getting started modal on app load and dismisses it', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const dialog = screen.getByRole('dialog', { name: /getting started/i })
+    expect(dialog).toBeInTheDocument()
+    expect(screen.getByText(/DeepVault is a local-first command center/i)).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Start exploring' }))
+
+    expect(screen.queryByRole('dialog', { name: /getting started/i })).not.toBeInTheDocument()
   })
 
   it('returns to Bishop after asking a question', async () => {
