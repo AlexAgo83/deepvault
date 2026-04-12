@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import { ErrorBoundary } from './error-boundary'
 import { CompactDateTime, Pill, StatCard } from './app-ui'
+import { GettingStartedModal } from './getting-started-modal'
 import { useInstallPrompt } from '../hooks'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
 import { BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
@@ -252,6 +253,7 @@ export function AppShell(model: AppModel) {
   const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true })
   const hasPendingUpdate = needRefresh[0]
   const [updateBannerDismissed, setUpdateBannerDismissed] = useState(false)
+  const [gettingStartedOpen, setGettingStartedOpen] = useState(true)
 
   useEffect(() => {
     if (!hasPendingUpdate) {
@@ -262,6 +264,10 @@ export function AppShell(model: AppModel) {
   const updateApp = async () => {
     await updateServiceWorker(true)
     setUpdateBannerDismissed(true)
+  }
+
+  const closeGettingStarted = () => {
+    setGettingStartedOpen(false)
   }
 
   const explorerExportHandlers = createExplorerExportHandlers({
@@ -396,6 +402,8 @@ export function AppShell(model: AppModel) {
           <span>Nexus · v{version} · © {new Date().getFullYear()}</span>
         </footer>
       </main>
+
+      <GettingStartedModal onClose={closeGettingStarted} open={gettingStartedOpen} />
     </div>
   )
 }

@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
+import { openApp } from './helpers'
 
 test.describe('DeepVault offline PWA', () => {
   test('keeps the loaded app usable when the network is offline', async ({ page }) => {
-    await page.goto('/')
-    await expect(page.getByRole('button', { name: 'Explorer' })).toBeVisible()
+    await openApp(page)
 
     const firstDocumentRow = page.locator('.document-list button').first()
     await expect(firstDocumentRow).toBeVisible()
