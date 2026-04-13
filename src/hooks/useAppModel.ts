@@ -18,6 +18,7 @@ import { useSyncOperations } from './useSyncOperations'
 import type { LiveState } from './useLiveCorpus'
 import type { EntraSettings } from './useEntraSettings'
 import type { SyncOperationJob } from './useSyncOperations'
+import { resolveCorpusMode } from '../lib/corpus-mode'
 
 export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
 
@@ -96,7 +97,9 @@ function buildScopedCorpus(corpus: Corpus, siteFilter: string): Corpus {
 }
 
 export function useAppModel(): AppModel {
-  const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(import.meta.env.VITE_DEEPVAULT_DATA_MODE)
+  const { entraSettings, setEntraSetting, clearEntraSettings } = useEntraSettings()
+  const requestedCorpusMode = resolveCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE, entraSettings.dataMode)
+  const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(requestedCorpusMode)
   const corpus = corpusBundle.corpus
   const [activeTab, setActiveTab] = useState<AppTab>('explorer')
   const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
@@ -105,7 +108,6 @@ export function useAppModel(): AppModel {
   const [search, setSearch] = useState<string>('')
   const [selectedDocId, setSelectedDocId] = useState<string>(corpus.documents[0].id)
   const { providerSecrets, setApiKey: setProviderSecret, clearProviderSecrets } = useProviderSecrets()
-  const { entraSettings, setEntraSetting, clearEntraSettings } = useEntraSettings()
 
   const siteSummaries = useMemo(() => buildSiteSummaries(corpus, role), [corpus, role])
   const scopedCorpus = useMemo(() => buildScopedCorpus(corpus, siteFilter), [corpus, siteFilter])
