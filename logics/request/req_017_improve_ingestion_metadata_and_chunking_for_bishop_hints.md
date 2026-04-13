@@ -55,4 +55,4 @@ flowchart TD
 - Use when: Use when framing ingestion and retrieval quality work that should reduce generic Bishop hints.
 - Skip when: Skip when the work targets UI polish, sync operations, or unrelated backend features.
 # Backlog
-- (none yet)
+- `item_059_improve_ingestion_metadata_and_chunking_for_bishop_hints`

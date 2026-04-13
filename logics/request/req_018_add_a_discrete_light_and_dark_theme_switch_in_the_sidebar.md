@@ -54,4 +54,4 @@ flowchart TD
 - Use when: Use when framing a compact theme selector for the app sidebar.
 - Skip when: Skip when the work targets unrelated navigation, sync, or content features.
 # Backlog
-- (none yet)
+- `item_060_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar`

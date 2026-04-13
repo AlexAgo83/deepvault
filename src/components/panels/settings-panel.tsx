@@ -58,7 +58,7 @@ export function SettingsPanel({
               <span>Data mode</span>
               <select
                 value={entraSettings.dataMode}
-                title="Override DEEPVAULT_DATA_MODE for ops scripts"
+                title="Override the app corpus mode and DEEPVAULT_DATA_MODE for ops scripts"
                 onChange={(event) => onEntraChange('dataMode', event.target.value)}
               >
                 <option value="">env default</option>

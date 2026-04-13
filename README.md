@@ -84,6 +84,7 @@ VITE_DEEPVAULT_DATA_MODE=live npm run dev
 ```
 
 That makes the app try to load `public/live-corpus.json`.
+You can also switch the same setting from `Settings` in the app; the local setting overrides the env default.
 If the file is missing, the app falls back to the bundled mock corpus.
 
 ## Local Testing Guide
