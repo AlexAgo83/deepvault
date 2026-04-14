@@ -36,6 +36,8 @@ export function BishopPanel({
   const messageListRef = useRef<HTMLDivElement | null>(null)
   const [stickToBottom, setStickToBottom] = useState(true)
   const [showTracePreview, setShowTracePreview] = useState(false)
+  const [showNeedPreview, setShowNeedPreview] = useState(false)
+  const [showSources, setShowSources] = useState(false)
 
   const updateStickToBottom = () => {
     const node = messageListRef.current
@@ -60,9 +62,17 @@ export function BishopPanel({
     setShowTracePreview(false)
   }, [selectedMessage.id])
 
+  useEffect(() => {
+    setShowNeedPreview(false)
+  }, [selectedMessage.id])
+
+  useEffect(() => {
+    setShowSources(false)
+  }, [selectedMessage.id])
+
   return (
     <section className="content-grid bishop-grid">
-      <article className="panel chat-panel">
+      <article className="panel chat-panel bishop-chat-panel">
         <SectionHeading
           title="Bishop"
           subtitleTooltip="Grounded answers come from the same local retrieval logic used by the explorer."
@@ -116,7 +126,7 @@ export function BishopPanel({
         </form>
       </article>
 
-      <aside className="panel">
+      <aside className="panel bishop-trace-panel">
         <SectionHeading title="Answer trace" subtitle="Provenance and retrieval diagnostics for the last turn." />
         <div className="detail-stack">
           <div className="detail-row">
@@ -145,35 +155,75 @@ export function BishopPanel({
           </div>
           <div className="detail-row detail-row-action">
             <span>Confidence</span>
+            <div className="trace-confidence-group">
+              <div className="trace-confidence-popover">
+                <button
+                  type="button"
+                  className="trace-confidence-button"
+                  title="Show the trace preview"
+                  onMouseEnter={() => setShowTracePreview(true)}
+                  onMouseLeave={() => setShowTracePreview(false)}
+                  onFocus={() => setShowTracePreview(true)}
+                  onBlur={() => setShowTracePreview(false)}
+                  aria-describedby={showTracePreview ? 'bishop-trace-preview' : undefined}
+                  disabled={typeof selectedMessage.confidenceScore !== 'number'}
+                >
+                  {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : 'n/a'}
+                </button>
+                {showTracePreview && selectedMessage.providerTracePreview ? (
+                  <div id="bishop-trace-preview" className="trace-preview trace-preview-popover" role="tooltip" aria-live="polite">
+                    {selectedMessage.providerTracePreview}
+                  </div>
+                ) : null}
+              </div>
+              <div className="trace-confidence-popover">
+                <button
+                  type="button"
+                  className="trace-confidence-help"
+                  title="Show the improvement hint"
+                  onMouseEnter={() => setShowNeedPreview(true)}
+                  onMouseLeave={() => setShowNeedPreview(false)}
+                  onFocus={() => setShowNeedPreview(true)}
+                  onBlur={() => setShowNeedPreview(false)}
+                  aria-describedby={showNeedPreview ? 'bishop-need-preview' : undefined}
+                  disabled={!selectedMessage.improvementHint}
+                  aria-label="Show improvement hint"
+                >
+                  ?
+                </button>
+                {showNeedPreview && selectedMessage.improvementHint ? (
+                  <div id="bishop-need-preview" className="trace-preview trace-preview-popover" role="tooltip" aria-live="polite">
+                    {selectedMessage.improvementHint}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="document-content bishop-sources-section">
+          <div className="document-content-header">
+            <h3>Details</h3>
             <button
               type="button"
-              className="trace-confidence-button"
-              title="Toggle the trace preview"
-              onClick={() => setShowTracePreview((value) => !value)}
-              aria-expanded={showTracePreview}
-              disabled={typeof selectedMessage.confidenceScore !== 'number'}
+              className="text-button text-button-sm"
+              onClick={() => setShowSources((value) => !value)}
+              aria-expanded={showSources}
+              aria-controls="bishop-source-list"
             >
-              {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : 'n/a'}
+              {showSources ? 'Hide sources' : 'Show sources'}
             </button>
           </div>
-          <div className="detail-row">
-            <span>Need</span>
-            <strong>{selectedMessage.improvementHint || 'n/a'}</strong>
-          </div>
         </div>
-        {showTracePreview && selectedMessage.providerTracePreview ? (
-          <div className="trace-preview" aria-live="polite">
-            {selectedMessage.providerTracePreview}
+        {showSources ? (
+          <div id="bishop-source-list" className="source-list">
+            {(selectedMessage.sources || []).map((source) => (
+              <SourceCard key={source.id} source={source} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
+            ))}
+            {!selectedMessage.sources?.length ? (
+              <div className="empty-state">No grounded sources yet. Ask Bishop a question to populate this trace.</div>
+            ) : null}
           </div>
         ) : null}
-        <div className="source-list">
-          {(selectedMessage.sources || []).map((source) => (
-            <SourceCard key={source.id} source={source} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
-          ))}
-          {!selectedMessage.sources?.length ? (
-            <div className="empty-state">No grounded sources yet. Ask Bishop a question to populate this trace.</div>
-          ) : null}
-        </div>
       </aside>
     </section>
   )
