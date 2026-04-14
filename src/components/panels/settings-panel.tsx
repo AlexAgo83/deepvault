@@ -52,16 +52,16 @@ export function SettingsPanel({
         <article className="panel runtime-panel settings-runtime-panel">
           <SectionHeading title="Settings" subtitleTooltip="Execution context shared by Explorer, Bishop, and Sync status." />
           <Pill tone="accent">{activeScopeLabel}</Pill>
-          <div className="runtime-stack runtime-stack-grid">
-            <div className="runtime-row">
+          <div className="settings-form-grid settings-runtime-form">
+            <label className="settings-field">
               <span>Role</span>
               <select value={role} title="Select the active access role" onChange={(event) => onRoleChange(event.target.value as UserRole)}>
                 <option value="analyst">analyst</option>
                 <option value="admin">admin</option>
                 <option value="guest">guest</option>
               </select>
-            </div>
-            <div className="runtime-row">
+            </label>
+            <label className="settings-field">
               <span>Data mode</span>
               <select
                 value={entraSettings.dataMode}
@@ -72,8 +72,8 @@ export function SettingsPanel({
                 <option value="mock">mock</option>
                 <option value="live">live</option>
               </select>
-            </div>
-            <div className="runtime-row">
+            </label>
+            <label className="settings-field">
               <span>Provider</span>
               <select value={provider} title="Select the Bishop provider" onChange={(event) => onProviderChange(event.target.value as ProviderId)}>
                 {corpusProviders.map((item) => (
@@ -82,8 +82,8 @@ export function SettingsPanel({
                   </option>
                 ))}
               </select>
-            </div>
-            <div className="runtime-row runtime-row-scope">
+            </label>
+            <div className="settings-field settings-scope-field">
               <span>Site scope</span>
               <div className="site-list">
                 <button

@@ -843,6 +843,34 @@ p {
   justify-content: flex-start;
 }
 
+.settings-runtime-form {
+  gap: 12px;
+}
+
+.settings-runtime-panel .settings-field {
+  gap: 6px;
+}
+
+.settings-runtime-panel .settings-field > span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.settings-scope-field {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-scope-field .site-list {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.settings-scope-field .site-chip {
+  min-height: 38px;
+}
+
 .sync-view-switcher {
   display: grid;
   gap: 16px;
