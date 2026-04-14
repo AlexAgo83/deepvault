@@ -6,6 +6,15 @@ import type { ExplorerRow } from '../../hooks/useAppModel'
 const EXPLORER_BATCH_SIZE = 10
 const EXPLORER_MAX_VISIBLE = 50
 
+function stripExplorerSourceLine(value: string): string {
+  const trimmed = value.trim()
+  if (!/^Source:\s/i.test(trimmed)) {
+    return value
+  }
+
+  return trimmed.replace(/^Source:\s*/i, '').trim()
+}
+
 export function ExplorerPanel({
   explorerRows,
   onSelectDocument,
@@ -26,10 +35,13 @@ export function ExplorerPanel({
   const selectedSourceExcerpt = selectedExplorerDoc?.content?.trim() || ''
   const selectedDirectAnswer = selectedExplorerDoc?.directAnswer?.trim() || ''
   const selectedSummary = selectedExplorerDoc?.summary?.trim() || ''
+  const selectedDisplaySummary = stripExplorerSourceLine(selectedSummary) || selectedDirectAnswer || selectedExplorerDoc?.title || ''
   const hasDistinctSourceExcerpt =
     selectedSourceExcerpt.length > 0 &&
     selectedSourceExcerpt !== selectedDirectAnswer &&
     selectedSourceExcerpt !== selectedSummary &&
+    selectedSourceExcerpt !== stripExplorerSourceLine(selectedDirectAnswer) &&
+    selectedSourceExcerpt !== stripExplorerSourceLine(selectedSummary) &&
     !/^Source:\s/i.test(selectedSourceExcerpt)
   const visibleExplorerRows = explorerRows.slice(0, Math.min(visibleCount, EXPLORER_MAX_VISIBLE))
   const hasMoreExplorerRows = explorerRows.length > visibleExplorerRows.length
@@ -101,7 +113,7 @@ export function ExplorerPanel({
                 <span>{document.siteName}</span>
                 <span>{formatUpdatedAt(document.updatedAt)}</span>
               </div>
-              <p>{document.summary}</p>
+              <p>{stripExplorerSourceLine(document.summary) || document.directAnswer || document.title}</p>
             </button>
           ))}
           {explorerRows.length === 0 ? <div className="empty-state">No permitted sources matched this search.</div> : null}
@@ -155,7 +167,7 @@ export function ExplorerPanel({
               <h3>Answer-ready summary</h3>
               <p>
                 <CompactPathText
-                  value={selectedExplorerDoc.directAnswer || selectedExplorerDoc.summary}
+                  value={selectedDisplaySummary}
                   href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
                 />
               </p>
