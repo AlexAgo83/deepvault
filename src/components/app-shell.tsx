@@ -241,13 +241,18 @@ function AppTopbar({
       <div />
       <div className="topbar-actions">
         <div className="topbar-badges">
-          <Pill tone={liveStateTone} title={liveStateDetail}>
-            {liveStateLabel}
-          </Pill>
-          <Pill tone="success">Synced</Pill>
-          <Pill tone="neutral">{activeScopeLabel}</Pill>
-          <Pill tone="neutral">{provider}</Pill>
-          <Pill tone="accent">{role}</Pill>
+          <div className="topbar-badge-group topbar-badge-group-status" aria-label="Sync status">
+            <Pill tone={liveStateTone} title={liveStateDetail}>
+              {liveStateLabel}
+            </Pill>
+            <Pill tone="success">Synced</Pill>
+          </div>
+          <span className="topbar-badge-divider" aria-hidden="true" />
+          <div className="topbar-badge-group topbar-badge-group-context" aria-label="Active context">
+            <Pill tone="neutral">{activeScopeLabel}</Pill>
+            <Pill tone="neutral">{provider}</Pill>
+            <Pill tone="accent">{role}</Pill>
+          </div>
         </div>
       </div>
     </header>
