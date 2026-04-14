@@ -6,15 +6,6 @@ import type { ExplorerRow } from '../../hooks/useAppModel'
 const EXPLORER_BATCH_SIZE = 10
 const EXPLORER_MAX_VISIBLE = 50
 
-function getExplorerCardSummary(document: ExplorerRow): string {
-  const summary = document.summary.trim()
-  if (/^Source:\s/i.test(summary)) {
-    return document.directAnswer.trim() || document.title
-  }
-
-  return summary || document.directAnswer.trim() || document.title
-}
-
 export function ExplorerPanel({
   explorerRows,
   onSelectDocument,
@@ -112,7 +103,6 @@ export function ExplorerPanel({
                 <span>{document.siteName}</span>
                 <span>{formatUpdatedAt(document.updatedAt)}</span>
               </div>
-              <p>{getExplorerCardSummary(document)}</p>
             </button>
           ))}
           {explorerRows.length === 0 ? <div className="empty-state">No permitted sources matched this search.</div> : null}
