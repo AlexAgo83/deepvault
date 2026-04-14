@@ -58,12 +58,12 @@ const OPS_CONFIG: Record<OpsKey, {
   },
 }
 
-const SYNC_VIEWS: { id: SyncView; label: string }[] = [
-  { id: 'status', label: 'Status' },
-  { id: 'operations', label: 'Operations' },
-  { id: 'history', label: 'History' },
-  { id: 'config', label: 'Config' },
-  { id: 'recovery', label: 'Recovery' },
+const SYNC_VIEWS: { id: SyncView; label: string; detail: string }[] = [
+  { id: 'status', label: 'Status', detail: 'Coverage, freshness, and scope signals' },
+  { id: 'operations', label: 'Operations', detail: 'Launch ingest, evaluate, refresh, or export' },
+  { id: 'history', label: 'History', detail: 'Recent runs and evaluation prep' },
+  { id: 'config', label: 'Config', detail: 'Worker mode, fallback, and timeout' },
+  { id: 'recovery', label: 'Recovery', detail: 'Failed runs and recovery guidance' },
 ]
 
 function parseSyncView(hash: string): SyncView {
@@ -160,6 +160,7 @@ export function SyncPanel({
   const pending = pendingOp ? OPS_CONFIG[pendingOp] : null
 
   const failedJobs = syncOperations.history.filter((j) => j.status === 'failed')
+  const currentViewMeta = SYNC_VIEWS.find((view) => view.id === syncView) || SYNC_VIEWS[0]
 
   return (
     <section className="sync-stack">
@@ -174,30 +175,52 @@ export function SyncPanel({
         />
       ) : null}
 
-      {/* Sub-navigation */}
-      <nav className="sync-subnav" aria-label="Sync views">
-        {SYNC_VIEWS.map(({ id, label }) => (
-          <button
-            key={id}
-            type="button"
-            className={`sync-subnav-item ${syncView === id ? 'sync-subnav-item-active' : ''}`}
-            aria-current={syncView === id ? 'page' : undefined}
-            onClick={() => setSyncView(id)}
-          >
-            {label}
-            {id === 'operations' && syncOperations.isRunning ? (
-              <span className="sync-subnav-badge" aria-label="job running" />
-            ) : null}
-            {id === 'history' && syncOperations.history.length > 0 ? (
-              <span className="sync-subnav-count">{syncOperations.history.length}</span>
-            ) : null}
-          </button>
-        ))}
-      </nav>
+      <article className="panel sync-view-switcher" aria-label="Sync views">
+        <div className="sync-view-switcher-head">
+          <div>
+            <h2>Sync views</h2>
+            <p>Switch between coverage, execution, history, worker settings, and recovery from one view.</p>
+          </div>
+          <div className="sync-view-switcher-meta" aria-label="Current sync view summary">
+            <div className="sync-view-switcher-meta-card">
+              <span>Active view</span>
+              <strong>{currentViewMeta.label}</strong>
+            </div>
+            <div className="sync-view-switcher-meta-card">
+              <span>Last job</span>
+              <strong>{currentJob ? currentJob.status : 'idle'}</strong>
+            </div>
+          </div>
+        </div>
+
+        <nav className="sync-subnav" aria-label="Sync views">
+          {SYNC_VIEWS.map(({ id, label, detail }) => (
+            <button
+              key={id}
+              type="button"
+              className={`sync-subnav-item ${syncView === id ? 'sync-subnav-item-active' : ''}`}
+              aria-label={label}
+              aria-current={syncView === id ? 'page' : undefined}
+              title={detail}
+              onClick={() => setSyncView(id)}
+            >
+              <span className="sync-subnav-label">{label}</span>
+              <span className="sync-subnav-detail">{detail}</span>
+              <span className="sync-subnav-status">
+                {id === 'operations' && syncOperations.isRunning ? 'Running' : null}
+                {id === 'history' && syncOperations.history.length > 0 ? `${syncOperations.history.length} runs` : null}
+                {id === 'status' && currentJob ? currentJob.status : null}
+                {id === 'config' ? workerSettings.workerMode : null}
+                {id === 'recovery' && failedJobs.length > 0 ? `${failedJobs.length} failed` : null}
+              </span>
+            </button>
+          ))}
+        </nav>
+      </article>
 
       {/* Status view — concise summary */}
       {syncView === 'status' ? (
-        <article className="panel" aria-label="Sync status summary">
+        <article className="panel sync-view-panel" aria-label="Sync status summary">
           <SectionHeading title="Sync status" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
           <div className="kpi-grid compact">
             <StatCard
@@ -395,7 +418,7 @@ export function SyncPanel({
 
       {/* History view — run list */}
       {syncView === 'history' ? (
-        <article className="panel" aria-label="Sync run history">
+        <article className="panel sync-view-panel" aria-label="Sync run history">
           <SectionHeading title="Run history" subtitleTooltip="Recent sync jobs and their results. Hover each run for the full note." />
 
           <div className="sync-list">
@@ -437,29 +460,17 @@ export function SyncPanel({
 
       {/* Config view — worker connection read-only + effective config */}
       {syncView === 'config' ? (
-        <article className="panel" aria-label="Worker configuration">
+        <article className="panel sync-view-panel" aria-label="Worker configuration">
           <SectionHeading title="Worker config" subtitleTooltip="Active worker connection and fallback settings. Edit in Settings → Worker." />
 
           <div className="kpi-grid compact">
-            <StatCard
-              label="Worker mode"
-              value={workerSettings.workerMode}
-              note="local uses the embedded Vite ops server."
-            />
-            <StatCard
-              label="Fallback mode"
-              value={workerSettings.workerFallbackMode}
-              note="Behavior when the worker is unreachable."
-            />
-            <StatCard
-              label="Timeout"
-              value={`${workerSettings.workerTimeoutSeconds}s`}
-              note="Request timeout for worker API calls."
-            />
+            <StatCard label="Worker mode" value={workerSettings.workerMode} note="local uses the embedded Vite ops server." />
+            <StatCard label="Fallback mode" value={workerSettings.workerFallbackMode} note="Behavior when the worker is unreachable." />
+            <StatCard label="Timeout" value={`${workerSettings.workerTimeoutSeconds}s`} note="Request timeout for worker API calls." />
           </div>
 
           {workerSettings.workerMode === 'remote' && workerSettings.workerUrl ? (
-            <div className="runtime-stack">
+            <div className="sync-details-grid">
               <div className="detail-row">
                 <span>Worker URL</span>
                 <strong className="detail-value-compact">{workerSettings.workerUrl}</strong>
@@ -472,12 +483,12 @@ export function SyncPanel({
           ) : null}
 
           {workerSettings.workerMode === 'local' ? (
-            <div className="sync-config-note">
+            <div className="sync-callout">
               <p>Running in local mode. Jobs are executed by the embedded Vite ops server at the same origin.</p>
               <p>Switch to remote mode in <strong>Settings → Worker</strong> to point at a dedicated worker endpoint.</p>
             </div>
           ) : (
-            <div className="sync-config-note">
+            <div className="sync-callout">
               <p>Running in remote mode. Jobs are dispatched to <strong>{workerSettings.workerUrl || 'the configured worker URL'}</strong>.</p>
               <p>Update connection settings in <strong>Settings → Worker</strong>.</p>
             </div>
@@ -488,7 +499,7 @@ export function SyncPanel({
 
       {/* Recovery view — failure guidance and last failed operations */}
       {syncView === 'recovery' ? (
-        <article className="panel" aria-label="Recovery guidance">
+        <article className="panel sync-view-panel" aria-label="Recovery guidance">
           <SectionHeading title="Recovery" subtitleTooltip="Guidance for failed operations and unreachable workers." />
 
           {failedJobs.length > 0 ? (
@@ -508,12 +519,12 @@ export function SyncPanel({
               ))}
             </div>
           ) : (
-            <div className="sync-config-note">
+            <div className="sync-callout">
               <p>No failed jobs in recent history. Recovery guidance will appear here when a job fails.</p>
             </div>
           )}
 
-          <div className="sync-config-note">
+          <div className="sync-callout">
             <p>If a live export fails, use <strong>Resume live export</strong> in Operations to restart from the last checkpoint.</p>
             <p>If the worker is unreachable, check the Worker URL and token in Settings, or switch to local mode.</p>
             <p>If the worker remains unavailable and the fallback mode is <strong>read_only</strong>, continue in the published corpus until the endpoint is restored.</p>
