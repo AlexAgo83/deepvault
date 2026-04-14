@@ -35,6 +35,11 @@ export interface SyncRun {
   notes: string
 }
 
+export interface CorpusSection {
+  heading: string
+  content: string
+}
+
 export interface CorpusDocument {
   id: string
   siteId: string
@@ -50,9 +55,14 @@ export interface CorpusDocument {
   tags: string[]
   access: (UserRole | 'all')[]
   source: string
+  /** Structured section breakdown for section-aware retrieval and chunk traceability. */
+  sections?: CorpusSection[]
+  /** Explicit file type derived from the source path extension (e.g. "document", "spreadsheet", "markdown"). */
+  fileType?: string
 }
 
 export interface Corpus {
+  schemaVersion?: string
   defaultUserRole: UserRole
   providers: ProviderRecord[]
   sites: SiteRecord[]
@@ -75,6 +85,10 @@ export interface SourceRecord {
   access: (UserRole | 'all')[]
   snippet: string
   source: string
+  /** Section heading from which the relevant chunk was drawn, when sections are available. */
+  sectionHint?: string
+  /** Explicit file type from the source document (e.g. "document", "spreadsheet", "markdown"). */
+  fileType?: string
 }
 
 export interface ChatMessage {
@@ -239,10 +253,37 @@ function summarizeSentence(document: CorpusDocument, query: string): string {
   if (document.directAnswer) {
     return document.directAnswer
   }
-  const sentences = document.content.split(/(?<=[.!?])\s+/)
   const tokens = tokenize(query)
+  // Prefer section-level match when sections are available
+  if (document.sections && document.sections.length > 0) {
+    const matched = document.sections.find((section) =>
+      tokens.some(
+        (token) =>
+          normalizeText(section.heading).includes(token) ||
+          normalizeText(section.content).includes(token),
+      ),
+    )
+    if (matched) {
+      return matched.content
+    }
+  }
+  // Fall back to sentence-level search in flat content
+  const sentences = document.content.split(/(?<=[.!?])\s+/)
   const matched = sentences.find((sentence) => tokens.some((token) => normalizeText(sentence).includes(token)))
   return matched || document.summary || document.content.split('.')[0]
+}
+
+function findSectionHint(document: CorpusDocument, query: string): string | undefined {
+  if (!document.sections || document.sections.length === 0) return undefined
+  const tokens = tokenize(query)
+  const matched = document.sections.find((section) =>
+    tokens.some(
+      (token) =>
+        normalizeText(section.heading).includes(token) ||
+        normalizeText(section.content).includes(token),
+    ),
+  )
+  return matched?.heading
 }
 
 export function groundQuestion(
@@ -273,7 +314,7 @@ export function groundQuestion(
   const allResults = searchDocuments(corpusData, query, { role, limit: 10, includeDenied: true })
   const deniedMatches = allResults.filter(({ document }) => !canAccessDocument(document, role))
   const permittedMatches = allResults.filter(({ document }) => canAccessDocument(document, role))
-  const deniedSources = deniedMatches.map(({ document, score }) => buildSource(document, score, corpusData))
+  const deniedSources = deniedMatches.map(({ document, score }) => buildSource(document, score, corpusData, query))
 
   if (permittedMatches.length === 0) {
     if (deniedMatches.length > 0) {
@@ -306,7 +347,7 @@ export function groundQuestion(
   }
 
   const sources = permittedMatches.slice(0, limit).map(({ document, score }) => ({
-    ...buildSource(document, score, corpusData),
+    ...buildSource(document, score, corpusData, query),
     siteName: getSiteById(corpusData, document.siteId)?.name || document.siteId,
   }))
   const primary = sources[0]
@@ -346,7 +387,7 @@ export function groundQuestion(
   }
 }
 
-function buildSource(document: CorpusDocument, score: number, corpusData: Corpus): SourceRecord {
+function buildSource(document: CorpusDocument, score: number, corpusData: Corpus, query?: string): SourceRecord {
   return {
     id: document.id,
     title: document.title,
@@ -362,6 +403,8 @@ function buildSource(document: CorpusDocument, score: number, corpusData: Corpus
     access: document.access,
     snippet: document.directAnswer || document.summary,
     source: document.source,
+    sectionHint: query ? findSectionHint(document, query) : undefined,
+    fileType: document.fileType,
   }
 }
 

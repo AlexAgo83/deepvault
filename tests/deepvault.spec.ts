@@ -8,6 +8,7 @@ import {
   buildSiteSummaries,
   buildSyncOverview,
   formatUpdatedAt,
+  groundQuestion,
   searchDocuments,
   resolveSharePointFileUrl,
   type Corpus,
@@ -211,5 +212,51 @@ describe('deepvault helpers', () => {
     expect(resolveSharePointFileUrl(liveCorpus, 'site-a', '/Documents/Folder/File.docx')).toBe(
       'https://example.sharepoint.com/sites/site-a/Shared%20Documents/Folder/File.docx',
     )
+  })
+
+  it('corpus has schemaVersion 1.1 and all documents carry fileType and sections', () => {
+    expect(corpus.schemaVersion).toBe('1.1')
+
+    for (const document of corpus.documents) {
+      expect(document.fileType).toBeDefined()
+      expect(typeof document.fileType).toBe('string')
+      expect(Array.isArray(document.sections)).toBe(true)
+      expect((document.sections ?? []).length).toBeGreaterThan(0)
+    }
+  })
+
+  it('section headings are non-empty strings', () => {
+    for (const document of corpus.documents) {
+      for (const section of document.sections ?? []) {
+        expect(typeof section.heading).toBe('string')
+        expect(section.heading.trim().length).toBeGreaterThan(0)
+        expect(typeof section.content).toBe('string')
+        expect(section.content.trim().length).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('groundQuestion returns a sectionHint when a query matches a section heading', () => {
+    const result = groundQuestion(corpus, 'operating reserve', { role: 'analyst' })
+
+    expect(result.status).toBe('answered')
+    const topSource = result.sources[0]
+    expect(topSource.sectionHint).toBeDefined()
+    expect(topSource.sectionHint).toContain('Operating Reserve')
+  })
+
+  it('groundQuestion returns fileType on sources when set', () => {
+    const result = groundQuestion(corpus, 'risk register spreadsheet', { role: 'analyst' })
+
+    expect(result.status).toBe('answered')
+    const riskSource = result.sources.find((source) => source.id === 'alpha-risk-register')
+    expect(riskSource?.fileType).toBe('spreadsheet')
+  })
+
+  it('ranks documents with section heading match higher than flat content match for the same query', () => {
+    // "Operating Reserve" is a section heading in q3-budget but does not appear in any title
+    const results = searchDocuments(corpus, 'operating reserve', { role: 'analyst' })
+    expect(results.length).toBeGreaterThan(0)
+    expect(results[0].document.id).toBe('q3-budget')
   })
 })

@@ -1,10 +1,10 @@
 ## item_062_improve_corpus_metadata_chunking_and_bishop_hints - Improve corpus metadata chunking and Bishop hints
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 94%
-> Confidence: 90%
-> Progress: 0%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.

@@ -53,6 +53,9 @@ export function getDocumentScore(document: {
   content: string
   tags: string[]
   path: string
+  sections?: Array<{ heading: string; content: string }>
+  author?: string
+  fileType?: string
 }, query: string): number {
   const tokens = tokenize(query)
   if (tokens.length === 0) {
@@ -61,9 +64,16 @@ export function getDocumentScore(document: {
 
   const normalizedTitle = normalizeText(document.title)
   const normalizedSummary = normalizeText(document.summary)
-  const normalizedContent = normalizeText(document.content)
   const normalizedTags = normalizeText(document.tags.join(' '))
   const normalizedPath = normalizeText(document.path)
+  const normalizedAuthor = document.author ? normalizeText(document.author) : ''
+  const normalizedFileType = document.fileType ? normalizeText(document.fileType) : ''
+
+  // Pre-compute section fields once when sections are available
+  const sectionFields = (document.sections || []).map((section) => ({
+    heading: normalizeText(section.heading),
+    content: normalizeText(section.content),
+  }))
 
   let score = 0
   for (const token of tokens) {
@@ -73,13 +83,30 @@ export function getDocumentScore(document: {
     if (normalizedSummary.includes(token)) {
       score += 6
     }
-    if (normalizedContent.includes(token)) {
+    if (sectionFields.length > 0) {
+      // Section heading match is a strong structural signal
+      for (const field of sectionFields) {
+        if (field.heading.includes(token)) {
+          score += 7
+        }
+        if (field.content.includes(token)) {
+          score += 4
+        }
+      }
+    } else if (normalizeText(document.content).includes(token)) {
+      // Fall back to flat content when no sections are available
       score += 4
     }
     if (normalizedTags.includes(token)) {
       score += 5
     }
     if (normalizedPath.includes(token)) {
+      score += 2
+    }
+    if (normalizedAuthor && normalizedAuthor.includes(token)) {
+      score += 3
+    }
+    if (normalizedFileType && normalizedFileType.includes(token)) {
       score += 2
     }
   }

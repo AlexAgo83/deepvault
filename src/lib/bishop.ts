@@ -170,14 +170,31 @@ function buildImprovementHint(result: Pick<AnswerResult, 'status' | 'sources' | 
     return 'Add a named source or a clearer document hint to anchor the answer.'
   }
 
+  const topSource = result.sources[0]
+  const topTags = topSource?.tags?.slice(0, 2).join(', ')
+  const topAuthor = topSource?.author
+  const topFileType = topSource?.fileType
+
   if (result.sources.length === 1) {
+    if (topAuthor) {
+      return `Add a second source or date range to sharpen the answer. The matching source was authored by ${topAuthor}.`
+    }
     return 'Add a second source, a site name, or a date range to sharpen the answer.'
   }
 
   if (result.chunkCount <= 6) {
+    if (topTags) {
+      return `A more specific keyword would improve grounding — try terms like ${topTags}.`
+    }
+    if (topFileType) {
+      return `A more specific ${topFileType} title or keyword would improve grounding.`
+    }
     return 'A more specific document title or keyword would improve grounding.'
   }
 
+  if (topTags) {
+    return `A more specific document title or site name would improve the response — try refining around ${topTags}.`
+  }
   return 'A more specific document title or site name would improve the response.'
 }
 
@@ -211,11 +228,15 @@ interface RemoteAttemptResult {
   errorPreview?: string | null
 }
 
+function buildSourceLine(source: ReturnType<typeof buildGrounding>['sources'][number], index: number): string {
+  const parts: string[] = [source.title, source.siteName, source.path, source.summary]
+  if (source.author) parts.push(`by ${source.author}`)
+  if (source.sectionHint) parts.push(`§ ${source.sectionHint}`)
+  return `${index + 1}. ${parts.join(' | ')}`
+}
+
 export function buildBishopPrompt(context: BishopPromptContext): string {
-  const sourceLines = context.grounding.sources.map(
-    (source, index) =>
-      `${index + 1}. ${source.title} | ${source.siteName} | ${source.path} | ${source.summary}`,
-  )
+  const sourceLines = context.grounding.sources.map((source, index) => buildSourceLine(source, index))
   const conversationHistory = context.conversationHistory && context.conversationHistory.length > 0
     ? ['Conversation history:', formatConversationHistory(context.conversationHistory)]
     : []
@@ -249,10 +270,7 @@ function buildBishopSystemPrompt(context: Omit<BishopPromptContext, 'query' | 'g
 }
 
 function buildBishopGroundingContext(grounding: GroundingResult): string {
-  const sourceLines = grounding.sources.map(
-    (source, index) =>
-      `${index + 1}. ${source.title} | ${source.siteName} | ${source.path} | ${source.summary}`,
-  )
+  const sourceLines = grounding.sources.map((source, index) => buildSourceLine(source, index))
 
   const deniedLines = grounding.deniedSources.map((source) => `- ${source.title} | ${source.siteName} | ${source.path}`)
 

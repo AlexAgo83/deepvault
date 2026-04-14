@@ -7,13 +7,9 @@
 
 ## Next
 
-- Corpus quality stream:
-  - [prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints](logics/product/prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints.md)
-  - [adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints](logics/architecture/adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints.md)
-  - [item_062_improve_corpus_metadata_chunking_and_bishop_hints](logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md)
-
 ## Done
 
+- [item_062_improve_corpus_metadata_chunking_and_bishop_hints](logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md) - Improve corpus metadata, chunking, and Bishop hints (100%)
 - [item_063_add_persisted_sidebar_theme_switch](logics/backlog/item_063_add_persisted_sidebar_theme_switch.md) - Persisted sidebar theme switch (100%)
 - [item_060_split_sync_status_into_dedicated_operations_screens](logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md) - Split Sync Status into dedicated operations screens (100%)
 - [item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts](logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md) - Worker boundary and CLI parity (100%)
