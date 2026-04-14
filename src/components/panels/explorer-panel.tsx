@@ -22,6 +22,7 @@ export function ExplorerPanel({
   selectedExplorerDoc: ExplorerRow | null
 }) {
   const [visibleCount, setVisibleCount] = useState(EXPLORER_BATCH_SIZE)
+  const [showSourceExcerpt, setShowSourceExcerpt] = useState(false)
   const loadMoreSentinelRef = useRef<HTMLDivElement | null>(null)
   const selectedSourceExcerpt = selectedExplorerDoc?.content?.trim() || ''
   const selectedDirectAnswer = selectedExplorerDoc?.directAnswer?.trim() || ''
@@ -65,6 +66,10 @@ export function ExplorerPanel({
     observer.observe(sentinel)
     return () => observer.disconnect()
   }, [explorerRows.length, hasMoreExplorerRows])
+
+  useEffect(() => {
+    setShowSourceExcerpt(false)
+  }, [selectedExplorerDoc?.id])
 
   return (
     <section className="content-grid explorer-grid">
@@ -170,26 +175,40 @@ export function ExplorerPanel({
                 </div>
               </div>
               <div className="document-content">
-                <h3>Answer-ready summary</h3>
+                <div className="document-content-header">
+                  <h3>Details</h3>
+                  {hasDistinctSourceExcerpt ? (
+                    <button
+                      type="button"
+                      className="text-button text-button-sm"
+                      onClick={() => setShowSourceExcerpt((current) => !current)}
+                      aria-expanded={showSourceExcerpt}
+                      aria-controls="explorer-source-excerpt"
+                    >
+                      {showSourceExcerpt ? 'Hide source excerpt' : 'Show source excerpt'}
+                    </button>
+                  ) : null}
+                </div>
                 <p>
                   <CompactPathText
                     value={selectedDirectAnswer || selectedSummary || selectedExplorerDoc.title}
                     href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
                   />
                 </p>
-                <h3>Source excerpt</h3>
-                {hasDistinctSourceExcerpt ? (
-                  <p>
-                    <CompactPathText
-                      value={selectedSourceExcerpt}
-                      href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
-                    />
-                  </p>
-                ) : (
-                  <div className="document-content-note">
-                    This source does not expose a separate body excerpt here, so the summary and source view are the same.
-                  </div>
-                )}
+                {showSourceExcerpt ? (
+                  hasDistinctSourceExcerpt ? (
+                    <p id="explorer-source-excerpt" className="document-content-source">
+                      <CompactPathText
+                        value={selectedSourceExcerpt}
+                        href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                      />
+                    </p>
+                  ) : (
+                    <div id="explorer-source-excerpt" className="document-content-note">
+                      This source does not expose a separate body excerpt here, so the summary and source view are the same.
+                    </div>
+                  )
+                ) : null}
               </div>
             </div>
           </>
