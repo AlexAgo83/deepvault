@@ -1,10 +1,10 @@
 ## item_063_add_persisted_sidebar_theme_switch - Add persisted sidebar theme switch
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 94%
-> Confidence: 90%
-> Progress: 0%
+> Status: Done
+> Understanding: 99%
+> Confidence: 99%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.

@@ -16,6 +16,7 @@ describe('DeepVault app', () => {
     vi.restoreAllMocks()
     localStorage.clear()
     sessionStorage.clear()
+    document.documentElement.removeAttribute('data-theme')
   })
 
   it('renders the explorer shell', async () => {
@@ -603,6 +604,25 @@ describe('DeepVault app', () => {
 
     await user.click(screen.getByRole('button', { name: 'Bishop' }))
     expect(screen.getByText('Saved Bishop answer.')).toBeInTheDocument()
+  })
+
+  it('renders the theme toggle button in the sidebar and toggles the theme', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const toggle = screen.getByRole('button', { name: /switch to dark mode/i })
+    expect(toggle).toBeInTheDocument()
+
+    await user.click(toggle)
+
+    expect(screen.getByRole('button', { name: /switch to light mode/i })).toBeInTheDocument()
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+    expect(localStorage.getItem('deepvault_theme')).toBe('dark')
+
+    await user.click(screen.getByRole('button', { name: /switch to light mode/i }))
+
+    expect(localStorage.getItem('deepvault_theme')).toBe('light')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
   })
 
   it('renders leading icons on every sidebar nav item (AC1)', async () => {
