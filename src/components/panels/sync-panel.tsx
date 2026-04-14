@@ -37,30 +37,30 @@ const OPS_CONFIG: Record<OpsKey, {
     confirmLabel: 'Run evaluate',
   },
   refresh: {
-    label: 'Refresh status',
+    label: 'Refresh',
     tooltip: 'Reload corpus state in the app',
     description: 'Reloads the corpus state in the app and updates site coverage, freshness, and provider readiness signals. No files are written.',
     confirmLabel: 'Refresh',
   },
   exportLive: {
-    label: 'Run live export',
+    label: 'Start Sync',
     tooltip: 'Full SharePoint export via Microsoft Graph',
     description: 'Connects to SharePoint via Microsoft Graph and exports the full corpus from all configured sites. The existing checkpoint will be overwritten.',
-    warning: 'Full export — may take several minutes depending on corpus size. Requires Entra credentials configured in Settings.',
-    confirmLabel: 'Run live export',
+    warning: 'Full sync — may take several minutes depending on corpus size. Requires Entra credentials configured in Settings.',
+    confirmLabel: 'Start Sync',
   },
   exportLiveResume: {
-    label: 'Resume live export',
+    label: 'Resume Sync',
     tooltip: 'Delta sync from last checkpoint',
     description: 'Resumes from the last checkpoint and only fetches documents modified since the previous export. Faster than a full export and preserves unchanged documents.',
     warning: 'Requires a valid checkpoint on disk. If no checkpoint exists the export will fall back to a full run.',
-    confirmLabel: 'Resume export',
+    confirmLabel: 'Resume Sync',
   },
 }
 
 const SYNC_VIEWS: { id: SyncView; label: string; detail: string }[] = [
   { id: 'status', label: 'Status', detail: 'Coverage, freshness, and scope signals' },
-  { id: 'operations', label: 'Operations', detail: 'Launch ingest, evaluate, refresh, or export' },
+  { id: 'operations', label: 'Operations', detail: 'Launch ingest, evaluate, refresh, or sync' },
   { id: 'history', label: 'History', detail: 'Recent runs and evaluation prep' },
   { id: 'config', label: 'Config', detail: 'Worker mode, fallback, and timeout' },
   { id: 'recovery', label: 'Recovery', detail: 'Failed runs and recovery guidance' },
@@ -310,7 +310,7 @@ export function SyncPanel({
 
             <div className="sync-controls-panel-body">
               <div className="sync-controls-group">
-                <span className="sync-controls-label">SharePoint sync</span>
+                <span className="sync-controls-label">Knowledge</span>
                 <div className="sync-controls-actions">
                   {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
                     <button
@@ -527,7 +527,7 @@ export function SyncPanel({
           )}
 
           <div className="sync-callout">
-            <p>If a live export fails, use <strong>Resume live export</strong> in Operations to restart from the last checkpoint.</p>
+            <p>If a sync fails, use <strong>Resume Sync</strong> in Operations to restart from the last checkpoint.</p>
             <p>If the worker is unreachable, check the Worker URL and token in Settings, or switch to local mode.</p>
             <p>If the worker remains unavailable and the fallback mode is <strong>read_only</strong>, continue in the published corpus until the endpoint is restored.</p>
           </div>

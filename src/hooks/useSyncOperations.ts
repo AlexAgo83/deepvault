@@ -54,8 +54,8 @@ const JOB_HISTORY_LIMIT = 5
 
 // Refresh is simulated: calls onRefreshCorpus() in-app, fake timer steps for UX feedback.
 const REFRESH_DEF = {
-  command: 'refresh status',
-  label: 'Refresh status',
+  command: 'refresh',
+  label: 'Refresh',
   summary: 'Refreshed the current corpus snapshot.',
   steps: [
     { delayMs: 140, progress: 12, text: 'Refreshing the current corpus snapshot...', tone: 'muted' as SyncConsoleTone },
@@ -81,14 +81,14 @@ const LIVE_OP_DEFS = {
   },
   'export-live': {
     command: 'npm run export:live',
-    label: 'Run live export',
-    summary: 'Exported live corpus from SharePoint.',
+    label: 'Start Sync',
+    summary: 'Completed the live sync from SharePoint.',
     estimatedLines: 50,
   },
   'export-live-resume': {
     command: 'npm run export:live -- --resume',
-    label: 'Resume live export',
-    summary: 'Resumed live export from last checkpoint.',
+    label: 'Resume Sync',
+    summary: 'Resumed live sync from last checkpoint.',
     estimatedLines: 50,
   },
 } as const
@@ -329,7 +329,7 @@ export function useSyncOperations({
       status: 'running',
       progress: 0,
       startedAt,
-      summary: 'Refresh status started.',
+      summary: 'Refresh started.',
       lines: [makeLine(formatCommandLine(REFRESH_DEF.command, {
         activeScopeLabel,
         provider,
