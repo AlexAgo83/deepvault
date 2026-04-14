@@ -97,7 +97,7 @@ describe('DeepVault app', () => {
     expect(within(answerTrace as HTMLElement).getByText('Chunk count')).toBeInTheDocument()
     expect(within(answerTrace as HTMLElement).getByText('Token count')).toBeInTheDocument()
     expect(within(answerTrace as HTMLElement).getByText('Latency')).toBeInTheDocument()
-    expect(within(answerTrace as HTMLElement).getByText('Need')).toBeInTheDocument()
+    expect(within(answerTrace as HTMLElement).getByRole('button', { name: 'Show sources' })).toBeInTheDocument()
     await waitFor(() => expect(within(answerTrace as HTMLElement).getByText('answered')).toBeInTheDocument())
   })
 
