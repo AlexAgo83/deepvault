@@ -62,7 +62,7 @@ export function GettingStartedModal({
             <span>Ask permission-aware questions and inspect the answer trace.</span>
           </div>
           <div className="getting-started-item">
-            <strong>Sync status</strong>
+            <strong>Knowledge</strong>
             <span>Track ingestion coverage, refresh timing, and provider readiness.</span>
           </div>
           <div className="getting-started-item">

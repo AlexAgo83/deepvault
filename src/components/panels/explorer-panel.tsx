@@ -67,7 +67,7 @@ export function ExplorerPanel({
   }, [explorerRows.length, hasMoreExplorerRows])
 
   return (
-    <section className="content-grid">
+    <section className="content-grid explorer-grid">
       <article className="panel explorer-list-panel">
         <SectionHeading
           title="Explorer"
@@ -118,7 +118,7 @@ export function ExplorerPanel({
         </div>
       </article>
 
-      <article className="panel">
+      <article className="panel explorer-detail-panel">
         {selectedExplorerDoc ? (
           <>
             <SectionHeading
@@ -130,49 +130,51 @@ export function ExplorerPanel({
                 />
               }
             />
-            <div className="detail-stack">
-              <div className="detail-row">
-                <span>Site</span>
-                <strong>{selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}</strong>
+            <div className="explorer-detail-scroll">
+              <div className="detail-stack">
+                <div className="detail-row">
+                  <span>Site</span>
+                  <strong>{selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}</strong>
+                </div>
+                <div className="detail-row">
+                  <span>Owner</span>
+                  <strong>{selectedExplorerDoc.author}</strong>
+                </div>
+                <div className="detail-row">
+                  <span>Updated</span>
+                  <strong>{formatUpdatedAt(selectedExplorerDoc.updatedAt)}</strong>
+                </div>
+                <div className="detail-row">
+                  <span>Access</span>
+                  <strong>{selectedExplorerDoc.access.join(', ')}</strong>
+                </div>
+                <div className="detail-row">
+                  <span>Tags</span>
+                  <strong>{selectedExplorerDoc.tags.join(', ')}</strong>
+                </div>
               </div>
-              <div className="detail-row">
-                <span>Owner</span>
-                <strong>{selectedExplorerDoc.author}</strong>
-              </div>
-              <div className="detail-row">
-                <span>Updated</span>
-                <strong>{formatUpdatedAt(selectedExplorerDoc.updatedAt)}</strong>
-              </div>
-              <div className="detail-row">
-                <span>Access</span>
-                <strong>{selectedExplorerDoc.access.join(', ')}</strong>
-              </div>
-              <div className="detail-row">
-                <span>Tags</span>
-                <strong>{selectedExplorerDoc.tags.join(', ')}</strong>
-              </div>
-            </div>
-            <div className="document-content">
-              <h3>Answer-ready summary</h3>
-              <p>
-                <CompactPathText
-                  value={selectedDirectAnswer || selectedSummary || selectedExplorerDoc.title}
-                  href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
-                />
-              </p>
-              <h3>Source excerpt</h3>
-              {hasDistinctSourceExcerpt ? (
+              <div className="document-content">
+                <h3>Answer-ready summary</h3>
                 <p>
                   <CompactPathText
-                    value={selectedSourceExcerpt}
+                    value={selectedDirectAnswer || selectedSummary || selectedExplorerDoc.title}
                     href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
                   />
                 </p>
-              ) : (
-                <div className="document-content-note">
-                  This source does not expose a separate body excerpt here, so the summary and source view are the same.
-                </div>
-              )}
+                <h3>Source excerpt</h3>
+                {hasDistinctSourceExcerpt ? (
+                  <p>
+                    <CompactPathText
+                      value={selectedSourceExcerpt}
+                      href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                    />
+                  </p>
+                ) : (
+                  <div className="document-content-note">
+                    This source does not expose a separate body excerpt here, so the summary and source view are the same.
+                  </div>
+                )}
+              </div>
             </div>
           </>
       ) : (

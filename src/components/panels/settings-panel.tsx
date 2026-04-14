@@ -50,7 +50,7 @@ export function SettingsPanel({
     <section className="settings-grid">
       <div className="settings-main-column">
         <article className="panel runtime-panel settings-runtime-panel">
-          <SectionHeading title="Settings" subtitleTooltip="Execution context shared by Explorer, Bishop, and Sync status." />
+          <SectionHeading title="Settings" subtitleTooltip="Execution context shared by Explorer, Bishop, and Knowledge." />
           <Pill tone="accent">{activeScopeLabel}</Pill>
           <div className="settings-form-grid settings-runtime-form">
             <label className="settings-field">

@@ -6,7 +6,7 @@ test.describe('DeepVault live mode', () => {
 
   test('shows the live badge when live corpus data is loaded', async ({ page }) => {
     await openApp(page)
-    await page.getByRole('button', { name: 'Sync status' }).click()
+    await page.getByRole('button', { name: 'Knowledge' }).click()
 
     await expect(page.getByText('Live', { exact: true })).toBeVisible()
     await expect(page.getByTitle('Live corpus loaded')).toBeVisible()

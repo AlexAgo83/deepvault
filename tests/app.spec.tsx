@@ -28,7 +28,7 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('dialog', { name: /getting started/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Knowledge' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'AI stats' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
     expect(document.querySelectorAll('.nav-item-icon svg')).toHaveLength(5)
@@ -143,7 +143,7 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'Bishop' }))
     expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     const kpiGrid = document.querySelector('.kpi-grid')
     expect(kpiGrid).not.toBeNull()
     expect(kpiGrid).toHaveTextContent('Sites in scope')
@@ -223,10 +223,10 @@ describe('DeepVault app', () => {
 
     expect(screen.getByRole('button', { name: 'Explorer' })).toHaveAttribute('aria-current', 'page')
 
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
 
     expect(screen.getByRole('button', { name: 'Explorer' })).not.toHaveAttribute('aria-current')
-    expect(screen.getByRole('button', { name: 'Sync status' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('button', { name: 'Knowledge' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('opens settings and persists provider keys locally', async () => {
@@ -301,7 +301,7 @@ describe('DeepVault app', () => {
     vi.stubGlobal('fetch', fetchMock)
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(await screen.findByText('Live fallback')).toBeInTheDocument()
     expect(screen.getByTitle('Live corpus missing, fallback to mock')).toBeInTheDocument()
   })
@@ -315,7 +315,7 @@ describe('DeepVault app', () => {
     vi.stubGlobal('navigator', { onLine: false })
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(await screen.findByText('Offline — corpus mock')).toBeInTheDocument()
     expect(screen.getByTitle('Hors-ligne — corpus mock actif')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Explorer' }))
@@ -326,7 +326,7 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
 
     // Status view is shown by default
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
@@ -358,7 +358,7 @@ describe('DeepVault app', () => {
 
     render(<App />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
 
     // Click opens the confirm modal — confirm to start the operation
@@ -409,7 +409,7 @@ describe('DeepVault app', () => {
     }))
 
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Ingest' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Ingest' })
@@ -445,7 +445,7 @@ describe('DeepVault app', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Ingest' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Ingest' })
@@ -469,7 +469,7 @@ describe('DeepVault app', () => {
     vi.stubGlobal('EventSource', vi.fn())
 
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Ingest' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Ingest' })
@@ -483,7 +483,7 @@ describe('DeepVault app', () => {
   it('confirms and starts refresh from the control panel and completes', async () => {
     vi.useFakeTimers()
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Refresh' })
@@ -504,7 +504,7 @@ describe('DeepVault app', () => {
     }))
 
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Evaluate' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Evaluate' })
@@ -538,7 +538,7 @@ describe('DeepVault app', () => {
     }))
 
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Ingest' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Ingest' })
@@ -563,7 +563,7 @@ describe('DeepVault app', () => {
     }))
 
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Resume Sync' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Resume Sync' })
@@ -583,7 +583,7 @@ describe('DeepVault app', () => {
     }))
 
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Knowledge' }))
     fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Start Sync' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Start Sync' })
@@ -626,7 +626,7 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(screen.queryByLabelText('Explorer search')).not.toBeInTheDocument()
 
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
@@ -737,7 +737,7 @@ describe('DeepVault app', () => {
     expect(within(primaryNav).getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(within(primaryNav).getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
 
-    expect(within(appNav).getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
+    expect(within(appNav).getByRole('button', { name: 'Knowledge' })).toBeInTheDocument()
     expect(within(appNav).getByRole('button', { name: 'AI stats' })).toBeInTheDocument()
     expect(within(appNav).getByRole('button', { name: 'Settings' })).toBeInTheDocument()
   })
@@ -757,14 +757,14 @@ describe('DeepVault app', () => {
     expect(screen.queryByRole('button', { name: 'Ingest' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Refresh' })).not.toBeInTheDocument()
 
-    // Sync status owns operations (in Operations sub-view)
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    // Knowledge owns operations (in Operations sub-view)
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     await user.click(screen.getByRole('button', { name: 'Operations' }))
     expect(screen.getByRole('button', { name: 'Ingest' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Evaluate' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument()
 
-    // Sync status does NOT own runtime controls
+    // Knowledge does NOT own runtime controls
     expect(screen.queryByText('Site scope')).not.toBeInTheDocument()
     expect(screen.queryByText('Data mode')).not.toBeInTheDocument()
   })
@@ -789,7 +789,7 @@ describe('DeepVault app', () => {
     expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
 
     // Topbar pills persist when switching to Sync
-    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(within(badges as HTMLElement).getByText('analyst')).toBeInTheDocument()
     expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
   })
@@ -806,7 +806,7 @@ describe('DeepVault app', () => {
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Bishop' }))
 
     await user.tab()
-    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Sync status' }))
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Knowledge' }))
 
     await user.tab()
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'AI stats' }))
