@@ -1,10 +1,10 @@
 ## task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan - Wave 0 execution planning and backlog split for the full implementation plan
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: In progress
-> Understanding: 94%
-> Confidence: 90%
-> Progress: 99%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -20,13 +20,13 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|wave-0-execution-planning-and-backlog-sp|wave-0-planning-and-split|confirm-dependencies-map-streams-split-b|prepare-the-next-wave-plan
+%% logics-signature: task|wave-0-execution-planning-and-backlog-sp|wave-0-execution-planning-and-backlog|1-confirm-scope-dependencies-and-the|validate-the-linked-docs-wave-order
 stateDiagram-v2
-    state "Wave 0 planning and split" as Backlog
-    state "1. Confirm scope dependencies and linked docs" as Scope
-    state "2. Map streams and execution order" as Build
-    state "3. Split into bounded backlog items" as Verify
-    state "4. Update docs and checkpoints" as Validation
+    state "Wave 0 execution planning and backlog" as Backlog
+    state "1. Confirm scope dependencies and the" as Scope
+    state "2. Map the execution order and" as Build
+    state "3. Split the umbrella request into" as Verify
+    state "Validate the linked docs wave order" as Validation
     state "Done report" as Report
     [*] --> Backlog
     Backlog --> Scope
@@ -97,4 +97,4 @@ stateDiagram-v2
 - The final scope was confirmed across the five streams: navigation and runtime ownership, worker and CLI parity, ops shell decomposition, corpus quality, and theme polish.
 - The umbrella request was split into five bounded backlog items and five downstream tasks, with explicit traceability to every referenced product brief and ADR.
 - The wave map is synchronized in the request, the task chain, the roadmap, and the derived backlog items.
-- The task stays open by workflow design because the linked implementation slices are still pending execution.
+- The planning wave is closed; the downstream implementation slices now carry the execution work and remain linked back to this split.

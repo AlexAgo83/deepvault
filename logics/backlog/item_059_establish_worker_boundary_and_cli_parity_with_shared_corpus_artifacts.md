@@ -8,6 +8,7 @@
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
+> Maintenance edit: refreshed Mermaid signature after workflow sync.
 
 # Problem
 - Establish a dedicated worker boundary and keep the app and CLI operating against the same shared corpus artifacts.
@@ -21,12 +22,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|establish-worker-boundary-and-cli-parity|req-017-implement-the-full-app-worker-co|worker-boundary-and-cli-parity-with-shar|ac1-the-worker-can-be-reached-locally-or
+%% logics-signature: backlog|establish-worker-boundary-and-cli-parity|req-017-implement-the-full-app-worker-co|establish-a-dedicated-worker-boundary-an|ac1-the-worker-can-be-reached
 flowchart TD
-    Request[Umbrella request] --> Problem[Worker boundary and CLI parity]
-    Problem --> Scope[Shared corpus artifacts and worker boundary]
-    Scope --> Acceptance[Executable backlog slice]
-    Acceptance --> Tasks[Execution task]
+    Request[req_017_implement_the_full_app_worker_corp] --> Problem[Establish a dedicated worker boundary and]
+    Problem --> Scope[Establish worker boundary and CLI parity]
+    Scope --> Acceptance[AC1: The worker can be reached]
+    Acceptance --> Tasks[task_027_establish_worker_boundary_and_cli]
 ```
 
 # Acceptance criteria
