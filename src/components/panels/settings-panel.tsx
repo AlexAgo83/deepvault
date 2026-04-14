@@ -1,6 +1,7 @@
 import { Pill, SectionHeading, StatCard } from '../app-ui'
 import type { EntraSettings } from '../../hooks/useEntraSettings'
 import type { ProviderSecrets } from '../../hooks/useProviderSecrets'
+import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 import type { AppModel } from '../../hooks/useAppModel'
 import { type ProviderId, type UserRole } from '../../lib/deepvault'
 
@@ -9,13 +10,16 @@ export function SettingsPanel({
   corpusProviders,
   entraSettings,
   providerSecrets,
+  workerSettings,
   onClear,
   onClearEntra,
+  onClearWorker,
   onEntraChange,
   onKeyChange,
   onProviderChange,
   onRoleChange,
   onSiteFilterChange,
+  onWorkerChange,
   provider,
   role,
   siteFilter,
@@ -25,13 +29,16 @@ export function SettingsPanel({
   corpusProviders: AppModel['corpusProviders']
   entraSettings: EntraSettings
   providerSecrets: ProviderSecrets
+  workerSettings: WorkerSettings
   onClear: () => void
   onClearEntra: () => void
+  onClearWorker: () => void
   onEntraChange: (_key: keyof EntraSettings, _value: string) => void
   onKeyChange: (_provider: 'openai' | 'gemini' | 'anthropic', _value: string) => void
   onProviderChange: (_value: ProviderId) => void
   onRoleChange: (_value: UserRole) => void
   onSiteFilterChange: (_value: string) => void
+  onWorkerChange: <K extends keyof WorkerSettings>(_key: K, _value: WorkerSettings[K]) => void
   provider: string
   role: string
   siteFilter: string
@@ -232,6 +239,82 @@ export function SettingsPanel({
           <div className="settings-actions">
             <button type="button" className="secondary-button" title="Remove stored provider API keys from this browser" onClick={onClear}>
               Clear stored keys
+            </button>
+          </div>
+        </article>
+        <article className="panel settings-panel">
+          <SectionHeading
+            title="Worker"
+            subtitleTooltip="Connection settings for the execution worker. Local mode uses the Vite dev server. Remote mode points to a dedicated worker endpoint."
+          />
+
+          <div className="settings-form-grid">
+            <label className="settings-field">
+              <span>Worker mode</span>
+              <select
+                value={workerSettings.workerMode}
+                title="Local uses the embedded Vite ops server. Remote connects to a dedicated worker endpoint."
+                onChange={(event) => onWorkerChange('workerMode', event.target.value as WorkerSettings['workerMode'])}
+              >
+                <option value="local">local</option>
+                <option value="remote">remote</option>
+              </select>
+            </label>
+
+            <label className="settings-field">
+              <span>Worker URL</span>
+              <input
+                type="text"
+                value={workerSettings.workerUrl}
+                disabled={workerSettings.workerMode === 'local'}
+                onChange={(event) => onWorkerChange('workerUrl', event.target.value)}
+                placeholder="https://worker.example.com"
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </label>
+
+            <label className="settings-field">
+              <span>Worker token</span>
+              <input
+                type="password"
+                value={workerSettings.workerToken}
+                disabled={workerSettings.workerMode === 'local'}
+                onChange={(event) => onWorkerChange('workerToken', event.target.value)}
+                placeholder="Bearer token for remote worker"
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </label>
+
+            <label className="settings-field">
+              <span>Timeout (s)</span>
+              <input
+                type="number"
+                value={workerSettings.workerTimeoutSeconds}
+                min={5}
+                max={300}
+                onChange={(event) => onWorkerChange('workerTimeoutSeconds', Math.max(5, Number(event.target.value)))}
+              />
+            </label>
+
+            <label className="settings-field">
+              <span>Fallback mode</span>
+              <select
+                value={workerSettings.workerFallbackMode}
+                title="Behavior when the worker is unreachable. read_only: use last published corpus. block: prevent ops. none: no fallback."
+                onChange={(event) => onWorkerChange('workerFallbackMode', event.target.value as WorkerSettings['workerFallbackMode'])}
+              >
+                <option value="read_only">read_only</option>
+                <option value="block">block</option>
+                <option value="none">none</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="settings-actions">
+            <button type="button" className="secondary-button" title="Reset worker settings to defaults" onClick={onClearWorker}>
+              Reset worker settings
             </button>
           </div>
         </article>

@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createWorkerClient } from '../lib/worker-client'
+import type { WorkerSettings } from './useWorkerSettings'
+import { WORKER_SETTINGS_DEFAULTS } from './useWorkerSettings'
 
 export type SyncOperationKind = 'refresh' | 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
 export type SyncOperationStatus = 'running' | 'completed' | 'failed' | 'cancelled'
@@ -35,6 +38,7 @@ export interface UseSyncOperationsOptions {
   restrictedSites: number
   refreshPolicy: string
   onRefreshCorpus: () => void | Promise<void>
+  workerSettings?: WorkerSettings
 }
 
 const JOB_HISTORY_LIMIT = 5
@@ -151,7 +155,15 @@ export function useSyncOperations({
   restrictedSites,
   refreshPolicy,
   onRefreshCorpus,
+  workerSettings = WORKER_SETTINGS_DEFAULTS,
 }: UseSyncOperationsOptions) {
+  const workerClient = useMemo(() => createWorkerClient(workerSettings), [
+    workerSettings.workerMode,
+    workerSettings.workerUrl,
+    workerSettings.workerToken,
+    workerSettings.workerTimeoutSeconds,
+    workerSettings.workerFallbackMode,
+  ]) // eslint-disable-line react-hooks/exhaustive-deps
   const [activeJob, setActiveJob] = useState<SyncOperationJob | null>(null)
   const [jobHistory, setJobHistory] = useState<SyncOperationJob[]>([])
   const timersRef = useRef<number[]>([])
@@ -198,7 +210,7 @@ export function useSyncOperations({
     serverJobIdRef.current = persisted.serverJobId
 
     let lineCount = 0
-    const es = new EventSource(`/api/ops/stream/${persisted.serverJobId}`)
+    const es = workerClient.openJobEvents(persisted.serverJobId)
     eventSourceRef.current = es
 
     es.onmessage = (event: MessageEvent<string>) => {
@@ -318,7 +330,7 @@ export function useSyncOperations({
     pushTimer(() => finalizeJob(jobId, 'completed', REFRESH_DEF.summary), totalDelay + 90)
   }, [activeScopeLabel, clearTimers, finalizeJob, onRefreshCorpus, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, pushTimer])
 
-  // Live operation — ingest, evaluate, export-live, and export-live-resume spawn real scripts via the ops-server Vite plugin.
+  // Live operation — ingest, evaluate, export-live, and export-live-resume via the worker client.
   const runLiveOperation = useCallback((kind: 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume') => {
     if (activeJobRef.current?.status === 'running') {
       return
@@ -347,24 +359,20 @@ export function useSyncOperations({
     setActiveJob(job)
 
     async function start() {
-      let response: Response
+      let serverJobId: string
       try {
-        response = await fetch('/api/ops/start', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ kind, env: extraEnv }),
-        })
+        const result = await workerClient.startJob({ kind, env: extraEnv })
+        serverJobId = result.jobId
       } catch {
-        finalizeJob(jobId, 'failed', 'Could not reach the ops server. Make sure you are running the Vite dev server.')
+        finalizeJob(jobId, 'failed', 'Could not reach the worker. Make sure you are running the Vite dev server.')
         return
       }
 
-      const { jobId: serverJobId } = await response.json() as { jobId: string }
       serverJobIdRef.current = serverJobId
       persistActiveJob({ serverJobId, jobId, kind, startedAt: job.startedAt })
 
       let lineCount = 0
-      const es = new EventSource(`/api/ops/stream/${serverJobId}`)
+      const es = workerClient.openJobEvents(serverJobId)
       eventSourceRef.current = es
 
       es.onmessage = (event: MessageEvent<string>) => {
@@ -399,7 +407,8 @@ export function useSyncOperations({
     }
 
     void start()
-  }, [activeScopeLabel, clearTimers, extraEnv, finalizeJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeScopeLabel, clearTimers, extraEnv, finalizeJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, workerClient])
 
   const cancelActiveJob = useCallback(() => {
     const current = activeJobRef.current
@@ -412,13 +421,14 @@ export function useSyncOperations({
     eventSourceRef.current = null
 
     if (serverJobIdRef.current) {
-      void fetch(`/api/ops/cancel/${serverJobIdRef.current}`, { method: 'POST' })
+      void workerClient.cancelJob(serverJobIdRef.current)
       serverJobIdRef.current = null
     }
     clearPersistedJob()
 
     finalizeJob(current.id, 'cancelled', `${current.label} cancelled.`)
-  }, [clearTimers, finalizeJob])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clearTimers, finalizeJob, workerClient])
 
   const startRefresh = useCallback(() => runRefresh(), [runRefresh])
   const startIngest = useCallback(() => runLiveOperation('ingest'), [runLiveOperation])

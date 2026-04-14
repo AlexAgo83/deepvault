@@ -15,9 +15,11 @@ import { useLiveCorpus } from './useLiveCorpus'
 import { useEntraSettings } from './useEntraSettings'
 import { useProviderSecrets } from './useProviderSecrets'
 import { useSyncOperations } from './useSyncOperations'
+import { useWorkerSettings } from './useWorkerSettings'
 import type { LiveState } from './useLiveCorpus'
 import type { EntraSettings } from './useEntraSettings'
 import type { SyncOperationJob } from './useSyncOperations'
+import type { WorkerSettings } from './useWorkerSettings'
 import { resolveCorpusMode } from '../lib/corpus-mode'
 
 export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
@@ -52,6 +54,9 @@ export interface AppModel {
   entraSettings: EntraSettings
   setEntraSetting: ReturnType<typeof useEntraSettings>['setEntraSetting']
   clearEntraSettings: ReturnType<typeof useEntraSettings>['clearEntraSettings']
+  workerSettings: WorkerSettings
+  setWorkerSetting: ReturnType<typeof useWorkerSettings>['setWorkerSetting']
+  clearWorkerSettings: ReturnType<typeof useWorkerSettings>['clearWorkerSettings']
   question: string
   setQuestion: Dispatch<SetStateAction<string>>
   isAsking: boolean
@@ -98,6 +103,7 @@ function buildScopedCorpus(corpus: Corpus, siteFilter: string): Corpus {
 
 export function useAppModel(): AppModel {
   const { entraSettings, setEntraSetting, clearEntraSettings } = useEntraSettings()
+  const { workerSettings, setWorkerSetting, clearWorkerSettings } = useWorkerSettings()
   const requestedCorpusMode = resolveCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE, entraSettings.dataMode)
   const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(requestedCorpusMode)
   const corpus = corpusBundle.corpus
@@ -167,6 +173,7 @@ export function useAppModel(): AppModel {
     restrictedSites: scopedSyncOverview.restrictedSites,
     refreshPolicy: scopedSyncOverview.refreshPolicy,
     onRefreshCorpus: refreshCorpus,
+    workerSettings,
   })
 
   useEffect(() => {
@@ -219,6 +226,9 @@ export function useAppModel(): AppModel {
     entraSettings,
     setEntraSetting,
     clearEntraSettings,
+    workerSettings,
+    setWorkerSetting,
+    clearWorkerSettings,
     question,
     setQuestion,
     isAsking,
