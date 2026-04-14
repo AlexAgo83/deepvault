@@ -37,7 +37,8 @@ describe('ExplorerPanel', () => {
 
     const explorerCell = screen.getByTitle('Open Delivery plan')
     expect(explorerCell).toBeInTheDocument()
-    expect(explorerCell).toHaveTextContent('20260127 - CARESOFT - Planning de livraison.xlsx.')
-    expect(explorerCell).not.toHaveTextContent(/^Source:/i)
+    expect(explorerCell).toHaveTextContent('Planning de livraison')
+    expect(explorerCell).not.toHaveTextContent('Source:')
+    expect(explorerCell).not.toHaveTextContent('CARESOFT')
   })
 })

@@ -554,11 +554,11 @@ select:focus-visible {
 
 .getting-started-modal {
   width: min(760px, 100%);
-  border: 1px solid rgba(255, 253, 249, 0.25);
+  border: 1px solid var(--border);
   border-radius: 24px;
   background:
     radial-gradient(circle at top right, rgba(185, 106, 67, 0.14), transparent 32%),
-    linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(246, 241, 234, 0.98));
+    linear-gradient(180deg, var(--surface), var(--surface-soft));
   box-shadow: 0 28px 80px rgba(31, 26, 22, 0.28);
   color: var(--text);
   padding: 28px;
@@ -596,7 +596,7 @@ select:focus-visible {
   padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(255, 253, 249, 0.8);
+  background: var(--surface-soft);
 }
 
 .getting-started-item strong {
