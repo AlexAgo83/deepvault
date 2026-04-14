@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md`
 > Related task: `logics/tasks/task_028_split_sync_status_into_dedicated_operations_screens.md`
-> Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
+> Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc. Decisions resolved: routes first and fixed screen ordering.
 
 # Overview
 Split the current Sync Status experience into a concise summary plus dedicated screens for operations, history, config, and recovery.
@@ -59,7 +59,7 @@ Use the same state vocabulary across screens so the app feels like one system ra
 - `logics/product/prod_005_split_sync_status_into_dedicated_operations_screens.md`
 
 # Follow-up work
-- Define the exact navigation labels and screen ordering.
-- Decide whether the first implementation should use routes, tabs, or nested panels.
+- Use routes for the first implementation so the summary screen, operations, history, config, and recovery have stable deep links.
+- Keep the screen ordering as Status, Operations, History, Config, and Recovery.
 - Align the screen split with the existing app shell and the Sync panel summary.
 - Add UI tests that prove the summary screen and the dedicated screens stay in sync.

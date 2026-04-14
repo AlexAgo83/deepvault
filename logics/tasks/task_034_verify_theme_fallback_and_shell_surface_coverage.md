@@ -1,19 +1,20 @@
 ## task_034_verify_theme_fallback_and_shell_surface_coverage - Verify theme fallback and shell surface coverage
-> From version: 1.1.0
+> From version: 1.1.1
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 92%
-> Confidence: 90%
-> Progress: 0%
+> Understanding: 94%
+> Confidence: 92%
+> Progress: 5%
 > Complexity: Medium
 > Theme: General
-> Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc. Decision resolved: first-launch system fallback, then persisted preference authority.
 
 # Context
 - Derived from backlog item `item_066_verify_theme_fallback_and_shell_surface_coverage`.
 - Source file: `logics/backlog/item_066_verify_theme_fallback_and_shell_surface_coverage.md`.
 - Related request(s): `req_017_implement_the_full_app_worker_corpus_and_shell_plan`.
 - The sidebar theme switch exists, but the fallback rule and shell-wide surface coverage still need explicit verification so the behavior stays predictable.
+- On the first launch, the shell should honor system appearance only when no user preference exists; after that, the persisted preference becomes authoritative.
 - The open product and ADR questions leave room for the control to drift between system-driven and user-driven behavior.
 - If modal and panel surfaces do not consume the same tokens, the theme will feel inconsistent even when the switch works.
 

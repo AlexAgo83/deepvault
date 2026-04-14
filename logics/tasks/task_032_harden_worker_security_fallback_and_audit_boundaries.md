@@ -1,19 +1,21 @@
 ## task_032_harden_worker_security_fallback_and_audit_boundaries - Harden worker security, fallback, and audit boundaries
-> From version: 1.1.0
+> From version: 1.1.1
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 94%
-> Confidence: 92%
-> Progress: 0%
+> Understanding: 95%
+> Confidence: 93%
+> Progress: 5%
 > Complexity: High
 > Theme: General
-> Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc. Decision resolved: remote worker control uses a bearer-token style shared secret and `read_only` is the default fallback.
 
 # Context
 - Derived from backlog item `item_064_harden_worker_security_fallback_and_audit_boundaries`.
 - Source file: `logics/backlog/item_064_harden_worker_security_fallback_and_audit_boundaries.md`.
 - Related request(s): `req_017_implement_the_full_app_worker_corpus_and_shell_plan`.
 - The worker split needs explicit guardrails for remote transport, fallback, and audit so the app can trust the published corpus and job history.
+- Remote control is expected to travel over authenticated HTTPS with a bearer-token style shared secret, while local control remains inside the trust boundary.
+- The first fallback should be `read_only` when a published corpus exists but the worker is unavailable; stricter deployments can still opt into `block`.
 - The current implementation slice covers boundary and CLI parity, but it does not yet fully codify the operational safety model from ADR 023.
 - Without those rules, remote-worker usage remains harder to reason about and harder to support during failure or version mismatch scenarios.
 

@@ -5,7 +5,7 @@
 > Related backlog: `logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md`
 > Related task: `logics/tasks/task_028_split_sync_status_into_dedicated_operations_screens.md`
 > Related architecture: `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_024_split_sync_status_into_dedicated_operations_screens.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
+> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Decisions resolved: routes first, Status -> Operations -> History -> Config -> Recovery ordering.
 
 # Overview
 Split the current Sync Status experience into a summary surface and dedicated operations screens.
@@ -67,5 +67,5 @@ The current experience also makes it harder to tell which surface is the default
 - `logics/architecture/adr_024_split_sync_status_into_dedicated_operations_screens.md`
 
 # Open questions
-- What exact navigation model best balances quick access with reduced visual clutter?
-- Should the dedicated areas be separate routes, tabs, or nested panels in the first iteration?
+- Decision note: use explicit routes for the first iteration so deep links, keyboard navigation, and summary-to-detail handoff stay predictable.
+- Keep the screen ordering as Status, Operations, History, Config, and Recovery unless a later implementation issue forces a re-sequence.

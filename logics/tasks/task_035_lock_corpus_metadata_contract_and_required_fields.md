@@ -1,19 +1,21 @@
 ## task_035_lock_corpus_metadata_contract_and_required_fields - Lock corpus metadata contract and required fields
-> From version: 1.1.0
+> From version: 1.1.1
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 93%
-> Confidence: 91%
-> Progress: 0%
+> Understanding: 95%
+> Confidence: 93%
+> Progress: 5%
 > Complexity: Medium
 > Theme: General
-> Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc. Decision resolved: required corpus fields are fixed and optional extensions stay optional unless promoted later.
 
 # Context
 - Derived from backlog item `item_067_lock_corpus_metadata_contract_and_required_fields`.
 - Source file: `logics/backlog/item_067_lock_corpus_metadata_contract_and_required_fields.md`.
 - Related request(s): `req_017_implement_the_full_app_worker_corpus_and_shell_plan`.
 - Section-aware chunking and stronger hints exist, but the corpus contract still needs a clear line between required metadata and optional extensions so future ingestion changes stay stable.
+- Required first-wave fields are `schemaVersion`, `generatedAt`, `source`, `documents[*].id`, `siteId`, `kind`, `title`, `path`, `webUrl`, and `updatedAt`.
+- Optional fields should remain optional for now, including `author`, `sections`, `fileType`, `chunkMetadata`, and `retrievalSignals`, unless a later item promotes them.
 - The open product question around mandatory structural fields could otherwise lead to drift between documents, scoring, and hint generation.
 - A stable contract is needed before the next round of corpus changes expands the shape further.
 
