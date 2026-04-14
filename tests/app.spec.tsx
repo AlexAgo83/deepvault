@@ -134,6 +134,53 @@ describe('DeepVault app', () => {
     expect(screen.getByLabelText('Explorer search')).toBeInTheDocument()
   })
 
+  it('loads explorer rows progressively as the sentinel enters view', async () => {
+    let observerCallback: IntersectionObserverCallback | null = null
+    const observe = vi.fn()
+    const disconnect = vi.fn()
+
+    class MockIntersectionObserver {
+      constructor(callback: IntersectionObserverCallback) {
+        observerCallback = callback
+      }
+
+      observe = observe
+      disconnect = disconnect
+      unobserve = vi.fn()
+      takeRecords = vi.fn(() => [])
+    }
+
+    vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
+    render(<App />)
+
+    expect(screen.getByLabelText('Explorer search')).toBeInTheDocument()
+    expect(document.querySelectorAll('.document-row')).toHaveLength(10)
+    expect(screen.getByText('Showing 10 of 17')).toBeInTheDocument()
+
+    await waitFor(() => expect(observerCallback).not.toBeNull())
+
+    act(() => {
+      observerCallback?.(
+        [
+          {
+            isIntersecting: true,
+            intersectionRatio: 1,
+            boundingClientRect: {} as DOMRectReadOnly,
+            intersectionRect: {} as DOMRectReadOnly,
+            rootBounds: null,
+            target: document.createElement('div'),
+            time: 0,
+          },
+        ],
+        {} as IntersectionObserver,
+      )
+    })
+
+    await waitFor(() => expect(document.querySelectorAll('.document-row')).toHaveLength(17))
+    expect(screen.getByText('Showing 17 of 17')).toBeInTheDocument()
+    expect(screen.getByText('All results loaded')).toBeInTheDocument()
+  })
+
   it('marks the active navigation tab for accessibility', async () => {
     const user = userEvent.setup()
     render(<App />)
