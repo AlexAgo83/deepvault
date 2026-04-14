@@ -58,6 +58,15 @@ select {
   font: inherit;
 }
 
+input,
+textarea {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 10px 12px;
+}
+
 select {
   appearance: none;
   -webkit-appearance: none;
@@ -78,6 +87,12 @@ select {
 }
 
 select:focus {
+  outline: 2px solid rgba(185, 106, 67, 0.18);
+  border-color: var(--accent);
+}
+
+input:focus,
+textarea:focus {
   outline: 2px solid rgba(185, 106, 67, 0.18);
   border-color: var(--accent);
 }
@@ -200,6 +215,17 @@ p {
   border-color: var(--primary);
 }
 
+.nav-item:focus-visible,
+.site-chip:focus-visible,
+.secondary-button:focus-visible,
+.primary-button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgba(185, 106, 67, 0.2);
+  outline-offset: 2px;
+}
+
 .nav-item-active,
 .site-chip-active {
   border-color: var(--accent);
@@ -289,7 +315,7 @@ p {
 .runtime-panel {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: linear-gradient(180deg, rgba(245, 240, 232, 0.6), rgba(255, 253, 249, 0.95));
+  background: linear-gradient(180deg, rgba(185, 106, 67, 0.04), var(--surface));
   padding: 14px;
   display: grid;
   gap: 14px;
