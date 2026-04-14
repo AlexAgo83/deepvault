@@ -134,6 +134,24 @@ describe('DeepVault app', () => {
     expect(screen.getByLabelText('Explorer search')).toBeInTheDocument()
   })
 
+  it('hides the KPI strip on explorer and bishop while keeping it on sync', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    const kpiGrid = document.querySelector('.kpi-grid')
+    expect(kpiGrid).not.toBeNull()
+    expect(kpiGrid).toHaveTextContent('Sites in scope')
+    expect(kpiGrid).toHaveTextContent('Visible docs')
+    expect(kpiGrid).toHaveTextContent('Last refresh')
+    expect(kpiGrid).toHaveTextContent('Provider readiness')
+  })
+
   it('loads explorer rows progressively as the sentinel enters view', async () => {
     let observerCallback: IntersectionObserverCallback | null = null
     const observe = vi.fn()
