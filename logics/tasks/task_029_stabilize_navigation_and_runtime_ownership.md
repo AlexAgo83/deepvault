@@ -1,10 +1,10 @@
 ## task_029_stabilize_navigation_and_runtime_ownership - Stabilize navigation and runtime ownership
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 94%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -37,13 +37,13 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirm scope, dependencies, and linked acceptance criteria.
-- [ ] 2. Implement the next coherent delivery wave from the backlog item.
-- [ ] 3. Checkpoint the wave in a commit-ready state, validate it, and update the linked Logics docs.
-- [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
-- [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
-- [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
-- [ ] FINAL: Update related Logics docs
+- [x] 1. Confirm scope, dependencies, and linked acceptance criteria.
+- [x] 2. Implement the next coherent delivery wave from the backlog item.
+- [x] 3. Checkpoint the wave in a commit-ready state, validate it, and update the linked Logics docs.
+- [x] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
+- [x] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
+- [x] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
+- [x] FINAL: Update related Logics docs
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -53,11 +53,11 @@ stateDiagram-v2
 - Do not mark a wave or step complete until the relevant automated tests and quality checks have been run successfully.
 
 # AC Traceability
-- AC1 -> Scope: The sidebar uses leading icons and remains easy to scan.. Proof: capture validation evidence in this doc.
-- AC2 -> Scope: Runtime controls and site scope live in the intended shell location and are clearly owned.. Proof: capture validation evidence in this doc.
-- AC3 -> Scope: The active runtime context remains visible without changing behavior.. Proof: capture validation evidence in this doc.
-- AC4 -> Scope: Navigation and runtime placement stay usable on smaller screens and with keyboard navigation.. Proof: capture validation evidence in this doc.
-- AC5 -> Scope: The app's ownership model for sidebar, settings, and sync stays consistent.. Proof: capture validation evidence in this doc.
+- AC1 -> Scope: The sidebar uses leading icons and remains easy to scan. Proof: unified data-driven `NAV_SECTIONS` in `app-shell.tsx` renders all 5 nav items with SVG icons. Test `renders leading icons on every sidebar nav item (AC1)` validates all items have `.nav-item-icon svg`.
+- AC2 -> Scope: Runtime controls and site scope live in the intended shell location and are clearly owned. Proof: test `keeps runtime controls in Settings and operations in Sync (AC2/AC5)` validates role/provider/scope live in Settings and ingest/evaluate/refresh live in Sync.
+- AC3 -> Scope: The active runtime context remains visible without changing behavior. Proof: test `displays runtime context pills in the topbar across all tabs (AC3)` validates topbar badges persist across Explorer, Bishop, and Sync tabs.
+- AC4 -> Scope: Navigation and runtime placement stay usable on smaller screens and with keyboard navigation. Proof: test `supports keyboard tab navigation through sidebar items (AC4)` validates sequential tab focus. Test `provides distinct aria-labels on sidebar nav sections (AC1/AC4)` validates ARIA landmarks. CSS media queries handle responsive stacking.
+- AC5 -> Scope: The app's ownership model for sidebar, settings, and sync stays consistent. Proof: test `keeps runtime controls in Settings and operations in Sync (AC2/AC5)` validates mutual exclusion of concerns between panels.
 
 # Decision framing
 - Product framing: Required
@@ -87,11 +87,11 @@ stateDiagram-v2
 - Confirm the completed wave leaves the repository in a commit-ready state.
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured.
-- [ ] No wave or step was closed before the relevant automated tests and quality checks passed.
-- [ ] Linked request/backlog/task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] Scope implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured.
+- [x] No wave or step was closed before the relevant automated tests and quality checks passed.
+- [x] Linked request/backlog/task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report

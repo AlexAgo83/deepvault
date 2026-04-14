@@ -584,6 +584,110 @@ describe('DeepVault app', () => {
     expect(screen.getByText('Saved Bishop answer.')).toBeInTheDocument()
   })
 
+  it('renders leading icons on every sidebar nav item (AC1)', async () => {
+    render(<App />)
+
+    const sidebar = document.querySelector('.sidebar')
+    expect(sidebar).not.toBeNull()
+
+    const navItems = sidebar!.querySelectorAll('.nav-item')
+    expect(navItems).toHaveLength(5)
+
+    for (const item of navItems) {
+      const icon = item.querySelector('.nav-item-icon svg')
+      expect(icon).not.toBeNull()
+    }
+  })
+
+  it('provides distinct aria-labels on sidebar nav sections (AC1/AC4)', async () => {
+    render(<App />)
+
+    const primaryNav = screen.getByRole('navigation', { name: 'Primary navigation' })
+    const appNav = screen.getByRole('navigation', { name: 'Application panels' })
+
+    expect(primaryNav).toBeInTheDocument()
+    expect(appNav).toBeInTheDocument()
+
+    expect(within(primaryNav).getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
+    expect(within(primaryNav).getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
+
+    expect(within(appNav).getByRole('button', { name: 'Sync status' })).toBeInTheDocument()
+    expect(within(appNav).getByRole('button', { name: 'AI stats' })).toBeInTheDocument()
+    expect(within(appNav).getByRole('button', { name: 'Settings' })).toBeInTheDocument()
+  })
+
+  it('keeps runtime controls in Settings and operations in Sync (AC2/AC5)', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    // Settings owns runtime controls
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    expect(screen.getByText('Role')).toBeInTheDocument()
+    expect(screen.getByText('Provider')).toBeInTheDocument()
+    expect(screen.getByText('Site scope')).toBeInTheDocument()
+    expect(screen.getByText('Data mode')).toBeInTheDocument()
+
+    // Settings does NOT own sync operations
+    expect(screen.queryByRole('button', { name: 'Run ingest' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Refresh status' })).not.toBeInTheDocument()
+
+    // Sync status owns operations
+    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    expect(screen.getByRole('button', { name: 'Run ingest' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Run evaluate' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Refresh status' })).toBeInTheDocument()
+
+    // Sync status does NOT own runtime controls
+    expect(screen.queryByText('Site scope')).not.toBeInTheDocument()
+    expect(screen.queryByText('Data mode')).not.toBeInTheDocument()
+  })
+
+  it('displays runtime context pills in the topbar across all tabs (AC3)', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const topbar = document.querySelector('.topbar')
+    expect(topbar).not.toBeNull()
+
+    // Topbar shows runtime pills on default tab (Explorer)
+    const badges = topbar!.querySelector('.topbar-badges')
+    expect(badges).not.toBeNull()
+    expect(within(badges as HTMLElement).getByText('analyst')).toBeInTheDocument()
+    expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
+    expect(within(badges as HTMLElement).getByText('All sites')).toBeInTheDocument()
+
+    // Topbar pills persist when switching to Bishop
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    expect(within(badges as HTMLElement).getByText('analyst')).toBeInTheDocument()
+    expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
+
+    // Topbar pills persist when switching to Sync
+    await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    expect(within(badges as HTMLElement).getByText('analyst')).toBeInTheDocument()
+    expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
+  })
+
+  it('supports keyboard tab navigation through sidebar items (AC4)', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const explorerBtn = screen.getByRole('button', { name: 'Explorer' })
+    explorerBtn.focus()
+    expect(document.activeElement).toBe(explorerBtn)
+
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Bishop' }))
+
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Sync status' }))
+
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'AI stats' }))
+
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Settings' }))
+  })
+
   it('exports Bishop and Explorer data and clears Bishop history', async () => {
     const user = userEvent.setup()
     const mockedDownload = vi.mocked(downloadTextFile)

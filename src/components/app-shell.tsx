@@ -8,10 +8,31 @@ import { AIStatsPanel, BishopPanel, createBishopExportHandlers, ExplorerPanel, c
 import { version } from '../../package.json'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
-const NAV_ITEMS = [
-  { id: 'explorer', label: 'Explorer', icon: ExplorerIcon },
-  { id: 'bishop', label: 'Bishop', icon: BishopIcon },
-] as const satisfies ReadonlyArray<{ id: AppTab; label: string; icon: () => ReactElement }>
+type NavSection = {
+  label: string
+  ariaLabel: string
+  items: ReadonlyArray<{ id: AppTab; label: string; icon: () => ReactElement }>
+}
+
+const NAV_SECTIONS: ReadonlyArray<NavSection> = [
+  {
+    label: 'Navigation',
+    ariaLabel: 'Primary navigation',
+    items: [
+      { id: 'explorer', label: 'Explorer', icon: ExplorerIcon },
+      { id: 'bishop', label: 'Bishop', icon: BishopIcon },
+    ],
+  },
+  {
+    label: 'Application',
+    ariaLabel: 'Application panels',
+    items: [
+      { id: 'sync', label: 'Sync status', icon: SyncIcon },
+      { id: 'ai-stats', label: 'AI stats', icon: StatsIcon },
+      { id: 'settings', label: 'Settings', icon: SettingsIcon },
+    ],
+  },
+]
 
 function ExplorerIcon() {
   return (
@@ -100,75 +121,37 @@ function AppSidebar({
   update: () => Promise<void>
 }) {
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" aria-label="App sidebar">
       <div className="sidebar-brandline">
         <span>Nexus</span>
       </div>
 
-      <div className="sidebar-section">
-        <div className="sidebar-label">Navigation</div>
-        <nav className="nav-list">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`nav-item ${activeTab === item.id ? 'nav-item-active' : ''}`}
-              aria-current={activeTab === item.id ? 'page' : undefined}
-              title={`Open ${item.label.toLowerCase()}`}
-              onClick={() => onTabChange(item.id)}
-            >
-              <span className="nav-item-icon" aria-hidden="true">
-                <item.icon />
-              </span>
-              {item.label}
-            </button>
-          ))}
-        </nav>
-      </div>
+      {NAV_SECTIONS.map((section) => (
+        <div key={section.label} className="sidebar-section">
+          <div className="sidebar-label">{section.label}</div>
+          <nav className="nav-list" aria-label={section.ariaLabel}>
+            {section.items.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`nav-item ${activeTab === item.id ? 'nav-item-active' : ''}`}
+                aria-current={activeTab === item.id ? 'page' : undefined}
+                title={`Open ${item.label.toLowerCase()}`}
+                onClick={() => onTabChange(item.id)}
+              >
+                <span className="nav-item-icon" aria-hidden="true">
+                  <item.icon />
+                </span>
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+      ))}
 
-      <div className="sidebar-section">
-        <div className="sidebar-label">Application</div>
-        <nav className="nav-list">
-          <button
-            type="button"
-            className={`nav-item ${activeTab === 'sync' ? 'nav-item-active' : ''}`}
-            aria-current={activeTab === 'sync' ? 'page' : undefined}
-            title="Open sync status"
-            onClick={() => onTabChange('sync')}
-          >
-            <span className="nav-item-icon" aria-hidden="true">
-              <SyncIcon />
-            </span>
-            Sync status
-          </button>
-          <button
-            type="button"
-            className={`nav-item ${activeTab === 'ai-stats' ? 'nav-item-active' : ''}`}
-            aria-current={activeTab === 'ai-stats' ? 'page' : undefined}
-            title="Open AI stats"
-            onClick={() => onTabChange('ai-stats')}
-          >
-            <span className="nav-item-icon" aria-hidden="true">
-              <StatsIcon />
-            </span>
-            AI stats
-          </button>
-          <button
-            type="button"
-            className={`nav-item ${activeTab === 'settings' ? 'nav-item-active' : ''}`}
-            aria-current={activeTab === 'settings' ? 'page' : undefined}
-            title="Open settings"
-            onClick={() => onTabChange('settings')}
-          >
-            <span className="nav-item-icon" aria-hidden="true">
-              <SettingsIcon />
-            </span>
-            Settings
-          </button>
-        </nav>
-
-        {!isStandalone && (canInstall || hasPendingUpdate) ? (
-          <nav className="nav-list">
+      {!isStandalone && (canInstall || hasPendingUpdate) ? (
+        <div className="sidebar-section">
+          <nav className="nav-list" aria-label="App actions">
             {!isStandalone && canInstall ? (
               <button
                 type="button"
@@ -196,8 +179,8 @@ function AppSidebar({
               </button>
             ) : null}
           </nav>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </aside>
   )
 }
