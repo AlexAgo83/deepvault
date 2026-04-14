@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_063_add_persisted_sidebar_theme_switch.md`
 > Related task: `logics/tasks/task_031_add_persisted_sidebar_theme_switch.md`
-> Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
+> Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc. Decisions resolved: first-launch system fallback, then persisted preference authority.
 
 # Overview
 Add a discrete light and dark theme switch to the sidebar and store the user's preference locally.
@@ -55,6 +55,6 @@ Treat system appearance as a first-load fallback only, not as a continuously ove
 - `logics/architecture/adr_022_separate_runtime_controls_from_sync_operations.md`
 
 # Follow-up work
-- Decide whether the initial fallback should honor system appearance once or keep a simple app default.
+- Honor system appearance only on first launch when no preference exists, then keep the persisted mode authoritative.
 - Verify the existing shell tokens cover every modal and panel surface.
 - Add automated coverage for persisted mode, first-load fallback, and shell-wide styling.

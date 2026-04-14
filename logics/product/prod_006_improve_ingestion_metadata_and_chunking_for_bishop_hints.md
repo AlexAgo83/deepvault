@@ -5,7 +5,7 @@
 > Related backlog: `logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md`
 > Related task: `logics/tasks/task_030_improve_corpus_metadata_chunking_and_bishop_hints.md`
 > Related architecture: `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
+> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Decisions resolved: required metadata fields and optional extensions are now explicit.
 
 # Overview
 Improve the corpus signals that ingestion produces so retrieval has richer context to work with.
@@ -61,4 +61,5 @@ Operators need the retrieval layer to carry more document context without changi
 - `logics/architecture/adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints.md`
 
 # Open questions
-- Which structural metadata fields should be mandatory in the first wave versus optional extensions?
+- Decision note: required fields in the first wave are `schemaVersion`, `generatedAt`, `source`, `documents[*].id`, `siteId`, `kind`, `title`, `path`, `webUrl`, and `updatedAt`.
+- Keep `author`, `sections`, `fileType`, `chunkMetadata`, and `retrievalSignals` optional extensions unless a later contract review promotes them.

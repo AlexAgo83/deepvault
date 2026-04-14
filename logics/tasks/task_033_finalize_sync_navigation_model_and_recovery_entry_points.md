@@ -1,20 +1,22 @@
 ## task_033_finalize_sync_navigation_model_and_recovery_entry_points - Finalize sync navigation model and recovery entry points
-> From version: 1.1.0
+> From version: 1.1.1
 > Schema version: 1.0
 > Status: Ready
-> Understanding: 92%
-> Confidence: 90%
-> Progress: 0%
+> Understanding: 94%
+> Confidence: 92%
+> Progress: 5%
 > Complexity: Medium
 > Theme: General
-> Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc. Decision resolved: use explicit routes with fixed `Status -> Operations -> History -> Config -> Recovery` ordering.
 
 # Context
 - Derived from backlog item `item_065_finalize_sync_navigation_model_and_recovery_entry_points`.
 - Source file: `logics/backlog/item_065_finalize_sync_navigation_model_and_recovery_entry_points.md`.
 - Related request(s): `req_017_implement_the_full_app_worker_corpus_and_shell_plan`.
 - The sync split exists, but the exact navigation model, recovery entry points, and deep-link behavior still need to be locked down so the experience does not feel fragmented.
+- The first implementation should use explicit routes rather than tabs or nested panels so deep links and recovery entry points stay predictable.
 - Operators need a clear way to move between summary, operations, history, config, and recovery without relearning the app each time.
+- Keep the screen ordering fixed as `Status -> Operations -> History -> Config -> Recovery` unless a later item explicitly changes the flow.
 - The product brief still leaves the first-iteration navigation shape open enough that the implementation could drift.
 
 ```mermaid

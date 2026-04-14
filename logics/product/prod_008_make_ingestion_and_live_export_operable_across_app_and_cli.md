@@ -5,7 +5,7 @@
 > Related backlog: `logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
 > Related task: `logics/tasks/task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
 > Related architecture: `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
+> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Decisions resolved: first wave is read-only effective config, with editable controls deferred.
 
 # Overview
 Make ingestion and live export feel operable from both the app and the CLI.
@@ -58,4 +58,5 @@ The same operational model should be understandable whether the user is in the a
 - `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`
 
 # Open questions
-- Which controls should be editable in the first wave versus surfaced read-only from the effective config?
+- Decision note: surface effective config read-only in the first wave, and limit editable controls to the operational inputs that are already explicit in the worker/client contract.
+- Keep richer editing affordances for a later iteration once the worker boundary and fallback rules are stable.

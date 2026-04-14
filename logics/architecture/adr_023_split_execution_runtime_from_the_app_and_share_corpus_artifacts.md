@@ -5,7 +5,7 @@
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
 > Related task: `logics/tasks/task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
-> Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
+> Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc. Decisions resolved: bearer-token remote auth and read_only fallback default.
 
 # Overview
 Move execution-heavy workflows off the app and into a dedicated worker boundary.
@@ -293,16 +293,16 @@ This keeps the execution path reusable in Docker or on a dedicated machine, whil
 - `logics/product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md`
 
 # Follow-up work
+- Use a bearer-token style shared secret for remote worker control, keep local worker control inside the trust boundary, and require authenticated HTTPS for remote transport.
+- Default to `read_only` when a published corpus exists but the worker is unavailable, and allow `block` in stricter deployments.
 - Define the worker deployment shape for Docker and dedicated-machine execution.
 - Specify the shared corpus artifact layout and manifest schema.
 - Define the HTTP control API, SSE event stream, and CLI client commands for launching and monitoring worker jobs.
 - Define configurable worker connection settings for local and remote targets.
 - Define the worker connection precedence and fallback behavior.
-- Define authentication and transport security for worker control traffic.
 - Define the shared job model and state transitions.
 - Define the exact request and response payloads for the HTTP endpoints above.
 - Define the corpus schema, versioning rule, and staged publication flow.
-- Define the read-only app fallback when the worker is unavailable.
 - Define artifact and checkpoint schema versioning rules.
 - Define concurrency, retention, and fallback behavior for the worker boundary.
 - Define the optional extension fields for richer metadata and retrieval ranking.
@@ -311,5 +311,4 @@ This keeps the execution path reusable in Docker or on a dedicated machine, whil
 - Define the exact user-facing system states for reachable, fallback, stale, and incompatible modes.
 - Define the default retention window for manifests, checkpoints, and telemetry.
 - Define the schema evolution and migration policy for incompatible corpus or manifest versions.
-- Define the worker authentication model for local trust and remote HTTPS operation.
 - Split app-side inspection features from worker-side execution features in the backlog.

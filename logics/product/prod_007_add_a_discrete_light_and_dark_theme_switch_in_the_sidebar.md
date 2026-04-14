@@ -5,7 +5,7 @@
 > Related backlog: `logics/backlog/item_063_add_persisted_sidebar_theme_switch.md`
 > Related task: `logics/tasks/task_031_add_persisted_sidebar_theme_switch.md`
 > Related architecture: `logics/architecture/adr_025_add_a_discrete_light_and_dark_theme_switch_with_persisted_shell_mode.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
+> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Decisions resolved: system fallback only on first launch, then persisted user choice wins.
 
 # Overview
 Add a discrete light and dark theme switch to the sidebar so users can choose their preferred shell mode without leaving the main navigation.
@@ -58,4 +58,4 @@ The experience should feel native to the shell, not like a settings form bolted 
 - `logics/architecture/adr_025_add_a_discrete_light_and_dark_theme_switch_with_persisted_shell_mode.md`
 
 # Open questions
-- Should the control follow system appearance automatically, or stay purely user-driven once set?
+- Decision note: follow system appearance only on first launch when there is no stored preference, then keep the persisted user choice authoritative.
