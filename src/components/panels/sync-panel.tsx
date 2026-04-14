@@ -24,17 +24,17 @@ const OPS_CONFIG: Record<OpsKey, {
   confirmLabel: string
 }> = {
   ingest: {
-    label: 'Run ingest',
+    label: 'Ingest',
     tooltip: 'Write sync snapshot from current corpus',
     description: 'Reads the current corpus and writes a new sync state snapshot to data/runtime/sync-state.json. Fast, local operation — no network calls.',
-    confirmLabel: 'Run ingest',
+    confirmLabel: 'Ingest',
   },
   evaluate: {
-    label: 'Run evaluate',
+    label: 'Evaluate',
     tooltip: 'Score retrieval quality against expected answers',
     description: 'Runs the evaluation pipeline and scores retrieval quality against a set of expected answers. Writes a baseline report to data/eval/.',
     warning: 'This makes API calls to OpenAI and may incur usage costs.',
-    confirmLabel: 'Run evaluate',
+    confirmLabel: 'Evaluate',
   },
   refresh: {
     label: 'Refresh',
