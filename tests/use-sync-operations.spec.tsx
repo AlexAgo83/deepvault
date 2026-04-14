@@ -18,6 +18,7 @@ describe('useSyncOperations', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
     vi.restoreAllMocks()
+    vi.useRealTimers()
     sessionStorage.clear()
   })
 
@@ -66,5 +67,31 @@ describe('useSyncOperations', () => {
   it('lastCompletedJob returns null when no job has run', () => {
     const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
     expect(result.current.lastCompletedJob).toBeNull()
+  })
+
+  it('persists completed history entries across remounts', async () => {
+    vi.useFakeTimers()
+
+    const onRefreshCorpus = vi.fn()
+    const options = { ...DEFAULT_OPTIONS, onRefreshCorpus }
+    const { result, unmount } = renderHook(() => useSyncOperations(options))
+
+    await act(async () => {
+      result.current.startRefresh()
+    })
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1500)
+    })
+
+    expect(result.current.history).toHaveLength(1)
+    expect(result.current.history[0]?.status).toBe('completed')
+    expect(JSON.parse(localStorage.getItem('deepvault_sync_job_history') || '[]')[0].status).toBe('completed')
+
+    unmount()
+
+    const { result: remounted } = renderHook(() => useSyncOperations(options))
+    expect(remounted.current.history).toHaveLength(1)
+    expect(remounted.current.history[0]?.status).toBe('completed')
   })
 })

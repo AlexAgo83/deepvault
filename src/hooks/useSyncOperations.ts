@@ -121,6 +121,7 @@ function formatCommandLine(
 }
 
 const ACTIVE_JOB_SESSION_KEY = 'deepvault_active_job'
+const JOB_HISTORY_STORAGE_KEY = 'deepvault_sync_job_history'
 
 type LiveOpKind = 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
 
@@ -152,6 +153,22 @@ function readPersistedJob(): PersistedActiveJob | null {
   }
 }
 
+function persistJobHistory(history: SyncOperationJob[]) {
+  localStorage.setItem(JOB_HISTORY_STORAGE_KEY, JSON.stringify(history, null, 2))
+}
+
+function readPersistedJobHistory(): SyncOperationJob[] {
+  try {
+    const raw = localStorage.getItem(JOB_HISTORY_STORAGE_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as unknown
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter((item): item is SyncOperationJob => Boolean(item && typeof item === 'object' && 'id' in item && 'status' in item))
+  } catch {
+    return []
+  }
+}
+
 function detectLineTone(text: string, isError: boolean): SyncConsoleTone {
   if (isError) return 'danger'
   if (/error|fail/i.test(text)) return 'danger'
@@ -176,7 +193,7 @@ export function useSyncOperations({
     dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
   }), [workerSettings, extraEnv.DEEPVAULT_DATA_MODE])
   const [activeJob, setActiveJob] = useState<SyncOperationJob | null>(null)
-  const [jobHistory, setJobHistory] = useState<SyncOperationJob[]>([])
+  const [jobHistory, setJobHistory] = useState<SyncOperationJob[]>(() => readPersistedJobHistory())
   const timersRef = useRef<number[]>([])
   const activeJobRef = useRef<SyncOperationJob | null>(null)
   const eventSourceRef = useRef<EventSource | null>(null)
@@ -306,7 +323,11 @@ export function useSyncOperations({
       }
 
       setActiveJob(finalized)
-      setJobHistory((currentHistory) => [finalized, ...currentHistory].slice(0, JOB_HISTORY_LIMIT))
+      setJobHistory((currentHistory) => {
+        const nextHistory = [finalized, ...currentHistory.filter((job) => job.id !== jobId)].slice(0, JOB_HISTORY_LIMIT)
+        persistJobHistory(nextHistory)
+        return nextHistory
+      })
     },
     [],
   )
