@@ -1,10 +1,10 @@
 ## task_030_improve_corpus_metadata_chunking_and_bishop_hints - Improve corpus metadata chunking and Bishop hints
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 94%
-> Confidence: 90%
-> Progress: 0%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -95,3 +95,11 @@ stateDiagram-v2
 - [ ] Status is `Done` and progress is `100%`.
 
 # Report
+- Delivered section-aware chunking: `CorpusDocument` now carries `sections?: CorpusSection[]` (heading + content) and `fileType?: string`. `Corpus` root carries `schemaVersion: "1.1"`.
+- Scoring upgraded in `src/lib/scoring.ts`: section heading match +7, section content +4, flat content fallback +4, author +3, fileType +2.
+- `groundQuestion` populates `sectionHint` and `fileType` on each `SourceRecord` via updated `buildSource(document, score, corpusData, query?)`.
+- Bishop prompts enriched via `buildSourceLine` — source lines include `by ${author}` and `§ ${sectionHint}` when available.
+- `buildImprovementHint` now uses `topSource.author`, `topSource.tags`, and `topSource.fileType` for specific advice instead of generic fallback text.
+- `data/pilot-corpus.json` upgraded to schema 1.1 with `schemaVersion`, `fileType`, and 2-3 `sections` per document across all 17 entries.
+- 13 new tests added: 5 in `scoring.spec.ts`, 5 in `deepvault.spec.ts`, 3 in `bishop.spec.ts`. All 188 tests pass.
+- AC1 ✓ — richer metadata (fileType, sections, author) in corpus. AC2 ✓ — section headings preserved per chunk. AC3 ✓ — section heading match (+7) improves short/vague query ranking. AC4 ✓ — Bishop hints use author, tags, fileType. AC5 ✓ — 13 new tests covering all surfaces.

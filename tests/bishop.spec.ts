@@ -362,4 +362,46 @@ describe('bishop orchestration helpers', () => {
     expect(result.confidenceScore).toBeGreaterThan(0)
     expect(result.providerTracePreview).toContain('status 500')
   })
+
+  it('includes author and section hint in the Bishop prompt source lines', () => {
+    const grounding = groundQuestion(corpus, 'operating reserve', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    const prompt = buildBishopPrompt({
+      query: 'operating reserve',
+      role: 'analyst',
+      provider: 'openai',
+      grounding,
+    })
+
+    // Author line is included in the prompt
+    expect(prompt).toContain('by Elena Rossi')
+    // Section hint is included when a heading matched
+    expect(prompt).toContain('§ Operating Reserve')
+  })
+
+  it('buildImprovementHint uses author when only one source is matched', async () => {
+    const result = await orchestrateBishopAnswer(corpus, 'operating reserve', {
+      role: 'analyst',
+      provider: 'openai',
+      limit: 1,
+    })
+
+    expect(result.improvementHint).toContain('Elena Rossi')
+  })
+
+  it('buildImprovementHint uses top source tags when chunkCount is low', async () => {
+    const result = await orchestrateBishopAnswer(corpus, 'Q3 2025 budget', {
+      role: 'analyst',
+      provider: 'openai',
+      // No API key → fallback path; limit: 2 gives 2 sources so chunkCount = 2 ≤ 6
+      // and sources.length > 1, which routes to the tags branch
+      limit: 2,
+    })
+
+    // Hint should reference source tags when chunkCount is low
+    expect(result.improvementHint).toMatch(/budget|finance|try terms/i)
+  })
 })

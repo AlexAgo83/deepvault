@@ -1,4 +1,5 @@
 {
+  "schemaVersion": "1.1",
   "defaultUserRole": "analyst",
   "providers": [
     { "id": "openai", "name": "OpenAI", "ready": true },
@@ -66,6 +67,7 @@
       "id": "q3-budget",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "document",
       "title": "Q3 2025 budget approval",
       "path": "/Finance/Budgets/Q3-2025-Budget-Approval.docx",
       "author": "Elena Rossi",
@@ -75,12 +77,18 @@
       "content": "Q3 2025 budget: 4.8M USD approved on June 12, 2025 by Elena Rossi. The operating reserve was kept at 6 percent and the hiring plan was staged across July and August.",
       "tags": ["budget", "finance", "q3", "2025", "approval"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Budget Summary", "content": "The approved Q3 2025 budget is 4.8M USD, approved on June 12, 2025 by Elena Rossi." },
+        { "heading": "Operating Reserve", "content": "The operating reserve was kept at 6 percent." },
+        { "heading": "Hiring Plan", "content": "The hiring plan was staged across July and August." }
+      ]
     },
     {
       "id": "project-alpha-lead",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "document",
       "title": "Project Alpha charter",
       "path": "/Programs/Alpha/Project-Alpha-Charter.docx",
       "author": "Maya Patel",
@@ -90,12 +98,18 @@
       "content": "Project Alpha charter. Project lead: Jordan Lee. Sponsor: Maya Patel. The charter sets the delivery target for the second half of 2025 and calls out weekly steering reviews.",
       "tags": ["project alpha", "charter", "lead", "planning"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Project Lead", "content": "Jordan Lee is the project lead for Project Alpha." },
+        { "heading": "Sponsor", "content": "Sponsor: Maya Patel." },
+        { "heading": "Timeline", "content": "Delivery target for the second half of 2025 with weekly steering reviews." }
+      ]
     },
     {
       "id": "board-meeting-notes",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Board meeting notes",
       "path": "/Governance/Board/2025-03-Board-Notes.md",
       "author": "Sonia Clarke",
@@ -105,12 +119,18 @@
       "content": "Board meeting notes. Decisions made: approve the pilot expansion, request a revised vendor cost model, and defer the contract renewal vote until the next meeting.",
       "tags": ["board", "minutes", "decision", "governance"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Decisions Made", "content": "Approved the pilot expansion and requested a revised vendor cost model." },
+        { "heading": "Deferred Items", "content": "The vendor contract renewal vote was deferred to the next meeting." },
+        { "heading": "Next Steps", "content": "Finance team to deliver revised vendor cost model before the next board meeting." }
+      ]
     },
     {
       "id": "remote-access-policy",
       "siteId": "pilot-beta",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Remote access security requirements",
       "path": "/Security/Policies/Remote-Access-Requirements.md",
       "author": "Ibrahim Khan",
@@ -120,12 +140,17 @@
       "content": "Remote access security requirements: MFA is mandatory, devices must be managed, the approved VPN must be used, and privileged sessions require device compliance checks.",
       "tags": ["security", "remote access", "policy", "mfa", "vpn"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Requirements", "content": "MFA is mandatory, devices must be managed, and the approved VPN must be used." },
+        { "heading": "Privileged Sessions", "content": "Privileged sessions require device compliance checks." }
+      ]
     },
     {
       "id": "product-roadmap-q4-2024",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Q4 2024 product roadmap",
       "path": "/Product/Roadmap/Q4-2024-Roadmap.md",
       "author": "Daniel Kim",
@@ -135,12 +160,17 @@
       "content": "Q4 2024 product roadmap. Focus areas include search quality, pilot onboarding, operational visibility, ingestion hardening, and answer provenance improvements.",
       "tags": ["roadmap", "product", "q4", "summary"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Focus Areas", "content": "Search quality, pilot onboarding, operational visibility, ingestion hardening, and answer provenance improvements." },
+        { "heading": "Timeline", "content": "Q4 2024 delivery with quarterly milestones." }
+      ]
     },
     {
       "id": "onboarding-process",
       "siteId": "pilot-beta",
       "kind": "document",
+      "fileType": "markdown",
       "title": "New employee onboarding process",
       "path": "/HR/Onboarding/New-Employee-Process.md",
       "author": "Nina Lopez",
@@ -150,12 +180,17 @@
       "content": "Onboarding process: account setup, policy review, equipment pickup, manager check-ins, and role-specific training.",
       "tags": ["hr", "onboarding", "process", "new hire"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Account Setup", "content": "New employees complete account setup and policy review first." },
+        { "heading": "Equipment and Training", "content": "Equipment pickup, manager check-ins, and role-specific training follow." }
+      ]
     },
     {
       "id": "alpha-risk-register",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "spreadsheet",
       "title": "Alpha project risk register",
       "path": "/Programs/Alpha/Risk-Register.xlsx",
       "author": "Maya Patel",
@@ -165,12 +200,17 @@
       "content": "Alpha risk register. Open risks: vendor delays, test data gaps, dependency churn, and approval timing slippage.",
       "tags": ["alpha", "risk", "register", "project"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Open Risks", "content": "Vendor delays, test data gaps, dependency churn, and approval timing slippage." },
+        { "heading": "Status", "content": "All risks tracked with weekly follow-up in the program steering review." }
+      ]
     },
     {
       "id": "infra-spend-approval",
       "siteId": "pilot-beta",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Infrastructure spend approval",
       "path": "/Finance/Approvals/FY2025-Infrastructure-Spend.md",
       "author": "Ravi Singh",
@@ -180,12 +220,17 @@
       "content": "Infrastructure spend approval memo. The FY2025 spend was approved by the infrastructure steering group chaired by Ravi Singh.",
       "tags": ["finance", "infrastructure", "approval", "fiscal year 2025"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Approval Summary", "content": "The FY2025 infrastructure spend was approved by the steering group." },
+        { "heading": "Steering Group", "content": "The infrastructure steering group is chaired by Ravi Singh." }
+      ]
     },
     {
       "id": "p1-escalation",
       "siteId": "pilot-beta",
       "kind": "document",
+      "fileType": "markdown",
       "title": "P1 incident escalation path",
       "path": "/Operations/Incidents/P1-Escalation-Path.md",
       "author": "Sofia Martin",
@@ -195,12 +240,17 @@
       "content": "P1 incident escalation path: page on-call engineer, notify incident commander, and escalate to the operations lead if not contained within 15 minutes.",
       "tags": ["incident", "escalation", "operations", "p1"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Escalation Path", "content": "Page the on-call engineer, then the incident commander, then the operations lead." },
+        { "heading": "Timeline", "content": "Escalate to the operations lead if the issue is not contained within 15 minutes." }
+      ]
     },
     {
       "id": "data-classification-policy",
       "siteId": "pilot-beta",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Data classification policy",
       "path": "/Security/Policies/Data-Classification-Policy.md",
       "author": "Ibrahim Khan",
@@ -210,12 +260,17 @@
       "content": "Data classification policy. Categories: public, internal, confidential, restricted. Confidential and restricted content must stay in approved systems and use stronger sharing controls.",
       "tags": ["policy", "classification", "security", "data"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Categories", "content": "Four classifications: public, internal, confidential, and restricted." },
+        { "heading": "Confidential and Restricted Controls", "content": "Confidential and restricted content must stay in approved systems and use stronger sharing controls." }
+      ]
     },
     {
       "id": "approved-tools-policy",
       "siteId": "pilot-beta",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Approved engineering tools",
       "path": "/Engineering/Policies/Approved-Tools.md",
       "author": "Nora Jensen",
@@ -225,12 +280,17 @@
       "content": "Approved engineering tools policy. Approved tools include GitHub, VS Code, Figma, and Jira. Optional add-ons require manager approval.",
       "tags": ["engineering", "tools", "policy", "approved"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Approved Tools", "content": "GitHub, VS Code, Figma, and Jira are the approved engineering tools." },
+        { "heading": "Optional Add-ons", "content": "Optional add-ons require manager approval." }
+      ]
     },
     {
       "id": "compliance-audit-deadline",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Q1 2026 compliance audit plan",
       "path": "/Compliance/Audits/Q1-2026-Compliance-Audit.md",
       "author": "Marta Novak",
@@ -240,12 +300,17 @@
       "content": "Q1 2026 compliance audit plan. Deadline: March 27, 2026. Pre-audit evidence collection starts on March 2, 2026.",
       "tags": ["compliance", "audit", "deadline", "2026"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Deadline", "content": "The Q1 2026 compliance audit deadline is March 27, 2026." },
+        { "heading": "Evidence Collection", "content": "Pre-audit evidence collection starts on March 2, 2026." }
+      ]
     },
     {
       "id": "alpha-status-report",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Alpha status report",
       "path": "/Programs/Alpha/Status/2025-05-Status-Report.md",
       "author": "Maya Patel",
@@ -255,12 +320,17 @@
       "content": "Alpha status report as of last month. The project was on track, with integration debt and content coverage as the main risks.",
       "tags": ["alpha", "status", "project", "monthly"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Current Status", "content": "Alpha is on track as of last month." },
+        { "heading": "Main Risks", "content": "Integration debt and content coverage are the main risks, tracked with weekly follow-ups." }
+      ]
     },
     {
       "id": "quarterly-okrs",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Product team quarterly OKRs",
       "path": "/Product/Planning/Q2-2025-OKRs.md",
       "author": "Daniel Kim",
@@ -270,12 +340,17 @@
       "content": "Product team quarterly OKRs. Improve retrieval quality, expand pilot coverage, and reduce local validation cycle time.",
       "tags": ["okr", "product", "quarterly", "goals"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Objectives", "content": "Improve retrieval quality, expand pilot coverage, and reduce local validation cycle time." },
+        { "heading": "Key Results", "content": "Measured by retrieval quality scores, pilot site count, and validation run time." }
+      ]
     },
     {
       "id": "budget-approval-contact",
       "siteId": "pilot-alpha",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Budget approval contacts",
       "path": "/Finance/Approvals/Budget-Contacts.md",
       "author": "Elena Rossi",
@@ -285,12 +360,17 @@
       "content": "Budget approval contacts: Elena Rossi, finance operations mailbox, and the quarterly budget review panel for escalations.",
       "tags": ["budget", "approval", "contact", "finance"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Primary Contacts", "content": "Elena Rossi and the finance operations mailbox for budget approvals." },
+        { "heading": "Escalation", "content": "The quarterly budget review panel handles escalations." }
+      ]
     },
     {
       "id": "vendor-onboarding-checklist",
       "siteId": "pilot-beta",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Vendor onboarding checklist",
       "path": "/Procurement/Vendor-Onboarding-Checklist.md",
       "author": "Luis Ortega",
@@ -300,12 +380,17 @@
       "content": "Vendor onboarding checklist: security review, tax forms, contract review, payment setup, and owner sign-off.",
       "tags": ["vendor", "onboarding", "checklist", "procurement"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Review Steps", "content": "Security review, tax forms, contract review, and payment setup." },
+        { "heading": "Final Sign-off", "content": "Owner sign-off is the final required step." }
+      ]
     },
     {
       "id": "sso-issues",
       "siteId": "pilot-beta",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Known SSO implementation issues",
       "path": "/Engineering/Auth/SSO-Known-Issues.md",
       "author": "Nora Jensen",
@@ -315,12 +400,17 @@
       "content": "Known issues with the current SSO implementation include tenant discovery edge cases, token refresh timing, and mobile handoff gaps.",
       "tags": ["sso", "auth", "issues", "engineering"],
       "access": ["analyst", "admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Known Issues", "content": "Tenant discovery edge cases, token refresh timing, and mobile handoff gaps." },
+        { "heading": "Impact", "content": "Token refresh timing affects long-running sessions. Mobile handoff gaps affect app-to-web transitions." }
+      ]
     },
     {
       "id": "secret-launch-notes",
       "siteId": "restricted-pilot",
       "kind": "document",
+      "fileType": "markdown",
       "title": "Restricted launch notes",
       "path": "/Security/Restricted/Launch-Notes.md",
       "author": "Avery Stone",
@@ -330,7 +420,10 @@
       "content": "Restricted launch notes for the stealth lab. This document is not available to analyst users.",
       "tags": ["restricted", "launch", "security"],
       "access": ["admin"],
-      "source": "SharePoint"
+      "source": "SharePoint",
+      "sections": [
+        { "heading": "Overview", "content": "Restricted launch notes for the stealth lab. This document is not available to analyst users." }
+      ]
     }
   ]
 }
