@@ -1,13 +1,14 @@
 ## item_064_harden_worker_security_fallback_and_audit_boundaries - Harden worker security, fallback, and audit boundaries
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 94%
-> Confidence: 92%
-> Progress: 0%
+> Status: Done
+> Understanding: 96%
+> Confidence: 94%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Maintenance edit: follow-up slice delivered and linked task completed.
 
 # Problem
 - The worker split needs explicit guardrails for remote transport, fallback, and audit so the app can trust the published corpus and job history.

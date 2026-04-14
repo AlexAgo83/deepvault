@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -93,7 +94,7 @@ export default defineConfig({
           return { jobId }
         }
 
-        function streamJobEvents(jobId: string, res: Parameters<Parameters<typeof server.middlewares.use>[0]>[1], req: Parameters<Parameters<typeof server.middlewares.use>[0]>[0]) {
+        function streamJobEvents(jobId: string, res: ServerResponse<IncomingMessage>, req: IncomingMessage) {
           const job = jobs.get(jobId)
           if (!job) {
             res.writeHead(404)

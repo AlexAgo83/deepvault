@@ -30,7 +30,10 @@ export function isCorpusLike(value: unknown): value is Corpus {
     return false
   }
 
-  const { defaultUserRole, providers, sites, syncRuns, documents } = value
+  const { schemaVersion, defaultUserRole, providers, sites, syncRuns, documents } = value
+  if (typeof schemaVersion !== 'string' || schemaVersion.trim().length === 0) {
+    return false
+  }
   if (defaultUserRole !== 'analyst' && defaultUserRole !== 'admin' && defaultUserRole !== 'guest') {
     return false
   }

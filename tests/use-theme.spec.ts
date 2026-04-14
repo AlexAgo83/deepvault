@@ -7,6 +7,7 @@ describe('useTheme', () => {
     vi.unstubAllGlobals()
     localStorage.clear()
     document.documentElement.removeAttribute('data-theme')
+    document.body.removeAttribute('data-theme')
   })
 
   it('defaults to light when no stored preference and system is light', () => {
@@ -39,12 +40,14 @@ describe('useTheme', () => {
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: false })))
     renderHook(() => useTheme())
     expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+    expect(document.body.getAttribute('data-theme')).toBe('light')
   })
 
   it('applies data-theme="dark" on mount when dark is resolved', () => {
     localStorage.setItem('deepvault_theme', 'dark')
     renderHook(() => useTheme())
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+    expect(document.body.getAttribute('data-theme')).toBe('dark')
   })
 
   it('toggles from light to dark', () => {
@@ -56,6 +59,7 @@ describe('useTheme', () => {
 
     expect(result.current.theme).toBe('dark')
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+    expect(document.body.getAttribute('data-theme')).toBe('dark')
   })
 
   it('toggles from dark to light', () => {
@@ -66,6 +70,7 @@ describe('useTheme', () => {
 
     expect(result.current.theme).toBe('light')
     expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+    expect(document.body.getAttribute('data-theme')).toBe('light')
   })
 
   it('persists the selected theme to localStorage on toggle', () => {

@@ -132,14 +132,34 @@ describe('createWorkerClient — remote mode', () => {
     await client.startJob({ kind: 'evaluate' })
     const [, options] = vi.mocked(fetch).mock.calls[0] as [string, RequestInit]
     expect((options.headers as Record<string, string>)['Authorization']).toBe('Bearer test-token')
+    expect((options.headers as Record<string, string>)['X-DeepVault-Client']).toBe('deepvault-app-shell')
   })
 
   it('does not include Authorization header when token is empty', async () => {
     mockFetch({ status: 'ok', version: '1.0.0' })
-    const client = createWorkerClient({ ...REMOTE_CONFIG, workerToken: '' })
+    const client = createWorkerClient({ ...LOCAL_CONFIG, workerToken: '' })
     await client.checkHealth()
     const [, options] = vi.mocked(fetch).mock.calls[0] as [string, RequestInit]
     expect((options.headers as Record<string, string>)['Authorization']).toBeUndefined()
+  })
+
+  it('rejects remote worker configs without https or token', () => {
+    expect(() => createWorkerClient({ ...REMOTE_CONFIG, workerUrl: 'http://worker.example.com' })).toThrow(
+      'Remote worker mode requires an https workerUrl.',
+    )
+    expect(() => createWorkerClient({ ...REMOTE_CONFIG, workerToken: '' })).toThrow(
+      'Remote worker mode requires a workerToken.',
+    )
+  })
+
+  it('attaches token and client metadata to event stream URLs in remote mode', () => {
+    const mockES = { close: vi.fn(), onmessage: null, onerror: null }
+    vi.stubGlobal('EventSource', vi.fn(() => mockES))
+    const client = createWorkerClient(REMOTE_CONFIG)
+    client.openJobEvents('job-abc')
+    expect(vi.mocked(EventSource)).toHaveBeenCalledWith(
+      'https://worker.example.com/api/worker/jobs/job-abc/events?token=test-token&client=deepvault-app-shell',
+    )
   })
 })
 

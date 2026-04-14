@@ -12,7 +12,9 @@ import type { AppModel } from '../../hooks/useAppModel'
 import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 
 type OpsKey = 'ingest' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
-export type SyncView = 'status' | 'operations' | 'history' | 'config'
+export type SyncView = 'status' | 'operations' | 'history' | 'config' | 'recovery'
+
+const SYNC_VIEW_PARAM = 'sync'
 
 const OPS_CONFIG: Record<OpsKey, {
   label: string
@@ -61,7 +63,23 @@ const SYNC_VIEWS: { id: SyncView; label: string }[] = [
   { id: 'operations', label: 'Operations' },
   { id: 'history', label: 'History' },
   { id: 'config', label: 'Config' },
+  { id: 'recovery', label: 'Recovery' },
 ]
+
+function parseSyncView(hash: string): SyncView {
+  const search = hash.startsWith('#') ? hash.slice(1) : hash
+  const value = new URLSearchParams(search).get(SYNC_VIEW_PARAM)
+  if (value === 'operations' || value === 'history' || value === 'config' || value === 'recovery') {
+    return value
+  }
+  return 'status'
+}
+
+function serializeSyncView(view: SyncView): string {
+  const params = new URLSearchParams(window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '')
+  params.set(SYNC_VIEW_PARAM, view)
+  return `#${params.toString()}`
+}
 
 function getJobTone(status: string) {
   if (status === 'completed') return 'success'
@@ -87,7 +105,7 @@ export function SyncPanel({
   const currentLines = currentJob?.lines || []
   const [pendingOp, setPendingOp] = useState<OpsKey | null>(null)
   const [elapsed, setElapsed] = useState<number>(0)
-  const [syncView, setSyncView] = useState<SyncView>('status')
+  const [syncView, setSyncView] = useState<SyncView>(() => parseSyncView(window.location.hash))
 
   useEffect(() => {
     if (currentJob?.status !== 'running') {
@@ -112,6 +130,23 @@ export function SyncPanel({
       setSyncView('operations')
     }
   }, [currentJob?.status])
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      setSyncView(parseSyncView(window.location.hash))
+    }
+
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [])
+
+  useEffect(() => {
+    const nextHash = serializeSyncView(syncView)
+    if (window.location.hash !== nextHash) {
+      window.history.replaceState(null, '', nextHash)
+    }
+  }, [syncView])
 
   function confirm(op: OpsKey) {
     setPendingOp(null)
@@ -448,35 +483,41 @@ export function SyncPanel({
             </div>
           )}
 
-          {/* Recovery guidance */}
+        </article>
+      ) : null}
+
+      {/* Recovery view — failure guidance and last failed operations */}
+      {syncView === 'recovery' ? (
+        <article className="panel" aria-label="Recovery guidance">
+          <SectionHeading title="Recovery" subtitleTooltip="Guidance for failed operations and unreachable workers." />
+
           {failedJobs.length > 0 ? (
-            <>
-              <SectionHeading title="Recovery" subtitleTooltip="Guidance for failed operations." />
-              <div className="sync-list">
-                {failedJobs.map((job) => (
-                  <article key={job.id} className="sync-card" title={job.summary}>
-                    <div className="source-card-top">
-                      <strong>{job.label}</strong>
-                      <Pill tone="danger">failed</Pill>
-                    </div>
-                    <div className="source-meta">
-                      <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
-                      <span>{job.command}</span>
-                    </div>
-                    <p>{job.summary}</p>
-                  </article>
-                ))}
-              </div>
-              <div className="sync-config-note">
-                <p>If a live export fails, use <strong>Resume live export</strong> in Operations to restart from the last checkpoint.</p>
-                <p>If the worker is unreachable, check the Worker URL and token in Settings, or switch to local mode.</p>
-              </div>
-            </>
+            <div className="sync-list">
+              {failedJobs.map((job) => (
+                <article key={job.id} className="sync-card" title={job.summary}>
+                  <div className="source-card-top">
+                    <strong>{job.label}</strong>
+                    <Pill tone="danger">failed</Pill>
+                  </div>
+                  <div className="source-meta">
+                    <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
+                    <span>{job.command}</span>
+                  </div>
+                  <p>{job.summary}</p>
+                </article>
+              ))}
+            </div>
           ) : (
             <div className="sync-config-note">
               <p>No failed jobs in recent history. Recovery guidance will appear here when a job fails.</p>
             </div>
           )}
+
+          <div className="sync-config-note">
+            <p>If a live export fails, use <strong>Resume live export</strong> in Operations to restart from the last checkpoint.</p>
+            <p>If the worker is unreachable, check the Worker URL and token in Settings, or switch to local mode.</p>
+            <p>If the worker remains unavailable and the fallback mode is <strong>read_only</strong>, continue in the published corpus until the endpoint is restored.</p>
+          </div>
         </article>
       ) : null}
     </section>

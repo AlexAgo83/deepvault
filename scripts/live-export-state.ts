@@ -59,6 +59,7 @@ export function buildLiveExportCorpus(
 ): LiveExportCheckpoint {
   const syncedAt = data.syncedAt || new Date().toISOString()
   return {
+    schemaVersion: '1.1',
     defaultUserRole: 'analyst',
     providers: buildProviderState(),
     sites: data.sites,

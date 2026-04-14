@@ -1,13 +1,14 @@
 ## task_033_finalize_sync_navigation_model_and_recovery_entry_points - Finalize sync navigation model and recovery entry points
 > From version: 1.1.1
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 94%
-> Confidence: 92%
-> Progress: 5%
+> Status: Done
+> Understanding: 95%
+> Confidence: 93%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc. Decision resolved: use explicit routes with fixed `Status -> Operations -> History -> Config -> Recovery` ordering.
+> Maintenance edit: completed the sync navigation and recovery wave and captured validation.
 
 # Context
 - Derived from backlog item `item_065_finalize_sync_navigation_model_and_recovery_entry_points`.
@@ -39,13 +40,13 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirm scope, dependencies, and linked acceptance criteria.
-- [ ] 2. Implement the next coherent delivery wave from the backlog item.
-- [ ] 3. Checkpoint the wave in a commit-ready state, validate it, and update the linked Logics docs.
-- [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
-- [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
-- [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
-- [ ] FINAL: Update related Logics docs
+- [x] 1. Confirm scope, dependencies, and linked acceptance criteria.
+- [x] 2. Implement the next coherent delivery wave from the backlog item.
+- [x] 3. Checkpoint the wave in a commit-ready state, validate it, and update the linked Logics docs.
+- [x] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
+- [x] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
+- [x] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
+- [x] FINAL: Update related Logics docs
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -89,11 +90,17 @@ stateDiagram-v2
 - Confirm the completed wave leaves the repository in a commit-ready state.
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured.
-- [ ] No wave or step was closed before the relevant automated tests and quality checks passed.
-- [ ] Linked request/backlog/task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] Scope implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured.
+- [x] No wave or step was closed before the relevant automated tests and quality checks passed.
+- [x] Linked request/backlog/task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report
+- Implemented hash-based deep-linking for Sync, including explicit `tab=sync` and `sync=recovery` state restoration.
+- Split recovery guidance into a dedicated Recovery subview so the config screen stays focused on worker settings.
+- The main app shell now restores the active tab from the hash, and Sync keeps the selected subview shareable across reloads.
+- Validation: `rtk npm run test -- tests/worker-client.spec.ts tests/use-theme.spec.ts tests/app.spec.tsx tests/use-sync-operations.spec.tsx tests/corpus.spec.ts tests/corpus-loader.spec.ts tests/live-corpus-hook.spec.tsx tests/live-export-state.spec.ts`
+- Validation: `rtk npm run typecheck`
+- Validation: `rtk npm run lint`

@@ -128,6 +128,7 @@ describe('corpus helpers', () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
+        schemaVersion: '1.1',
         defaultUserRole: 'analyst',
         providers: [],
         sites: [],
