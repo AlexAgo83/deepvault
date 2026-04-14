@@ -62,8 +62,9 @@ describe('app ui helpers', () => {
     expect(screen.queryByText('Shared across Explorer, Bishop, and Sync status.')).not.toBeInTheDocument()
   })
 
-  it('renders messages with and without sources', () => {
+  it('renders messages with and without sources', async () => {
     const resolveFileHref = vi.fn().mockReturnValue('https://example.test/source.docx')
+    const user = userEvent.setup()
 
     render(
       <div>
@@ -108,10 +109,16 @@ describe('app ui helpers', () => {
 
     expect(screen.getByText('Bishop')).toBeInTheDocument()
     expect(screen.getByText('You')).toBeInTheDocument()
+    expect(screen.queryByText('Sources')).not.toBeInTheDocument()
+    expect(screen.queryByText('Budget')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Show sources' }))
+    expect(screen.getByText('Sources')).toBeInTheDocument()
+    expect(screen.getByText('Budget')).toBeInTheDocument()
     expect(resolveFileHref).toHaveBeenCalledWith('site-a', '/Documents/Budget.docx', undefined)
   })
 
-  it('renders a clickable confidence score in assistant messages', async () => {
+  it('renders hover confidence and need popovers in assistant messages', async () => {
     const user = userEvent.setup()
     render(
       <Message
@@ -123,13 +130,18 @@ describe('app ui helpers', () => {
           sources: [],
           confidenceScore: 87,
           providerTracePreview: 'openai response: The answer is grounded and concise.',
+          improvementHint: 'A more specific document title or site name would improve the response — try refining around circlesas, documents.',
         }}
         resolveFileHref={vi.fn()}
       />,
     )
 
     const confidenceButton = screen.getByRole('button', { name: '87%' })
-    await user.click(confidenceButton)
+    await user.hover(confidenceButton)
     expect(screen.getByText('openai response: The answer is grounded and concise.')).toBeInTheDocument()
+
+    const needButton = screen.getByRole('button', { name: 'Show improvement hint' })
+    await user.hover(needButton)
+    expect(screen.getByText('A more specific document title or site name would improve the response — try refining around circlesas, documents.')).toBeInTheDocument()
   })
 })
