@@ -68,7 +68,7 @@ export function ExplorerPanel({
 
   return (
     <section className="content-grid">
-      <article className="panel">
+      <article className="panel explorer-list-panel">
         <SectionHeading
           title="Explorer"
           subtitleTooltip="Browse the pilot corpus by site, search term, and source details."

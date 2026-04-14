@@ -171,6 +171,19 @@ p {
   gap: 10px;
 }
 
+.explorer-list-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.explorer-list-panel .document-list {
+  max-height: min(62vh, calc(100vh - 360px));
+  overflow: auto;
+  padding-right: 4px;
+  overscroll-behavior: contain;
+}
+
 .document-list-footer {
   display: flex;
   justify-content: space-between;
@@ -1727,6 +1740,10 @@ code {
   .kpi-grid.compact,
   .content-grid {
     grid-template-columns: 1fr;
+  }
+
+  .explorer-list-panel .document-list {
+    max-height: 48vh;
   }
 
   .sync-view-switcher-head {
