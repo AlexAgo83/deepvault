@@ -931,7 +931,7 @@ p {
 
 .sync-status-job-summary {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 14px 18px;
   flex-wrap: wrap;
   margin-top: 18px;
@@ -943,6 +943,7 @@ p {
 
 .sync-status-job-summary .detail-row {
   min-width: 140px;
+  align-items: center;
 }
 
 .sync-status-job-summary .detail-row strong {
@@ -951,6 +952,7 @@ p {
 
 .sync-status-job-summary .secondary-button {
   margin-left: auto;
+  align-self: center;
 }
 
 .sync-details-grid {
@@ -1243,6 +1245,11 @@ th {
 }
 
 .sync-controls-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.sync-controls-panel-body {
   display: flex;
   align-items: flex-start;
   gap: 0;
@@ -1593,6 +1600,16 @@ code {
 
   .sync-view-switcher-meta {
     width: 100%;
+  }
+
+  .sync-controls-panel-body {
+    flex-direction: column;
+  }
+
+  .sync-controls-divider {
+    width: 100%;
+    height: 1px;
+    margin: 6px 0;
   }
 
   .sync-subnav {

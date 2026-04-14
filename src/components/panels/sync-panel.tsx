@@ -308,41 +308,43 @@ export function SyncPanel({
           <article className="panel sync-controls-panel" aria-label="Sync operations controls">
             <SectionHeading title="Operations" subtitleTooltip="Launch, resume, or cancel sync operations." />
 
-            <div className="sync-controls-group">
-              <span className="sync-controls-label">Local pipeline</span>
-              <div className="sync-controls-actions">
-                {(['ingest', 'evaluate'] as OpsKey[]).map((op) => (
-                  <button
-                    key={op}
-                    type="button"
-                    className="secondary-button secondary-button-sm"
-                    data-tooltip={OPS_CONFIG[op].tooltip}
-                    onClick={() => setPendingOp(op)}
-                    disabled={syncOperations.isRunning}
-                  >
-                    {OPS_CONFIG[op].label}
-                  </button>
-                ))}
+            <div className="sync-controls-panel-body">
+              <div className="sync-controls-group">
+                <span className="sync-controls-label">Local pipeline</span>
+                <div className="sync-controls-actions">
+                  {(['ingest', 'evaluate'] as OpsKey[]).map((op) => (
+                    <button
+                      key={op}
+                      type="button"
+                      className="secondary-button secondary-button-sm"
+                      data-tooltip={OPS_CONFIG[op].tooltip}
+                      onClick={() => setPendingOp(op)}
+                      disabled={syncOperations.isRunning}
+                    >
+                      {OPS_CONFIG[op].label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <div className="sync-controls-divider" />
+              <div className="sync-controls-divider" />
 
-            <div className="sync-controls-group">
-              <span className="sync-controls-label">SharePoint sync</span>
-              <div className="sync-controls-actions">
-                {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
-                  <button
-                    key={op}
-                    type="button"
-                    className="secondary-button secondary-button-sm"
-                    data-tooltip={OPS_CONFIG[op].tooltip}
-                    onClick={() => setPendingOp(op)}
-                    disabled={syncOperations.isRunning}
-                  >
-                    {OPS_CONFIG[op].label}
-                  </button>
-                ))}
+              <div className="sync-controls-group">
+                <span className="sync-controls-label">SharePoint sync</span>
+                <div className="sync-controls-actions">
+                  {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
+                    <button
+                      key={op}
+                      type="button"
+                      className="secondary-button secondary-button-sm"
+                      data-tooltip={OPS_CONFIG[op].tooltip}
+                      onClick={() => setPendingOp(op)}
+                      disabled={syncOperations.isRunning}
+                    >
+                      {OPS_CONFIG[op].label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </article>
