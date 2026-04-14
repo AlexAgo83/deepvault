@@ -1326,6 +1326,27 @@ th {
   gap: 8px;
 }
 
+.sync-controls-actions .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sync-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.sync-action-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
 .sync-controls-divider {
   width: 1px;
   background: var(--border);

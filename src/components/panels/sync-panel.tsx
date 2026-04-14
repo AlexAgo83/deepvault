@@ -87,6 +87,57 @@ function getJobTone(status: string) {
   return 'accent'
 }
 
+function RefreshIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.25 7.25A6.12 6.12 0 0 1 10 5.25c2.12 0 4.02 1.08 5.16 2.72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M14.5 5.75v2.9h-2.9M14.75 12.75A6.12 6.12 0 0 1 10 14.75c-2.12 0-4.02-1.08-5.16-2.72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M5.5 14.25v-2.9h2.9" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function StartSyncIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.5 6.25h9a1 1 0 0 1 1 1v5.5a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-5.5a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M8.25 7.75 12.25 10l-4 2.25v-4.5Z" fill="currentColor" />
+      <path d="M6.5 14.75h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function ResumeSyncIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M6 5.75h7.5a1 1 0 0 1 1 1v1.25" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M14.5 5.75v2.25h-2.25" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14 10.25a4.75 4.75 0 1 1-1.1 3.05" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M12.25 12.25h2.4v2.4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IngestIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.25 6.25h9.5v7.5h-9.5z" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M10 4.5v6.2M7.75 8.1 10 10.35l2.25-2.25" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6.5 15.25h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function EvaluateIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.25 15.25V11M9.5 15.25V7.5M13.75 15.25V9.75" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M4.5 15.25h11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M5.5 6.5h9" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export function SyncPanel({
   scopedCorpusSummary,
   scopedSiteSummaries,
@@ -321,6 +372,11 @@ export function SyncPanel({
                       onClick={() => setPendingOp(op)}
                       disabled={syncOperations.isRunning}
                     >
+                      <span className="sync-action-icon" aria-hidden="true">
+                        {op === 'refresh' ? <RefreshIcon /> : null}
+                        {op === 'exportLive' ? <StartSyncIcon /> : null}
+                        {op === 'exportLiveResume' ? <ResumeSyncIcon /> : null}
+                      </span>
                       {OPS_CONFIG[op].label}
                     </button>
                   ))}
@@ -341,6 +397,10 @@ export function SyncPanel({
                       onClick={() => setPendingOp(op)}
                       disabled={syncOperations.isRunning}
                     >
+                      <span className="sync-action-icon" aria-hidden="true">
+                        {op === 'ingest' ? <IngestIcon /> : null}
+                        {op === 'evaluate' ? <EvaluateIcon /> : null}
+                      </span>
                       {OPS_CONFIG[op].label}
                     </button>
                   ))}
