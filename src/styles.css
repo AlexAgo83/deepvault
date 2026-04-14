@@ -1183,6 +1183,15 @@ select:focus-visible {
   background: var(--surface-soft);
 }
 
+.document-content-note {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .document-content h3,
 .checklist h3 {
   font-size: 1rem;
