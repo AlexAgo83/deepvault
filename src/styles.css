@@ -1385,14 +1385,21 @@ select:focus-visible {
 
 .detail-row {
   align-items: flex-start;
+  gap: 12px;
 }
 
 .detail-row strong {
   text-align: right;
   font-weight: 600;
   min-width: 0;
+  flex: 1 1 auto;
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.detail-row span {
+  min-width: 92px;
+  flex: 0 0 auto;
 }
 
 .detail-row-action {
