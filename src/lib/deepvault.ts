@@ -209,7 +209,7 @@ export function searchDocuments(
 ): Array<{ document: CorpusDocument; score: number; permitted: boolean }> {
   const role = options.role || 'analyst'
   const siteId = options.siteId || 'all'
-  const limit = options.limit || 8
+  const limit = options.limit || 50
   const includeDenied = Boolean(options.includeDenied)
   const trimmedQuery = query.trim()
   const queryTokens = tokenize(query)

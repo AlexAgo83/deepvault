@@ -1,6 +1,10 @@
+import { useEffect, useRef, useState } from 'react'
 import { CompactPathText, FileTypePill, PathLabel, Pill, SectionHeading } from '../app-ui'
 import { formatUpdatedAt } from '../../lib/deepvault'
 import type { ExplorerRow } from '../../hooks/useAppModel'
+
+const EXPLORER_BATCH_SIZE = 10
+const EXPLORER_MAX_VISIBLE = 50
 
 export function ExplorerPanel({
   explorerRows,
@@ -17,6 +21,8 @@ export function ExplorerPanel({
   resolveFileHref: (_siteId: string, _path: string, _webUrl?: string | null) => string | null
   selectedExplorerDoc: ExplorerRow | null
 }) {
+  const [visibleCount, setVisibleCount] = useState(EXPLORER_BATCH_SIZE)
+  const loadMoreSentinelRef = useRef<HTMLDivElement | null>(null)
   const selectedSourceExcerpt = selectedExplorerDoc?.content?.trim() || ''
   const selectedDirectAnswer = selectedExplorerDoc?.directAnswer?.trim() || ''
   const selectedSummary = selectedExplorerDoc?.summary?.trim() || ''
@@ -25,6 +31,38 @@ export function ExplorerPanel({
     selectedSourceExcerpt !== selectedDirectAnswer &&
     selectedSourceExcerpt !== selectedSummary &&
     !/^Source:\s/i.test(selectedSourceExcerpt)
+  const visibleExplorerRows = explorerRows.slice(0, Math.min(visibleCount, EXPLORER_MAX_VISIBLE))
+  const hasMoreExplorerRows = explorerRows.length > visibleExplorerRows.length
+
+  useEffect(() => {
+    setVisibleCount(EXPLORER_BATCH_SIZE)
+  }, [explorerRows])
+
+  useEffect(() => {
+    const sentinel = loadMoreSentinelRef.current
+    if (!sentinel || !hasMoreExplorerRows || typeof IntersectionObserver === 'undefined') {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        if (!entry?.isIntersecting) {
+          return
+        }
+
+        setVisibleCount((current) => Math.min(EXPLORER_MAX_VISIBLE, explorerRows.length, current + EXPLORER_BATCH_SIZE))
+      },
+      {
+        root: null,
+        rootMargin: '120px 0px',
+        threshold: 0.01,
+      },
+    )
+
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [explorerRows.length, hasMoreExplorerRows])
 
   return (
     <section className="content-grid">
@@ -44,7 +82,7 @@ export function ExplorerPanel({
           }
         />
         <div className="document-list">
-          {explorerRows.map((document) => (
+          {visibleExplorerRows.map((document) => (
             <button
               key={document.id}
               type="button"
@@ -67,6 +105,15 @@ export function ExplorerPanel({
             </button>
           ))}
           {explorerRows.length === 0 ? <div className="empty-state">No permitted sources matched this search.</div> : null}
+          {explorerRows.length > 0 ? (
+            <div className="document-list-footer">
+              <span>
+                Showing {visibleExplorerRows.length} of {explorerRows.length}
+              </span>
+              <span>{hasMoreExplorerRows ? 'Scroll to load 10 more' : 'All results loaded'}</span>
+            </div>
+          ) : null}
+          {hasMoreExplorerRows ? <div ref={loadMoreSentinelRef} className="document-list-sentinel" aria-hidden="true" /> : null}
         </div>
       </article>
 
