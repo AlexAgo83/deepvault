@@ -100,7 +100,7 @@ export function ExplorerPanel({
                 <Pill tone="neutral">{document.score}</Pill>
               </div>
               <div className="document-row-meta">
-                <span>{document.siteName}</span>
+                <span>{document.author}</span>
                 <span>{formatUpdatedAt(document.updatedAt)}</span>
               </div>
             </button>
