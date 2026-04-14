@@ -242,8 +242,12 @@ describe('DeepVault app', () => {
 
     await user.click(screen.getByRole('button', { name: 'Sync status' }))
 
-    expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
+    // Status view is shown by default
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
+
+    // History view contains run history and evaluation prep
+    await user.click(screen.getByRole('button', { name: 'History' }))
+    expect(screen.getByText('Run history')).toBeInTheDocument()
     expect(screen.getByText('Evaluation prep')).toBeInTheDocument()
   })
 
@@ -269,6 +273,7 @@ describe('DeepVault app', () => {
     render(<App />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
 
     // Click opens the confirm modal — confirm to start the operation
     fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
@@ -319,6 +324,7 @@ describe('DeepVault app', () => {
 
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
     fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
@@ -354,6 +360,7 @@ describe('DeepVault app', () => {
 
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
     fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
@@ -377,6 +384,7 @@ describe('DeepVault app', () => {
 
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
     fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
@@ -390,6 +398,7 @@ describe('DeepVault app', () => {
     vi.useFakeTimers()
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Refresh status' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Refresh status' })
     expect(confirmDialog).toBeInTheDocument()
@@ -410,6 +419,7 @@ describe('DeepVault app', () => {
 
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Run evaluate' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Run evaluate' })
     expect(confirmDialog).toBeInTheDocument()
@@ -443,6 +453,7 @@ describe('DeepVault app', () => {
 
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Run ingest' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Run ingest' })
     fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Run ingest' }))
@@ -467,6 +478,7 @@ describe('DeepVault app', () => {
 
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Resume live export' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Resume live export' })
     expect(confirmDialog).toBeInTheDocument()
@@ -486,6 +498,7 @@ describe('DeepVault app', () => {
 
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Sync status' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Operations' }))
     fireEvent.click(screen.getByRole('button', { name: 'Run live export' }))
     const confirmDialog = screen.getByRole('dialog', { name: 'Run live export' })
     expect(confirmDialog).toBeInTheDocument()
@@ -531,7 +544,8 @@ describe('DeepVault app', () => {
     expect(screen.queryByLabelText('Explorer search')).not.toBeInTheDocument()
 
     expect(screen.getByText('Synced sites')).toBeInTheDocument()
-    expect(screen.getByText('Recent sync runs')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'History' }))
+    expect(screen.getByText('Run history')).toBeInTheDocument()
     expect(screen.queryByText('AI providers')).not.toBeInTheDocument()
     expect(screen.queryByText('Site scope')).not.toBeInTheDocument()
 
@@ -638,8 +652,9 @@ describe('DeepVault app', () => {
     expect(screen.queryByRole('button', { name: 'Run ingest' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Refresh status' })).not.toBeInTheDocument()
 
-    // Sync status owns operations
+    // Sync status owns operations (in Operations sub-view)
     await user.click(screen.getByRole('button', { name: 'Sync status' }))
+    await user.click(screen.getByRole('button', { name: 'Operations' }))
     expect(screen.getByRole('button', { name: 'Run ingest' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Run evaluate' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Refresh status' })).toBeInTheDocument()

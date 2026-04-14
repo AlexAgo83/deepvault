@@ -9,8 +9,10 @@ import { Pill, SectionHeading, StatCard } from '../app-ui'
 import { ConfirmModal } from '../confirm-modal'
 import { formatUpdatedAt } from '../../lib/deepvault'
 import type { AppModel } from '../../hooks/useAppModel'
+import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 
 type OpsKey = 'ingest' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
+export type SyncView = 'status' | 'operations' | 'history' | 'config'
 
 const OPS_CONFIG: Record<OpsKey, {
   label: string
@@ -54,6 +56,13 @@ const OPS_CONFIG: Record<OpsKey, {
   },
 }
 
+const SYNC_VIEWS: { id: SyncView; label: string }[] = [
+  { id: 'status', label: 'Status' },
+  { id: 'operations', label: 'Operations' },
+  { id: 'history', label: 'History' },
+  { id: 'config', label: 'Config' },
+]
+
 function getJobTone(status: string) {
   if (status === 'completed') return 'success'
   if (status === 'failed' || status === 'cancelled') return 'danger'
@@ -65,17 +74,20 @@ export function SyncPanel({
   scopedSiteSummaries,
   scopedSyncOverview,
   syncOperations,
+  workerSettings,
 }: {
   scopedCorpusSummary: AppModel['scopedCorpusSummary']
   scopedSiteSummaries: AppModel['scopedSiteSummaries']
   scopedSyncOverview: AppModel['scopedSyncOverview']
   syncOperations: AppModel['syncOperations']
+  workerSettings: WorkerSettings
 }) {
   const consoleRef = useRef<HTMLDivElement | null>(null)
   const currentJob = syncOperations.activeJob
   const currentLines = currentJob?.lines || []
   const [pendingOp, setPendingOp] = useState<OpsKey | null>(null)
   const [elapsed, setElapsed] = useState<number>(0)
+  const [syncView, setSyncView] = useState<SyncView>('status')
 
   useEffect(() => {
     if (currentJob?.status !== 'running') {
@@ -94,6 +106,13 @@ export function SyncPanel({
     node.scrollTop = node.scrollHeight
   }, [currentJob?.id, currentLines.length])
 
+  // Auto-switch to operations when a job starts
+  useEffect(() => {
+    if (currentJob?.status === 'running') {
+      setSyncView('operations')
+    }
+  }, [currentJob?.status])
+
   function confirm(op: OpsKey) {
     setPendingOp(null)
     if (op === 'ingest') syncOperations.startIngest()
@@ -104,6 +123,8 @@ export function SyncPanel({
   }
 
   const pending = pendingOp ? OPS_CONFIG[pendingOp] : null
+
+  const failedJobs = syncOperations.history.filter((j) => j.status === 'failed')
 
   return (
     <section className="sync-stack">
@@ -118,202 +139,346 @@ export function SyncPanel({
         />
       ) : null}
 
-      <article className="panel">
-        <SectionHeading title="Sync status" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
-        <div className="kpi-grid compact">
-          <StatCard
-            label="Synced sites"
-            value={scopedSyncOverview.syncedSites}
-            note="Sites currently in a synced state within the active scope."
-          />
-          <StatCard
-            label="Restricted sites"
-            value={scopedSyncOverview.restrictedSites}
-            note="Sites visible only to privileged roles within the active scope."
-          />
-          <StatCard
-            label="Visible sources"
-            value={scopedCorpusSummary.visibleSources}
-            note="Sources accessible to the selected role and scope."
-          />
-          <StatCard
-            label="Denied sources"
-            value={scopedCorpusSummary.deniedSources}
-            note="Sources excluded by permission-aware retrieval in scope."
-          />
-        </div>
+      {/* Sub-navigation */}
+      <nav className="sync-subnav" aria-label="Sync views">
+        {SYNC_VIEWS.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            className={`sync-subnav-item ${syncView === id ? 'sync-subnav-item-active' : ''}`}
+            aria-current={syncView === id ? 'page' : undefined}
+            onClick={() => setSyncView(id)}
+          >
+            {label}
+            {id === 'operations' && syncOperations.isRunning ? (
+              <span className="sync-subnav-badge" aria-label="job running" />
+            ) : null}
+            {id === 'history' && syncOperations.history.length > 0 ? (
+              <span className="sync-subnav-count">{syncOperations.history.length}</span>
+            ) : null}
+          </button>
+        ))}
+      </nav>
 
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Site</th>
-                <th>Status</th>
-                <th>Documents</th>
-                <th>Chunks</th>
-                <th>Last refresh</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scopedSiteSummaries.map((site) => (
-                <tr key={site.id}>
-                  <td>
-                    <strong>{site.name}</strong>
-                    <div className="table-subtitle">{site.owner}</div>
-                  </td>
-                  <td>{site.lastRefreshStatus}</td>
-                  <td>{site.permittedDocumentCount}</td>
-                  <td>{site.chunkCount}</td>
-                  <td>{site.lastRefresh ? formatUpdatedAt(site.lastRefresh) : 'n/a'}</td>
+      {/* Status view — concise summary */}
+      {syncView === 'status' ? (
+        <article className="panel" aria-label="Sync status summary">
+          <SectionHeading title="Sync status" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
+          <div className="kpi-grid compact">
+            <StatCard
+              label="Synced sites"
+              value={scopedSyncOverview.syncedSites}
+              note="Sites currently in a synced state within the active scope."
+            />
+            <StatCard
+              label="Restricted sites"
+              value={scopedSyncOverview.restrictedSites}
+              note="Sites visible only to privileged roles within the active scope."
+            />
+            <StatCard
+              label="Visible sources"
+              value={scopedCorpusSummary.visibleSources}
+              note="Sources accessible to the selected role and scope."
+            />
+            <StatCard
+              label="Denied sources"
+              value={scopedCorpusSummary.deniedSources}
+              note="Sources excluded by permission-aware retrieval in scope."
+            />
+          </div>
+
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Site</th>
+                  <th>Status</th>
+                  <th>Documents</th>
+                  <th>Chunks</th>
+                  <th>Last refresh</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </article>
+              </thead>
+              <tbody>
+                {scopedSiteSummaries.map((site) => (
+                  <tr key={site.id}>
+                    <td>
+                      <strong>{site.name}</strong>
+                      <div className="table-subtitle">{site.owner}</div>
+                    </td>
+                    <td>{site.lastRefreshStatus}</td>
+                    <td>{site.permittedDocumentCount}</td>
+                    <td>{site.chunkCount}</td>
+                    <td>{site.lastRefresh ? formatUpdatedAt(site.lastRefresh) : 'n/a'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-      <article className="panel sync-controls-panel">
-        <div className="sync-controls-group">
-          <span className="sync-controls-label">Local pipeline</span>
-          <div className="sync-controls-actions">
-            {(['ingest', 'evaluate'] as OpsKey[]).map((op) => (
-              <button
-                key={op}
-                type="button"
-                className="secondary-button secondary-button-sm"
-                data-tooltip={OPS_CONFIG[op].tooltip}
-                onClick={() => setPendingOp(op)}
-                disabled={syncOperations.isRunning}
-              >
-                {OPS_CONFIG[op].label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="sync-controls-divider" />
-
-        <div className="sync-controls-group">
-          <span className="sync-controls-label">SharePoint sync</span>
-          <div className="sync-controls-actions">
-            {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
-              <button
-                key={op}
-                type="button"
-                className="secondary-button secondary-button-sm"
-                data-tooltip={OPS_CONFIG[op].tooltip}
-                onClick={() => setPendingOp(op)}
-                disabled={syncOperations.isRunning}
-              >
-                {OPS_CONFIG[op].label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </article>
-
-      <article className="panel sync-ops-panel">
-        <SectionHeading
-          title="Operations console"
-          subtitleTooltip="Follow the streamed execution log for the active operation."
-          actions={
-            syncOperations.isRunning ? (
-              <button
-                type="button"
-                className="secondary-button secondary-button-sm danger-button"
-                data-tooltip="Stop the running operation"
-                onClick={syncOperations.cancelActiveJob}
-              >
-                Cancel job
-              </button>
-            ) : null
-          }
-        />
-
-        <div className="sync-ops-summary">
-          <div className="detail-row">
-            <span>Status</span>
-            <strong>{currentJob?.status || 'idle'}</strong>
-          </div>
-          <div className="detail-row">
-            <span>Command</span>
-            <strong>{currentJob?.command || 'No command running'}</strong>
-          </div>
-          <div className="detail-row">
-            <span>Progress</span>
-            <strong>{currentJob ? `${currentJob.progress}%` : '0%'}</strong>
-          </div>
-          <div className="detail-row">
-            <span>Duration</span>
-            <strong>
-              {currentJob?.status === 'running'
-                ? formatDuration(elapsed)
-                : currentJob?.durationMs != null
-                  ? formatDuration(currentJob.durationMs)
-                  : '—'}
-            </strong>
-          </div>
-        </div>
-
-        <div className="sync-progress" aria-label="Sync operation progress">
-          <div className="sync-progress-track">
-            <span style={{ width: `${currentJob?.progress || 0}%` }} />
-          </div>
-          <div className="sync-progress-labels">
-            <span>{currentJob?.label || 'Idle'}</span>
-            <span>{currentJob?.summary || 'No sync job running yet.'}</span>
-          </div>
-        </div>
-
-        <div className="sync-console" ref={consoleRef} aria-live="polite" aria-label="Sync console output">
-          {currentLines.length ? (
-            currentLines.map((line) => (
-              <div key={line.id} className={`sync-console-line sync-console-line-${line.tone}`}>
-                <span className="sync-console-timestamp">{formatUpdatedAt(line.timestamp)}</span>
-                <span className="sync-console-text">{line.text}</span>
+          {/* Quick summary of active/last job */}
+          {currentJob ? (
+            <div className="sync-status-job-summary">
+              <div className="detail-row">
+                <span>Last operation</span>
+                <strong>{currentJob.label}</strong>
               </div>
-            ))
-          ) : (
-            <div className="sync-console-empty">Launch a command to stream the execution log here.</div>
-          )}
-        </div>
-
-        <SectionHeading title="Recent sync runs" subtitleTooltip="Hover each run for the full note." />
-        <div className="sync-list">
-          {syncOperations.history.length ? (
-            syncOperations.history.map((job) => (
-              <article key={job.id} className="sync-card" title={job.summary}>
-                <div className="source-card-top">
-                  <strong>{job.label}</strong>
-                  <Pill tone={getJobTone(job.status)}>{job.status}</Pill>
+              <div className="detail-row">
+                <span>Status</span>
+                <Pill tone={getJobTone(currentJob.status)}>{currentJob.status}</Pill>
+              </div>
+              {currentJob.status === 'running' ? (
+                <div className="detail-row">
+                  <span>Progress</span>
+                  <strong>{currentJob.progress}%</strong>
                 </div>
-                <div className="source-meta">
-                  <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
-                  <span>{job.command}</span>
-                  <span>{job.progress}%</span>
-                  {job.durationMs != null ? <span>{formatDuration(job.durationMs)}</span> : null}
-                </div>
-                <p>{job.summary}</p>
-              </article>
-            ))
-          ) : (
-            <div className="empty-state">No sync jobs have been launched yet.</div>
-          )}
-        </div>
+              ) : null}
+              <button
+                type="button"
+                className="secondary-button secondary-button-sm"
+                onClick={() => setSyncView('operations')}
+              >
+                View operations
+              </button>
+            </div>
+          ) : null}
+        </article>
+      ) : null}
 
-        <div className="checklist">
-          <h3>Evaluation prep</h3>
-          <ul>
-            <li>
-              Run <code>npm run ingest</code> to write the local sync snapshot.
-            </li>
-            <li>
-              Run <code>npm run evaluate</code> to generate the V1 baseline report.
-            </li>
-            <li>Keep OpenAI as the baseline provider when comparing retrieval quality.</li>
-          </ul>
-        </div>
-      </article>
+      {/* Operations view — controls + console */}
+      {syncView === 'operations' ? (
+        <>
+          <article className="panel sync-controls-panel" aria-label="Sync operations controls">
+            <SectionHeading title="Operations" subtitleTooltip="Launch, resume, or cancel sync operations." />
+
+            <div className="sync-controls-group">
+              <span className="sync-controls-label">Local pipeline</span>
+              <div className="sync-controls-actions">
+                {(['ingest', 'evaluate'] as OpsKey[]).map((op) => (
+                  <button
+                    key={op}
+                    type="button"
+                    className="secondary-button secondary-button-sm"
+                    data-tooltip={OPS_CONFIG[op].tooltip}
+                    onClick={() => setPendingOp(op)}
+                    disabled={syncOperations.isRunning}
+                  >
+                    {OPS_CONFIG[op].label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="sync-controls-divider" />
+
+            <div className="sync-controls-group">
+              <span className="sync-controls-label">SharePoint sync</span>
+              <div className="sync-controls-actions">
+                {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
+                  <button
+                    key={op}
+                    type="button"
+                    className="secondary-button secondary-button-sm"
+                    data-tooltip={OPS_CONFIG[op].tooltip}
+                    onClick={() => setPendingOp(op)}
+                    disabled={syncOperations.isRunning}
+                  >
+                    {OPS_CONFIG[op].label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </article>
+
+          <article className="panel sync-ops-panel" aria-label="Operations console">
+            <SectionHeading
+              title="Operations console"
+              subtitleTooltip="Follow the streamed execution log for the active operation."
+              actions={
+                syncOperations.isRunning ? (
+                  <button
+                    type="button"
+                    className="secondary-button secondary-button-sm danger-button"
+                    data-tooltip="Stop the running operation"
+                    onClick={syncOperations.cancelActiveJob}
+                  >
+                    Cancel job
+                  </button>
+                ) : null
+              }
+            />
+
+            <div className="sync-ops-summary">
+              <div className="detail-row">
+                <span>Status</span>
+                <strong>{currentJob?.status || 'idle'}</strong>
+              </div>
+              <div className="detail-row">
+                <span>Command</span>
+                <strong>{currentJob?.command || 'No command running'}</strong>
+              </div>
+              <div className="detail-row">
+                <span>Progress</span>
+                <strong>{currentJob ? `${currentJob.progress}%` : '0%'}</strong>
+              </div>
+              <div className="detail-row">
+                <span>Duration</span>
+                <strong>
+                  {currentJob?.status === 'running'
+                    ? formatDuration(elapsed)
+                    : currentJob?.durationMs != null
+                      ? formatDuration(currentJob.durationMs)
+                      : '—'}
+                </strong>
+              </div>
+            </div>
+
+            <div className="sync-progress" aria-label="Sync operation progress">
+              <div className="sync-progress-track">
+                <span style={{ width: `${currentJob?.progress || 0}%` }} />
+              </div>
+              <div className="sync-progress-labels">
+                <span>{currentJob?.label || 'Idle'}</span>
+                <span>{currentJob?.summary || 'No sync job running yet.'}</span>
+              </div>
+            </div>
+
+            <div className="sync-console" ref={consoleRef} aria-live="polite" aria-label="Sync console output">
+              {currentLines.length ? (
+                currentLines.map((line) => (
+                  <div key={line.id} className={`sync-console-line sync-console-line-${line.tone}`}>
+                    <span className="sync-console-timestamp">{formatUpdatedAt(line.timestamp)}</span>
+                    <span className="sync-console-text">{line.text}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="sync-console-empty">Launch a command to stream the execution log here.</div>
+              )}
+            </div>
+          </article>
+        </>
+      ) : null}
+
+      {/* History view — run list */}
+      {syncView === 'history' ? (
+        <article className="panel" aria-label="Sync run history">
+          <SectionHeading title="Run history" subtitleTooltip="Recent sync jobs and their results. Hover each run for the full note." />
+
+          <div className="sync-list">
+            {syncOperations.history.length ? (
+              syncOperations.history.map((job) => (
+                <article key={job.id} className="sync-card" title={job.summary}>
+                  <div className="source-card-top">
+                    <strong>{job.label}</strong>
+                    <Pill tone={getJobTone(job.status)}>{job.status}</Pill>
+                  </div>
+                  <div className="source-meta">
+                    <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
+                    <span>{job.command}</span>
+                    <span>{job.progress}%</span>
+                    {job.durationMs != null ? <span>{formatDuration(job.durationMs)}</span> : null}
+                  </div>
+                  <p>{job.summary}</p>
+                </article>
+              ))
+            ) : (
+              <div className="empty-state">No sync jobs have been launched yet.</div>
+            )}
+          </div>
+
+          <div className="checklist">
+            <h3>Evaluation prep</h3>
+            <ul>
+              <li>
+                Run <code>npm run ingest</code> to write the local sync snapshot.
+              </li>
+              <li>
+                Run <code>npm run evaluate</code> to generate the V1 baseline report.
+              </li>
+              <li>Keep OpenAI as the baseline provider when comparing retrieval quality.</li>
+            </ul>
+          </div>
+        </article>
+      ) : null}
+
+      {/* Config view — worker connection read-only + effective config */}
+      {syncView === 'config' ? (
+        <article className="panel" aria-label="Worker configuration">
+          <SectionHeading title="Worker config" subtitleTooltip="Active worker connection and fallback settings. Edit in Settings → Worker." />
+
+          <div className="kpi-grid compact">
+            <StatCard
+              label="Worker mode"
+              value={workerSettings.workerMode}
+              note="local uses the embedded Vite ops server."
+            />
+            <StatCard
+              label="Fallback mode"
+              value={workerSettings.workerFallbackMode}
+              note="Behavior when the worker is unreachable."
+            />
+            <StatCard
+              label="Timeout"
+              value={`${workerSettings.workerTimeoutSeconds}s`}
+              note="Request timeout for worker API calls."
+            />
+          </div>
+
+          {workerSettings.workerMode === 'remote' && workerSettings.workerUrl ? (
+            <div className="runtime-stack">
+              <div className="detail-row">
+                <span>Worker URL</span>
+                <strong className="detail-value-compact">{workerSettings.workerUrl}</strong>
+              </div>
+              <div className="detail-row">
+                <span>Token</span>
+                <strong>{workerSettings.workerToken ? '●●●●●●●●' : 'Not set'}</strong>
+              </div>
+            </div>
+          ) : null}
+
+          {workerSettings.workerMode === 'local' ? (
+            <div className="sync-config-note">
+              <p>Running in local mode. Jobs are executed by the embedded Vite ops server at the same origin.</p>
+              <p>Switch to remote mode in <strong>Settings → Worker</strong> to point at a dedicated worker endpoint.</p>
+            </div>
+          ) : (
+            <div className="sync-config-note">
+              <p>Running in remote mode. Jobs are dispatched to <strong>{workerSettings.workerUrl || 'the configured worker URL'}</strong>.</p>
+              <p>Update connection settings in <strong>Settings → Worker</strong>.</p>
+            </div>
+          )}
+
+          {/* Recovery guidance */}
+          {failedJobs.length > 0 ? (
+            <>
+              <SectionHeading title="Recovery" subtitleTooltip="Guidance for failed operations." />
+              <div className="sync-list">
+                {failedJobs.map((job) => (
+                  <article key={job.id} className="sync-card" title={job.summary}>
+                    <div className="source-card-top">
+                      <strong>{job.label}</strong>
+                      <Pill tone="danger">failed</Pill>
+                    </div>
+                    <div className="source-meta">
+                      <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
+                      <span>{job.command}</span>
+                    </div>
+                    <p>{job.summary}</p>
+                  </article>
+                ))}
+              </div>
+              <div className="sync-config-note">
+                <p>If a live export fails, use <strong>Resume live export</strong> in Operations to restart from the last checkpoint.</p>
+                <p>If the worker is unreachable, check the Worker URL and token in Settings, or switch to local mode.</p>
+              </div>
+            </>
+          ) : (
+            <div className="sync-config-note">
+              <p>No failed jobs in recent history. Recovery guidance will appear here when a job fails.</p>
+            </div>
+          )}
+        </article>
+      ) : null}
     </section>
   )
 }

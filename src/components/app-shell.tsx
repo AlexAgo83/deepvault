@@ -443,6 +443,7 @@ export function AppShell(model: AppModel) {
               scopedSiteSummaries={scopedSiteSummaries}
               scopedSyncOverview={scopedSyncOverview}
               syncOperations={syncOperations}
+              workerSettings={workerSettings}
             />
           </ErrorBoundary>
         ) : null}
