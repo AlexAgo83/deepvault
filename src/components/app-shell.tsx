@@ -233,6 +233,7 @@ function AppSidebar({
       ) : null}
 
       <div className="theme-toggle">
+        <span className="theme-toggle-label">Theme</span>
         <button
           type="button"
           className="theme-toggle-button"
