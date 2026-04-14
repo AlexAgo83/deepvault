@@ -1266,6 +1266,66 @@ select:focus-visible {
   min-height: 0;
 }
 
+.bishop-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.bishop-chat-panel,
+.bishop-trace-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.bishop-chat-panel {
+  overflow: hidden;
+}
+
+.bishop-trace-panel {
+  overflow: hidden;
+}
+
+.bishop-chat-panel .message-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  align-content: start;
+}
+
+.bishop-trace-panel .source-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px 4px 0;
+  overscroll-behavior: contain;
+  align-content: start;
+}
+
+.bishop-sources-section {
+  margin-top: 10px;
+  gap: 6px;
+}
+
+.bishop-sources-section .document-content-header {
+  margin-bottom: 0;
+}
+
+.bishop-trace-panel .detail-stack {
+  align-content: start;
+}
+
+.bishop-trace-panel .trace-preview {
+  margin-top: 0;
+}
+
+.bishop-trace-panel .source-card {
+  align-self: start;
+}
+
 .sync-main-column {
   display: flex;
   flex-direction: column;
@@ -1534,6 +1594,20 @@ select:focus-visible {
   align-items: center;
 }
 
+.trace-confidence-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.trace-confidence-popover {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .trace-confidence-button {
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -1553,6 +1627,44 @@ select:focus-visible {
   cursor: not-allowed;
   color: var(--muted);
   opacity: 0.7;
+}
+
+.trace-confidence-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.trace-confidence-help:hover,
+.trace-confidence-help:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.trace-confidence-help:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.trace-preview-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  width: min(360px, 72vw);
+  margin: 0;
+  box-shadow: 0 10px 24px rgba(42, 36, 31, 0.14);
 }
 
 .trace-preview {
