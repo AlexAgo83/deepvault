@@ -1092,6 +1092,10 @@ select:focus-visible {
   padding: 18px 16px;
   display: grid;
   gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow);
   transition: border-color 120ms ease, transform 120ms ease, background-color 120ms ease;
 }
 
@@ -1167,6 +1171,14 @@ select:focus-visible {
   display: grid;
   gap: 14px;
   margin-top: 18px;
+}
+
+.document-content p {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
 }
 
 .document-content h3,
