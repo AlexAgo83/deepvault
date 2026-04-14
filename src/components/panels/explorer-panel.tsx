@@ -17,6 +17,15 @@ export function ExplorerPanel({
   resolveFileHref: (_siteId: string, _path: string, _webUrl?: string | null) => string | null
   selectedExplorerDoc: ExplorerRow | null
 }) {
+  const selectedSourceExcerpt = selectedExplorerDoc?.content?.trim() || ''
+  const selectedDirectAnswer = selectedExplorerDoc?.directAnswer?.trim() || ''
+  const selectedSummary = selectedExplorerDoc?.summary?.trim() || ''
+  const hasDistinctSourceExcerpt =
+    selectedSourceExcerpt.length > 0 &&
+    selectedSourceExcerpt !== selectedDirectAnswer &&
+    selectedSourceExcerpt !== selectedSummary &&
+    !/^Source:\s/i.test(selectedSourceExcerpt)
+
   return (
     <section className="content-grid">
       <article className="panel">
@@ -104,12 +113,18 @@ export function ExplorerPanel({
                 />
               </p>
               <h3>Source excerpt</h3>
-              <p>
-                <CompactPathText
-                  value={selectedExplorerDoc.content}
-                  href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
-                />
-              </p>
+              {hasDistinctSourceExcerpt ? (
+                <p>
+                  <CompactPathText
+                    value={selectedSourceExcerpt}
+                    href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                  />
+                </p>
+              ) : (
+                <div className="document-content-note">
+                  This source does not expose a separate body excerpt here, so the summary and source view are the same.
+                </div>
+              )}
             </div>
           </>
       ) : (
