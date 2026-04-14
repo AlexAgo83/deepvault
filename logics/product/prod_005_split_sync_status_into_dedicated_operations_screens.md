@@ -1,9 +1,9 @@
 ## prod_005_split_sync_status_into_dedicated_operations_screens - Split Sync Status into dedicated operations screens
 > Date: 2026-04-14
 > Status: Proposed
-> Related request: (none yet)
-> Related backlog: (none yet)
-> Related task: (none yet)
+> Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
+> Related backlog: `logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md`
+> Related task: `logics/tasks/task_028_split_sync_status_into_dedicated_operations_screens.md`
 > Related architecture: `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_024_split_sync_status_into_dedicated_operations_screens.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
 
