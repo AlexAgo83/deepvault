@@ -270,18 +270,18 @@ function AppTopbar({
 }) {
   return (
     <header className="topbar">
-      <button
-        type="button"
-        className="topbar-menu-button"
-        aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        aria-pressed={isSidebarCollapsed}
-        aria-controls="app-sidebar"
-        title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        onClick={onToggleSidebar}
-      >
-        <MenuIcon />
-      </button>
       <div className="topbar-actions">
+        <button
+          type="button"
+          className="topbar-menu-button"
+          aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-pressed={isSidebarCollapsed}
+          aria-controls="app-sidebar"
+          title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          onClick={onToggleSidebar}
+        >
+          <MenuIcon />
+        </button>
         <div className="topbar-badges">
           <div className="topbar-badge-group topbar-badge-group-status" aria-label="Sync status">
             <Pill tone={liveStateTone} title={liveStateDetail}>
