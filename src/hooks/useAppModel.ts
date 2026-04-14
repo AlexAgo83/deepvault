@@ -83,6 +83,18 @@ export interface AppModel {
   resolveFileHref: (_siteId: string, _path: string, _webUrl?: string | null) => string | null
 }
 
+function parseActiveTab(hash: string): AppTab {
+  const search = hash.startsWith('#') ? hash.slice(1) : hash
+  const value = new URLSearchParams(search).get('tab')
+  if (value === 'explorer' || value === 'bishop' || value === 'sync' || value === 'ai-stats' || value === 'settings') {
+    return value
+  }
+  if (new URLSearchParams(search).has('sync')) {
+    return 'sync'
+  }
+  return 'explorer'
+}
+
 function buildScopedCorpus(corpus: Corpus, siteFilter: string): Corpus {
   if (siteFilter === 'all') {
     return corpus
@@ -107,7 +119,7 @@ export function useAppModel(): AppModel {
   const requestedCorpusMode = resolveCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE, entraSettings.dataMode)
   const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(requestedCorpusMode)
   const corpus = corpusBundle.corpus
-  const [activeTab, setActiveTab] = useState<AppTab>('explorer')
+  const [activeTab, setActiveTab] = useState<AppTab>(() => parseActiveTab(window.location.hash))
   const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
   const [provider, setProvider] = useState<ProviderId>(corpus.providers[0].id)
   const [siteFilter, setSiteFilter] = useState<string>('all')
@@ -192,6 +204,28 @@ export function useAppModel(): AppModel {
   useEffect(() => {
     document.title = 'Nexus'
   }, [])
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      setActiveTab(parseActiveTab(window.location.hash))
+    }
+
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '')
+    params.set('tab', activeTab)
+    if (activeTab !== 'sync') {
+      params.delete('sync')
+    }
+    const nextHash = `#${params.toString()}`
+    if (window.location.hash !== nextHash) {
+      window.history.replaceState(null, '', nextHash)
+    }
+  }, [activeTab])
 
   const resolveFileHref = useCallback(
     (siteId: string, path: string, webUrl?: string | null) => resolveSharePointFileUrl(corpus, siteId, path, webUrl),

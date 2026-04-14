@@ -1,13 +1,14 @@
 ## item_065_finalize_sync_navigation_model_and_recovery_entry_points - Finalize sync navigation model and recovery entry points
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 92%
-> Confidence: 90%
-> Progress: 0%
+> Status: Done
+> Understanding: 95%
+> Confidence: 93%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Maintenance edit: follow-up slice delivered and linked task completed.
 
 # Problem
 - The sync split exists, but the exact navigation model, recovery entry points, and deep-link behavior still need to be locked down so the experience does not feel fragmented.

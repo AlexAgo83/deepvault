@@ -4,16 +4,15 @@
 
 ## Next
 
-- [item_064_harden_worker_security_fallback_and_audit_boundaries](logics/backlog/item_064_harden_worker_security_fallback_and_audit_boundaries.md) - Harden worker security, fallback, and audit boundaries
-- [item_065_finalize_sync_navigation_model_and_recovery_entry_points](logics/backlog/item_065_finalize_sync_navigation_model_and_recovery_entry_points.md) - Finalize sync navigation model and recovery entry points
-- [item_066_verify_theme_fallback_and_shell_surface_coverage](logics/backlog/item_066_verify_theme_fallback_and_shell_surface_coverage.md) - Verify theme fallback and shell surface coverage
-- [item_067_lock_corpus_metadata_contract_and_required_fields](logics/backlog/item_067_lock_corpus_metadata_contract_and_required_fields.md) - Lock corpus metadata contract and required fields
-
 ## Done
 
 - [task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan](logics/tasks/task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan.md) - Wave 0 planning and backlog split for the full implementation plan (100%)
 - [req_017_implement_the_full_app_worker_corpus_and_shell_plan](logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md) - Umbrella request for the full implementation and test plan
 
+- [item_064_harden_worker_security_fallback_and_audit_boundaries](logics/backlog/item_064_harden_worker_security_fallback_and_audit_boundaries.md) - Harden worker security, fallback, and audit boundaries (100%)
+- [item_065_finalize_sync_navigation_model_and_recovery_entry_points](logics/backlog/item_065_finalize_sync_navigation_model_and_recovery_entry_points.md) - Finalize sync navigation model and recovery entry points (100%)
+- [item_066_verify_theme_fallback_and_shell_surface_coverage](logics/backlog/item_066_verify_theme_fallback_and_shell_surface_coverage.md) - Verify theme fallback and shell surface coverage (100%)
+- [item_067_lock_corpus_metadata_contract_and_required_fields](logics/backlog/item_067_lock_corpus_metadata_contract_and_required_fields.md) - Lock corpus metadata contract and required fields (100%)
 - [item_062_improve_corpus_metadata_chunking_and_bishop_hints](logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md) - Improve corpus metadata, chunking, and Bishop hints (100%)
 - [item_063_add_persisted_sidebar_theme_switch](logics/backlog/item_063_add_persisted_sidebar_theme_switch.md) - Persisted sidebar theme switch (100%)
 - [item_060_split_sync_status_into_dedicated_operations_screens](logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md) - Split Sync Status into dedicated operations screens (100%)

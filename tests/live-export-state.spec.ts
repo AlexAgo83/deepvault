@@ -108,6 +108,7 @@ describe('live export state helpers', () => {
       checkpointPath,
       JSON.stringify(
         {
+          schemaVersion: '1.1',
           defaultUserRole: 'analyst',
           providers: [],
           sites: [],
@@ -126,11 +127,12 @@ describe('live export state helpers', () => {
   })
 
   it('resolves checkpoint sync time from syncedAt or finishedAt for compatibility', () => {
-    expect(resolveCheckpointSyncedAt({ defaultUserRole: 'analyst', providers: [], sites: [], syncRuns: [], documents: [], syncedAt: '2026-04-11T11:45:00.000Z' })).toBe(
+    expect(resolveCheckpointSyncedAt({ schemaVersion: '1.1', defaultUserRole: 'analyst', providers: [], sites: [], syncRuns: [], documents: [], syncedAt: '2026-04-11T11:45:00.000Z' })).toBe(
       '2026-04-11T11:45:00.000Z',
     )
     expect(
       resolveCheckpointSyncedAt({
+        schemaVersion: '1.1',
         defaultUserRole: 'analyst',
         providers: [],
         sites: [],

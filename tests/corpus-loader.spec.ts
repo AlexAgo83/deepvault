@@ -15,6 +15,7 @@ describe('corpus loader', () => {
       corpusPath,
       JSON.stringify(
         {
+          schemaVersion: '1.1',
           defaultUserRole: 'analyst',
           providers: [{ id: 'openai', name: 'OpenAI', ready: false }],
           sites: [],
@@ -29,7 +30,7 @@ describe('corpus loader', () => {
     await expect(loadCorpus({ mode: 'mock', inputPath: corpusPath })).resolves.toMatchObject({
       corpusPath,
       mode: 'mock',
-      corpus: { defaultUserRole: 'analyst' },
+      corpus: { schemaVersion: '1.1', defaultUserRole: 'analyst' },
     })
   })
 

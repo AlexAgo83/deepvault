@@ -1,13 +1,14 @@
 ## item_066_verify_theme_fallback_and_shell_surface_coverage - Verify theme fallback and shell surface coverage
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 92%
-> Confidence: 90%
-> Progress: 0%
+> Status: Done
+> Understanding: 95%
+> Confidence: 93%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Maintenance edit: follow-up slice delivered and linked task completed.
 
 # Problem
 - The sidebar theme switch exists, but the fallback rule and shell-wide surface coverage still need explicit verification so the behavior stays predictable.

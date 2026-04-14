@@ -73,6 +73,7 @@ export interface CorpusSiteLike {
 }
 
 export interface CorpusLike {
+  schemaVersion?: string
   defaultUserRole: 'analyst' | 'admin' | 'guest'
   providers: Array<{ id: 'openai' | 'gemini' | 'anthropic'; name: string; ready: boolean }>
   sites: CorpusSiteLike[]

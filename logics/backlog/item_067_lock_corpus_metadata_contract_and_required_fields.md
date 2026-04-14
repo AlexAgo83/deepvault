@@ -1,13 +1,14 @@
 ## item_067_lock_corpus_metadata_contract_and_required_fields - Lock corpus metadata contract and required fields
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 93%
-> Confidence: 91%
-> Progress: 0%
+> Status: Done
+> Understanding: 96%
+> Confidence: 94%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Maintenance edit: follow-up slice delivered and linked task completed.
 
 # Problem
 - Section-aware chunking and stronger hints exist, but the corpus contract still needs a clear line between required metadata and optional extensions so future ingestion changes stay stable.

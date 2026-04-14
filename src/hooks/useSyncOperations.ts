@@ -26,6 +26,15 @@ export interface SyncOperationJob {
   durationMs?: number
   summary: string
   lines: SyncConsoleLine[]
+  launchedBy?: string
+  client?: string
+  effectiveConfig?: {
+    workerMode: string
+    workerUrl: string
+    workerFallbackMode: string
+    workerTimeoutSeconds: number
+    dataMode: string
+  }
 }
 
 export interface UseSyncOperationsOptions {
@@ -95,7 +104,11 @@ function makeLine(text: string, tone: SyncConsoleTone = 'normal'): SyncConsoleLi
 
 function formatCommandLine(
   command: string,
-  context: Pick<UseSyncOperationsOptions, 'activeScopeLabel' | 'provider' | 'role' | 'visibleDocs' | 'syncedSites' | 'restrictedSites' | 'refreshPolicy'>,
+  context: Pick<
+    UseSyncOperationsOptions,
+    'activeScopeLabel' | 'provider' | 'role' | 'visibleDocs' | 'syncedSites' | 'restrictedSites' | 'refreshPolicy'
+  >,
+  workerSettings: WorkerSettings,
 ): string {
   return [
     `$ ${command}`,
@@ -103,6 +116,7 @@ function formatCommandLine(
     `Role: ${context.role} | Provider: ${context.provider}`,
     `Visible docs: ${context.visibleDocs} | Synced sites: ${context.syncedSites} | Restricted sites: ${context.restrictedSites}`,
     `Refresh policy: ${context.refreshPolicy}`,
+    `Worker mode: ${workerSettings.workerMode} | Fallback: ${workerSettings.workerFallbackMode}`,
   ].join('\n')
 }
 
@@ -157,13 +171,10 @@ export function useSyncOperations({
   onRefreshCorpus,
   workerSettings = WORKER_SETTINGS_DEFAULTS,
 }: UseSyncOperationsOptions) {
-  const workerClient = useMemo(() => createWorkerClient(workerSettings), [
-    workerSettings.workerMode,
-    workerSettings.workerUrl,
-    workerSettings.workerToken,
-    workerSettings.workerTimeoutSeconds,
-    workerSettings.workerFallbackMode,
-  ]) // eslint-disable-line react-hooks/exhaustive-deps
+  const workerClient = useMemo(() => createWorkerClient({
+    ...workerSettings,
+    dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
+  }), [workerSettings, extraEnv.DEEPVAULT_DATA_MODE])
   const [activeJob, setActiveJob] = useState<SyncOperationJob | null>(null)
   const [jobHistory, setJobHistory] = useState<SyncOperationJob[]>([])
   const timersRef = useRef<number[]>([])
@@ -204,6 +215,15 @@ export function useSyncOperations({
       startedAt: persisted.startedAt,
       summary: `${def.label} running.`,
       lines: [makeLine('Reconnecting to running process…', 'muted')],
+      launchedBy: 'deepvault-app-shell',
+      client: 'deepvault-app-shell',
+      effectiveConfig: {
+        workerMode: workerSettings.workerMode,
+        workerUrl: workerSettings.workerUrl,
+        workerFallbackMode: workerSettings.workerFallbackMode,
+        workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
+        dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
+      },
     }
 
     setActiveJob(job)
@@ -240,7 +260,7 @@ export function useSyncOperations({
       eventSourceRef.current = null
       serverJobIdRef.current = null
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only reconnect effect
   }, []) // intentionally runs once on mount only
 
   const pushTimer = useCallback((callback: () => void, delayMs: number) => {
@@ -310,7 +330,24 @@ export function useSyncOperations({
       progress: 0,
       startedAt,
       summary: 'Refresh status started.',
-      lines: [makeLine(formatCommandLine(REFRESH_DEF.command, { activeScopeLabel, provider, role, visibleDocs, syncedSites, restrictedSites, refreshPolicy }), 'muted')],
+      lines: [makeLine(formatCommandLine(REFRESH_DEF.command, {
+        activeScopeLabel,
+        provider,
+        role,
+        visibleDocs,
+        syncedSites,
+        restrictedSites,
+        refreshPolicy,
+      }, workerSettings), 'muted')],
+      launchedBy: 'deepvault-app-shell',
+      client: 'deepvault-app-shell',
+      effectiveConfig: {
+        workerMode: workerSettings.workerMode,
+        workerUrl: workerSettings.workerUrl,
+        workerFallbackMode: workerSettings.workerFallbackMode,
+        workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
+        dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
+      },
     }
 
     setActiveJob(job)
@@ -328,7 +365,7 @@ export function useSyncOperations({
 
     const totalDelay = Math.max(...REFRESH_DEF.steps.map((step) => step.delayMs))
     pushTimer(() => finalizeJob(jobId, 'completed', REFRESH_DEF.summary), totalDelay + 90)
-  }, [activeScopeLabel, clearTimers, finalizeJob, onRefreshCorpus, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, pushTimer])
+  }, [activeScopeLabel, clearTimers, extraEnv.DEEPVAULT_DATA_MODE, finalizeJob, onRefreshCorpus, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, pushTimer, workerSettings])
 
   // Live operation — ingest, evaluate, export-live, and export-live-resume via the worker client.
   const runLiveOperation = useCallback((kind: 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume') => {
@@ -353,7 +390,24 @@ export function useSyncOperations({
       progress: 0,
       startedAt,
       summary: `${def.label} started.`,
-      lines: [makeLine(formatCommandLine(def.command, { activeScopeLabel, provider, role, visibleDocs, syncedSites, restrictedSites, refreshPolicy }), 'muted')],
+      lines: [makeLine(formatCommandLine(def.command, {
+        activeScopeLabel,
+        provider,
+        role,
+        visibleDocs,
+        syncedSites,
+        restrictedSites,
+        refreshPolicy,
+      }, workerSettings), 'muted')],
+      launchedBy: role,
+      client: 'deepvault-app-shell',
+      effectiveConfig: {
+        workerMode: workerSettings.workerMode,
+        workerUrl: workerSettings.workerUrl,
+        workerFallbackMode: workerSettings.workerFallbackMode,
+        workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
+        dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
+      },
     }
 
     setActiveJob(job)
@@ -361,10 +415,28 @@ export function useSyncOperations({
     async function start() {
       let serverJobId: string
       try {
-        const result = await workerClient.startJob({ kind, env: extraEnv })
+        const result = await workerClient.startJob({
+          kind,
+          env: extraEnv,
+          launchedBy: role,
+          client: 'deepvault-app-shell',
+          effectiveConfig: {
+            workerMode: workerSettings.workerMode,
+            workerUrl: workerSettings.workerUrl,
+            workerFallbackMode: workerSettings.workerFallbackMode,
+            workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
+            dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
+          },
+        })
         serverJobId = result.jobId
       } catch {
-        finalizeJob(jobId, 'failed', 'Could not reach the worker. Make sure you are running the Vite dev server.')
+        finalizeJob(
+          jobId,
+          'failed',
+          workerSettings.workerFallbackMode === 'read_only'
+            ? 'Could not reach the worker. Staying on the published corpus in read-only mode.'
+            : 'Could not reach the worker. Make sure you are running the Vite dev server.',
+        )
         return
       }
 
@@ -407,8 +479,7 @@ export function useSyncOperations({
     }
 
     void start()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeScopeLabel, clearTimers, extraEnv, finalizeJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, workerClient])
+  }, [activeScopeLabel, clearTimers, extraEnv, finalizeJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, workerClient, workerSettings])
 
   const cancelActiveJob = useCallback(() => {
     const current = activeJobRef.current
@@ -427,7 +498,6 @@ export function useSyncOperations({
     clearPersistedJob()
 
     finalizeJob(current.id, 'cancelled', `${current.label} cancelled.`)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearTimers, finalizeJob, workerClient])
 
   const startRefresh = useCallback(() => runRefresh(), [runRefresh])

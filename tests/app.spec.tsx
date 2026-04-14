@@ -17,6 +17,8 @@ describe('DeepVault app', () => {
     localStorage.clear()
     sessionStorage.clear()
     document.documentElement.removeAttribute('data-theme')
+    document.body.removeAttribute('data-theme')
+    window.location.hash = ''
   })
 
   it('renders the explorer shell', async () => {
@@ -728,6 +730,20 @@ describe('DeepVault app', () => {
 
     await user.tab()
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Settings' }))
+  })
+
+  it('restores the sync recovery view from the location hash and keeps it shareable', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#tab=sync&sync=recovery'
+
+    render(<App />)
+
+    await screen.findByRole('button', { name: 'Recovery' })
+    expect(screen.getByRole('button', { name: 'Recovery' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('heading', { name: 'Recovery' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Config' }))
+    expect(window.location.hash).toBe('#tab=sync&sync=config')
   })
 
   it('exports Bishop and Explorer data and clears Bishop history', async () => {

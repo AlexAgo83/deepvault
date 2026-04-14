@@ -6,6 +6,7 @@ export interface WorkerClientConfig {
   workerToken: string
   workerTimeoutSeconds: number
   workerFallbackMode: WorkerFallbackMode
+  dataMode?: string
 }
 
 export interface WorkerHealth {
@@ -23,6 +24,12 @@ export interface WorkerEffectiveConfig {
   dataMode: string
 }
 
+export interface WorkerAuditContext {
+  launchedBy: string
+  client: string
+  effectiveConfig: WorkerEffectiveConfig
+}
+
 export type WorkerJobKind = 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
 export type WorkerJobStatus = 'queued' | 'running' | 'completed' | 'failed' | 'cancelled' | 'rejected'
 
@@ -36,6 +43,9 @@ export interface WorkerJob {
   progress: number
   exitCode?: number
   notes?: string
+  launchedBy?: string
+  client?: string
+  effectiveConfig?: WorkerEffectiveConfig
 }
 
 export interface WorkerJobManifest {
@@ -50,6 +60,9 @@ export interface WorkerJobManifest {
   lineCount?: number
   summary?: string
   schemaVersion: string
+  launchedBy?: string
+  client?: string
+  effectiveConfig?: WorkerEffectiveConfig
 }
 
 export type WorkerReachability = 'reachable' | 'unreachable' | 'unknown'
@@ -57,19 +70,52 @@ export type WorkerReachability = 'reachable' | 'unreachable' | 'unknown'
 export interface WorkerStartJobPayload {
   kind: WorkerJobKind
   env?: Record<string, string>
+  launchedBy?: string
+  client?: string
+  effectiveConfig?: WorkerEffectiveConfig
 }
 
 export interface WorkerStartJobResponse {
   jobId: string
 }
 
-function buildHeaders(token: string): Record<string, string> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+function buildHeaders(config: WorkerClientConfig, audit?: WorkerAuditContext): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'X-DeepVault-Client': audit?.client || 'deepvault-app-shell',
+    'X-DeepVault-Worker-Mode': config.workerMode,
+    'X-DeepVault-Worker-Fallback': config.workerFallbackMode,
+    'X-DeepVault-Worker-Timeout': String(config.workerTimeoutSeconds),
+  }
+
+  if (audit?.launchedBy) {
+    headers['X-DeepVault-Launched-By'] = audit.launchedBy
+  }
+  if (audit?.effectiveConfig) {
+    headers['X-DeepVault-Effective-Config'] = JSON.stringify(audit.effectiveConfig)
+  }
+
+  const token = config.workerToken.trim()
   if (token) headers['Authorization'] = `Bearer ${token}`
   return headers
 }
 
+function validateRemoteConfig(config: WorkerClientConfig) {
+  if (config.workerMode !== 'remote') return
+
+  if (!config.workerUrl.trim()) {
+    throw new Error('Remote worker mode requires a workerUrl.')
+  }
+  if (!/^https:\/\//i.test(config.workerUrl.trim())) {
+    throw new Error('Remote worker mode requires an https workerUrl.')
+  }
+  if (!config.workerToken.trim()) {
+    throw new Error('Remote worker mode requires a workerToken.')
+  }
+}
+
 function resolveBase(config: WorkerClientConfig): string {
+  validateRemoteConfig(config)
   if (config.workerMode === 'remote' && config.workerUrl) {
     return config.workerUrl.replace(/\/$/, '')
   }
@@ -93,7 +139,18 @@ async function fetchWithTimeout(
 
 export function createWorkerClient(config: WorkerClientConfig) {
   const base = resolveBase(config)
-  const headers = buildHeaders(config.workerToken)
+  const auditContext: WorkerAuditContext = {
+    launchedBy: 'deepvault-app-shell',
+    client: 'deepvault-app-shell',
+    effectiveConfig: {
+      workerMode: config.workerMode,
+      workerUrl: config.workerUrl,
+      workerFallbackMode: config.workerFallbackMode,
+      workerTimeoutSeconds: config.workerTimeoutSeconds,
+      dataMode: config.dataMode || 'mock',
+    },
+  }
+  const headers = buildHeaders(config, auditContext)
   const timeoutMs = config.workerTimeoutSeconds * 1000
 
   async function checkHealth(): Promise<WorkerHealth> {
@@ -111,7 +168,16 @@ export function createWorkerClient(config: WorkerClientConfig) {
   async function startJob(payload: WorkerStartJobPayload): Promise<WorkerStartJobResponse> {
     const res = await fetchWithTimeout(
       `${base}/api/worker/jobs`,
-      { method: 'POST', headers, body: JSON.stringify(payload) },
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          ...payload,
+          launchedBy: payload.launchedBy || auditContext.launchedBy,
+          client: payload.client || auditContext.client,
+          effectiveConfig: payload.effectiveConfig || auditContext.effectiveConfig,
+        }),
+      },
       timeoutMs,
     )
     if (!res.ok) throw new Error(`Failed to start job: ${res.status}`)
@@ -139,8 +205,12 @@ export function createWorkerClient(config: WorkerClientConfig) {
   }
 
   function openJobEvents(jobId: string): EventSource {
-    // EventSource does not support custom headers; for authenticated remote workers,
-    // token may be passed as a query param when required. For now, local mode is unauthenticated.
+    if (config.workerMode === 'remote') {
+      const url = new URL(`${base}/api/worker/jobs/${jobId}/events`)
+      url.searchParams.set('token', config.workerToken)
+      url.searchParams.set('client', auditContext.client)
+      return new EventSource(url.toString())
+    }
     return new EventSource(`${base}/api/worker/jobs/${jobId}/events`)
   }
 

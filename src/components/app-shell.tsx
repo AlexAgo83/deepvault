@@ -210,6 +210,7 @@ function AppSidebar({
           type="button"
           className="theme-toggle-button"
           aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-pressed={theme === 'dark'}
           title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           onClick={onToggleTheme}
         >

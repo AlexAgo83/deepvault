@@ -41,6 +41,7 @@ describe('useLiveCorpus', () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
+        schemaVersion: '1.1',
         defaultUserRole: 'invalid',
         providers: [],
         sites: [],
