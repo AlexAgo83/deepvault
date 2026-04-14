@@ -293,7 +293,7 @@ select:focus-visible {
 }
 
 .sidebar-collapse-button,
-.topbar-menu-button {
+.sidebar-collapse-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -308,13 +308,13 @@ select:focus-visible {
 }
 
 .sidebar-collapse-button:hover,
-.topbar-menu-button:hover {
+.sidebar-collapse-button:hover {
   border-color: var(--primary);
   color: var(--text);
 }
 
 .sidebar-collapse-button svg,
-.topbar-menu-button svg {
+.sidebar-collapse-button svg {
   width: 16px;
   height: 16px;
 }
