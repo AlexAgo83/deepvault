@@ -856,6 +856,31 @@ select:focus-visible {
   margin-bottom: 14px;
 }
 
+.ai-stats-kpi-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.ai-stats-kpi-grid .stat-card {
+  padding: 8px 9px;
+  gap: 3px;
+}
+
+.ai-stats-kpi-grid .stat-label {
+  font-size: 0.7rem;
+  line-height: 1.1;
+}
+
+.ai-stats-kpi-grid .stat-value {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.ai-stats-kpi-grid .stat-note {
+  font-size: 0.7rem;
+  line-height: 1.15;
+}
+
 .stat-card,
 .panel,
 .sync-card,
@@ -1851,11 +1876,53 @@ th {
   flex-direction: column;
   gap: 18px;
   min-width: 0;
+  height: 100%;
+  min-height: 0;
 }
 
 .ai-stats-panel {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 18px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ai-stats-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.ai-stats-panel .ai-response-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+  overscroll-behavior: contain;
+  align-content: start;
+}
+
+.ai-stats-needs-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ai-stats-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+  overscroll-behavior: contain;
+  align-content: start;
 }
 
 .ai-response-list {
@@ -1881,7 +1948,23 @@ th {
 }
 
 .ai-need-row {
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  min-width: 0;
+}
+
+.ai-need-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  color: var(--muted);
+}
+
+.ai-need-row strong {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .sync-ops-summary {

@@ -388,6 +388,15 @@ export function AppShell(model: AppModel) {
     selectedExplorerDoc,
   })
   const bishopExportHandlers = createBishopExportHandlers({ messages, question })
+  const responses = messages.filter(
+    (message) => message.role === 'assistant' && message.id !== 'seed' && message.status !== 'draft' && message.status !== 'answering',
+  )
+  const confidenceValues = responses.map((message) => message.confidenceScore).filter((value): value is number => typeof value === 'number')
+  const confidenceAverage = confidenceValues.length
+    ? Math.round(confidenceValues.reduce((sum, value) => sum + value, 0) / confidenceValues.length)
+    : null
+  const answeredCount = responses.filter((message) => message.status === 'answered').length
+  const needHints = responses.filter((message) => Boolean(message.improvementHint))
   const showKpiGrid = activeTab !== 'explorer' && activeTab !== 'bishop'
   const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
 
@@ -428,27 +437,42 @@ export function AppShell(model: AppModel) {
 
         {showKpiGrid ? (
           <section className="kpi-grid">
-            <StatCard
-              label="Sites in scope"
-              value={scopedSyncOverview.siteSummaries.length}
-              note="Site scope is shared across Explorer, Bishop, and Knowledge."
-            />
-            <StatCard
-              label="Visible docs"
-              value={scopedSyncOverview.documentCount}
-              note="Role-filtered corpus entries available in the current site scope."
-            />
-            <StatCard
-              label="Last refresh"
-              value={scopedSyncOverview.lastRun ? <CompactDateTime value={scopedSyncOverview.lastRun.finishedAt} /> : 'n/a'}
-              note={scopedSyncOverview.refreshPolicy}
-              valueClassName="stat-value-compact stat-value-datetime"
-            />
-            <StatCard
-              label="Provider readiness"
-              value={corpusProviders.filter((item) => item.ready).length}
-              note="OpenAI, Gemini, and Claude are available in the local abstraction."
-            />
+            {activeTab === 'ai-stats' ? (
+              <>
+                <StatCard label="Responses" value={responses.length} note="Completed Bishop responses in the current session." />
+                <StatCard label="Answered" value={answeredCount} note="Responses that were grounded enough to answer." />
+                <StatCard
+                  label="Avg confidence"
+                  value={confidenceAverage === null ? 'n/a' : `${confidenceAverage}%`}
+                  note="Average confidence across completed responses with a numeric score."
+                />
+                <StatCard label="Need hints" value={needHints.length} note="Responses that surfaced a brief hint about better input." />
+              </>
+            ) : (
+              <>
+                <StatCard
+                  label="Sites in scope"
+                  value={scopedSyncOverview.siteSummaries.length}
+                  note="Site scope is shared across Explorer, Bishop, and Knowledge."
+                />
+                <StatCard
+                  label="Visible docs"
+                  value={scopedSyncOverview.documentCount}
+                  note="Role-filtered corpus entries available in the current site scope."
+                />
+                <StatCard
+                  label="Last refresh"
+                  value={scopedSyncOverview.lastRun ? <CompactDateTime value={scopedSyncOverview.lastRun.finishedAt} /> : 'n/a'}
+                  note={scopedSyncOverview.refreshPolicy}
+                  valueClassName="stat-value-compact stat-value-datetime"
+                />
+                <StatCard
+                  label="Provider readiness"
+                  value={corpusProviders.filter((item) => item.ready).length}
+                  note="OpenAI, Gemini, and Claude are available in the local abstraction."
+                />
+              </>
+            )}
           </section>
         ) : null}
 

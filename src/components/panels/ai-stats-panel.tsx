@@ -1,4 +1,4 @@
-import { CompactDateTime, Pill, SectionHeading, StatCard } from '../app-ui'
+import { CompactDateTime, Pill, SectionHeading } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 
 function getStatusTone(status: string) {
@@ -25,13 +25,11 @@ export function AIStatsPanel({ messages }: { messages: AppModel['messages'] }) {
   const responses = messages.filter(
     (message) => message.role === 'assistant' && message.id !== 'seed' && message.status !== 'draft' && message.status !== 'answering',
   )
-  const confidenceValues = responses.map((message) => message.confidenceScore).filter((value): value is number => typeof value === 'number')
-  const confidenceAverage = confidenceValues.length
-    ? Math.round(confidenceValues.reduce((sum, value) => sum + value, 0) / confidenceValues.length)
-    : null
-  const answeredCount = responses.filter((message) => message.status === 'answered').length
-  const needHints = responses.filter((message) => Boolean(message.improvementHint))
-  const needCounts = needHints.reduce<Record<string, number>>((counts, message) => {
+  const needCounts = responses.reduce<Record<string, number>>((counts, message) => {
+    if (!message.improvementHint) {
+      return counts
+    }
+
     const hint = message.improvementHint || ''
     counts[hint] = (counts[hint] || 0) + 1
     return counts
@@ -50,17 +48,6 @@ export function AIStatsPanel({ messages }: { messages: AppModel['messages'] }) {
             title="AI stats"
             subtitleTooltip="Track Bishop responses, confidence, and the context that would make the next answer stronger."
           />
-
-          <div className="kpi-grid compact">
-            <StatCard label="Responses" value={responses.length} note="Completed Bishop responses in the current session." />
-            <StatCard label="Answered" value={answeredCount} note="Responses that were grounded enough to answer." />
-            <StatCard
-              label="Avg confidence"
-              value={confidenceAverage === null ? 'n/a' : `${confidenceAverage}%`}
-              note="Average confidence across completed responses with a numeric score."
-            />
-            <StatCard label="Need hints" value={needHints.length} note="Responses that surfaced a brief hint about better input." />
-          </div>
 
           <div className="ai-response-list">
             {recentResponses.length ? (
@@ -94,22 +81,24 @@ export function AIStatsPanel({ messages }: { messages: AppModel['messages'] }) {
         </article>
       </div>
 
-      <aside className="panel">
+      <aside className="panel ai-stats-needs-panel">
         <SectionHeading
           title="AI needs"
           subtitleTooltip="Recurring inputs that would have improved the last answers."
         />
-        <div className="detail-stack">
-          {topNeeds.length ? (
-            topNeeds.map(({ hint, count }) => (
-              <div key={hint} className="detail-row ai-need-row">
-                <span>{hint}</span>
-                <strong>{count}</strong>
-              </div>
-            ))
-          ) : (
-            <div className="empty-state">No AI needs have been surfaced yet.</div>
-          )}
+        <div className="ai-stats-scroll">
+          <div className="detail-stack">
+            {topNeeds.length ? (
+              topNeeds.map(({ hint, count }) => (
+                <div key={hint} className="ai-need-row">
+                  <span>{hint}</span>
+                  <strong>{count}</strong>
+                </div>
+              ))
+            ) : (
+              <div className="empty-state">No AI needs have been surfaced yet.</div>
+            )}
+          </div>
         </div>
       </aside>
     </section>
