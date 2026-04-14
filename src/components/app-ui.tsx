@@ -60,7 +60,7 @@ export function PathLabel({ value, href }: { value: string; href?: string | null
   )
 }
 
-function FileLinkIcon() {
+export function FileLinkIcon() {
   return (
     <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
       <path d="M6.25 2.75h3.1l2.4 2.4v5.35c0 .41-.34.75-.75.75h-4.75a.75.75 0 0 1-.75-.75V3.5c0-.41.34-.75.75-.75Z" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinejoin="round" />

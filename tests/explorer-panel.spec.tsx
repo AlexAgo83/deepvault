@@ -7,6 +7,7 @@ const explorerRow: ExplorerRow = {
   id: 'delivery-plan',
   siteId: 'pilot-alpha',
   siteName: 'Pilot Site Alpha',
+  siteUrl: 'https://example.sharepoint.com/sites/pilot-alpha',
   kind: 'document',
   title: 'Delivery plan',
   path: '/Shared Documents/Delivery plan.xlsx',

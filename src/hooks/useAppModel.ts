@@ -24,7 +24,7 @@ import { resolveCorpusMode } from '../lib/corpus-mode'
 
 export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
 
-export type ExplorerRow = CorpusDocument & { score: number; siteName: string }
+export type ExplorerRow = CorpusDocument & { score: number; siteName: string; siteUrl: string }
 
 export interface AppModel {
   activeTab: AppTab
