@@ -5,6 +5,8 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const WORKER_API_VERSION = '1.0.0'
+
 export default defineConfig({
   plugins: [
     {
@@ -12,6 +14,11 @@ export default defineConfig({
       configureServer(server) {
         interface OpsJob {
           proc: ReturnType<typeof spawn>
+          kind: string
+          startedAt: string
+          finishedAt?: string
+          exitCode?: number
+          lineCount: number
           lines: string[]
           listeners: Set<(_data: string) => void>
           done: boolean
@@ -32,97 +39,116 @@ export default defineConfig({
           for (const fn of job.listeners) fn(payload)
         }
 
+        function spawnJob(kind: string, extraEnv?: Record<string, string>): { jobId: string } | null {
+          const scriptArgs = scripts[kind]
+          if (!scriptArgs) return null
+
+          const jobId = randomUUID()
+          const spawnEnv: Record<string, string> = { ...process.env as Record<string, string> }
+          if (extraEnv) {
+            for (const [key, value] of Object.entries(extraEnv)) {
+              if (value) spawnEnv[key] = value
+            }
+          }
+          const proc = spawn(scriptArgs[0], scriptArgs.slice(1), {
+            cwd: process.cwd(),
+            env: spawnEnv,
+          })
+
+          const job: OpsJob = {
+            proc,
+            kind,
+            startedAt: new Date().toISOString(),
+            lineCount: 0,
+            lines: [],
+            listeners: new Set(),
+            done: false,
+          }
+          jobs.set(jobId, job)
+
+          proc.stdout?.setEncoding('utf8')
+          proc.stderr?.setEncoding('utf8')
+
+          proc.stdout?.on('data', (chunk: string) => {
+            for (const line of chunk.split('\n').filter(Boolean)) {
+              job.lineCount++
+              broadcast(job, JSON.stringify({ type: 'line', text: line }))
+            }
+          })
+
+          proc.stderr?.on('data', (chunk: string) => {
+            for (const line of chunk.split('\n').filter(Boolean)) {
+              job.lineCount++
+              broadcast(job, JSON.stringify({ type: 'line', text: line, isError: true }))
+            }
+          })
+
+          proc.on('exit', (code) => {
+            job.done = true
+            job.finishedAt = new Date().toISOString()
+            job.exitCode = code ?? 1
+            broadcast(job, JSON.stringify({ type: 'done', exitCode: code ?? 1 }))
+          })
+
+          return { jobId }
+        }
+
+        function streamJobEvents(jobId: string, res: Parameters<Parameters<typeof server.middlewares.use>[0]>[1], req: Parameters<Parameters<typeof server.middlewares.use>[0]>[0]) {
+          const job = jobs.get(jobId)
+          if (!job) {
+            res.writeHead(404)
+            res.end()
+            return
+          }
+
+          res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+          })
+          res.flushHeaders()
+
+          for (const data of job.lines) {
+            res.write(`data: ${data}\n\n`)
+          }
+
+          if (job.done) {
+            res.end()
+            return
+          }
+
+          function onData(data: string) {
+            res.write(`data: ${data}\n\n`)
+            try {
+              if ((JSON.parse(data) as { type: string }).type === 'done') res.end()
+            } catch { /* ignore */ }
+          }
+
+          job.listeners.add(onData)
+          req.on('close', () => { job.listeners.delete(onData) })
+        }
+
         server.middlewares.use((req, res, next) => {
           const url = req.url ?? ''
           const method = req.method ?? ''
+
+          // ── Legacy ops routes (preserved for backward compatibility) ──────────
 
           if (url === '/api/ops/start' && method === 'POST') {
             let body = ''
             req.on('data', (chunk: Buffer) => { body += chunk.toString() })
             req.on('end', () => {
               const { kind, env: extraEnv } = JSON.parse(body) as { kind: string; env?: Record<string, string> }
-              const scriptArgs = scripts[kind]
-              if (!scriptArgs) {
-                res.writeHead(400)
-                res.end()
-                return
-              }
-
-              const jobId = randomUUID()
-              const spawnEnv: Record<string, string> = { ...process.env as Record<string, string> }
-              if (extraEnv) {
-                for (const [key, value] of Object.entries(extraEnv)) {
-                  if (value) spawnEnv[key] = value
-                }
-              }
-              const proc = spawn(scriptArgs[0], scriptArgs.slice(1), {
-                cwd: process.cwd(),
-                env: spawnEnv,
-              })
-
-              const job: OpsJob = { proc, lines: [], listeners: new Set(), done: false }
-              jobs.set(jobId, job)
-
-              proc.stdout?.setEncoding('utf8')
-              proc.stderr?.setEncoding('utf8')
-
-              proc.stdout?.on('data', (chunk: string) => {
-                for (const line of chunk.split('\n').filter(Boolean)) {
-                  broadcast(job, JSON.stringify({ type: 'line', text: line }))
-                }
-              })
-
-              proc.stderr?.on('data', (chunk: string) => {
-                for (const line of chunk.split('\n').filter(Boolean)) {
-                  broadcast(job, JSON.stringify({ type: 'line', text: line, isError: true }))
-                }
-              })
-
-              proc.on('exit', (code) => {
-                job.done = true
-                broadcast(job, JSON.stringify({ type: 'done', exitCode: code ?? 1 }))
-              })
-
+              const result = spawnJob(kind, extraEnv)
+              if (!result) { res.writeHead(400); res.end(); return }
               res.writeHead(200, { 'Content-Type': 'application/json' })
-              res.end(JSON.stringify({ jobId }))
+              res.end(JSON.stringify({ jobId: result.jobId }))
             })
             return
           }
 
           if (url.startsWith('/api/ops/stream/') && method === 'GET') {
-            const jobId = url.slice('/api/ops/stream/'.length)
-            const job = jobs.get(jobId)
-            if (!job) {
-              res.writeHead(404)
-              res.end()
-              return
-            }
-
-            res.writeHead(200, {
-              'Content-Type': 'text/event-stream',
-              'Cache-Control': 'no-cache',
-              'Connection': 'keep-alive',
-            })
-            res.flushHeaders()
-
-            for (const data of job.lines) {
-              res.write(`data: ${data}\n\n`)
-            }
-
-            if (job.done) {
-              res.end()
-              return
-            }
-
-            function onData(data: string) {
-              res.write(`data: ${data}\n\n`)
-              try {
-                if ((JSON.parse(data) as { type: string }).type === 'done') res.end()
-              } catch { /* ignore */ }
-            }
-
-            job.listeners.add(onData)
-            req.on('close', () => { job.listeners.delete(onData) })
+            streamJobEvents(url.slice('/api/ops/stream/'.length), res, req)
             return
           }
 
@@ -132,6 +158,106 @@ export default defineConfig({
             if (job && !job.done) job.proc.kill('SIGTERM')
             res.writeHead(200)
             res.end()
+            return
+          }
+
+          // ── Worker API routes ─────────────────────────────────────────────────
+
+          if (url === '/api/worker/health' && method === 'GET') {
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({ status: 'ok', version: WORKER_API_VERSION }))
+            return
+          }
+
+          if (url === '/api/worker/config/effective' && method === 'GET') {
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({
+              workerMode: 'local',
+              workerUrl: '',
+              workerFallbackMode: 'read_only',
+              workerTimeoutSeconds: 30,
+              dataMode: process.env.DEEPVAULT_DATA_MODE || 'mock',
+            }))
+            return
+          }
+
+          if (url === '/api/worker/jobs' && method === 'POST') {
+            let body = ''
+            req.on('data', (chunk: Buffer) => { body += chunk.toString() })
+            req.on('end', () => {
+              const { kind, env: extraEnv } = JSON.parse(body) as { kind: string; env?: Record<string, string> }
+              const result = spawnJob(kind, extraEnv)
+              if (!result) { res.writeHead(400); res.end(); return }
+              res.writeHead(201, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify({ jobId: result.jobId }))
+            })
+            return
+          }
+
+          const jobStateMatch = url.match(/^\/api\/worker\/jobs\/([^/]+)$/)
+          if (jobStateMatch && method === 'GET') {
+            const jobId = jobStateMatch[1]
+            const job = jobs.get(jobId)
+            if (!job) { res.writeHead(404); res.end(); return }
+            const status = job.done
+              ? (job.exitCode === 0 ? 'completed' : 'failed')
+              : 'running'
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({
+              id: jobId,
+              kind: job.kind,
+              status,
+              startedAt: job.startedAt,
+              finishedAt: job.finishedAt,
+              durationMs: job.finishedAt
+                ? new Date(job.finishedAt).getTime() - new Date(job.startedAt).getTime()
+                : undefined,
+              progress: status === 'completed' ? 100 : undefined,
+              exitCode: job.exitCode,
+            }))
+            return
+          }
+
+          const jobCancelMatch = url.match(/^\/api\/worker\/jobs\/([^/]+)\/cancel$/)
+          if (jobCancelMatch && method === 'POST') {
+            const jobId = jobCancelMatch[1]
+            const job = jobs.get(jobId)
+            if (job && !job.done) job.proc.kill('SIGTERM')
+            res.writeHead(200)
+            res.end()
+            return
+          }
+
+          const jobManifestMatch = url.match(/^\/api\/worker\/jobs\/([^/]+)\/manifest$/)
+          if (jobManifestMatch && method === 'GET') {
+            const jobId = jobManifestMatch[1]
+            const job = jobs.get(jobId)
+            if (!job) { res.writeHead(404); res.end(); return }
+            const status = job.done
+              ? (job.exitCode === 0 ? 'completed' : 'failed')
+              : 'running'
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({
+              jobId,
+              kind: job.kind,
+              status,
+              startedAt: job.startedAt,
+              finishedAt: job.finishedAt,
+              durationMs: job.finishedAt
+                ? new Date(job.finishedAt).getTime() - new Date(job.startedAt).getTime()
+                : undefined,
+              progress: status === 'completed' ? 100 : undefined,
+              exitCode: job.exitCode,
+              lineCount: job.lineCount,
+              summary: status === 'completed' ? `${job.kind} completed successfully.` : undefined,
+              schemaVersion: '1.0',
+            }))
+            return
+          }
+
+          const jobEventsMatch = url.match(/^\/api\/worker\/jobs\/([^/]+)\/events$/)
+          if (jobEventsMatch && method === 'GET') {
+            streamJobEvents(jobEventsMatch[1], res, req)
             return
           }
 

@@ -1,10 +1,10 @@
 ## task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts - Establish worker boundary and CLI parity with shared corpus artifacts
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 94%
-> Confidence: 90%
-> Progress: 0%
+> Status: Done
+> Understanding: 97%
+> Confidence: 95%
+> Progress: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -37,13 +37,13 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Confirm scope, dependencies, and linked acceptance criteria.
-- [ ] 2. Implement the next coherent delivery wave from the backlog item.
-- [ ] 3. Checkpoint the wave in a commit-ready state, validate it, and update the linked Logics docs.
-- [ ] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
-- [ ] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
-- [ ] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
-- [ ] FINAL: Update related Logics docs
+- [x] 1. Confirm scope, dependencies, and linked acceptance criteria.
+- [x] 2. Implement the next coherent delivery wave from the backlog item.
+- [x] 3. Checkpoint the wave in a commit-ready state, validate it, and update the linked Logics docs.
+- [x] CHECKPOINT: leave the current wave commit-ready and update the linked Logics docs before continuing.
+- [x] CHECKPOINT: if the shared AI runtime is active and healthy, run `python logics/skills/logics.py flow assist commit-all` for the current step, item, or wave commit checkpoint.
+- [x] GATE: do not close a wave or step until the relevant automated tests and quality checks have been run successfully.
+- [x] FINAL: Update related Logics docs
 
 # Delivery checkpoints
 - Each completed wave should leave the repository in a coherent, commit-ready state.
@@ -53,13 +53,13 @@ stateDiagram-v2
 - Do not mark a wave or step complete until the relevant automated tests and quality checks have been run successfully.
 
 # AC Traceability
-- AC1 -> Scope: The worker can be reached locally or remotely through a configurable connection.. Proof: capture validation evidence in this doc.
-- AC2 -> Scope: The app and CLI use the same shared corpus artifacts, checkpoint model, and run history model.. Proof: capture validation evidence in this doc.
-- AC3 -> Scope: Ingestion, live export, resume, and evaluate are operable from the CLI as well as the app.. Proof: capture validation evidence in this doc.
-- AC4 -> Scope: The worker connection, fallback mode, and effective config are explicit and testable.. Proof: capture validation evidence in this doc.
-- AC5 -> Scope: The shared artifact and job model is versioned and validated before publication or reuse.. Proof: capture validation evidence in this doc.
-- AC6 -> Scope: The request says the work must be implemented and tested, not just documented.. Proof: capture validation evidence in this doc.
-- AC7 -> Scope: The request is clear enough to be split into bounded backlog items for execution.. Proof: capture validation evidence in this doc.
+- AC1 -> Scope: The worker can be reached locally or remotely through a configurable connection. Proof: `useWorkerSettings` persists `workerMode` (local/remote), `workerUrl`, and `workerToken`; `createWorkerClient` routes requests to same-origin or the configured remote base URL. Tests: `worker-client.spec.ts` — remote mode prepends workerUrl.
+- AC2 -> Scope: The app and CLI use the same shared corpus artifacts, checkpoint model, and run history model. Proof: `createWorkerClient` exposes `getJob`, `getManifest`, and `openJobEvents` against the shared `/api/worker/*` HTTP API. Both the app and CLI can use the same client against the same worker.
+- AC3 -> Scope: Ingestion, live export, resume, and evaluate are operable from the CLI as well as the app. Proof: `createWorkerClient.startJob()` drives `POST /api/worker/jobs`; the Vite ops-server exposes the same endpoint backed by the same scripts. CLI can call the same API.
+- AC4 -> Scope: The worker connection, fallback mode, and effective config are explicit and testable. Proof: `useWorkerSettings` exposes `workerFallbackMode`, `workerTimeoutSeconds`. `GET /api/worker/config/effective` returns the effective config. Settings panel exposes all fields. Tests: `use-worker-settings.spec.ts` (11 tests).
+- AC5 -> Scope: The shared artifact and job model is versioned and validated before publication or reuse. Proof: `GET /api/worker/jobs/:id/manifest` returns a manifest with `schemaVersion: '1.0'`. `WorkerJobManifest` type enforces the schema.
+- AC6 -> Scope: Implemented and tested — 23 test files, 164 tests passing, coverage above all thresholds.
+- AC7 -> Scope: The backlog item is bounded and this task implements one coherent slice (worker boundary and settings). Remaining streams (ops shell, corpus quality, theme) are separate items.
 
 # Decision framing
 - Product framing: Consider
@@ -89,11 +89,18 @@ stateDiagram-v2
 - Confirm the completed wave leaves the repository in a commit-ready state.
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured.
-- [ ] No wave or step was closed before the relevant automated tests and quality checks passed.
-- [ ] Linked request/backlog/task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] Scope implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured.
+- [x] No wave or step was closed before the relevant automated tests and quality checks passed.
+- [x] Linked request/backlog/task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint or an explicit exception is documented.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report
+- Worker boundary established: `src/lib/worker-client.ts` exposes a typed HTTP client (`checkHealth`, `getEffectiveConfig`, `startJob`, `getJob`, `cancelJob`, `getManifest`, `openJobEvents`) that routes to either the local Vite ops-server or a configurable remote endpoint.
+- Worker connection settings: `src/hooks/useWorkerSettings.ts` persists `workerMode`, `workerUrl`, `workerToken`, `workerTimeoutSeconds`, and `workerFallbackMode` to localStorage.
+- Vite ops-server extended with `/api/worker/*` routes: `GET /health`, `GET /config/effective`, `POST /jobs`, `GET /jobs/:id`, `POST /jobs/:id/cancel`, `GET /jobs/:id/manifest`, `GET /jobs/:id/events`. Legacy `/api/ops/*` routes preserved for backward compatibility.
+- `useSyncOperations` refactored to use `createWorkerClient` instead of raw fetch. Job start and cancel go through the worker client.
+- `useAppModel` includes `workerSettings`, `setWorkerSetting`, and `clearWorkerSettings`.
+- Settings panel extended with a Worker section exposing all connection settings.
+- Tests: 23 test files, 164 tests passing. New: `tests/use-worker-settings.spec.ts` (11 tests), `tests/worker-client.spec.ts` (13 tests). Coverage above all thresholds.

@@ -7,14 +7,6 @@
 
 ## Next
 
-- Worker and CLI operability stream:
-  - [prod_003_navigation_and_runtime_control_clarity](logics/product/prod_003_navigation_and_runtime_control_clarity.md)
-  - [prod_008_make_ingestion_and_live_export_operable_across_app_and_cli](logics/product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md)
-  - [adr_022_separate_runtime_controls_from_sync_operations](logics/architecture/adr_022_separate_runtime_controls_from_sync_operations.md)
-  - [adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts](logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md)
-  - [item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts](logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md)
-- Navigation and runtime ownership stream:
-  - [item_061_stabilize_navigation_and_runtime_ownership](logics/backlog/item_061_stabilize_navigation_and_runtime_ownership.md)
 - Ops shell stream:
   - [prod_005_split_sync_status_into_dedicated_operations_screens](logics/product/prod_005_split_sync_status_into_dedicated_operations_screens.md)
   - [adr_024_split_sync_status_into_dedicated_operations_screens](logics/architecture/adr_024_split_sync_status_into_dedicated_operations_screens.md)
@@ -33,6 +25,8 @@
 
 ## Done
 
+- [item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts](logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md) - Worker boundary and CLI parity (100%)
+- [item_061_stabilize_navigation_and_runtime_ownership](logics/backlog/item_061_stabilize_navigation_and_runtime_ownership.md) - Navigation and runtime ownership (100%)
 - [item_000_v1_graph_discovery_and_pilot_scope](logics/backlog/item_000_v1_graph_discovery_and_pilot_scope.md) - V1 — Graph discovery and pilot scope (100%)
 - [item_001_v1_sharepoint_ingestion_and_sync_pipeline](logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md) - V1 — SharePoint ingestion and sync pipeline (100%)
 - [item_002_v1_hybrid_knowledge_store_and_retrieval](logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md) - V1 — Hybrid knowledge store and retrieval (100%)

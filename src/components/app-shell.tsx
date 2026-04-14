@@ -250,6 +250,7 @@ export function AppShell(model: AppModel) {
     corpusProviders,
     clearEntraSettings,
     clearProviderSecrets,
+    clearWorkerSettings,
     entraSettings,
     explorerRows,
     clearBishopHistory,
@@ -279,9 +280,11 @@ export function AppShell(model: AppModel) {
     setSearch,
     setSelectedDocId,
     setSiteFilter,
+    setWorkerSetting,
     siteFilter,
     siteSummaries,
     syncOperations,
+    workerSettings,
   } = model
   const installPrompt = useInstallPrompt()
   const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true })
@@ -374,13 +377,16 @@ export function AppShell(model: AppModel) {
               corpusProviders={corpusProviders}
               entraSettings={entraSettings}
               providerSecrets={providerSecrets}
+              workerSettings={workerSettings}
               onClear={clearProviderSecrets}
               onClearEntra={clearEntraSettings}
+              onClearWorker={clearWorkerSettings}
               onEntraChange={setEntraSetting}
               onKeyChange={setProviderSecret}
               onProviderChange={(value) => setProvider(value)}
               onRoleChange={(value) => setRole(value)}
               onSiteFilterChange={setSiteFilter}
+              onWorkerChange={setWorkerSetting}
               provider={provider}
               role={role}
               siteFilter={siteFilter}

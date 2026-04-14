@@ -262,6 +262,7 @@ describe('DeepVault app', () => {
     }))
 
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve({ jobId: 'test-job-1' }),
     }))
 
@@ -312,6 +313,7 @@ describe('DeepVault app', () => {
     }))
 
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve({ jobId: 'test-job-err' }),
     }))
 
@@ -345,6 +347,7 @@ describe('DeepVault app', () => {
     }))
 
     const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve({ jobId: 'test-job-cancel' }),
     })
     vi.stubGlobal('fetch', fetchMock)
@@ -362,7 +365,7 @@ describe('DeepVault app', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Cancel job' }))
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('/api/ops/cancel/test-job-cancel'),
+      expect.stringContaining('/api/worker/jobs/test-job-cancel/cancel'),
       expect.objectContaining({ method: 'POST' }),
     )
     expect(screen.getAllByText('cancelled').length).toBeGreaterThan(0)
@@ -401,6 +404,7 @@ describe('DeepVault app', () => {
   it('confirms and starts evaluate from the control panel', async () => {
     vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve({ jobId: 'test-evaluate' }),
     }))
 
@@ -433,6 +437,7 @@ describe('DeepVault app', () => {
       return mockEs
     }))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve({ jobId: 'long-job' }),
     }))
 
@@ -456,6 +461,7 @@ describe('DeepVault app', () => {
   it('confirms and starts resume live export from the control panel', async () => {
     vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve({ jobId: 'test-export-resume' }),
     }))
 
@@ -474,6 +480,7 @@ describe('DeepVault app', () => {
   it('confirms and starts live export from the control panel', async () => {
     vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
       json: () => Promise.resolve({ jobId: 'test-export-live' }),
     }))
 
