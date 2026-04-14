@@ -1743,6 +1743,20 @@ th {
   word-break: break-word;
 }
 
+.source-card strong,
+.message-source strong {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.source-meta,
+.message-source,
+.message-source .path-inline {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .path-inline {
   display: inline;
   appearance: none;
