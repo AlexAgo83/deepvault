@@ -1236,6 +1236,10 @@ select:focus-visible {
   margin-bottom: 14px;
 }
 
+.section-heading > div {
+  min-width: 0;
+}
+
 .section-heading-actions {
   display: flex;
   align-items: center;
@@ -1247,6 +1251,13 @@ select:focus-visible {
 .section-heading h2 {
   font-size: 1.3rem;
   margin-bottom: 4px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.section-heading p {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .document-row {
