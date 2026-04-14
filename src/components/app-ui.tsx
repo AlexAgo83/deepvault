@@ -188,9 +188,19 @@ export function Message({
   resolveFileHref: (_siteId: string, _path: string, _webUrl?: string | null) => string | null
 }) {
   const [showTracePreview, setShowTracePreview] = useState(false)
+  const [showNeedPreview, setShowNeedPreview] = useState(false)
+  const [showSources, setShowSources] = useState(false)
 
   useEffect(() => {
     setShowTracePreview(false)
+  }, [message.id])
+
+  useEffect(() => {
+    setShowNeedPreview(false)
+  }, [message.id])
+
+  useEffect(() => {
+    setShowSources(false)
   }, [message.id])
 
   return (
@@ -198,33 +208,102 @@ export function Message({
       <div className="message-meta">
         <strong>{message.role === 'assistant' ? 'Bishop' : 'You'}</strong>
         <span>{message.status ? message.status : ''}</span>
-        {message.role === 'assistant' && typeof message.confidenceScore === 'number' ? (
-          <button
-            type="button"
-            className="message-confidence-button"
-            aria-expanded={showTracePreview}
-            onClick={() => setShowTracePreview((value) => !value)}
-          >
-            {message.confidenceScore}%
-          </button>
+        {message.role === 'assistant' && (typeof message.confidenceScore === 'number' || message.improvementHint) ? (
+          <div className="message-meta-actions">
+            {typeof message.confidenceScore === 'number' ? (
+              <div className="message-confidence-popover">
+                <button
+                  type="button"
+                  className="message-confidence-button"
+                  aria-describedby={showTracePreview ? `message-trace-preview-${message.id}` : undefined}
+                  onMouseEnter={() => setShowTracePreview(true)}
+                  onMouseLeave={() => setShowTracePreview(false)}
+                  onFocus={() => setShowTracePreview(true)}
+                  onBlur={() => setShowTracePreview(false)}
+                >
+                  {message.confidenceScore}%
+                </button>
+                {showTracePreview && message.providerTracePreview ? (
+                  <div
+                    id={`message-trace-preview-${message.id}`}
+                    className="message-trace-preview message-trace-preview-popover"
+                    role="tooltip"
+                    aria-live="polite"
+                  >
+                    {message.providerTracePreview}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+            {message.improvementHint ? (
+              <div className="message-confidence-popover">
+                <button
+                  type="button"
+                  className="message-need-help"
+                  aria-describedby={showNeedPreview ? `message-need-preview-${message.id}` : undefined}
+                  onMouseEnter={() => setShowNeedPreview(true)}
+                  onMouseLeave={() => setShowNeedPreview(false)}
+                  onFocus={() => setShowNeedPreview(true)}
+                  onBlur={() => setShowNeedPreview(false)}
+                  aria-label="Show improvement hint"
+                  title="Show improvement hint"
+                >
+                  ?
+                </button>
+                {showNeedPreview ? (
+                  <div
+                    id={`message-need-preview-${message.id}`}
+                    className="message-trace-preview message-trace-preview-popover"
+                    role="tooltip"
+                    aria-live="polite"
+                  >
+                    {message.improvementHint}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
         ) : null}
       </div>
       <p>{message.text}</p>
-      {message.role === 'assistant' && message.improvementHint ? (
-        <div className="message-need">
-          <strong>What would help next</strong>
-          <span>{message.improvementHint}</span>
-        </div>
-      ) : null}
-      {showTracePreview && message.providerTracePreview ? <div className="message-trace-preview">{message.providerTracePreview}</div> : null}
       {message.sources?.length ? (
-        <div className="message-sources">
-          {message.sources.map((source) => (
-            <div key={source.id} className="message-source">
-              <strong>{source.title}</strong>
-              <PathLabel value={source.path} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
+        <div className="message-sources-block">
+          {showSources ? (
+            <>
+              <div className="message-sources-header">
+                <span>Sources</span>
+                <button
+                  type="button"
+                  className="text-button text-button-sm"
+                  onClick={() => setShowSources((value) => !value)}
+                  aria-expanded={showSources}
+                  aria-controls={`message-sources-${message.id}`}
+                >
+                  Hide sources
+                </button>
+              </div>
+              <div id={`message-sources-${message.id}`} className="message-sources">
+                {message.sources.map((source) => (
+                  <div key={source.id} className="message-source">
+                    <strong>{source.title}</strong>
+                    <PathLabel value={source.path} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="message-sources-toggle-closed">
+              <button
+                type="button"
+                className="text-button text-button-sm"
+                onClick={() => setShowSources((value) => !value)}
+                aria-expanded={showSources}
+                aria-controls={`message-sources-${message.id}`}
+              >
+                Show sources
+              </button>
             </div>
-          ))}
+          )}
         </div>
       ) : null}
     </article>
