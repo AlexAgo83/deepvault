@@ -69,13 +69,13 @@ const REFRESH_DEF = {
 const LIVE_OP_DEFS = {
   ingest: {
     command: 'npm run ingest',
-    label: 'Run ingest',
+    label: 'Ingest',
     summary: 'Wrote a new local sync snapshot.',
     estimatedLines: 5,
   },
   evaluate: {
     command: 'npm run evaluate',
-    label: 'Run evaluate',
+    label: 'Evaluate',
     summary: 'Generated the baseline evaluation report.',
     estimatedLines: 40,
   },
