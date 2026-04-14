@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { ExplorerPanel } from '../src/components/panels/explorer-panel'
 import type { ExplorerRow } from '../src/hooks/useAppModel'
@@ -46,5 +47,29 @@ describe('ExplorerPanel', () => {
     expect(explorerCell).not.toHaveTextContent('Source:')
     expect(explorerCell).not.toHaveTextContent('CARESOFT')
     expect(explorerCell).not.toHaveTextContent('Planning de livraison.xlsx')
+  })
+
+  it('reveals the source excerpt on demand', async () => {
+    const user = userEvent.setup()
+    const explorerRowWithExcerpt: ExplorerRow = {
+      ...explorerRow,
+      content: 'Full source excerpt text with extra context.',
+    }
+
+    render(
+      <ExplorerPanel
+        explorerRows={[explorerRowWithExcerpt]}
+        onSelectDocument={vi.fn()}
+        onExportJson={vi.fn()}
+        onExportMarkdown={vi.fn()}
+        resolveFileHref={() => null}
+        selectedExplorerDoc={explorerRowWithExcerpt}
+      />,
+    )
+
+    expect(screen.queryByText('Source excerpt')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Show source excerpt' }))
+    expect(screen.getByRole('button', { name: 'Hide source excerpt' })).toBeInTheDocument()
+    expect(screen.getByText('Full source excerpt text with extra context.')).toBeInTheDocument()
   })
 })

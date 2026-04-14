@@ -200,6 +200,7 @@ p {
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  overflow: hidden;
 }
 
 .explorer-detail-scroll {
@@ -207,6 +208,7 @@ p {
   gap: 14px;
   flex: 1 1 auto;
   min-height: 0;
+  align-content: start;
   overflow: auto;
   padding-right: 4px;
   overscroll-behavior: contain;
@@ -1005,6 +1007,25 @@ select:focus-visible {
   border-radius: 8px;
 }
 
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 0;
+  text-align: left;
+}
+
+.text-button:hover,
+.text-button:focus-visible {
+  color: var(--text);
+  background: transparent;
+}
+
+.text-button-sm {
+  font-size: 0.76rem;
+  line-height: 1.2;
+}
+
 .settings-grid {
   margin-bottom: 2px;
 }
@@ -1396,6 +1417,13 @@ select:focus-visible {
   margin-top: 18px;
 }
 
+.document-content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .document-content p {
   margin: 0;
   padding: 14px 16px;
@@ -1404,6 +1432,10 @@ select:focus-visible {
   background: var(--surface-soft);
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.document-content-source {
+  margin-top: -2px;
 }
 
 .document-content-note {
