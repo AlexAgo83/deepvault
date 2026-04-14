@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { CompactPathText, FileTypePill, PathLabel, Pill, SectionHeading } from '../app-ui'
+import { CompactPathText, FileLinkIcon, FileTypePill, PathLabel, Pill, SectionHeading } from '../app-ui'
 import { formatUpdatedAt } from '../../lib/deepvault'
 import type { ExplorerRow } from '../../hooks/useAppModel'
 
@@ -132,9 +132,25 @@ export function ExplorerPanel({
             />
             <div className="explorer-detail-scroll">
               <div className="detail-stack">
-                <div className="detail-row">
+                <div className="detail-row detail-row-site-row">
                   <span>Site</span>
-                  <strong>{selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}</strong>
+                  <div className="detail-row-site-value">
+                    {selectedExplorerDoc.siteUrl ? (
+                      <a
+                        className="detail-row-site-button"
+                        href={selectedExplorerDoc.siteUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`Open site ${selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}`}
+                        title={`Open site ${selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}`}
+                      >
+                        <span className="detail-row-site-button-icon" aria-hidden="true">
+                          <FileLinkIcon />
+                        </span>
+                        <span>Open site</span>
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
                 <div className="detail-row">
                   <span>Owner</span>
@@ -150,7 +166,7 @@ export function ExplorerPanel({
                 </div>
                 <div className="detail-row">
                   <span>Tags</span>
-                  <strong>{selectedExplorerDoc.tags.join(', ')}</strong>
+                  <strong className="detail-row-tags">{selectedExplorerDoc.tags.join(', ')}</strong>
                 </div>
               </div>
               <div className="document-content">

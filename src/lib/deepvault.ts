@@ -431,12 +431,13 @@ export function buildExplorerRows(
   corpusData: Corpus,
   query: string,
   options: { role?: UserRole; siteId?: string } = {},
-): Array<CorpusDocument & { score: number; siteName: string }> {
+): Array<CorpusDocument & { score: number; siteName: string; siteUrl: string }> {
   const results = searchDocuments(corpusData, query, { ...options, includeDenied: false })
   return results.map(({ document, score }) => ({
     ...document,
     score,
     siteName: getSiteById(corpusData, document.siteId)?.name || document.siteId,
+    siteUrl: getSiteById(corpusData, document.siteId)?.url || '',
   }))
 }
 

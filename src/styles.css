@@ -1412,6 +1412,11 @@ select:focus-visible {
   gap: 12px;
 }
 
+.detail-row-site-row {
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .detail-row strong {
   text-align: right;
   font-weight: 600;
@@ -1421,7 +1426,58 @@ select:focus-visible {
   word-break: break-word;
 }
 
-.detail-row span {
+.detail-row-site-value {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  width: fit-content;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.detail-row-site-button {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 0;
+  width: fit-content;
+  max-width: max-content;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 7px;
+  background: var(--surface);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.72rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.detail-row-site-button:hover,
+.detail-row-site-button:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+  outline: none;
+}
+
+.detail-row-site-button-icon {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.detail-row-site-button-icon svg {
+  width: 0.9em;
+  height: 0.9em;
+}
+
+.detail-row-tags {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.detail-row > span {
   min-width: 92px;
   flex: 0 0 auto;
 }
