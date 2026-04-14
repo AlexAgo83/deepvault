@@ -17,6 +17,20 @@
   background: var(--bg);
 }
 
+[data-theme='dark'] {
+  --bg: #1a1714;
+  --surface: #231f1b;
+  --surface-2: #1d1a16;
+  --border: rgba(255, 255, 255, 0.11);
+  --text: #ede8e2;
+  --muted: #9a8e84;
+  --primary: #8a7e74;
+  --accent: #cf7a52;
+  --accent-2: #5e9470;
+  --success: #4d9668;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.36);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -183,6 +197,48 @@ p {
 .pwa-action-icon svg {
   width: 100%;
   height: 100%;
+}
+
+.theme-toggle {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.theme-toggle-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.theme-toggle-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  padding: 0;
+  flex-shrink: 0;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+
+.theme-toggle-button:hover {
+  border-color: var(--primary);
+  color: var(--text);
+}
+
+.theme-toggle-button svg {
+  width: 14px;
+  height: 14px;
 }
 
 .runtime-row,

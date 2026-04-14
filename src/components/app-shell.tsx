@@ -2,7 +2,8 @@ import { useEffect, useState, type ReactElement } from 'react'
 import { ErrorBoundary } from './error-boundary'
 import { CompactDateTime, Pill, StatCard } from './app-ui'
 import { GettingStartedModal } from './getting-started-modal'
-import { useInstallPrompt } from '../hooks'
+import { useInstallPrompt, useTheme } from '../hooks'
+import type { Theme } from '../hooks/useTheme'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
 import { AIStatsPanel, BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
 import { version } from '../../package.json'
@@ -82,6 +83,23 @@ function StatsIcon() {
   )
 }
 
+function SunIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <circle cx="10" cy="10" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M10 3.5v1.2M10 15.3v1.2M3.5 10h1.2M15.3 10h1.2M5.45 5.45l.85.85M13.7 13.7l.85.85M14.55 5.45l-.85.85M6.3 13.7l-.85.85" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function MoonIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M14.5 12.5A6 6 0 0 1 7.5 5.5a6.04 6.04 0 0 0-.5 2.4 6 6 0 0 0 6 6c.84 0 1.65-.17 2.38-.47A5.98 5.98 0 0 1 14.5 12.5Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function PwaInstallIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
@@ -109,15 +127,19 @@ function AppSidebar({
   hasPendingUpdate,
   install,
   isStandalone,
+  theme,
   update,
   onTabChange,
+  onToggleTheme,
 }: {
   activeTab: AppTab
   canInstall: boolean
   hasPendingUpdate: boolean
   install: () => Promise<void>
   isStandalone: boolean
+  theme: Theme
   onTabChange: (_tab: AppTab) => void
+  onToggleTheme: () => void
   update: () => Promise<void>
 }) {
   return (
@@ -181,6 +203,19 @@ function AppSidebar({
           </nav>
         </div>
       ) : null}
+
+      <div className="theme-toggle">
+        <span className="theme-toggle-label">Theme</span>
+        <button
+          type="button"
+          className="theme-toggle-button"
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          onClick={onToggleTheme}
+        >
+          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+        </button>
+      </div>
     </aside>
   )
 }
@@ -287,6 +322,7 @@ export function AppShell(model: AppModel) {
     workerSettings,
   } = model
   const installPrompt = useInstallPrompt()
+  const { theme, toggleTheme } = useTheme()
   const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true })
   const hasPendingUpdate = needRefresh[0]
   const [updateBannerDismissed, setUpdateBannerDismissed] = useState(false)
@@ -323,7 +359,9 @@ export function AppShell(model: AppModel) {
         hasPendingUpdate={hasPendingUpdate}
         install={installPrompt.install}
         isStandalone={installPrompt.isStandalone}
+        theme={theme}
         onTabChange={setActiveTab}
+        onToggleTheme={toggleTheme}
         update={updateApp}
       />
 
