@@ -226,10 +226,10 @@ export function SyncPanel({
         />
       ) : null}
 
-      <article className="panel sync-view-switcher" aria-label="Sync views">
+      <article className="panel sync-view-switcher" aria-label="Knowledge View">
         <div className="sync-view-switcher-head">
           <div>
-            <h2>Sync views</h2>
+            <h2>Knowledge View</h2>
             <p>Switch between coverage, execution, history, worker settings, and recovery from one view.</p>
           </div>
           <div className="sync-view-switcher-meta" aria-label="Current sync view summary">
@@ -244,7 +244,7 @@ export function SyncPanel({
           </div>
         </div>
 
-        <nav className="sync-subnav" aria-label="Sync views">
+        <nav className="sync-subnav" aria-label="Knowledge View">
           {SYNC_VIEWS.map(({ id, label, detail }) => (
             <button
               key={id}
@@ -271,8 +271,8 @@ export function SyncPanel({
 
       {/* Status view — concise summary */}
       {syncView === 'status' ? (
-        <article className="panel sync-view-panel" aria-label="Sync status summary">
-          <SectionHeading title="Sync status" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
+        <article className="panel sync-view-panel" aria-label="Knowledge summary">
+          <SectionHeading title="Knowledge" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
           <div className="kpi-grid compact">
             <StatCard
               label="Synced sites"

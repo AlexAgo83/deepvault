@@ -28,7 +28,7 @@ const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     label: 'Application',
     ariaLabel: 'Application panels',
     items: [
-      { id: 'sync', label: 'Sync status', icon: SyncIcon },
+      { id: 'sync', label: 'Knowledge', icon: SyncIcon },
       { id: 'ai-stats', label: 'AI stats', icon: StatsIcon },
       { id: 'settings', label: 'Settings', icon: SettingsIcon },
     ],
@@ -268,7 +268,7 @@ function AppTopbar({
     <header className="topbar">
       <div className="topbar-actions">
         <div className="topbar-badges">
-          <div className="topbar-badge-group topbar-badge-group-status" aria-label="Sync status">
+          <div className="topbar-badge-group topbar-badge-group-status" aria-label="Knowledge">
             <Pill tone={liveStateTone} title={liveStateDetail}>
               {liveStateLabel}
             </Pill>
@@ -431,7 +431,7 @@ export function AppShell(model: AppModel) {
             <StatCard
               label="Sites in scope"
               value={scopedSyncOverview.siteSummaries.length}
-              note="Site scope is shared across Explorer, Bishop, and Sync status."
+              note="Site scope is shared across Explorer, Bishop, and Knowledge."
             />
             <StatCard
               label="Visible docs"

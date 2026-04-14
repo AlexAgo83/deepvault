@@ -31,6 +31,9 @@ export function PathLabel({ value, href }: { value: string; href?: string | null
   if (href) {
     return (
       <a className="path-inline path-inline-link" title={`Open file in SharePoint: ${value}`} href={href} target="_blank" rel="noreferrer">
+        <span className="path-inline-icon" aria-hidden="true">
+          <FileLinkIcon />
+        </span>
         {displayValue}
       </a>
     )
@@ -54,6 +57,16 @@ export function PathLabel({ value, href }: { value: string; href?: string | null
     >
       {displayValue}
     </button>
+  )
+}
+
+function FileLinkIcon() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <path d="M6.25 2.75h3.1l2.4 2.4v5.35c0 .41-.34.75-.75.75h-4.75a.75.75 0 0 1-.75-.75V3.5c0-.41.34-.75.75-.75Z" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinejoin="round" />
+      <path d="M9.35 2.75v2.4h2.4" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinejoin="round" />
+      <path d="M5.5 9.75c.35-.56.9-.95 1.55-1.1.75-.18 1.53.05 2.06.58l.4.4c.53.53.76 1.31.58 2.06-.15.65-.54 1.2-1.1 1.55" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" />
+    </svg>
   )
 }
 
