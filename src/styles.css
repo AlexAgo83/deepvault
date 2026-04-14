@@ -1757,6 +1757,22 @@ th {
   word-break: break-word;
 }
 
+.source-card-top,
+.message-source {
+  min-width: 0;
+}
+
+.source-card-top strong,
+.message-source strong {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.source-card-top .pill,
+.message-source .path-inline {
+  flex-shrink: 0;
+}
+
 .path-inline {
   display: inline;
   appearance: none;
