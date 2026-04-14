@@ -1096,6 +1096,7 @@ select:focus-visible {
   border-radius: var(--radius-sm);
   background: var(--surface);
   box-shadow: var(--shadow);
+  color: var(--text);
   transition: border-color 120ms ease, transform 120ms ease, background-color 120ms ease;
 }
 
@@ -1124,6 +1125,7 @@ select:focus-visible {
 .document-row-top strong {
   font-size: 1.15rem;
   line-height: 1.2;
+  color: var(--text);
 }
 
 .file-type-pill {
