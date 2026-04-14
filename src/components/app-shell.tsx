@@ -254,34 +254,19 @@ function AppTopbar({
   liveStateLabel,
   liveStateTone,
   liveStateDetail,
-  isSidebarCollapsed,
   provider,
   role,
-  onToggleSidebar,
 }: {
   activeScopeLabel: string
   liveStateLabel: string
   liveStateTone: AppModel['liveState']['tone']
   liveStateDetail: string
-  isSidebarCollapsed: boolean
   provider: string
   role: string
-  onToggleSidebar: () => void
 }) {
   return (
     <header className="topbar">
       <div className="topbar-actions">
-        <button
-          type="button"
-          className="topbar-menu-button"
-          aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          aria-pressed={isSidebarCollapsed}
-          aria-controls="app-sidebar"
-          title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          onClick={onToggleSidebar}
-        >
-          <MenuIcon />
-        </button>
         <div className="topbar-badges">
           <div className="topbar-badge-group topbar-badge-group-status" aria-label="Sync status">
             <Pill tone={liveStateTone} title={liveStateDetail}>
@@ -428,10 +413,8 @@ export function AppShell(model: AppModel) {
           liveStateDetail={liveState.detail}
           liveStateLabel={liveState.label}
           liveStateTone={liveState.tone}
-          isSidebarCollapsed={isSidebarCollapsed}
           provider={provider}
           role={role}
-          onToggleSidebar={toggleSidebar}
         />
 
         {hasPendingUpdate && !updateBannerDismissed ? (
