@@ -2,6 +2,7 @@
   --bg: #f5f3ef;
   --surface: #fffdf9;
   --surface-2: #f1ebe3;
+  --surface-soft: #faf7f1;
   --border: #d8cec1;
   --text: #2a241f;
   --muted: #6e6258;
@@ -21,6 +22,7 @@
   --bg: #1a1714;
   --surface: #231f1b;
   --surface-2: #1d1a16;
+  --surface-soft: #2a241f;
   --border: rgba(255, 255, 255, 0.11);
   --text: #ede8e2;
   --muted: #9a8e84;
@@ -326,7 +328,7 @@ p {
 .message-confidence-button {
   border: 1px solid rgba(185, 106, 67, 0.24);
   border-radius: 999px;
-  background: rgba(245, 240, 232, 0.9);
+  background: var(--surface-soft);
   color: var(--accent);
   font-size: 0.8rem;
   font-weight: 700;
@@ -341,7 +343,7 @@ p {
 .message-trace-preview {
   border: 1px solid rgba(185, 106, 67, 0.14);
   border-radius: 10px;
-  background: rgba(245, 240, 232, 0.65);
+  background: var(--surface-soft);
   color: var(--text);
   font-size: 0.84rem;
   line-height: 1.45;
@@ -907,7 +909,7 @@ p {
   padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: #faf7f1;
+  background: var(--surface-soft);
 }
 
 .sync-view-switcher-meta-card span {
@@ -944,12 +946,12 @@ p {
 
 .sync-subnav-item:hover {
   border-color: rgba(185, 106, 67, 0.35);
-  background: #fbf8f4;
+  background: var(--surface-soft);
 }
 
 .sync-subnav-item-active {
   border-color: var(--accent);
-  background: linear-gradient(180deg, rgba(185, 106, 67, 0.04), rgba(255, 253, 249, 1));
+  background: linear-gradient(180deg, rgba(185, 106, 67, 0.08), var(--surface));
   box-shadow: none;
 }
 
@@ -987,7 +989,7 @@ p {
   padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: #faf7f1;
+  background: var(--surface-soft);
 }
 
 .sync-status-job-summary .detail-row {
@@ -1015,7 +1017,7 @@ p {
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: #faf7f1;
+  background: var(--surface-soft);
 }
 
 .sync-callout p {
@@ -1069,7 +1071,7 @@ p {
 
 .document-row-active {
   border-color: var(--accent);
-  background: linear-gradient(180deg, rgba(185, 106, 67, 0.04), rgba(255, 253, 249, 1));
+  background: linear-gradient(180deg, rgba(185, 106, 67, 0.08), var(--surface));
 }
 
 .document-row-top,
@@ -1099,7 +1101,7 @@ p {
   align-items: center;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: #f5f0e8;
+  background: var(--surface-2);
   color: var(--muted);
   padding: 2px 8px;
   font-size: 0.68rem;
@@ -1184,7 +1186,7 @@ p {
 .trace-preview {
   border: 1px solid rgba(185, 106, 67, 0.2);
   border-radius: 12px;
-  background: rgba(245, 240, 232, 0.75);
+  background: var(--surface-soft);
   color: var(--text);
   font-size: 0.88rem;
   line-height: 1.45;
@@ -1229,7 +1231,7 @@ th {
 }
 
 .message-user {
-  background: #f8f3eb;
+  background: var(--surface-soft);
 }
 
 .message-assistant {
@@ -1239,7 +1241,7 @@ th {
 .message-draft,
 .message-answering {
   border-color: rgba(76, 125, 90, 0.4);
-  background: linear-gradient(180deg, rgba(76, 125, 90, 0.06), rgba(255, 253, 249, 0.98));
+  background: linear-gradient(180deg, rgba(76, 125, 90, 0.08), var(--surface));
 }
 
 .message-sources {
@@ -1404,7 +1406,7 @@ th {
   padding: 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: #faf7f1;
+  background: var(--surface-soft);
 }
 
 .sync-progress {
@@ -1546,7 +1548,7 @@ th {
 }
 
 .pill-neutral {
-  background: #f5f0e8;
+  background: var(--surface-2);
 }
 
 .pill-accent {
@@ -1572,7 +1574,7 @@ th {
   border: 1px dashed var(--border);
   border-radius: var(--radius-sm);
   color: var(--muted);
-  background: #faf7f2;
+  background: var(--surface-soft);
 }
 
 .checklist {
@@ -1580,7 +1582,7 @@ th {
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: #faf7f1;
+  background: var(--surface-soft);
 }
 
 .checklist ul {
@@ -1608,8 +1610,8 @@ th {
 code {
   padding: 2px 6px;
   border-radius: 6px;
-  background: #efe7dd;
-  color: #5d4939;
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 @media (max-width: 1180px) {
