@@ -115,6 +115,10 @@ p {
   overflow: hidden;
 }
 
+.app-shell-sidebar-collapsed {
+  grid-template-columns: 84px minmax(0, 1fr);
+}
+
 .sidebar {
   border-right: 1px solid var(--border);
   background: var(--surface-2);
@@ -123,6 +127,11 @@ p {
   flex-direction: column;
   gap: 20px;
   overflow-y: auto;
+}
+
+.sidebar-collapsed {
+  width: 84px;
+  padding-inline: 14px;
 }
 
 .sidebar-brandline {
@@ -138,6 +147,10 @@ p {
   border-bottom: 1px solid rgba(216, 206, 193, 0.8);
 }
 
+.sidebar-brand {
+  min-width: 0;
+}
+
 .topbar p,
 .section-heading p {
   color: var(--muted);
@@ -148,6 +161,10 @@ p {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.sidebar-collapsed .sidebar-section {
+  gap: 8px;
 }
 
 .sidebar-label,
@@ -217,6 +234,10 @@ p {
   gap: 10px;
 }
 
+.nav-item-label {
+  min-width: 0;
+}
+
 .nav-item-icon {
   display: inline-flex;
   align-items: center;
@@ -261,6 +282,41 @@ select:focus-visible {
 
 .nav-item-action {
   width: 100%;
+}
+
+.sidebar-collapsed .sidebar-brandline {
+  justify-content: center;
+}
+
+.sidebar-collapsed .sidebar-brand {
+  display: none;
+}
+
+.sidebar-collapse-button,
+.topbar-menu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.sidebar-collapse-button:hover,
+.topbar-menu-button:hover {
+  border-color: var(--primary);
+  color: var(--text);
+}
+
+.sidebar-collapse-button svg,
+.topbar-menu-button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .pwa-action-icon {
@@ -318,6 +374,53 @@ select:focus-visible {
 .theme-toggle-button svg {
   width: 14px;
   height: 14px;
+}
+
+.sidebar-collapsed .sidebar-label,
+.sidebar-collapsed .nav-item-label,
+.sidebar-collapsed .theme-toggle-label {
+  display: none;
+}
+
+.sidebar-collapsed .nav-item {
+  justify-content: center;
+  padding-inline: 10px;
+}
+
+.sidebar-collapsed .nav-list,
+.sidebar-collapsed .sidebar-section,
+.sidebar-collapsed .theme-toggle {
+  align-items: center;
+}
+
+.sidebar-collapsed .theme-toggle {
+  justify-content: center;
+}
+
+.sidebar-collapsed .theme-toggle-button {
+  width: 32px;
+  height: 32px;
+}
+
+.sidebar-collapsed .nav-item-action {
+  width: 32px;
+}
+
+.sidebar-collapsed .pwa-action-button {
+  padding-inline: 0;
+}
+
+.sidebar-collapsed .pwa-action-button .pwa-action-icon {
+  margin-inline: 0;
+}
+
+.sidebar-collapsed .nav-item-icon,
+.sidebar-collapsed .pwa-action-icon {
+  margin: 0;
+}
+
+.sidebar-collapsed .nav-list {
+  width: 100%;
 }
 
 .runtime-row,
@@ -630,17 +733,22 @@ select:focus-visible {
 
 .topbar {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
 }
 
 .topbar-actions {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-end;
   gap: 10px;
   flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.topbar-menu-button {
+  align-self: flex-start;
 }
 
 .topbar-badges {

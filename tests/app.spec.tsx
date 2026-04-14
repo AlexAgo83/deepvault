@@ -152,6 +152,24 @@ describe('DeepVault app', () => {
     expect(kpiGrid).toHaveTextContent('Provider readiness')
   })
 
+  it('collapses the sidebar into an icon rail from the topbar menu button', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+
+    const shell = container.querySelector('.app-shell')
+    expect(shell).not.toHaveClass('app-shell-sidebar-collapsed')
+
+    const topbarToggle = container.querySelector('.topbar-menu-button')
+    expect(topbarToggle).not.toBeNull()
+
+    await user.click(topbarToggle as HTMLElement)
+
+    expect(shell).toHaveClass('app-shell-sidebar-collapsed')
+    expect(container.querySelector('.sidebar')).toHaveClass('sidebar-collapsed')
+    expect(container.querySelector('.sidebar-collapse-button')).toHaveAttribute('aria-pressed', 'true')
+    expect(container.querySelector('.topbar-menu-button')).toHaveAttribute('aria-pressed', 'true')
+  })
+
   it('loads explorer rows progressively as the sentinel enters view', async () => {
     let observerCallback: IntersectionObserverCallback | null = null
     const observe = vi.fn()

@@ -121,14 +121,24 @@ function PwaUpdateIcon() {
   )
 }
 
+function MenuIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M4 5.25h12M4 10h12M4 14.75h12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function AppSidebar({
   activeTab,
   canInstall,
   hasPendingUpdate,
   install,
   isStandalone,
+  isCollapsed,
   theme,
   update,
+  onToggleSidebar,
   onTabChange,
   onToggleTheme,
 }: {
@@ -137,15 +147,33 @@ function AppSidebar({
   hasPendingUpdate: boolean
   install: () => Promise<void>
   isStandalone: boolean
+  isCollapsed: boolean
   theme: Theme
+  onToggleSidebar: () => void
   onTabChange: (_tab: AppTab) => void
   onToggleTheme: () => void
   update: () => Promise<void>
 }) {
   return (
-    <aside className="sidebar" aria-label="App sidebar">
+    <aside
+      id="app-sidebar"
+      className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : ''}`}
+      aria-label="App sidebar"
+      aria-expanded={!isCollapsed}
+    >
       <div className="sidebar-brandline">
-        <span>Nexus</span>
+        <span className="sidebar-brand">Nexus</span>
+        <button
+          type="button"
+          className="sidebar-collapse-button"
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-pressed={isCollapsed}
+          aria-controls="app-sidebar"
+          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          onClick={onToggleSidebar}
+        >
+          <MenuIcon />
+        </button>
       </div>
 
       {NAV_SECTIONS.map((section) => (
@@ -164,7 +192,7 @@ function AppSidebar({
                 <span className="nav-item-icon" aria-hidden="true">
                   <item.icon />
                 </span>
-                {item.label}
+                <span className="nav-item-label">{item.label}</span>
               </button>
             ))}
           </nav>
@@ -184,7 +212,7 @@ function AppSidebar({
                 <span className="pwa-action-icon" aria-hidden="true">
                   <PwaInstallIcon />
                 </span>
-                Installer l'app
+                <span className="nav-item-label">Installer l'app</span>
               </button>
             ) : null}
             {hasPendingUpdate ? (
@@ -197,7 +225,7 @@ function AppSidebar({
                 <span className="pwa-action-icon" aria-hidden="true">
                   <PwaUpdateIcon />
                 </span>
-                Mettre à jour
+                <span className="nav-item-label">Mettre à jour</span>
               </button>
             ) : null}
           </nav>
@@ -205,7 +233,6 @@ function AppSidebar({
       ) : null}
 
       <div className="theme-toggle">
-        <span className="theme-toggle-label">Theme</span>
         <button
           type="button"
           className="theme-toggle-button"
@@ -226,19 +253,33 @@ function AppTopbar({
   liveStateLabel,
   liveStateTone,
   liveStateDetail,
+  isSidebarCollapsed,
   provider,
   role,
+  onToggleSidebar,
 }: {
   activeScopeLabel: string
   liveStateLabel: string
   liveStateTone: AppModel['liveState']['tone']
   liveStateDetail: string
+  isSidebarCollapsed: boolean
   provider: string
   role: string
+  onToggleSidebar: () => void
 }) {
   return (
     <header className="topbar">
-      <div />
+      <button
+        type="button"
+        className="topbar-menu-button"
+        aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        aria-pressed={isSidebarCollapsed}
+        aria-controls="app-sidebar"
+        title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        onClick={onToggleSidebar}
+      >
+        <MenuIcon />
+      </button>
       <div className="topbar-actions">
         <div className="topbar-badges">
           <div className="topbar-badge-group topbar-badge-group-status" aria-label="Sync status">
@@ -333,12 +374,17 @@ export function AppShell(model: AppModel) {
   const hasPendingUpdate = needRefresh[0]
   const [updateBannerDismissed, setUpdateBannerDismissed] = useState(false)
   const [gettingStartedOpen, setGettingStartedOpen] = useState(true)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => localStorage.getItem('deepvault_sidebar_collapsed') === 'true')
 
   useEffect(() => {
     if (!hasPendingUpdate) {
       setUpdateBannerDismissed(false)
     }
   }, [hasPendingUpdate])
+
+  useEffect(() => {
+    localStorage.setItem('deepvault_sidebar_collapsed', String(isSidebarCollapsed))
+  }, [isSidebarCollapsed])
 
   const updateApp = async () => {
     await updateServiceWorker(true)
@@ -357,16 +403,19 @@ export function AppShell(model: AppModel) {
   })
   const bishopExportHandlers = createBishopExportHandlers({ messages, question })
   const showKpiGrid = activeTab !== 'explorer' && activeTab !== 'bishop'
+  const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${isSidebarCollapsed ? 'app-shell-sidebar-collapsed' : ''}`}>
       <AppSidebar
         activeTab={activeTab}
         canInstall={installPrompt.canInstall}
         hasPendingUpdate={hasPendingUpdate}
         install={installPrompt.install}
         isStandalone={installPrompt.isStandalone}
+        isCollapsed={isSidebarCollapsed}
         theme={theme}
+        onToggleSidebar={toggleSidebar}
         onTabChange={setActiveTab}
         onToggleTheme={toggleTheme}
         update={updateApp}
@@ -378,8 +427,10 @@ export function AppShell(model: AppModel) {
           liveStateDetail={liveState.detail}
           liveStateLabel={liveState.label}
           liveStateTone={liveState.tone}
+          isSidebarCollapsed={isSidebarCollapsed}
           provider={provider}
           role={role}
+          onToggleSidebar={toggleSidebar}
         />
 
         {hasPendingUpdate && !updateBannerDismissed ? (
