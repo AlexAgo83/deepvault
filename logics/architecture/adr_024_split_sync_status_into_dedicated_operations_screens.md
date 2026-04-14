@@ -2,9 +2,9 @@
 > Date: 2026-04-14
 > Status: Proposed
 > Drivers: Reduce panel overload, preserve a concise summary surface, make operational screens first-class, keep state terminology consistent across the app.
-> Related request: (none yet)
-> Related backlog: (none yet)
-> Related task: (none yet)
+> Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
+> Related backlog: `logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md`
+> Related task: `logics/tasks/task_028_split_sync_status_into_dedicated_operations_screens.md`
 > Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
 
 # Overview

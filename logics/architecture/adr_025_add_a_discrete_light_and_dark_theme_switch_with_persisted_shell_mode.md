@@ -2,9 +2,9 @@
 > Date: 2026-04-14
 > Status: Proposed
 > Drivers: Keep the shell visually compact, persist the user's appearance preference locally, apply the theme consistently across the app, and avoid backend dependency.
-> Related request: (none yet)
-> Related backlog: (none yet)
-> Related task: (none yet)
+> Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
+> Related backlog: `logics/backlog/item_063_add_persisted_sidebar_theme_switch.md`
+> Related task: `logics/tasks/task_031_add_persisted_sidebar_theme_switch.md`
 > Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
 
 # Overview

@@ -7,6 +7,7 @@
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.
+> Maintenance edit: added residual follow-up backlog slices.
 
 # Needs
 - Implement the navigation and runtime clarity already defined for the sidebar, runtime controls, and sync ownership.
@@ -70,8 +71,13 @@ flowchart TD
 - [item_061_stabilize_navigation_and_runtime_ownership](logics/backlog/item_061_stabilize_navigation_and_runtime_ownership.md)
 - [item_062_improve_corpus_metadata_chunking_and_bishop_hints](logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md)
 - [item_063_add_persisted_sidebar_theme_switch](logics/backlog/item_063_add_persisted_sidebar_theme_switch.md)
+- [item_064_harden_worker_security_fallback_and_audit_boundaries](logics/backlog/item_064_harden_worker_security_fallback_and_audit_boundaries.md)
+- [item_065_finalize_sync_navigation_model_and_recovery_entry_points](logics/backlog/item_065_finalize_sync_navigation_model_and_recovery_entry_points.md)
+- [item_066_verify_theme_fallback_and_shell_surface_coverage](logics/backlog/item_066_verify_theme_fallback_and_shell_surface_coverage.md)
+- [item_067_lock_corpus_metadata_contract_and_required_fields](logics/backlog/item_067_lock_corpus_metadata_contract_and_required_fields.md)
 
 # Report
 - The umbrella request was split into five bounded backlog items and downstream tasks with explicit traceability to each referenced product brief and ADR.
 - All five delivery slices are implemented and validated: worker/CLI parity, navigation/runtime ownership, sync status decomposition, corpus quality, and sidebar theme persistence.
 - The request now serves as the closed umbrella reference for the completed implementation and test plan.
+- Additional follow-up backlog slices were created later to cover the remaining ADR and product brief open questions around worker safety, sync navigation details, theme fallback coverage, and corpus contract stability.

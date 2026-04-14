@@ -1,9 +1,9 @@
 ## prod_008_make_ingestion_and_live_export_operable_across_app_and_cli - Make ingestion and live export operable across app and CLI
 > Date: 2026-04-14
 > Status: Proposed
-> Related request: (none yet)
-> Related backlog: (none yet)
-> Related task: (none yet)
+> Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
+> Related backlog: `logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
+> Related task: `logics/tasks/task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
 > Related architecture: `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
 

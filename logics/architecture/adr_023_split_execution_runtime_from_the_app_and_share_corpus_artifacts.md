@@ -2,9 +2,9 @@
 > Date: 2026-04-14
 > Status: Proposed
 > Drivers: Make ingestion, live export, and evaluate run on a dedicated worker while the app becomes a client of shared corpus artifacts, run history, and config. Keep the worker operable from both CLI and web app, and allow the worker endpoint or host to be configured when it runs on another machine. Preserve explicit control, security, versioning, and audit boundaries so the split stays operable.
-> Related request: (none yet)
-> Related backlog: (none yet)
-> Related task: (none yet)
+> Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
+> Related backlog: `logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
+> Related task: `logics/tasks/task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
 > Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
 
 # Overview
