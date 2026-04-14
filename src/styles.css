@@ -203,6 +203,14 @@ p {
   overflow: hidden;
 }
 
+.explorer-detail-panel,
+.bishop-trace-panel,
+.ai-stats-needs-panel {
+  justify-self: end;
+  width: min(100%, 22rem);
+  max-width: 22rem;
+}
+
 .explorer-detail-scroll {
   display: grid;
   gap: 14px;
@@ -1281,7 +1289,7 @@ select:focus-visible {
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
   gap: 18px;
   align-items: stretch;
 }
@@ -2228,9 +2236,12 @@ code {
 }
 
 @media (max-width: 1180px) {
-  .kpi-grid,
-  .content-grid {
+  .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .content-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
   }
 
   .sync-subnav {
