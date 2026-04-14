@@ -1000,9 +1000,9 @@ select:focus-visible {
 }
 
 .secondary-button-sm {
-  padding: 7px 10px;
-  font-size: 0.82rem;
-  border-radius: 9px;
+  padding: 5px 8px;
+  font-size: 0.76rem;
+  border-radius: 8px;
 }
 
 .settings-grid {
@@ -1303,7 +1303,15 @@ select:focus-visible {
   background: linear-gradient(180deg, rgba(185, 106, 67, 0.08), var(--surface));
 }
 
-.document-row-top,
+.document-row-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 0;
+  min-width: 0;
+}
+
 .source-card-top {
   display: flex;
   justify-content: space-between;
@@ -1313,19 +1321,27 @@ select:focus-visible {
 }
 
 .document-row-title {
-  display: inline-flex;
+  display: flex;
+  flex: 1 1 auto;
   align-items: center;
   gap: 8px;
   min-width: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
-.document-row-top strong {
+.document-row-title strong {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 1.15rem;
   line-height: 1.2;
   color: var(--text);
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.document-row-title .file-type-pill {
+  flex-shrink: 0;
 }
 
 .file-type-pill {
