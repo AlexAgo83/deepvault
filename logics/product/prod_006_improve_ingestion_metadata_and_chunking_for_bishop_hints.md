@@ -1,6 +1,9 @@
 ## prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints - Improve ingestion metadata and chunking for Bishop hints
 > Date: 2026-04-14
 > Status: Proposed
+> Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
+> Related backlog: `logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md`
+> Related task: `logics/tasks/task_030_improve_corpus_metadata_chunking_and_bishop_hints.md`
 > Related architecture: `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
 

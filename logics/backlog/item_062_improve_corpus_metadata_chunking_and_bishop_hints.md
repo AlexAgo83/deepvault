@@ -8,6 +8,7 @@
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
+> Maintenance edit: refreshed Mermaid signature after workflow sync.
 
 # Problem
 - Enrich ingestion so the corpus carries enough structure and context to improve retrieval quality.
@@ -20,12 +21,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|improve-corpus-metadata-chunking-and-bis|req-017-implement-the-full-app-worker-co|corpus-quality-and-retrieval-signals|ac1-ingestion-persists-richer-metadata
+%% logics-signature: backlog|improve-corpus-metadata-chunking-and-bis|req-017-implement-the-full-app-worker-co|enrich-ingestion-so-the-corpus-carries|ac1-ingestion-persists-richer-metadata-i
 flowchart TD
-    Request[Umbrella request] --> Problem[Improve corpus metadata chunking and Bishop hints]
-    Problem --> Scope[Corpus quality and retrieval signals]
-    Scope --> Acceptance[Executable backlog slice]
-    Acceptance --> Tasks[Execution task]
+    Request[req_017_implement_the_full_app_worker_corp] --> Problem[Enrich ingestion so the corpus carries]
+    Problem --> Scope[Improve corpus metadata chunking and Bisho]
+    Scope --> Acceptance[AC1: Ingestion persists richer metadata in]
+    Acceptance --> Tasks[task_030_improve_corpus_metadata_chunking_]
 ```
 
 # Acceptance criteria

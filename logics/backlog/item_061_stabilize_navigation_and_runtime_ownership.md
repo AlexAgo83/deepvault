@@ -1,10 +1,10 @@
 ## item_061_stabilize_navigation_and_runtime_ownership - Stabilize navigation and runtime ownership
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 94%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -20,12 +20,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|stabilize-navigation-and-runtime-ownersh|req-017-implement-the-full-app-worker-co|navigation-and-runtime-clarity|ac1-the-sidebar-uses-leading-icons
+%% logics-signature: backlog|stabilize-navigation-and-runtime-ownersh|req-017-implement-the-full-app-worker-co|stabilize-the-sidebar-navigation-and-run|ac1-the-sidebar-uses-leading-icons
 flowchart TD
-    Request[Umbrella request] --> Problem[Stabilize navigation and runtime ownership]
-    Problem --> Scope[Navigation and runtime clarity]
-    Scope --> Acceptance[Executable backlog slice]
-    Acceptance --> Tasks[Execution task]
+    Request[req_017_implement_the_full_app_worker_corp] --> Problem[Stabilize the sidebar navigation and runti]
+    Problem --> Scope[Stabilize navigation and runtime ownership]
+    Scope --> Acceptance[AC1: The sidebar uses leading icons]
+    Acceptance --> Tasks[task_029_stabilize_navigation_and_runtime_]
 ```
 
 # Acceptance criteria
@@ -68,3 +68,8 @@ flowchart TD
 
 # Notes
 - Derived from request `req_017_implement_the_full_app_worker_corpus_and_shell_plan`.
+
+# Report
+- Implemented the navigation and runtime ownership slice in `task_029_stabilize_navigation_and_runtime_ownership`, including leading icons, clearer runtime placement, and stable shell ownership boundaries.
+- The sidebar, settings, and sync surfaces now follow the intended ownership model without changing the underlying worker behavior.
+- Validation for the implemented slice is captured in the downstream task report, including the 164/164 passing test run.

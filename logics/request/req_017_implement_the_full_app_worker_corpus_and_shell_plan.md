@@ -1,9 +1,9 @@
 ## req_017_implement_the_full_app_worker_corpus_and_shell_plan - Implement the full app worker corpus and shell plan
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Draft
-> Understanding: 94%
-> Confidence: 90%
+> Status: Done
+> Understanding: 100%
+> Confidence: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.
@@ -24,15 +24,11 @@ It should keep the implementation grounded in the existing local-first codebase 
 
 ```mermaid
 %% logics-kind: request
-%% logics-signature: request|implement-the-full-app-worker-corpus-and-shell-plan|four-stream-delivery-plan|ac1-confirm-the-plan-covers-worker-ops|implement-and-test-the-whole-plan
+%% logics-signature: request|implement-the-full-app-worker-corpus-and|implement-the-navigation-and-runtime-cla|ac1-the-request-explicitly-covers-the
 flowchart TD
-    A[Worker and CLI] --> B[Ops shell]
-    B --> C[Corpus quality]
-    C --> D[Theme and shell polish]
-    D --> E[One delivery plan]
-    E --> F[Implement and test]
-    F --> G[Split into backlog items]
-    G --> H[Close the request]
+    Trigger[Implement the full app worker corpus] --> Need[Implement the navigation and runtime clari]
+    Need --> Outcome[AC1: The request explicitly covers the]
+    Outcome --> Backlog[Backlog slice]
 ```
 
 # Acceptance criteria
@@ -74,3 +70,8 @@ flowchart TD
 - [item_061_stabilize_navigation_and_runtime_ownership](logics/backlog/item_061_stabilize_navigation_and_runtime_ownership.md)
 - [item_062_improve_corpus_metadata_chunking_and_bishop_hints](logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md)
 - [item_063_add_persisted_sidebar_theme_switch](logics/backlog/item_063_add_persisted_sidebar_theme_switch.md)
+
+# Report
+- The umbrella request was split into five bounded backlog items and downstream tasks with explicit traceability to each referenced product brief and ADR.
+- All five delivery slices are implemented and validated: worker/CLI parity, navigation/runtime ownership, sync status decomposition, corpus quality, and sidebar theme persistence.
+- The request now serves as the closed umbrella reference for the completed implementation and test plan.

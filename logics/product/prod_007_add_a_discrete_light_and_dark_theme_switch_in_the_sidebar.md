@@ -1,6 +1,9 @@
 ## prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar - Add a discrete light and dark theme switch in the sidebar
 > Date: 2026-04-14
 > Status: Proposed
+> Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
+> Related backlog: `logics/backlog/item_063_add_persisted_sidebar_theme_switch.md`
+> Related task: `logics/tasks/task_031_add_persisted_sidebar_theme_switch.md`
 > Related architecture: `logics/architecture/adr_025_add_a_discrete_light_and_dark_theme_switch_with_persisted_shell_mode.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
 

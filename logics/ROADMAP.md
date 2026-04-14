@@ -2,12 +2,12 @@
 
 ## Now
 
-- [task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan](logics/tasks/task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan.md) - Wave 0 planning and backlog split for the full implementation plan
-- [req_017_implement_the_full_app_worker_corpus_and_shell_plan](logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md) - Umbrella request for the full implementation and test plan
-
 ## Next
 
 ## Done
+
+- [task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan](logics/tasks/task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan.md) - Wave 0 planning and backlog split for the full implementation plan (100%)
+- [req_017_implement_the_full_app_worker_corpus_and_shell_plan](logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md) - Umbrella request for the full implementation and test plan
 
 - [item_062_improve_corpus_metadata_chunking_and_bishop_hints](logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md) - Improve corpus metadata, chunking, and Bishop hints (100%)
 - [item_063_add_persisted_sidebar_theme_switch](logics/backlog/item_063_add_persisted_sidebar_theme_switch.md) - Persisted sidebar theme switch (100%)

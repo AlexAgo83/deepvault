@@ -8,6 +8,7 @@
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
+> Maintenance edit: refreshed Mermaid signature after workflow sync.
 
 # Problem
 - Split the overloaded Sync Status experience into a concise summary and dedicated operational screens.
@@ -20,12 +21,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|split-sync-status-into-dedicated-operati|req-017-implement-the-full-app-worker-co|summary-and-dedicated-screens|ac1-sync-status-becomes-a-concise
+%% logics-signature: backlog|split-sync-status-into-dedicated-operati|req-017-implement-the-full-app-worker-co|split-the-overloaded-sync-status-experie|ac1-sync-status-becomes-a-concise
 flowchart TD
-    Request[Umbrella request] --> Problem[Split Sync Status into dedicated operations screens]
-    Problem --> Scope[Summary and dedicated screens]
-    Scope --> Acceptance[Executable backlog slice]
-    Acceptance --> Tasks[Execution task]
+    Request[req_017_implement_the_full_app_worker_corp] --> Problem[Split the overloaded Sync Status experienc]
+    Problem --> Scope[Split Sync Status into dedicated operation]
+    Scope --> Acceptance[AC1: Sync Status becomes a concise]
+    Acceptance --> Tasks[task_028_split_sync_status_into_dedicated_]
 ```
 
 # Acceptance criteria

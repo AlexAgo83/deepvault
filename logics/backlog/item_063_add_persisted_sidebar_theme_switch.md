@@ -8,6 +8,7 @@
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
+> Maintenance edit: refreshed Mermaid signature after workflow sync.
 
 # Problem
 - Add a discrete light/dark theme switch to the sidebar and persist the user's choice locally.
@@ -20,12 +21,12 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|add-persisted-sidebar-theme-switch|req-017-implement-the-full-app-worker-co|theme-control-and-local-persistence|ac1-the-sidebar-exposes-a-discrete
+%% logics-signature: backlog|add-persisted-sidebar-theme-switch|req-017-implement-the-full-app-worker-co|add-a-discrete-light-dark-theme|ac1-the-sidebar-exposes-a-discrete
 flowchart TD
-    Request[Umbrella request] --> Problem[Add persisted sidebar theme switch]
-    Problem --> Scope[Theme control and local persistence]
-    Scope --> Acceptance[Executable backlog slice]
-    Acceptance --> Tasks[Execution task]
+    Request[req_017_implement_the_full_app_worker_corp] --> Problem[Add a discrete light dark theme]
+    Problem --> Scope[Add persisted sidebar theme switch]
+    Scope --> Acceptance[AC1: The sidebar exposes a discrete]
+    Acceptance --> Tasks[task_031_add_persisted_sidebar_theme_switc]
 ```
 
 # Acceptance criteria
