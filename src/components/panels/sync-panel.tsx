@@ -310,9 +310,9 @@ export function SyncPanel({
 
             <div className="sync-controls-panel-body">
               <div className="sync-controls-group">
-                <span className="sync-controls-label">Local pipeline</span>
+                <span className="sync-controls-label">SharePoint sync</span>
                 <div className="sync-controls-actions">
-                  {(['ingest', 'evaluate'] as OpsKey[]).map((op) => (
+                  {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
                     <button
                       key={op}
                       type="button"
@@ -330,9 +330,9 @@ export function SyncPanel({
               <div className="sync-controls-divider" />
 
               <div className="sync-controls-group">
-                <span className="sync-controls-label">SharePoint sync</span>
+                <span className="sync-controls-label">Local pipeline</span>
                 <div className="sync-controls-actions">
-                  {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
+                  {(['ingest', 'evaluate'] as OpsKey[]).map((op) => (
                     <button
                       key={op}
                       type="button"
