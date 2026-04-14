@@ -351,6 +351,7 @@ export function AppShell(model: AppModel) {
     selectedExplorerDoc,
   })
   const bishopExportHandlers = createBishopExportHandlers({ messages, question })
+  const showKpiGrid = activeTab !== 'explorer' && activeTab !== 'bishop'
 
   return (
     <div className="app-shell">
@@ -385,29 +386,31 @@ export function AppShell(model: AppModel) {
           </section>
         ) : null}
 
-        <section className="kpi-grid">
-          <StatCard
-            label="Sites in scope"
-            value={scopedSyncOverview.siteSummaries.length}
-            note="Site scope is shared across Explorer, Bishop, and Sync status."
-          />
-          <StatCard
-            label="Visible docs"
-            value={scopedSyncOverview.documentCount}
-            note="Role-filtered corpus entries available in the current site scope."
-          />
-          <StatCard
-            label="Last refresh"
-            value={scopedSyncOverview.lastRun ? <CompactDateTime value={scopedSyncOverview.lastRun.finishedAt} /> : 'n/a'}
-            note={scopedSyncOverview.refreshPolicy}
-            valueClassName="stat-value-compact stat-value-datetime"
-          />
-          <StatCard
-            label="Provider readiness"
-            value={corpusProviders.filter((item) => item.ready).length}
-            note="OpenAI, Gemini, and Claude are available in the local abstraction."
-          />
-        </section>
+        {showKpiGrid ? (
+          <section className="kpi-grid">
+            <StatCard
+              label="Sites in scope"
+              value={scopedSyncOverview.siteSummaries.length}
+              note="Site scope is shared across Explorer, Bishop, and Sync status."
+            />
+            <StatCard
+              label="Visible docs"
+              value={scopedSyncOverview.documentCount}
+              note="Role-filtered corpus entries available in the current site scope."
+            />
+            <StatCard
+              label="Last refresh"
+              value={scopedSyncOverview.lastRun ? <CompactDateTime value={scopedSyncOverview.lastRun.finishedAt} /> : 'n/a'}
+              note={scopedSyncOverview.refreshPolicy}
+              valueClassName="stat-value-compact stat-value-datetime"
+            />
+            <StatCard
+              label="Provider readiness"
+              value={corpusProviders.filter((item) => item.ready).length}
+              note="OpenAI, Gemini, and Claude are available in the local abstraction."
+            />
+          </section>
+        ) : null}
 
         {activeTab === 'settings' ? (
           <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
