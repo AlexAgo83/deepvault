@@ -7,13 +7,6 @@
 
 ## Next
 
-- Ops shell stream:
-  - [prod_005_split_sync_status_into_dedicated_operations_screens](logics/product/prod_005_split_sync_status_into_dedicated_operations_screens.md)
-  - [adr_024_split_sync_status_into_dedicated_operations_screens](logics/architecture/adr_024_split_sync_status_into_dedicated_operations_screens.md)
-  - [item_060_split_sync_status_into_dedicated_operations_screens](logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md)
-
-## Later
-
 - Corpus quality stream:
   - [prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints](logics/product/prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints.md)
   - [adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints](logics/architecture/adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints.md)
@@ -25,6 +18,7 @@
 
 ## Done
 
+- [item_060_split_sync_status_into_dedicated_operations_screens](logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md) - Split Sync Status into dedicated operations screens (100%)
 - [item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts](logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md) - Worker boundary and CLI parity (100%)
 - [item_061_stabilize_navigation_and_runtime_ownership](logics/backlog/item_061_stabilize_navigation_and_runtime_ownership.md) - Navigation and runtime ownership (100%)
 - [item_000_v1_graph_discovery_and_pilot_scope](logics/backlog/item_000_v1_graph_discovery_and_pilot_scope.md) - V1 — Graph discovery and pilot scope (100%)

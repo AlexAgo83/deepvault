@@ -1,10 +1,10 @@
 ## item_060_split_sync_status_into_dedicated_operations_screens - Split Sync Status into dedicated operations screens
 > From version: 1.1.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 94%
-> Confidence: 90%
-> Progress: 0%
+> Status: Done
+> Understanding: 99%
+> Confidence: 99%
+> Progress: 100%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
