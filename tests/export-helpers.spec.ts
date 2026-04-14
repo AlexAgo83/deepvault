@@ -19,6 +19,7 @@ describe('export helpers', () => {
         id: 'doc-1',
         title: 'Budget',
         siteName: 'Pilot Site Alpha',
+        siteUrl: 'https://example.sharepoint.com/sites/pilot-alpha',
         score: 12,
         path: '/Documents/Budget.docx',
         siteId: 'pilot-alpha',
