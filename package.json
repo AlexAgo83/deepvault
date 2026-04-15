@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/run-with-cleanup.mjs vite",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -12,13 +12,13 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "e2e": "playwright test",
-    "ingest": "tsx scripts/ingest.ts",
-    "ingest:live": "tsx scripts/ingest.ts --mode live",
-    "evaluate": "tsx scripts/evaluate.ts",
-    "evaluate:live": "tsx scripts/evaluate.ts --mode live",
-    "export:live": "tsx scripts/export-live.ts",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run evaluate"
+    "e2e": "node scripts/run-with-cleanup.mjs playwright test",
+    "ingest": "node scripts/run-with-cleanup.mjs tsx scripts/ingest.ts",
+    "ingest:live": "node scripts/run-with-cleanup.mjs tsx scripts/ingest.ts --mode live",
+    "evaluate": "node scripts/run-with-cleanup.mjs tsx scripts/evaluate.ts",
+    "evaluate:live": "node scripts/run-with-cleanup.mjs tsx scripts/evaluate.ts --mode live",
+    "export:live": "node scripts/run-with-cleanup.mjs tsx scripts/export-live.ts",
+    "check": "node scripts/run-with-cleanup.mjs sh -lc \"npm run lint && npm run typecheck && npm run test && npm run build && npm run evaluate\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
