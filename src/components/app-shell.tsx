@@ -15,6 +15,31 @@ type NavSection = {
   items: ReadonlyArray<{ id: AppTab; label: string; icon: () => ReactElement }>
 }
 
+type RightPanelState = Record<Exclude<AppTab, 'settings' | 'sync'>, boolean>
+
+const RIGHT_PANEL_STORAGE_KEY = 'deepvault_right_panel_visibility'
+
+function readRightPanelState(): RightPanelState {
+  const defaultState: RightPanelState = {
+    explorer: true,
+    bishop: false,
+    'ai-stats': true,
+  }
+
+  try {
+    const raw = localStorage.getItem(RIGHT_PANEL_STORAGE_KEY)
+    if (!raw) return defaultState
+    const parsed = JSON.parse(raw) as Partial<RightPanelState>
+    return {
+      explorer: typeof parsed.explorer === 'boolean' ? parsed.explorer : defaultState.explorer,
+      bishop: typeof parsed.bishop === 'boolean' ? parsed.bishop : defaultState.bishop,
+      'ai-stats': typeof parsed['ai-stats'] === 'boolean' ? parsed['ai-stats'] : defaultState['ai-stats'],
+    }
+  } catch {
+    return defaultState
+  }
+}
+
 const NAV_SECTIONS: ReadonlyArray<NavSection> = [
   {
     label: 'Navigation',
@@ -29,7 +54,7 @@ const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     ariaLabel: 'Application panels',
     items: [
       { id: 'sync', label: 'Knowledge', icon: SyncIcon },
-      { id: 'ai-stats', label: 'AI stats', icon: StatsIcon },
+      { id: 'ai-stats', label: 'AI View', icon: StatsIcon },
       { id: 'settings', label: 'Settings', icon: SettingsIcon },
     ],
   },
@@ -117,6 +142,24 @@ function PwaUpdateIcon() {
       <path d="M14.5 5.75v2.7h-2.7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M14.5 12.25A6 6 0 0 1 10 14.25c-2.05 0-3.88-1-5-2.55" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="M5.5 14.25v-2.7h2.7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function InfoIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M10 8.3v4.35" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <circle cx="10" cy="6.2" r="0.75" fill="currentColor" />
+    </svg>
+  )
+}
+
+function QuestionIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M8.35 7.25a1.75 1.75 0 0 1 3.3.85c0 1.4-1.55 1.8-2.1 2.7-.16.27-.25.58-.25.95v.45" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="10" cy="14.45" r="0.75" fill="currentColor" />
     </svg>
   )
 }
@@ -254,32 +297,68 @@ function AppTopbar({
   liveStateLabel,
   liveStateTone,
   liveStateDetail,
+  hasRightPanel,
+  showRightPanel,
   provider,
   role,
+  onToggleRightPanel,
 }: {
   activeScopeLabel: string
   liveStateLabel: string
   liveStateTone: AppModel['liveState']['tone']
   liveStateDetail: string
+  hasRightPanel: boolean
+  showRightPanel: boolean
   provider: string
   role: string
+  onToggleRightPanel: () => void
 }) {
+  const [isExpanded, setIsExpanded] = useState(true)
+
   return (
     <header className="topbar">
       <div className="topbar-actions">
         <div className="topbar-badges">
-          <div className="topbar-badge-group topbar-badge-group-status" aria-label="Knowledge">
-            <Pill tone={liveStateTone} title={liveStateDetail}>
-              {liveStateLabel}
-            </Pill>
-            <Pill tone="success">Synced</Pill>
-          </div>
-          <span className="topbar-badge-divider" aria-hidden="true" />
-          <div className="topbar-badge-group topbar-badge-group-context" aria-label="Active context">
-            <Pill tone="neutral">{activeScopeLabel}</Pill>
-            <Pill tone="neutral">{provider}</Pill>
-            <Pill tone="accent">{role}</Pill>
-          </div>
+          {isExpanded ? (
+            <>
+              <div className="topbar-badge-group topbar-badge-group-status" aria-label="Knowledge">
+                <Pill tone={liveStateTone} title={liveStateDetail}>
+                  {liveStateLabel}
+                </Pill>
+                <Pill tone="success">Synced</Pill>
+              </div>
+              <span className="topbar-badge-divider" aria-hidden="true" />
+              <div id="topbar-context" className="topbar-badge-group topbar-badge-group-context" aria-label="Active context">
+                <Pill tone="neutral">{activeScopeLabel}</Pill>
+                <Pill tone="neutral">{provider}</Pill>
+                <Pill tone="accent">{role}</Pill>
+              </div>
+            </>
+          ) : null}
+          <button
+            type="button"
+            className="topbar-info-button"
+            aria-expanded={isExpanded}
+            aria-controls="topbar-context"
+            aria-label={isExpanded ? 'Hide topbar details' : 'Show topbar details'}
+            title={isExpanded ? 'Hide details' : 'Show details'}
+            onClick={() => setIsExpanded((value) => !value)}
+          >
+            <InfoIcon />
+          </button>
+          {hasRightPanel ? (
+            <button
+              type="button"
+              className="topbar-info-button topbar-help-button"
+              aria-expanded={showRightPanel}
+              aria-controls="panel-right"
+              aria-label={showRightPanel ? 'Hide right panel' : 'Show right panel'}
+              title={showRightPanel ? 'Hide right panel' : 'Show right panel'}
+              onClick={onToggleRightPanel}
+            >
+              <QuestionIcon />
+            </button>
+          ) : null}
         </div>
       </div>
     </header>
@@ -361,6 +440,7 @@ export function AppShell(model: AppModel) {
   const [updateBannerDismissed, setUpdateBannerDismissed] = useState(false)
   const [gettingStartedOpen, setGettingStartedOpen] = useState(true)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => localStorage.getItem('deepvault_sidebar_collapsed') === 'true')
+  const [rightPanelState, setRightPanelState] = useState<RightPanelState>(() => readRightPanelState())
 
   useEffect(() => {
     if (!hasPendingUpdate) {
@@ -371,6 +451,10 @@ export function AppShell(model: AppModel) {
   useEffect(() => {
     localStorage.setItem('deepvault_sidebar_collapsed', String(isSidebarCollapsed))
   }, [isSidebarCollapsed])
+
+  useEffect(() => {
+    localStorage.setItem(RIGHT_PANEL_STORAGE_KEY, JSON.stringify(rightPanelState, null, 2))
+  }, [rightPanelState])
 
   const updateApp = async () => {
     await updateServiceWorker(true)
@@ -399,6 +483,12 @@ export function AppShell(model: AppModel) {
   const needHints = responses.filter((message) => Boolean(message.improvementHint))
   const showKpiGrid = activeTab !== 'explorer' && activeTab !== 'bishop'
   const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
+  const hasRightPanel = activeTab === 'explorer' || activeTab === 'bishop' || activeTab === 'ai-stats'
+  const showRightPanel = hasRightPanel ? rightPanelState[activeTab] : false
+  const toggleRightPanel = () => {
+    if (!hasRightPanel) return
+    setRightPanelState((current) => ({ ...current, [activeTab]: !current[activeTab] }))
+  }
 
   return (
     <div className={`app-shell ${isSidebarCollapsed ? 'app-shell-sidebar-collapsed' : ''}`}>
@@ -419,11 +509,14 @@ export function AppShell(model: AppModel) {
       <main className="main-content">
         <AppTopbar
           activeScopeLabel={activeScopeLabel}
+          hasRightPanel={hasRightPanel}
           liveStateDetail={liveState.detail}
           liveStateLabel={liveState.label}
           liveStateTone={liveState.tone}
+          onToggleRightPanel={toggleRightPanel}
           provider={provider}
           role={role}
+          showRightPanel={showRightPanel}
         />
 
         {hasPendingUpdate && !updateBannerDismissed ? (
@@ -517,6 +610,7 @@ export function AppShell(model: AppModel) {
               onExportMarkdown={explorerExportHandlers.exportMarkdown}
               resolveFileHref={resolveFileHref}
               selectedExplorerDoc={selectedExplorerDoc}
+              showRightPanel={showRightPanel}
             />
           </ErrorBoundary>
         ) : null}
@@ -538,6 +632,7 @@ export function AppShell(model: AppModel) {
               resolveFileHref={resolveFileHref}
               role={role}
               selectedMessage={selectedMessage}
+              showRightPanel={showRightPanel}
             />
           </ErrorBoundary>
         ) : null}
@@ -555,8 +650,8 @@ export function AppShell(model: AppModel) {
         ) : null}
 
         {activeTab === 'ai-stats' ? (
-          <ErrorBoundary fallback={<div className="empty-state">AI stats panel failed to render.</div>}>
-            <AIStatsPanel messages={messages} />
+          <ErrorBoundary fallback={<div className="empty-state">AI View panel failed to render.</div>}>
+            <AIStatsPanel messages={messages} showRightPanel={showRightPanel} />
           </ErrorBoundary>
         ) : null}
 

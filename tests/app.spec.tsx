@@ -29,7 +29,7 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Knowledge' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'AI stats' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'AI View' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
     expect(document.querySelectorAll('.nav-item-icon svg')).toHaveLength(5)
     expect(screen.queryByRole('button', { name: 'Ask Bishop' })).not.toBeInTheDocument()
@@ -63,6 +63,7 @@ describe('DeepVault app', () => {
 
     expect(screen.getByRole('button', { name: 'Thinking...' })).toBeDisabled()
     expect(screen.getByText('Bishop is drafting the answer from grounded sources.')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Show right panel' }))
     expect(await screen.findByText('Orchestration')).toBeInTheDocument()
     expect(await screen.findByText('fallback')).toBeInTheDocument()
     expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
@@ -91,6 +92,7 @@ describe('DeepVault app', () => {
     await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
     await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
     await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')
+    await user.click(screen.getByRole('button', { name: 'Show right panel' }))
 
     const answerTrace = screen.getByText('Answer trace').closest('aside')
     expect(answerTrace).not.toBeNull()
@@ -101,7 +103,7 @@ describe('DeepVault app', () => {
     await waitFor(() => expect(within(answerTrace as HTMLElement).getByText('answered')).toBeInTheDocument())
   })
 
-  it('shows AI stats and response hints after Bishop responds', async () => {
+  it('shows AI View and response hints after Bishop responds', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -110,9 +112,9 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'Ask bishop' }))
     await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')
 
-    await user.click(screen.getByRole('button', { name: 'AI stats' }))
+    await user.click(screen.getByRole('button', { name: 'AI View' }))
 
-    expect(screen.getByRole('heading', { name: 'AI stats' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'AI View' })).toBeInTheDocument()
     expect(screen.getByText('Responses')).toBeInTheDocument()
     expect(screen.getByText('Need hints')).toBeInTheDocument()
     expect(screen.getByText('What would help next')).toBeInTheDocument()
@@ -738,7 +740,7 @@ describe('DeepVault app', () => {
     expect(within(primaryNav).getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
 
     expect(within(appNav).getByRole('button', { name: 'Knowledge' })).toBeInTheDocument()
-    expect(within(appNav).getByRole('button', { name: 'AI stats' })).toBeInTheDocument()
+    expect(within(appNav).getByRole('button', { name: 'AI View' })).toBeInTheDocument()
     expect(within(appNav).getByRole('button', { name: 'Settings' })).toBeInTheDocument()
   })
 
@@ -775,6 +777,7 @@ describe('DeepVault app', () => {
 
     const topbar = document.querySelector('.topbar')
     expect(topbar).not.toBeNull()
+    const infoButton = within(topbar as HTMLElement).getByRole('button', { name: 'Hide topbar details' })
 
     // Topbar shows runtime pills on default tab (Explorer)
     const badges = topbar!.querySelector('.topbar-badges')
@@ -782,6 +785,15 @@ describe('DeepVault app', () => {
     expect(within(badges as HTMLElement).getByText('analyst')).toBeInTheDocument()
     expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
     expect(within(badges as HTMLElement).getByText('All sites')).toBeInTheDocument()
+
+    await user.click(infoButton)
+    expect(within(topbar as HTMLElement).queryByText('analyst')).not.toBeInTheDocument()
+    expect(within(topbar as HTMLElement).queryByText('openai')).not.toBeInTheDocument()
+    expect(within(topbar as HTMLElement).queryByText('All sites')).not.toBeInTheDocument()
+
+    await user.click(within(topbar as HTMLElement).getByRole('button', { name: 'Show topbar details' }))
+    expect(within(topbar as HTMLElement).getByText('analyst')).toBeInTheDocument()
+    expect(within(topbar as HTMLElement).getByText('openai')).toBeInTheDocument()
 
     // Topbar pills persist when switching to Bishop
     await user.click(screen.getByRole('button', { name: 'Bishop' }))
@@ -792,6 +804,52 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(within(badges as HTMLElement).getByText('analyst')).toBeInTheDocument()
     expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
+  })
+
+  it('toggles the right panel from the topbar question button', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByRole('button', { name: 'Hide right panel' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    expect(screen.queryByText('Answer trace')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Show right panel' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Show right panel' }))
+    expect(screen.getByText('Answer trace')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Hide right panel' }))
+    expect(screen.queryByText('Answer trace')).not.toBeInTheDocument()
+  })
+
+  it('keeps the right panel visibility independent per screen and persists it', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByRole('button', { name: 'Hide right panel' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Hide right panel' }))
+    expect(screen.queryByText('Details')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    expect(screen.queryByText('Answer trace')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Show right panel' }))
+    expect(screen.getByText('Answer trace')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Hide right panel' }))
+    expect(screen.queryByText('Answer trace')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Explorer' }))
+    expect(screen.getByRole('button', { name: 'Show right panel' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Show right panel' }))
+    expect(screen.getByText('Details')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    expect(screen.queryByText('Answer trace')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Explorer' }))
+    expect(screen.getByText('Details')).toBeInTheDocument()
   })
 
   it('supports keyboard tab navigation through sidebar items (AC4)', async () => {
@@ -809,7 +867,7 @@ describe('DeepVault app', () => {
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Knowledge' }))
 
     await user.tab()
-    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'AI stats' }))
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'AI View' }))
 
     await user.tab()
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Settings' }))
