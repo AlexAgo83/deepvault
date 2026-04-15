@@ -17,6 +17,7 @@ export function BishopPanel({
   role,
   selectedMessage,
   resolveFileHref,
+  showRightPanel,
 }: {
   conversationContextEnabled: boolean
   clearHistory: () => void
@@ -32,6 +33,7 @@ export function BishopPanel({
   role: string
   selectedMessage: AppModel['selectedMessage']
   resolveFileHref: AppModel['resolveFileHref']
+  showRightPanel: boolean
 }) {
   const messageListRef = useRef<HTMLDivElement | null>(null)
   const [stickToBottom, setStickToBottom] = useState(true)
@@ -71,7 +73,7 @@ export function BishopPanel({
   }, [selectedMessage.id])
 
   return (
-    <section className="content-grid bishop-grid">
+    <section className={`content-grid bishop-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <article className="panel chat-panel bishop-chat-panel">
         <SectionHeading
           title="Bishop"
@@ -126,105 +128,107 @@ export function BishopPanel({
         </form>
       </article>
 
-      <aside className="panel bishop-trace-panel">
-        <SectionHeading title="Answer trace" subtitle="Provenance and retrieval diagnostics for the last turn." />
-        <div className="detail-stack">
-          <div className="detail-row">
-            <span>Status</span>
-            <strong>{selectedMessage.status || 'ready'}</strong>
-          </div>
-          <div className="detail-row">
-            <span>Provider</span>
-            <strong>{selectedMessage.provider || provider}</strong>
-          </div>
-          <div className="detail-row">
-            <span>Orchestration</span>
-            <strong>{selectedMessage.orchestrationMode || 'local'}</strong>
-          </div>
-          <div className="detail-row">
-            <span>Chunk count</span>
-            <strong>{selectedMessage.chunkCount || 0}</strong>
-          </div>
-          <div className="detail-row">
-            <span>Token count</span>
-            <strong>{selectedMessage.tokenCount || 0}</strong>
-          </div>
-          <div className="detail-row">
-            <span>Latency</span>
-            <strong>{selectedMessage.latencyMs || 0} ms</strong>
-          </div>
-          <div className="detail-row detail-row-action">
-            <span>Confidence</span>
-            <div className="trace-confidence-group">
-              <div className="trace-confidence-popover">
-                <button
-                  type="button"
-                  className="trace-confidence-button"
-                  title="Show the trace preview"
-                  onMouseEnter={() => setShowTracePreview(true)}
-                  onMouseLeave={() => setShowTracePreview(false)}
-                  onFocus={() => setShowTracePreview(true)}
-                  onBlur={() => setShowTracePreview(false)}
-                  aria-describedby={showTracePreview ? 'bishop-trace-preview' : undefined}
-                  disabled={typeof selectedMessage.confidenceScore !== 'number'}
-                >
-                  {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : 'n/a'}
-                </button>
-                {showTracePreview && selectedMessage.providerTracePreview ? (
-                  <div id="bishop-trace-preview" className="trace-preview trace-preview-popover" role="tooltip" aria-live="polite">
-                    {selectedMessage.providerTracePreview}
-                  </div>
-                ) : null}
-              </div>
-              <div className="trace-confidence-popover">
-                <button
-                  type="button"
-                  className="trace-confidence-help"
-                  title="Show the improvement hint"
-                  onMouseEnter={() => setShowNeedPreview(true)}
-                  onMouseLeave={() => setShowNeedPreview(false)}
-                  onFocus={() => setShowNeedPreview(true)}
-                  onBlur={() => setShowNeedPreview(false)}
-                  aria-describedby={showNeedPreview ? 'bishop-need-preview' : undefined}
-                  disabled={!selectedMessage.improvementHint}
-                  aria-label="Show improvement hint"
-                >
-                  ?
-                </button>
-                {showNeedPreview && selectedMessage.improvementHint ? (
-                  <div id="bishop-need-preview" className="trace-preview trace-preview-popover" role="tooltip" aria-live="polite">
-                    {selectedMessage.improvementHint}
-                  </div>
-                ) : null}
+      {showRightPanel ? (
+        <aside id="panel-right" className="panel panel-right bishop-trace-panel">
+          <SectionHeading title="Answer trace" subtitle="Provenance and retrieval diagnostics for the last turn." />
+          <div className="detail-stack">
+            <div className="detail-row">
+              <span>Status</span>
+              <strong>{selectedMessage.status || 'ready'}</strong>
+            </div>
+            <div className="detail-row">
+              <span>Provider</span>
+              <strong>{selectedMessage.provider || provider}</strong>
+            </div>
+            <div className="detail-row">
+              <span>Orchestration</span>
+              <strong>{selectedMessage.orchestrationMode || 'local'}</strong>
+            </div>
+            <div className="detail-row">
+              <span>Chunk count</span>
+              <strong>{selectedMessage.chunkCount || 0}</strong>
+            </div>
+            <div className="detail-row">
+              <span>Token count</span>
+              <strong>{selectedMessage.tokenCount || 0}</strong>
+            </div>
+            <div className="detail-row">
+              <span>Latency</span>
+              <strong>{selectedMessage.latencyMs || 0} ms</strong>
+            </div>
+            <div className="detail-row detail-row-action">
+              <span>Confidence</span>
+              <div className="trace-confidence-group">
+                <div className="trace-confidence-popover">
+                  <button
+                    type="button"
+                    className="trace-confidence-button"
+                    title="Show the trace preview"
+                    onMouseEnter={() => setShowTracePreview(true)}
+                    onMouseLeave={() => setShowTracePreview(false)}
+                    onFocus={() => setShowTracePreview(true)}
+                    onBlur={() => setShowTracePreview(false)}
+                    aria-describedby={showTracePreview ? 'bishop-trace-preview' : undefined}
+                    disabled={typeof selectedMessage.confidenceScore !== 'number'}
+                  >
+                    {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : 'n/a'}
+                  </button>
+                  {showTracePreview && selectedMessage.providerTracePreview ? (
+                    <div id="bishop-trace-preview" className="trace-preview trace-preview-popover" role="tooltip" aria-live="polite">
+                      {selectedMessage.providerTracePreview}
+                    </div>
+                  ) : null}
+                </div>
+                <div className="trace-confidence-popover">
+                  <button
+                    type="button"
+                    className="trace-confidence-help"
+                    title="Show the improvement hint"
+                    onMouseEnter={() => setShowNeedPreview(true)}
+                    onMouseLeave={() => setShowNeedPreview(false)}
+                    onFocus={() => setShowNeedPreview(true)}
+                    onBlur={() => setShowNeedPreview(false)}
+                    aria-describedby={showNeedPreview ? 'bishop-need-preview' : undefined}
+                    disabled={!selectedMessage.improvementHint}
+                    aria-label="Show improvement hint"
+                  >
+                    ?
+                  </button>
+                  {showNeedPreview && selectedMessage.improvementHint ? (
+                    <div id="bishop-need-preview" className="trace-preview trace-preview-popover" role="tooltip" aria-live="polite">
+                      {selectedMessage.improvementHint}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="document-content bishop-sources-section">
-          <div className="document-content-header">
-            <h3>Details</h3>
-            <button
-              type="button"
-              className="text-button text-button-sm"
-              onClick={() => setShowSources((value) => !value)}
-              aria-expanded={showSources}
-              aria-controls="bishop-source-list"
-            >
-              {showSources ? 'Hide sources' : 'Show sources'}
-            </button>
+          <div className="document-content bishop-sources-section">
+            <div className="document-content-header">
+              <h3>Details</h3>
+              <button
+                type="button"
+                className="text-button text-button-sm"
+                onClick={() => setShowSources((value) => !value)}
+                aria-expanded={showSources}
+                aria-controls="bishop-source-list"
+              >
+                {showSources ? 'Hide sources' : 'Show sources'}
+              </button>
+            </div>
           </div>
-        </div>
-        {showSources ? (
-          <div id="bishop-source-list" className="source-list">
-            {(selectedMessage.sources || []).map((source) => (
-              <SourceCard key={source.id} source={source} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
-            ))}
-            {!selectedMessage.sources?.length ? (
-              <div className="empty-state">No grounded sources yet. Ask Bishop a question to populate this trace.</div>
-            ) : null}
-          </div>
-        ) : null}
-      </aside>
+          {showSources ? (
+            <div id="bishop-source-list" className="source-list">
+              {(selectedMessage.sources || []).map((source) => (
+                <SourceCard key={source.id} source={source} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
+              ))}
+              {!selectedMessage.sources?.length ? (
+                <div className="empty-state">No grounded sources yet. Ask Bishop a question to populate this trace.</div>
+              ) : null}
+            </div>
+          ) : null}
+        </aside>
+      ) : null}
     </section>
   )
 }

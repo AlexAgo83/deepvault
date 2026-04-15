@@ -21,7 +21,7 @@ function formatConfidence(value?: number) {
   return typeof value === 'number' ? `${value}%` : 'n/a'
 }
 
-export function AIStatsPanel({ messages }: { messages: AppModel['messages'] }) {
+export function AIStatsPanel({ messages, showRightPanel }: { messages: AppModel['messages']; showRightPanel: boolean }) {
   const responses = messages.filter(
     (message) => message.role === 'assistant' && message.id !== 'seed' && message.status !== 'draft' && message.status !== 'answering',
   )
@@ -41,11 +41,11 @@ export function AIStatsPanel({ messages }: { messages: AppModel['messages'] }) {
   const recentResponses = [...responses].slice(-5).reverse()
 
   return (
-    <section className="content-grid ai-stats-grid">
+    <section className={`content-grid ai-stats-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <div className="ai-stats-main-column">
         <article className="panel ai-stats-panel">
           <SectionHeading
-            title="AI stats"
+            title="AI View"
             subtitleTooltip="Track Bishop responses, confidence, and the context that would make the next answer stronger."
           />
 
@@ -81,26 +81,28 @@ export function AIStatsPanel({ messages }: { messages: AppModel['messages'] }) {
         </article>
       </div>
 
-      <aside className="panel ai-stats-needs-panel">
-        <SectionHeading
-          title="AI needs"
-          subtitleTooltip="Recurring inputs that would have improved the last answers."
-        />
-        <div className="ai-stats-scroll">
-          <div className="detail-stack">
-            {topNeeds.length ? (
-              topNeeds.map(({ hint, count }) => (
-                <div key={hint} className="ai-need-row">
-                  <span>{hint}</span>
-                  <strong>{count}</strong>
-                </div>
-              ))
-            ) : (
-              <div className="empty-state">No AI needs have been surfaced yet.</div>
-            )}
+      {showRightPanel ? (
+        <aside id="panel-right" className="panel panel-right ai-stats-needs-panel">
+          <SectionHeading
+            title="AI needs"
+            subtitleTooltip="Recurring inputs that would have improved the last answers."
+          />
+          <div className="ai-stats-scroll">
+            <div className="detail-stack">
+              {topNeeds.length ? (
+                topNeeds.map(({ hint, count }) => (
+                  <div key={hint} className="ai-need-row">
+                    <span>{hint}</span>
+                    <strong>{count}</strong>
+                  </div>
+                ))
+              ) : (
+                <div className="empty-state">No AI needs have been surfaced yet.</div>
+              )}
+            </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      ) : null}
     </section>
   )
 }

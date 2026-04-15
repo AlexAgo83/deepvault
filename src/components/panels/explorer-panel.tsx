@@ -13,6 +13,7 @@ export function ExplorerPanel({
   onExportMarkdown,
   resolveFileHref,
   selectedExplorerDoc,
+  showRightPanel,
 }: {
   explorerRows: ExplorerRow[]
   onSelectDocument: (_document: ExplorerRow) => void
@@ -20,6 +21,7 @@ export function ExplorerPanel({
   onExportMarkdown: () => void
   resolveFileHref: (_siteId: string, _path: string, _webUrl?: string | null) => string | null
   selectedExplorerDoc: ExplorerRow | null
+  showRightPanel: boolean
 }) {
   const [visibleCount, setVisibleCount] = useState(EXPLORER_BATCH_SIZE)
   const [showSourceExcerpt, setShowSourceExcerpt] = useState(false)
@@ -72,7 +74,7 @@ export function ExplorerPanel({
   }, [selectedExplorerDoc?.id])
 
   return (
-    <section className="content-grid explorer-grid">
+    <section className={`content-grid explorer-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <article className="panel explorer-list-panel">
         <SectionHeading
           title="Explorer"
@@ -123,105 +125,107 @@ export function ExplorerPanel({
         </div>
       </article>
 
-      <article className="panel explorer-detail-panel">
-        {selectedExplorerDoc ? (
-          <>
-            <SectionHeading
-              title={selectedExplorerDoc.title}
-              subtitle={
-                <PathLabel
-                  value={selectedExplorerDoc.path}
-                  href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
-                />
-              }
-            />
-            <div className="explorer-detail-scroll">
-              <div className="detail-stack">
-                <div className="detail-row detail-row-site-row">
-                  <span>Site</span>
-                  <div className="detail-row-site-value">
-                    {selectedExplorerDoc.siteUrl ? (
-                      <a
-                        className="detail-row-site-button"
-                        href={selectedExplorerDoc.siteUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`Open site ${selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}`}
-                        title={`Open site ${selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}`}
-                      >
-                        <span className="detail-row-site-button-icon" aria-hidden="true">
-                          <FileLinkIcon />
-                        </span>
-                        <span>Open site</span>
-                      </a>
-                    ) : null}
-                  </div>
-                </div>
-                <div className="detail-row">
-                  <span>Owner</span>
-                  <strong>{selectedExplorerDoc.author}</strong>
-                </div>
-                <div className="detail-row">
-                  <span>Updated</span>
-                  <strong>{formatUpdatedAt(selectedExplorerDoc.updatedAt)}</strong>
-                </div>
-                <div className="detail-row">
-                  <span>Access</span>
-                  <strong>{selectedExplorerDoc.access.join(', ')}</strong>
-                </div>
-                <div className="detail-row">
-                  <span>Tags</span>
-                  <strong className="detail-row-tags">{selectedExplorerDoc.tags.join(', ')}</strong>
-                </div>
-              </div>
-              <div className="document-content">
-                <div className="document-content-header">
-                  <h3>Details</h3>
-                  {hasDistinctSourceExcerpt ? (
-                    <button
-                      type="button"
-                      className="text-button text-button-sm"
-                      onClick={() => setShowSourceExcerpt((current) => !current)}
-                      aria-expanded={showSourceExcerpt}
-                      aria-controls="explorer-source-excerpt"
-                    >
-                      {showSourceExcerpt ? 'Hide source excerpt' : 'Show source excerpt'}
-                    </button>
-                  ) : null}
-                </div>
-                <p>
-                  <CompactPathText
-                    value={selectedDirectAnswer || selectedSummary || selectedExplorerDoc.title}
+      {showRightPanel ? (
+        <article id="panel-right" className="panel panel-right explorer-detail-panel">
+          {selectedExplorerDoc ? (
+            <>
+              <SectionHeading
+                title={selectedExplorerDoc.title}
+                subtitle={
+                  <PathLabel
+                    value={selectedExplorerDoc.path}
                     href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
                   />
-                </p>
-                {showSourceExcerpt ? (
-                  hasDistinctSourceExcerpt ? (
-                    <p id="explorer-source-excerpt" className="document-content-source">
-                      <CompactPathText
-                        value={selectedSourceExcerpt}
-                        href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
-                      />
-                    </p>
-                  ) : (
-                    <div id="explorer-source-excerpt" className="document-content-note">
-                      This source does not expose a separate body excerpt here, so the summary and source view are the same.
+                }
+              />
+              <div className="explorer-detail-scroll">
+                <div className="detail-stack">
+                  <div className="detail-row detail-row-site-row">
+                    <span>Site</span>
+                    <div className="detail-row-site-value">
+                      {selectedExplorerDoc.siteUrl ? (
+                        <a
+                          className="detail-row-site-button"
+                          href={selectedExplorerDoc.siteUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`Open site ${selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}`}
+                          title={`Open site ${selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}`}
+                        >
+                          <span className="detail-row-site-button-icon" aria-hidden="true">
+                            <FileLinkIcon />
+                          </span>
+                          <span>Open site</span>
+                        </a>
+                      ) : null}
                     </div>
-                  )
-                ) : null}
+                  </div>
+                  <div className="detail-row">
+                    <span>Owner</span>
+                    <strong>{selectedExplorerDoc.author}</strong>
+                  </div>
+                  <div className="detail-row">
+                    <span>Updated</span>
+                    <strong>{formatUpdatedAt(selectedExplorerDoc.updatedAt)}</strong>
+                  </div>
+                  <div className="detail-row">
+                    <span>Access</span>
+                    <strong>{selectedExplorerDoc.access.join(', ')}</strong>
+                  </div>
+                  <div className="detail-row">
+                    <span>Tags</span>
+                    <strong className="detail-row-tags">{selectedExplorerDoc.tags.join(', ')}</strong>
+                  </div>
+                </div>
+                <div className="document-content">
+                  <div className="document-content-header">
+                    <h3>Details</h3>
+                    {hasDistinctSourceExcerpt ? (
+                      <button
+                        type="button"
+                        className="text-button text-button-sm"
+                        onClick={() => setShowSourceExcerpt((current) => !current)}
+                        aria-expanded={showSourceExcerpt}
+                        aria-controls="explorer-source-excerpt"
+                      >
+                        {showSourceExcerpt ? 'Hide source excerpt' : 'Show source excerpt'}
+                      </button>
+                    ) : null}
+                  </div>
+                  <p>
+                    <CompactPathText
+                      value={selectedDirectAnswer || selectedSummary || selectedExplorerDoc.title}
+                      href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                    />
+                  </p>
+                  {showSourceExcerpt ? (
+                    hasDistinctSourceExcerpt ? (
+                      <p id="explorer-source-excerpt" className="document-content-source">
+                        <CompactPathText
+                          value={selectedSourceExcerpt}
+                          href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                        />
+                      </p>
+                    ) : (
+                      <div id="explorer-source-excerpt" className="document-content-note">
+                        This source does not expose a separate body excerpt here, so the summary and source view are the same.
+                      </div>
+                    )
+                  ) : null}
+                </div>
               </div>
-            </div>
-          </>
-      ) : (
-          <>
-            <SectionHeading
-              title="No visible document"
-              subtitleTooltip="Choose a site with matching results to inspect its details."
-            />
-            <div className="empty-state">No permitted sources match the current site filter.</div>
-          </>
-        )}
-      </article>
+            </>
+          ) : (
+            <>
+              <SectionHeading
+                title="No visible document"
+                subtitleTooltip="Choose a site with matching results to inspect its details."
+              />
+              <div className="empty-state">No permitted sources match the current site filter.</div>
+            </>
+          )}
+        </article>
+      ) : null}
     </section>
   )
 }
