@@ -635,23 +635,20 @@ select:focus-visible {
 
 .main-content-knowledge {
   overflow-y: auto;
-  padding-bottom: 12px;
+  padding-bottom: 24px;
 }
 
 .page-footer {
-  margin-top: auto;
-  padding: 0 4px 0;
+  margin: 2px auto 0;
+  padding: 0;
   color: var(--muted);
-  font-size: 0.58rem;
-  line-height: 0.9;
+  font-size: 0.56rem;
+  line-height: 1;
   letter-spacing: 0.015em;
   opacity: 0.72;
   text-align: center;
-  width: 100%;
-}
-
-.page-footer-knowledge {
-  margin-top: auto;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .knowledge-body {
@@ -2853,10 +2850,12 @@ code {
   .page-footer {
     position: static;
     margin-top: auto;
-    padding: 0 4px 0;
+    padding: 0 4px;
     background: none;
     border-top: 0;
     backdrop-filter: none;
+    font-size: 0.56rem;
+    line-height: 1;
   }
 
   .sidebar-backdrop {
