@@ -382,7 +382,6 @@ select:focus-visible {
   justify-content: space-between;
   gap: 10px;
   padding: 10px 0 0;
-  border-top: 1px solid var(--border);
 }
 
 .theme-toggle-label {
@@ -638,17 +637,24 @@ select:focus-visible {
   padding-bottom: 24px;
 }
 
-.page-footer {
-  margin: 2px auto 0;
-  padding: 0;
-  color: var(--muted);
+.sidebar-version {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
   font-size: 0.56rem;
   line-height: 1;
   letter-spacing: 0.015em;
+  color: var(--muted);
   opacity: 0.72;
+}
+
+.sidebar-collapsed .sidebar-version {
+  justify-content: center;
   text-align: center;
-  width: fit-content;
-  max-width: 100%;
 }
 
 .knowledge-body {
@@ -2845,17 +2851,6 @@ code {
 
   .topbar-menu-button {
     display: inline-flex;
-  }
-
-  .page-footer {
-    position: static;
-    margin-top: auto;
-    padding: 0 4px;
-    background: none;
-    border-top: 0;
-    backdrop-filter: none;
-    font-size: 0.56rem;
-    line-height: 1;
   }
 
   .sidebar-backdrop {

@@ -349,9 +349,15 @@ function AppSidebar({
           aria-pressed={theme === 'dark'}
           title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           onClick={onToggleTheme}
-        >
+          >
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
+      </div>
+
+      <div className="sidebar-version" aria-label="App version">
+        <span>Nexus</span>
+        <span>v{version}</span>
+        <span>© {new Date().getFullYear()}</span>
       </div>
     </aside>
   )
@@ -928,9 +934,6 @@ export function AppShell(model: AppModel) {
           </ErrorBoundary>
         ) : null}
 
-        <footer className="page-footer" aria-label="Site footer">
-          <span>Nexus · v{version} · © {new Date().getFullYear()}</span>
-        </footer>
       </main>
 
       <GettingStartedModal onClose={closeGettingStarted} open={gettingStartedOpen} />
