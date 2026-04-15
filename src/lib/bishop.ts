@@ -7,8 +7,10 @@ import {
   type Corpus,
   type GroundingResult,
   type ProviderId,
+  type SourceRecord,
   type UserRole,
 } from './deepvault'
+import { extractMeaningfulTokens } from './scoring'
 
 export interface BishopPromptContext {
   query: string
@@ -171,9 +173,9 @@ function buildImprovementHint(result: Pick<AnswerResult, 'status' | 'sources' | 
   }
 
   const topSource = result.sources[0]
-  const topTags = topSource?.tags?.slice(0, 2).join(', ')
   const topAuthor = topSource?.author
   const topFileType = topSource?.fileType
+  const specificTerms = buildNeedRefinementTerms(topSource)
 
   if (result.sources.length === 1) {
     if (topAuthor) {
@@ -183,8 +185,8 @@ function buildImprovementHint(result: Pick<AnswerResult, 'status' | 'sources' | 
   }
 
   if (result.chunkCount <= 6) {
-    if (topTags) {
-      return `A more specific keyword would improve grounding — try terms like ${topTags}.`
+    if (specificTerms) {
+      return `A more specific document title or site name would improve the response — try refining around ${specificTerms}.`
     }
     if (topFileType) {
       return `A more specific ${topFileType} title or keyword would improve grounding.`
@@ -192,10 +194,35 @@ function buildImprovementHint(result: Pick<AnswerResult, 'status' | 'sources' | 
     return 'A more specific document title or keyword would improve grounding.'
   }
 
-  if (topTags) {
-    return `A more specific document title or site name would improve the response — try refining around ${topTags}.`
+  if (specificTerms) {
+    return `A more specific document title or site name would improve the response — try refining around ${specificTerms}.`
   }
   return 'A more specific document title or site name would improve the response.'
+}
+
+export function buildNeedRefinementTerms(
+  source?: Pick<SourceRecord, 'title' | 'siteName' | 'path' | 'summary' | 'tags' | 'sectionHint' | 'author' | 'fileType'>,
+): string {
+  if (!source) {
+    return ''
+  }
+
+  const candidates = [
+    source.sectionHint || '',
+    source.title,
+    source.siteName,
+    source.summary,
+    source.path,
+    source.tags.join(' '),
+    source.author,
+    source.fileType || '',
+  ].filter(Boolean)
+
+  const terms = extractMeaningfulTokens(candidates.join(' '))
+    .filter((term) => term.length > 1 && !/^\d+$/.test(term))
+    .slice(0, 3)
+
+  return terms.join(', ')
 }
 
 function formatConversationHistory(conversationHistory: Array<Pick<ChatMessage, 'role' | 'text'>>): string {

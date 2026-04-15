@@ -34,6 +34,49 @@ const STOP_WORDS = new Set([
   'you',
 ])
 
+const GENERIC_DOC_TOKENS = new Set([
+  'content',
+  'copy',
+  'doc',
+  'docs',
+  'document',
+  'documents',
+  'draft',
+  'file',
+  'files',
+  'final',
+  'image',
+  'images',
+  'library',
+  'libraries',
+  'list',
+  'lists',
+  'note',
+  'notes',
+  'page',
+  'pages',
+  'path',
+  'pdf',
+  'ppt',
+  'pptx',
+  'presentation',
+  'shared',
+  'sharepoint',
+  'sheet',
+  'sheets',
+  'slide',
+  'slides',
+  'source',
+  'sources',
+  'spreadsheet',
+  'tab',
+  'tabs',
+  'text',
+  'track',
+  'tracking',
+  'version',
+])
+
 export function normalizeText(value: string): string {
   return String(value || '')
     .toLowerCase()
@@ -45,6 +88,15 @@ export function tokenize(value: string): string[] {
   return normalizeText(value)
     .split(/\s+/)
     .filter((token) => token && !STOP_WORDS.has(token))
+}
+
+export function isMeaningfulToken(token: string): boolean {
+  return Boolean(token) && !STOP_WORDS.has(token) && !GENERIC_DOC_TOKENS.has(token)
+}
+
+export function extractMeaningfulTokens(value: string | string[]): string[] {
+  const text = Array.isArray(value) ? value.join(' ') : value
+  return [...new Set(tokenize(text).filter(isMeaningfulToken))]
 }
 
 export function getDocumentScore(document: {
@@ -62,12 +114,13 @@ export function getDocumentScore(document: {
     return 0
   }
 
-  const normalizedTitle = normalizeText(document.title)
-  const normalizedSummary = normalizeText(document.summary)
-  const normalizedTags = normalizeText(document.tags.join(' '))
-  const normalizedPath = normalizeText(document.path)
-  const normalizedAuthor = document.author ? normalizeText(document.author) : ''
-  const normalizedFileType = document.fileType ? normalizeText(document.fileType) : ''
+  const titleTokens = new Set(extractMeaningfulTokens(document.title))
+  const summaryTokens = new Set(extractMeaningfulTokens(document.summary))
+  const tagTokens = new Set(extractMeaningfulTokens(document.tags))
+  const pathTokens = new Set(extractMeaningfulTokens(document.path))
+  const authorTokens = document.author ? new Set(extractMeaningfulTokens(document.author)) : new Set<string>()
+  const fileTypeTokens = document.fileType ? new Set(tokenize(document.fileType)) : new Set<string>()
+  const normalizedContent = normalizeText(document.content)
 
   // Pre-compute section fields once when sections are available
   const sectionFields = (document.sections || []).map((section) => ({
@@ -77,10 +130,10 @@ export function getDocumentScore(document: {
 
   let score = 0
   for (const token of tokens) {
-    if (normalizedTitle.includes(token)) {
+    if (titleTokens.has(token)) {
       score += 8
     }
-    if (normalizedSummary.includes(token)) {
+    if (summaryTokens.has(token)) {
       score += 6
     }
     if (sectionFields.length > 0) {
@@ -93,20 +146,20 @@ export function getDocumentScore(document: {
           score += 4
         }
       }
-    } else if (normalizeText(document.content).includes(token)) {
+    } else if (normalizedContent.includes(token)) {
       // Fall back to flat content when no sections are available
       score += 4
     }
-    if (normalizedTags.includes(token)) {
+    if (tagTokens.has(token)) {
       score += 5
     }
-    if (normalizedPath.includes(token)) {
+    if (pathTokens.has(token)) {
       score += 2
     }
-    if (normalizedAuthor && normalizedAuthor.includes(token)) {
+    if (authorTokens.has(token)) {
       score += 3
     }
-    if (normalizedFileType && normalizedFileType.includes(token)) {
+    if (fileTypeTokens.has(token)) {
       score += 2
     }
   }

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getMockCorpusBundle } from '../src/data/corpus'
-import { buildBishopPrompt, groundQuestion, orchestrateBishopAnswer } from '../src/lib/bishop'
+import { buildBishopPrompt, buildNeedRefinementTerms, groundQuestion, orchestrateBishopAnswer } from '../src/lib/bishop'
 
 const corpus = getMockCorpusBundle().corpus
 
@@ -403,5 +403,19 @@ describe('bishop orchestration helpers', () => {
 
     // Hint should reference source tags when chunkCount is low
     expect(result.improvementHint).toMatch(/budget|finance|try terms/i)
+  })
+
+  it('buildNeedRefinementTerms filters generic document tokens', () => {
+    expect(
+      buildNeedRefinementTerms({
+        title: 'Essayage paul et romaric tenue TEST.jpg',
+        siteName: 'CircleSAS',
+        path: '/Shared Documents/Essayage paul et romaric tenue TEST.jpg',
+        summary: 'Source: Essayage paul et romaric tenue TEST.jpg. Path: /Shared Documents/Essayage paul et romaric tenue TEST.jpg.',
+        tags: ['circleSAS', 'documents', 'pdf'],
+        author: 'CSAS-OP-Prod',
+        fileType: 'image',
+      }),
+    ).toMatch(/essayage|paul|romaric/)
   })
 })
