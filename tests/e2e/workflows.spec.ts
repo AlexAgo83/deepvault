@@ -26,10 +26,11 @@ test.describe('DeepVault workflows', () => {
 
   test('keeps restricted Bishop sources hidden for guest users', async ({ page }) => {
     await openApp(page)
-    await page.getByRole('button', { name: 'Settings' }).click()
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
     await runtimeSelect(page, 'Role').selectOption('guest')
 
     await page.getByRole('button', { name: 'Bishop' }).click()
+    await page.getByRole('button', { name: 'Show right panel' }).click()
     await page.getByLabel('Ask a question').fill('What are the restricted launch notes for the stealth lab?')
     await page.getByRole('button', { name: 'Ask bishop' }).click()
 
@@ -42,17 +43,17 @@ test.describe('DeepVault workflows', () => {
 
   test('increases visible sources when switching from guest to admin', async ({ page }) => {
     await openApp(page)
-    await page.getByRole('button', { name: 'Settings' }).click()
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
 
     const visibleSources = page.locator('.stat-card').filter({ hasText: 'Visible sources' }).locator('.stat-value')
 
     await runtimeSelect(page, 'Role').selectOption('guest')
-    await page.getByRole('button', { name: 'Knowledge' }).click()
+    await page.getByRole('button', { name: 'Knowledge', exact: true }).click()
     await expect(visibleSources).toHaveText('0')
 
-    await page.getByRole('button', { name: 'Settings' }).click()
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
     await runtimeSelect(page, 'Role').selectOption('admin')
-    await page.getByRole('button', { name: 'Knowledge' }).click()
+    await page.getByRole('button', { name: 'Knowledge', exact: true }).click()
     await expect(visibleSources).not.toHaveText('0')
   })
 })
