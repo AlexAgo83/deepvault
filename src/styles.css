@@ -37,6 +37,18 @@
   box-sizing: border-box;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 html,
 body,
 #root {
@@ -1171,7 +1183,17 @@ select:focus-visible {
 }
 
 .settings-grid {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+  gap: 18px;
+  align-items: stretch;
+  min-height: 0;
   margin-bottom: 2px;
+}
+
+.settings-grid.content-grid-panel-hidden {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .settings-main-column,
@@ -1179,12 +1201,104 @@ select:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  height: 100%;
   min-width: 0;
+  min-height: 0;
 }
 
 .settings-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.settings-main-scroll {
   display: grid;
   gap: 18px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+  overscroll-behavior: contain;
+}
+
+.settings-section {
+  display: grid;
+  gap: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  min-width: 0;
+}
+
+.settings-main-scroll > .settings-section:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.settings-changelog-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.settings-changelog-scroll {
+  display: grid;
+  gap: 14px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  align-content: start;
+  overscroll-behavior: contain;
+}
+
+.changelog-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+}
+
+.changelog-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.changelog-card-subtitle,
+.changelog-card-meta {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.changelog-card-body {
+  display: grid;
+  gap: 8px;
+}
+
+.changelog-card-body p,
+.changelog-card-highlights {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.changelog-card-highlights {
+  display: grid;
+  gap: 6px;
+  padding-left: 18px;
+}
+
+.changelog-card-loading {
+  color: var(--muted);
+  font-size: 0.88rem;
 }
 
 .settings-form-grid {
@@ -2493,7 +2607,8 @@ code {
 
   .kpi-grid,
   .kpi-grid.compact,
-  .content-grid {
+  .content-grid,
+  .settings-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2501,6 +2616,10 @@ code {
   .bishop-grid,
   .ai-stats-grid {
     display: block;
+  }
+
+  .settings-grid {
+    gap: 18px;
   }
 
   .explorer-list-panel,
@@ -2524,7 +2643,9 @@ code {
   .bishop-chat-panel,
   .ai-stats-main-column,
   .ai-stats-panel,
-  .ai-stats-needs-panel {
+  .ai-stats-needs-panel,
+  .settings-main-panel,
+  .settings-changelog-panel {
     justify-self: stretch;
     width: 100%;
     max-width: none;
@@ -2538,7 +2659,9 @@ code {
   .bishop-chat-panel .message-list,
   .bishop-trace-panel .source-list,
   .ai-stats-panel .ai-response-list,
-  .ai-stats-scroll {
+  .ai-stats-scroll,
+  .settings-main-scroll,
+  .settings-changelog-scroll {
     flex: none;
     min-height: 0;
     overflow: visible;
