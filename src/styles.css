@@ -2079,11 +2079,11 @@ select:focus-visible {
 }
 
 .trace-preview-popover {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 20;
-  width: min(360px, 72vw);
+  position: fixed;
+  z-index: 240;
+  width: min(320px, calc(100vw - 32px));
+  max-height: min(260px, calc(100vh - 32px));
+  overflow: auto;
   margin: 0;
   box-shadow: 0 10px 24px rgba(42, 36, 31, 0.14);
 }
