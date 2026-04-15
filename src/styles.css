@@ -837,8 +837,9 @@ select:focus-visible {
   border: 0;
   background: transparent;
   color: inherit;
-  line-height: 0;
+  line-height: 1;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .topbar-pill-button:focus-visible {
@@ -849,6 +850,10 @@ select:focus-visible {
 
 .topbar-pill-button .pill {
   pointer-events: none;
+}
+
+.topbar-stats-button {
+  color: var(--muted);
 }
 
 .topbar-badge-divider {

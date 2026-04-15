@@ -110,7 +110,7 @@ export function SettingsPanel({
           </div>
         </article>
 
-        <article id="settings-ai-providers-panel" className="panel settings-panel">
+        <article className="panel settings-panel">
           <SectionHeading
             title="SharePoint / Entra ID"
             subtitleTooltip="Credentials passed as env vars to ops console scripts (ingest, evaluate, live export). Stored locally in this browser only."
@@ -185,7 +185,7 @@ export function SettingsPanel({
           </div>
         </article>
 
-        <article className="panel settings-panel">
+        <article id="settings-ai-providers-panel" className="panel settings-panel">
           <SectionHeading
             title="AI providers"
             subtitleTooltip="Provider API keys stored locally in this browser. Bishop uses them when a remote provider is selected."

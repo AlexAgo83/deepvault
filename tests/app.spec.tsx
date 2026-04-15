@@ -836,6 +836,21 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('button', { name: 'Status' })).toHaveAttribute('aria-current', 'page')
   })
 
+  it('toggles the stats headers from the topbar stats button', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByRole('button', { name: 'Knowledge' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
+    expect(screen.getByText('Sites in scope')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Hide stats headers' }))
+    expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Show stats headers' }))
+    expect(screen.getByText('Sites in scope')).toBeInTheDocument()
+  })
+
   it('toggles the right panel from the topbar question button', async () => {
     const user = userEvent.setup()
     render(<App />)
