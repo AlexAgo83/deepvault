@@ -17,7 +17,7 @@ export function BishopPanel({
   role,
   selectedMessage,
   resolveFileHref,
-  showRightPanel,
+  showRightPanel = true,
 }: {
   conversationContextEnabled: boolean
   clearHistory: () => void
@@ -33,7 +33,7 @@ export function BishopPanel({
   role: string
   selectedMessage: AppModel['selectedMessage']
   resolveFileHref: AppModel['resolveFileHref']
-  showRightPanel: boolean
+  showRightPanel?: boolean
 }) {
   const messageListRef = useRef<HTMLDivElement | null>(null)
   const [stickToBottom, setStickToBottom] = useState(true)
