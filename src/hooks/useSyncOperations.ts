@@ -102,6 +102,10 @@ function makeLine(text: string, tone: SyncConsoleTone = 'normal'): SyncConsoleLi
   }
 }
 
+function trimJobLines(lines: SyncConsoleLine[]): SyncConsoleLine[] {
+  return lines.slice(-MAX_JOB_LINES)
+}
+
 function formatCommandLine(
   command: string,
   context: Pick<
@@ -122,6 +126,7 @@ function formatCommandLine(
 
 const ACTIVE_JOB_SESSION_KEY = 'deepvault_active_job'
 const JOB_HISTORY_STORAGE_KEY = 'deepvault_sync_job_history'
+const MAX_JOB_LINES = 20
 
 type LiveOpKind = 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
 
@@ -154,7 +159,11 @@ function readPersistedJob(): PersistedActiveJob | null {
 }
 
 function persistJobHistory(history: SyncOperationJob[]) {
-  localStorage.setItem(JOB_HISTORY_STORAGE_KEY, JSON.stringify(history, null, 2))
+  const trimmedHistory = history.map((job) => ({
+    ...job,
+    lines: trimJobLines(job.lines || []),
+  }))
+  localStorage.setItem(JOB_HISTORY_STORAGE_KEY, JSON.stringify(trimmedHistory, null, 2))
 }
 
 function readPersistedJobHistory(): SyncOperationJob[] {
@@ -163,7 +172,12 @@ function readPersistedJobHistory(): SyncOperationJob[] {
     if (!raw) return []
     const parsed = JSON.parse(raw) as unknown
     if (!Array.isArray(parsed)) return []
-    return parsed.filter((item): item is SyncOperationJob => Boolean(item && typeof item === 'object' && 'id' in item && 'status' in item))
+    return parsed
+      .filter((item): item is SyncOperationJob => Boolean(item && typeof item === 'object' && 'id' in item && 'status' in item))
+      .map((job) => ({
+        ...job,
+        lines: trimJobLines(job.lines || []),
+      }))
   } catch {
     return []
   }
@@ -258,7 +272,7 @@ export function useSyncOperations({
         patchActiveJob(persisted.jobId, (current) => ({
           ...current,
           progress,
-          lines: [...current.lines, makeLine(data.text!, detectLineTone(data.text!, data.isError ?? false))],
+          lines: trimJobLines([...current.lines, makeLine(data.text!, detectLineTone(data.text!, data.isError ?? false))]),
         }))
       } else if (data.type === 'done') {
         const success = data.exitCode === 0
@@ -309,7 +323,7 @@ export function useSyncOperations({
         finishedAt: new Date().toISOString(),
         durationMs: Date.now() - new Date(current.startedAt).getTime(),
         summary,
-        lines: [
+        lines: trimJobLines([
           ...current.lines,
           makeLine(
             status === 'completed'
@@ -319,7 +333,7 @@ export function useSyncOperations({
                 : 'Operation failed.',
             status === 'completed' ? 'success' : 'danger',
           ),
-        ],
+        ]),
       }
 
       setActiveJob(finalized)
@@ -374,15 +388,15 @@ export function useSyncOperations({
     setActiveJob(job)
     void Promise.resolve(onRefreshCorpus())
 
-    REFRESH_DEF.steps.forEach((step) => {
-      pushTimer(() => {
-        patchActiveJob(jobId, (current) => ({
-          ...current,
-          progress: step.progress,
-          lines: [...current.lines, makeLine(step.text, step.tone)],
-        }))
-      }, step.delayMs)
-    })
+      REFRESH_DEF.steps.forEach((step) => {
+        pushTimer(() => {
+          patchActiveJob(jobId, (current) => ({
+            ...current,
+            progress: step.progress,
+            lines: trimJobLines([...current.lines, makeLine(step.text, step.tone)]),
+          }))
+        }, step.delayMs)
+      })
 
     const totalDelay = Math.max(...REFRESH_DEF.steps.map((step) => step.delayMs))
     pushTimer(() => finalizeJob(jobId, 'completed', REFRESH_DEF.summary), totalDelay + 90)
@@ -478,7 +492,7 @@ export function useSyncOperations({
           patchActiveJob(jobId, (current) => ({
             ...current,
             progress,
-            lines: [...current.lines, makeLine(data.text!, tone)],
+            lines: trimJobLines([...current.lines, makeLine(data.text!, tone)]),
           }))
         } else if (data.type === 'done') {
           const success = data.exitCode === 0
