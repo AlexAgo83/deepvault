@@ -21,6 +21,13 @@ type StatsHeaderState = Record<Extract<AppTab, 'settings' | 'sync' | 'ai-stats'>
 
 const RIGHT_PANEL_STORAGE_KEY = 'deepvault_right_panel_visibility'
 const STATS_HEADER_STORAGE_KEY = 'deepvault_stats_headers_visibility'
+const MOBILE_VIEWPORT_QUERY = '(max-width: 900px)'
+
+function readIsMobileViewport(): boolean {
+  return typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia(MOBILE_VIEWPORT_QUERY).matches
+    : false
+}
 
 function readRightPanelState(): RightPanelState {
   const defaultState: RightPanelState = {
@@ -202,7 +209,9 @@ function StatsToggleIcon() {
 function MenuIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M4 5.25h12M4 10h12M4 14.75h12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M4.5 9.25 10 4.75l5.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6.5 8.9v6.35h7V8.9" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 15.25v-3h2v3" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -214,11 +223,14 @@ function AppSidebar({
   install,
   isStandalone,
   isCollapsed,
+  isMobileViewport,
+  isMobileMenuOpen,
   theme,
   update,
   onToggleSidebar,
   onTabChange,
   onToggleTheme,
+  onRequestCloseMobileMenu,
 }: {
   activeTab: AppTab
   canInstall: boolean
@@ -226,29 +238,32 @@ function AppSidebar({
   install: () => Promise<void>
   isStandalone: boolean
   isCollapsed: boolean
+  isMobileViewport: boolean
+  isMobileMenuOpen: boolean
   theme: Theme
   onToggleSidebar: () => void
   onTabChange: (_tab: AppTab) => void
   onToggleTheme: () => void
+  onRequestCloseMobileMenu: () => void
   update: () => Promise<void>
 }) {
   return (
     <aside
       id="app-sidebar"
-      className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : ''}`}
+      className={`sidebar ${!isMobileViewport && isCollapsed ? 'sidebar-collapsed' : ''} ${isMobileMenuOpen ? 'sidebar-mobile-open' : ''}`}
       aria-label="App sidebar"
-      aria-expanded={!isCollapsed}
+      aria-expanded={!isMobileViewport && !isCollapsed ? true : isMobileMenuOpen}
     >
       <div className="sidebar-brandline">
         <span className="sidebar-brand">Nexus</span>
         <button
           type="button"
           className="sidebar-collapse-button"
-          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          aria-pressed={isCollapsed}
+          aria-label={isMobileMenuOpen ? 'Close menu' : isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-pressed={isMobileMenuOpen ? true : isCollapsed}
           aria-controls="app-sidebar"
-          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          onClick={onToggleSidebar}
+          title={isMobileMenuOpen ? 'Close menu' : isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          onClick={isMobileMenuOpen ? onRequestCloseMobileMenu : onToggleSidebar}
         >
           <MenuIcon />
         </button>
@@ -333,6 +348,8 @@ function AppTopbar({
   liveStateTone,
   liveStateDetail,
   hasRightPanel,
+  isMobileViewport,
+  isMobileMenuOpen,
   showRightPanel,
   showStatsHeaders,
   showStatsToggle,
@@ -343,12 +360,15 @@ function AppTopbar({
   onOpenSettings,
   onOpenSyncStatus,
   onToggleRightPanel,
+  onToggleMobileMenu,
 }: {
   activeScopeLabel: string
   liveStateLabel: string
   liveStateTone: AppModel['liveState']['tone']
   liveStateDetail: string
   hasRightPanel: boolean
+  isMobileViewport: boolean
+  isMobileMenuOpen: boolean
   showRightPanel: boolean
   showStatsHeaders: boolean
   showStatsToggle: boolean
@@ -359,6 +379,7 @@ function AppTopbar({
   onOpenSettings: () => void
   onOpenSyncStatus: () => void
   onToggleRightPanel: () => void
+  onToggleMobileMenu: () => void
 }) {
   const [isExpanded, setIsExpanded] = useState(true)
 
@@ -458,6 +479,19 @@ function AppTopbar({
               <QuestionIcon />
             </button>
           ) : null}
+          {isMobileViewport ? (
+            <button
+              type="button"
+              className="topbar-info-button topbar-menu-button"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="app-sidebar"
+              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+              title={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+              onClick={onToggleMobileMenu}
+            >
+              <MenuIcon />
+            </button>
+          ) : null}
         </div>
       </div>
     </header>
@@ -539,6 +573,8 @@ export function AppShell(model: AppModel) {
   const [updateBannerDismissed, setUpdateBannerDismissed] = useState(false)
   const [gettingStartedOpen, setGettingStartedOpen] = useState(true)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => localStorage.getItem('deepvault_sidebar_collapsed') === 'true')
+  const [isMobileViewport, setIsMobileViewport] = useState<boolean>(() => readIsMobileViewport())
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [rightPanelState, setRightPanelState] = useState<RightPanelState>(() => readRightPanelState())
   const [pendingScrollTarget, setPendingScrollTarget] = useState<TopbarScrollTarget | null>(null)
   const [statsHeaderState, setStatsHeaderState] = useState<StatsHeaderState>(() => readStatsHeaderState())
@@ -552,6 +588,32 @@ export function AppShell(model: AppModel) {
   useEffect(() => {
     localStorage.setItem('deepvault_sidebar_collapsed', String(isSidebarCollapsed))
   }, [isSidebarCollapsed])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return
+    }
+
+    const mediaQuery = window.matchMedia(MOBILE_VIEWPORT_QUERY)
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsMobileViewport(event.matches)
+    }
+
+    setIsMobileViewport(mediaQuery.matches)
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange)
+      return () => mediaQuery.removeEventListener('change', handleChange)
+    }
+
+    mediaQuery.addListener(handleChange)
+    return () => mediaQuery.removeListener(handleChange)
+  }, [])
+
+  useEffect(() => {
+    if (!isMobileViewport) {
+      setIsMobileMenuOpen(false)
+    }
+  }, [isMobileViewport])
 
   useEffect(() => {
     localStorage.setItem(RIGHT_PANEL_STORAGE_KEY, JSON.stringify(rightPanelState, null, 2))
@@ -611,6 +673,14 @@ export function AppShell(model: AppModel) {
   const showKpiGrid = (activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats') ? statsHeaderState[activeTab] : false
   const showStatsToggle = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats'
   const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
+  const toggleMobileMenu = () => {
+    if (isMobileViewport) {
+      setIsMobileMenuOpen((value) => !value)
+      return
+    }
+    setIsSidebarCollapsed((value) => !value)
+  }
+  const closeMobileMenu = () => setIsMobileMenuOpen(false)
   const hasRightPanel = activeTab === 'explorer' || activeTab === 'bishop' || activeTab === 'ai-stats'
   const showRightPanel = hasRightPanel ? rightPanelState[activeTab] : false
   const toggleRightPanel = () => {
@@ -638,7 +708,16 @@ export function AppShell(model: AppModel) {
   const currentStatsHeadersVisible = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' ? statsHeaderState[activeTab] : false
 
   return (
-    <div className={`app-shell ${isSidebarCollapsed ? 'app-shell-sidebar-collapsed' : ''}`}>
+    <div className={`app-shell ${!isMobileViewport && isSidebarCollapsed ? 'app-shell-sidebar-collapsed' : ''}`}>
+      {isMobileViewport && isMobileMenuOpen ? (
+        <button
+          type="button"
+          className="sidebar-backdrop"
+          aria-label="Close menu"
+          onClick={closeMobileMenu}
+        />
+      ) : null}
+
       <AppSidebar
         activeTab={activeTab}
         canInstall={installPrompt.canInstall}
@@ -646,9 +725,15 @@ export function AppShell(model: AppModel) {
         install={installPrompt.install}
         isStandalone={installPrompt.isStandalone}
         isCollapsed={isSidebarCollapsed}
+        isMobileViewport={isMobileViewport}
+        isMobileMenuOpen={isMobileMenuOpen}
         theme={theme}
         onToggleSidebar={toggleSidebar}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab)
+          closeMobileMenu()
+        }}
+        onRequestCloseMobileMenu={closeMobileMenu}
         onToggleTheme={toggleTheme}
         update={updateApp}
       />
@@ -657,6 +742,8 @@ export function AppShell(model: AppModel) {
         <AppTopbar
           activeScopeLabel={activeScopeLabel}
           hasRightPanel={hasRightPanel}
+          isMobileViewport={isMobileViewport}
+          isMobileMenuOpen={isMobileMenuOpen}
           liveStateDetail={liveState.detail}
           liveStateLabel={liveState.label}
           liveStateTone={liveState.tone}
@@ -665,6 +752,7 @@ export function AppShell(model: AppModel) {
           onOpenSyncStatus={openSyncStatus}
           onToggleStatsHeader={toggleStatsHeader}
           onToggleRightPanel={toggleRightPanel}
+          onToggleMobileMenu={toggleMobileMenu}
           provider={provider}
           role={role}
           showRightPanel={showRightPanel}

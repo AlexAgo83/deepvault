@@ -735,8 +735,11 @@ select:focus-visible {
   box-shadow: 0 28px 80px rgba(31, 26, 22, 0.28);
   color: var(--text);
   padding: 28px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 18px;
+  max-height: calc(100vh - 48px);
+  overflow: hidden;
 }
 
 .getting-started-eyebrow {
@@ -761,6 +764,10 @@ select:focus-visible {
 .getting-started-list {
   display: grid;
   gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .getting-started-item {
@@ -805,7 +812,7 @@ select:focus-visible {
 }
 
 .topbar-menu-button {
-  align-self: flex-start;
+  display: none;
 }
 
 .topbar-badges {
@@ -2405,23 +2412,56 @@ code {
 @media (max-width: 900px) {
   .app-shell {
     grid-template-columns: 1fr;
-    height: auto;
-    overflow: visible;
+    height: 100vh;
+    overflow: hidden;
   }
 
   .sidebar {
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-    height: auto;
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(86vw, 320px);
+    height: 100vh;
+    z-index: 70;
+    border-right: 1px solid var(--border);
+    border-bottom: 0;
+    box-shadow: 20px 0 50px rgba(31, 26, 22, 0.24);
+    transform: translateX(-105%);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 180ms ease;
   }
 
   body {
-    overflow: auto;
+    overflow: hidden;
   }
 
   .main-content {
-    height: auto;
-    overflow: visible;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-mobile-open {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .sidebar-collapse-button {
+    display: inline-flex;
+  }
+
+  .topbar-menu-button {
+    display: inline-flex;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    border: 0;
+    padding: 0;
+    background: rgba(31, 26, 22, 0.38);
+    backdrop-filter: blur(2px);
   }
 
   .topbar,
@@ -2437,6 +2477,14 @@ code {
   .kpi-grid.compact,
   .content-grid {
     grid-template-columns: 1fr;
+  }
+
+  .explorer-detail-panel,
+  .bishop-trace-panel,
+  .ai-stats-needs-panel {
+    justify-self: stretch;
+    width: 100%;
+    max-width: none;
   }
 
   .explorer-list-panel .document-list {
@@ -2477,12 +2525,17 @@ code {
 @media (max-width: 720px) {
   .getting-started-backdrop {
     padding: 14px;
-    align-items: end;
+    align-items: center;
   }
 
   .getting-started-modal {
     border-radius: 20px 20px 14px 14px;
     padding: 22px;
+    max-height: calc(100vh - 28px);
+  }
+
+  .getting-started-list {
+    max-height: min(42vh, 320px);
   }
 
   .getting-started-actions {
