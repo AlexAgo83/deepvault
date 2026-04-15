@@ -49,7 +49,7 @@ export function SettingsPanel({
   return (
     <section className="settings-grid">
       <div className="settings-main-column">
-        <article className="panel runtime-panel settings-runtime-panel">
+        <article id="settings-runtime-panel" className="panel runtime-panel settings-runtime-panel">
           <SectionHeading title="Settings" subtitleTooltip="Execution context shared by Explorer, Bishop, and Knowledge." />
           <Pill tone="accent">{activeScopeLabel}</Pill>
           <div className="settings-form-grid settings-runtime-form">
@@ -110,7 +110,7 @@ export function SettingsPanel({
           </div>
         </article>
 
-        <article className="panel settings-panel">
+        <article id="settings-ai-providers-panel" className="panel settings-panel">
           <SectionHeading
             title="SharePoint / Entra ID"
             subtitleTooltip="Credentials passed as env vars to ops console scripts (ingest, evaluate, live export). Stored locally in this browser only."

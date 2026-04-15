@@ -271,7 +271,7 @@ export function SyncPanel({
 
       {/* Status view — concise summary */}
       {syncView === 'status' ? (
-        <article className="panel sync-view-panel" aria-label="Knowledge summary">
+        <article id="sync-status-panel" className="panel sync-view-panel" aria-label="Knowledge summary">
           <SectionHeading title="Knowledge" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
           <div className="kpi-grid compact">
             <StatCard

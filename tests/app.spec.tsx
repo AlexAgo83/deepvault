@@ -305,7 +305,7 @@ describe('DeepVault app', () => {
 
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(await screen.findByText('Live fallback')).toBeInTheDocument()
-    expect(screen.getByTitle('Live corpus missing, fallback to mock')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Live fallback/ })).toBeInTheDocument()
   })
 
   it('shows the offline corpus fallback indicator when live mode is selected without network', async () => {
@@ -319,7 +319,7 @@ describe('DeepVault app', () => {
 
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(await screen.findByText('Offline — corpus mock')).toBeInTheDocument()
-    expect(screen.getByTitle('Hors-ligne — corpus mock actif')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Offline — corpus mock/ })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Explorer' }))
     expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
   })
@@ -804,6 +804,36 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(within(badges as HTMLElement).getByText('analyst')).toBeInTheDocument()
     expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
+  })
+
+  it('opens the matching screen when clicking the topbar pills', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const topbar = document.querySelector('.topbar')
+    expect(topbar).not.toBeNull()
+
+    const topbarRoot = topbar as HTMLElement
+
+    await user.click(topbarRoot.querySelector('.topbar-badge-group-status .topbar-pill-button') as HTMLElement)
+    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getByText('Role')).toBeInTheDocument()
+
+    await user.click(within(topbarRoot).getByText('openai').closest('button') as HTMLElement)
+    expect(screen.getByRole('heading', { name: 'AI providers' })).toBeInTheDocument()
+    expect(screen.getByLabelText('OpenAI API key')).toBeInTheDocument()
+
+    await user.click(within(topbarRoot).getByText('analyst').closest('button') as HTMLElement)
+    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getByText('Role')).toBeInTheDocument()
+
+    await user.click(within(topbarRoot).getByText('All sites').closest('button') as HTMLElement)
+    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getByText('Site scope')).toBeInTheDocument()
+
+    await user.click(within(topbarRoot).getByText('Synced').closest('button') as HTMLElement)
+    expect(screen.getByRole('heading', { name: 'Knowledge View' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Status' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('toggles the right panel from the topbar question button', async () => {

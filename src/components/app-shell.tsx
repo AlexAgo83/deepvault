@@ -16,6 +16,7 @@ type NavSection = {
 }
 
 type RightPanelState = Record<Exclude<AppTab, 'settings' | 'sync'>, boolean>
+type TopbarScrollTarget = 'settings-runtime' | 'settings-ai-providers' | 'sync-status'
 
 const RIGHT_PANEL_STORAGE_KEY = 'deepvault_right_panel_visibility'
 
@@ -301,6 +302,9 @@ function AppTopbar({
   showRightPanel,
   provider,
   role,
+  onOpenAiProviders,
+  onOpenSettings,
+  onOpenSyncStatus,
   onToggleRightPanel,
 }: {
   activeScopeLabel: string
@@ -311,6 +315,9 @@ function AppTopbar({
   showRightPanel: boolean
   provider: string
   role: string
+  onOpenAiProviders: () => void
+  onOpenSettings: () => void
+  onOpenSyncStatus: () => void
   onToggleRightPanel: () => void
 }) {
   const [isExpanded, setIsExpanded] = useState(true)
@@ -322,16 +329,56 @@ function AppTopbar({
           {isExpanded ? (
             <>
               <div className="topbar-badge-group topbar-badge-group-status" aria-label="Knowledge">
-                <Pill tone={liveStateTone} title={liveStateDetail}>
-                  {liveStateLabel}
-                </Pill>
-                <Pill tone="success">Synced</Pill>
+                <button
+                  type="button"
+                  className="topbar-pill-button"
+                  title={liveStateDetail}
+                  aria-label={`${liveStateLabel}. Open Settings and scroll to the Settings panel`}
+                  onClick={onOpenSettings}
+                >
+                  <Pill tone={liveStateTone} title={liveStateDetail}>
+                    {liveStateLabel}
+                  </Pill>
+                </button>
+                <button
+                  type="button"
+                  className="topbar-pill-button"
+                  title="Open Knowledge View and jump to Status"
+                  aria-label="Synced. Open Knowledge View and jump to Status"
+                  onClick={onOpenSyncStatus}
+                >
+                  <Pill tone="success">Synced</Pill>
+                </button>
               </div>
               <span className="topbar-badge-divider" aria-hidden="true" />
               <div id="topbar-context" className="topbar-badge-group topbar-badge-group-context" aria-label="Active context">
-                <Pill tone="neutral">{activeScopeLabel}</Pill>
-                <Pill tone="neutral">{provider}</Pill>
-                <Pill tone="accent">{role}</Pill>
+                <button
+                  type="button"
+                  className="topbar-pill-button"
+                  title="Open Settings and scroll to the Settings panel"
+                  aria-label={`${activeScopeLabel}. Open Settings and scroll to the Settings panel`}
+                  onClick={onOpenSettings}
+                >
+                  <Pill tone="neutral">{activeScopeLabel}</Pill>
+                </button>
+                <button
+                  type="button"
+                  className="topbar-pill-button"
+                  title="Open Settings and scroll to AI providers"
+                  aria-label={`${provider}. Open Settings and scroll to AI providers`}
+                  onClick={onOpenAiProviders}
+                >
+                  <Pill tone="neutral">{provider}</Pill>
+                </button>
+                <button
+                  type="button"
+                  className="topbar-pill-button"
+                  title="Open Settings and scroll to the Settings panel"
+                  aria-label={`${role}. Open Settings and scroll to the Settings panel`}
+                  onClick={onOpenSettings}
+                >
+                  <Pill tone="accent">{role}</Pill>
+                </button>
               </div>
             </>
           ) : null}
@@ -441,6 +488,7 @@ export function AppShell(model: AppModel) {
   const [gettingStartedOpen, setGettingStartedOpen] = useState(true)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => localStorage.getItem('deepvault_sidebar_collapsed') === 'true')
   const [rightPanelState, setRightPanelState] = useState<RightPanelState>(() => readRightPanelState())
+  const [pendingScrollTarget, setPendingScrollTarget] = useState<TopbarScrollTarget | null>(null)
 
   useEffect(() => {
     if (!hasPendingUpdate) {
@@ -455,6 +503,28 @@ export function AppShell(model: AppModel) {
   useEffect(() => {
     localStorage.setItem(RIGHT_PANEL_STORAGE_KEY, JSON.stringify(rightPanelState, null, 2))
   }, [rightPanelState])
+
+  useEffect(() => {
+    if (!pendingScrollTarget) {
+      return
+    }
+
+    const selectors: Record<TopbarScrollTarget, string> = {
+      'settings-runtime': '#settings-runtime-panel',
+      'settings-ai-providers': '#settings-ai-providers-panel',
+      'sync-status': '#sync-status-panel',
+    }
+
+    const target = document.querySelector(selectors[pendingScrollTarget])
+    if (!target) {
+      return
+    }
+
+    if ('scrollIntoView' in target && typeof target.scrollIntoView === 'function') {
+      target.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    }
+    setPendingScrollTarget(null)
+  }, [pendingScrollTarget, activeTab])
 
   const updateApp = async () => {
     await updateServiceWorker(true)
@@ -489,6 +559,18 @@ export function AppShell(model: AppModel) {
     if (!hasRightPanel) return
     setRightPanelState((current) => ({ ...current, [activeTab]: !current[activeTab] }))
   }
+  const openSettingsPanel = (target: TopbarScrollTarget) => {
+    setActiveTab('settings')
+    setPendingScrollTarget(target)
+  }
+  const openSyncStatus = () => {
+    setActiveTab('sync')
+    setPendingScrollTarget('sync-status')
+    const params = new URLSearchParams(window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '')
+    params.set('tab', 'sync')
+    params.set('sync', 'status')
+    window.location.hash = `#${params.toString()}`
+  }
 
   return (
     <div className={`app-shell ${isSidebarCollapsed ? 'app-shell-sidebar-collapsed' : ''}`}>
@@ -513,6 +595,9 @@ export function AppShell(model: AppModel) {
           liveStateDetail={liveState.detail}
           liveStateLabel={liveState.label}
           liveStateTone={liveState.tone}
+          onOpenAiProviders={() => openSettingsPanel('settings-ai-providers')}
+          onOpenSettings={() => openSettingsPanel('settings-runtime')}
+          onOpenSyncStatus={openSyncStatus}
           onToggleRightPanel={toggleRightPanel}
           provider={provider}
           role={role}
