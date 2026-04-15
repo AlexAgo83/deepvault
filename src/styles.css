@@ -856,6 +856,24 @@ select:focus-visible {
   color: var(--muted);
 }
 
+.topbar-button-muted {
+  color: var(--muted);
+}
+
+.topbar-button-muted:hover,
+.topbar-button-muted:focus-visible {
+  color: var(--text);
+}
+
+.topbar-button-muted svg {
+  opacity: 0.52;
+}
+
+.topbar-button-muted:hover svg,
+.topbar-button-muted:focus-visible svg {
+  opacity: 0.9;
+}
+
 .topbar-badge-divider {
   width: 1px;
   align-self: stretch;

@@ -17,8 +17,10 @@ type NavSection = {
 
 type RightPanelState = Record<Exclude<AppTab, 'settings' | 'sync'>, boolean>
 type TopbarScrollTarget = 'settings-runtime' | 'settings-ai-providers' | 'sync-status'
+type StatsHeaderState = Record<Extract<AppTab, 'settings' | 'sync' | 'ai-stats'>, boolean>
 
 const RIGHT_PANEL_STORAGE_KEY = 'deepvault_right_panel_visibility'
+const STATS_HEADER_STORAGE_KEY = 'deepvault_stats_headers_visibility'
 
 function readRightPanelState(): RightPanelState {
   const defaultState: RightPanelState = {
@@ -34,6 +36,27 @@ function readRightPanelState(): RightPanelState {
     return {
       explorer: typeof parsed.explorer === 'boolean' ? parsed.explorer : defaultState.explorer,
       bishop: typeof parsed.bishop === 'boolean' ? parsed.bishop : defaultState.bishop,
+      'ai-stats': typeof parsed['ai-stats'] === 'boolean' ? parsed['ai-stats'] : defaultState['ai-stats'],
+    }
+  } catch {
+    return defaultState
+  }
+}
+
+function readStatsHeaderState(): StatsHeaderState {
+  const defaultState: StatsHeaderState = {
+    settings: true,
+    sync: true,
+    'ai-stats': true,
+  }
+
+  try {
+    const raw = localStorage.getItem(STATS_HEADER_STORAGE_KEY)
+    if (!raw) return defaultState
+    const parsed = JSON.parse(raw) as Partial<StatsHeaderState>
+    return {
+      settings: typeof parsed.settings === 'boolean' ? parsed.settings : defaultState.settings,
+      sync: typeof parsed.sync === 'boolean' ? parsed.sync : defaultState.sync,
       'ai-stats': typeof parsed['ai-stats'] === 'boolean' ? parsed['ai-stats'] : defaultState['ai-stats'],
     }
   } catch {
@@ -312,6 +335,7 @@ function AppTopbar({
   hasRightPanel,
   showRightPanel,
   showStatsHeaders,
+  showStatsToggle,
   onToggleStatsHeader,
   provider,
   role,
@@ -327,6 +351,7 @@ function AppTopbar({
   hasRightPanel: boolean
   showRightPanel: boolean
   showStatsHeaders: boolean
+  showStatsToggle: boolean
   onToggleStatsHeader: () => void
   provider: string
   role: string
@@ -408,20 +433,22 @@ function AppTopbar({
           >
             <InfoIcon />
           </button>
-          <button
-            type="button"
-            className="topbar-info-button topbar-stats-button"
-            aria-pressed={showStatsHeaders}
-            aria-label={showStatsHeaders ? 'Hide stats headers' : 'Show stats headers'}
-            title={showStatsHeaders ? 'Hide stats headers' : 'Show stats headers'}
-            onClick={onToggleStatsHeader}
-          >
-            <StatsToggleIcon />
-          </button>
+          {showStatsToggle ? (
+            <button
+              type="button"
+              className={`topbar-info-button topbar-stats-button ${showStatsHeaders ? '' : 'topbar-button-muted'}`}
+              aria-pressed={showStatsHeaders}
+              aria-label={showStatsHeaders ? 'Hide stats headers' : 'Show stats headers'}
+              title={showStatsHeaders ? 'Hide stats headers' : 'Show stats headers'}
+              onClick={onToggleStatsHeader}
+            >
+              <StatsToggleIcon />
+            </button>
+          ) : null}
           {hasRightPanel ? (
             <button
               type="button"
-              className="topbar-info-button topbar-help-button"
+              className={`topbar-info-button topbar-help-button ${showRightPanel ? '' : 'topbar-button-muted'}`}
               aria-expanded={showRightPanel}
               aria-controls="panel-right"
               aria-label={showRightPanel ? 'Hide right panel' : 'Show right panel'}
@@ -514,7 +541,7 @@ export function AppShell(model: AppModel) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => localStorage.getItem('deepvault_sidebar_collapsed') === 'true')
   const [rightPanelState, setRightPanelState] = useState<RightPanelState>(() => readRightPanelState())
   const [pendingScrollTarget, setPendingScrollTarget] = useState<TopbarScrollTarget | null>(null)
-  const [showStatsHeaders, setShowStatsHeaders] = useState<boolean>(() => localStorage.getItem('deepvault_stats_headers_visible') !== 'false')
+  const [statsHeaderState, setStatsHeaderState] = useState<StatsHeaderState>(() => readStatsHeaderState())
 
   useEffect(() => {
     if (!hasPendingUpdate) {
@@ -531,8 +558,8 @@ export function AppShell(model: AppModel) {
   }, [rightPanelState])
 
   useEffect(() => {
-    localStorage.setItem('deepvault_stats_headers_visible', String(showStatsHeaders))
-  }, [showStatsHeaders])
+    localStorage.setItem(STATS_HEADER_STORAGE_KEY, JSON.stringify(statsHeaderState, null, 2))
+  }, [statsHeaderState])
 
   useEffect(() => {
     if (!pendingScrollTarget) {
@@ -581,7 +608,8 @@ export function AppShell(model: AppModel) {
     : null
   const answeredCount = responses.filter((message) => message.status === 'answered').length
   const needHints = responses.filter((message) => Boolean(message.improvementHint))
-  const showKpiGrid = showStatsHeaders && activeTab !== 'explorer' && activeTab !== 'bishop'
+  const showKpiGrid = (activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats') ? statsHeaderState[activeTab] : false
+  const showStatsToggle = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats'
   const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
   const hasRightPanel = activeTab === 'explorer' || activeTab === 'bishop' || activeTab === 'ai-stats'
   const showRightPanel = hasRightPanel ? rightPanelState[activeTab] : false
@@ -601,7 +629,13 @@ export function AppShell(model: AppModel) {
     params.set('sync', 'status')
     window.location.hash = `#${params.toString()}`
   }
-  const toggleStatsHeader = () => setShowStatsHeaders((value) => !value)
+  const toggleStatsHeader = () => {
+    if (activeTab !== 'settings' && activeTab !== 'sync' && activeTab !== 'ai-stats') {
+      return
+    }
+    setStatsHeaderState((current) => ({ ...current, [activeTab]: !current[activeTab] }))
+  }
+  const currentStatsHeadersVisible = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' ? statsHeaderState[activeTab] : false
 
   return (
     <div className={`app-shell ${isSidebarCollapsed ? 'app-shell-sidebar-collapsed' : ''}`}>
@@ -634,7 +668,8 @@ export function AppShell(model: AppModel) {
           provider={provider}
           role={role}
           showRightPanel={showRightPanel}
-          showStatsHeaders={showStatsHeaders}
+          showStatsHeaders={currentStatsHeadersVisible}
+          showStatsToggle={showStatsToggle}
         />
 
         {hasPendingUpdate && !updateBannerDismissed ? (
