@@ -147,6 +147,7 @@ describe('BishopPanel confidence trace', () => {
           providerTracePreview: 'openai response: This is a truncated answer preview from the provider.',
         } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
+        showRightPanel={true}
       />,
     )
 
@@ -184,6 +185,7 @@ describe('BishopPanel confidence trace', () => {
           improvementHint: 'A more specific document title or site name would improve the response.',
         } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
+        showRightPanel={true}
       />,
     )
 
@@ -236,6 +238,7 @@ describe('BishopPanel confidence trace', () => {
           confidenceScore: 84,
         } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
+        showRightPanel={true}
       />,
     )
 
