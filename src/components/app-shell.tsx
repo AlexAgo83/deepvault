@@ -165,6 +165,17 @@ function QuestionIcon() {
   )
 }
 
+function StatsToggleIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.25 14.75V9.25" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
+      <path d="M9.5 14.75V6.75" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
+      <path d="M13.75 14.75V11" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
+      <path d="M4.5 14.75h11" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function MenuIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
@@ -300,6 +311,8 @@ function AppTopbar({
   liveStateDetail,
   hasRightPanel,
   showRightPanel,
+  showStatsHeaders,
+  onToggleStatsHeader,
   provider,
   role,
   onOpenAiProviders,
@@ -313,6 +326,8 @@ function AppTopbar({
   liveStateDetail: string
   hasRightPanel: boolean
   showRightPanel: boolean
+  showStatsHeaders: boolean
+  onToggleStatsHeader: () => void
   provider: string
   role: string
   onOpenAiProviders: () => void
@@ -392,6 +407,16 @@ function AppTopbar({
             onClick={() => setIsExpanded((value) => !value)}
           >
             <InfoIcon />
+          </button>
+          <button
+            type="button"
+            className="topbar-info-button topbar-stats-button"
+            aria-pressed={showStatsHeaders}
+            aria-label={showStatsHeaders ? 'Hide stats headers' : 'Show stats headers'}
+            title={showStatsHeaders ? 'Hide stats headers' : 'Show stats headers'}
+            onClick={onToggleStatsHeader}
+          >
+            <StatsToggleIcon />
           </button>
           {hasRightPanel ? (
             <button
@@ -489,6 +514,7 @@ export function AppShell(model: AppModel) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => localStorage.getItem('deepvault_sidebar_collapsed') === 'true')
   const [rightPanelState, setRightPanelState] = useState<RightPanelState>(() => readRightPanelState())
   const [pendingScrollTarget, setPendingScrollTarget] = useState<TopbarScrollTarget | null>(null)
+  const [showStatsHeaders, setShowStatsHeaders] = useState<boolean>(() => localStorage.getItem('deepvault_stats_headers_visible') !== 'false')
 
   useEffect(() => {
     if (!hasPendingUpdate) {
@@ -503,6 +529,10 @@ export function AppShell(model: AppModel) {
   useEffect(() => {
     localStorage.setItem(RIGHT_PANEL_STORAGE_KEY, JSON.stringify(rightPanelState, null, 2))
   }, [rightPanelState])
+
+  useEffect(() => {
+    localStorage.setItem('deepvault_stats_headers_visible', String(showStatsHeaders))
+  }, [showStatsHeaders])
 
   useEffect(() => {
     if (!pendingScrollTarget) {
@@ -551,7 +581,7 @@ export function AppShell(model: AppModel) {
     : null
   const answeredCount = responses.filter((message) => message.status === 'answered').length
   const needHints = responses.filter((message) => Boolean(message.improvementHint))
-  const showKpiGrid = activeTab !== 'explorer' && activeTab !== 'bishop'
+  const showKpiGrid = showStatsHeaders && activeTab !== 'explorer' && activeTab !== 'bishop'
   const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
   const hasRightPanel = activeTab === 'explorer' || activeTab === 'bishop' || activeTab === 'ai-stats'
   const showRightPanel = hasRightPanel ? rightPanelState[activeTab] : false
@@ -571,6 +601,7 @@ export function AppShell(model: AppModel) {
     params.set('sync', 'status')
     window.location.hash = `#${params.toString()}`
   }
+  const toggleStatsHeader = () => setShowStatsHeaders((value) => !value)
 
   return (
     <div className={`app-shell ${isSidebarCollapsed ? 'app-shell-sidebar-collapsed' : ''}`}>
@@ -598,10 +629,12 @@ export function AppShell(model: AppModel) {
           onOpenAiProviders={() => openSettingsPanel('settings-ai-providers')}
           onOpenSettings={() => openSettingsPanel('settings-runtime')}
           onOpenSyncStatus={openSyncStatus}
+          onToggleStatsHeader={toggleStatsHeader}
           onToggleRightPanel={toggleRightPanel}
           provider={provider}
           role={role}
           showRightPanel={showRightPanel}
+          showStatsHeaders={showStatsHeaders}
         />
 
         {hasPendingUpdate && !updateBannerDismissed ? (
