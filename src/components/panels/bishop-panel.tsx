@@ -2,6 +2,11 @@ import { type FormEvent, useEffect, useLayoutEffect, useRef, useState } from 're
 import { Message, SectionHeading, SourceCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 
+const BISHOP_POPOVER_WIDTH = 320
+const BISHOP_POPOVER_MARGIN = 16
+const BISHOP_POPOVER_GAP = 8
+const BISHOP_POPOVER_ESTIMATED_HEIGHT = 180
+
 export function BishopPanel({
   conversationContextEnabled,
   clearHistory,
@@ -40,6 +45,10 @@ export function BishopPanel({
   const [showTracePreview, setShowTracePreview] = useState(false)
   const [showNeedPreview, setShowNeedPreview] = useState(false)
   const [showSources, setShowSources] = useState(false)
+  const traceButtonRef = useRef<HTMLButtonElement | null>(null)
+  const needButtonRef = useRef<HTMLButtonElement | null>(null)
+  const [tracePreviewPosition, setTracePreviewPosition] = useState<{ top: number; left: number } | null>(null)
+  const [needPreviewPosition, setNeedPreviewPosition] = useState<{ top: number; left: number } | null>(null)
 
   const updateStickToBottom = () => {
     const node = messageListRef.current
@@ -71,6 +80,39 @@ export function BishopPanel({
   useEffect(() => {
     setShowSources(false)
   }, [selectedMessage.id])
+
+  useEffect(() => {
+    setTracePreviewPosition(null)
+    setNeedPreviewPosition(null)
+  }, [selectedMessage.id])
+
+  const positionPopover = (target: HTMLButtonElement | null, estimatedHeight = BISHOP_POPOVER_ESTIMATED_HEIGHT) => {
+    if (!target || typeof window === 'undefined') {
+      return null
+    }
+
+    const rect = target.getBoundingClientRect()
+    const width = Math.min(BISHOP_POPOVER_WIDTH, window.innerWidth - BISHOP_POPOVER_MARGIN * 2)
+    let left = rect.right - width
+    left = Math.max(BISHOP_POPOVER_MARGIN, Math.min(left, window.innerWidth - width - BISHOP_POPOVER_MARGIN))
+
+    let top = rect.bottom + BISHOP_POPOVER_GAP
+    if (top + estimatedHeight > window.innerHeight - BISHOP_POPOVER_MARGIN) {
+      top = Math.max(BISHOP_POPOVER_MARGIN, rect.top - estimatedHeight - BISHOP_POPOVER_GAP)
+    }
+
+    return { top, left }
+  }
+
+  const openTracePreview = () => {
+    setTracePreviewPosition(positionPopover(traceButtonRef.current))
+    setShowTracePreview(true)
+  }
+
+  const openNeedPreview = () => {
+    setNeedPreviewPosition(positionPopover(needButtonRef.current, 140))
+    setShowNeedPreview(true)
+  }
 
   return (
     <section className={`content-grid bishop-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
@@ -163,11 +205,12 @@ export function BishopPanel({
                   <div className="trace-confidence-popover">
                     <button
                       type="button"
+                      ref={traceButtonRef}
                       className="trace-confidence-button"
                       title="Show the trace preview"
-                      onMouseEnter={() => setShowTracePreview(true)}
+                      onMouseEnter={openTracePreview}
                       onMouseLeave={() => setShowTracePreview(false)}
-                      onFocus={() => setShowTracePreview(true)}
+                      onFocus={openTracePreview}
                       onBlur={() => setShowTracePreview(false)}
                       aria-describedby={showTracePreview ? 'bishop-trace-preview' : undefined}
                       disabled={typeof selectedMessage.confidenceScore !== 'number'}
@@ -175,7 +218,20 @@ export function BishopPanel({
                       {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : 'n/a'}
                     </button>
                     {showTracePreview && selectedMessage.providerTracePreview ? (
-                      <div id="bishop-trace-preview" className="trace-preview trace-preview-popover" role="tooltip" aria-live="polite">
+                      <div
+                        id="bishop-trace-preview"
+                        className="trace-preview trace-preview-popover"
+                        role="tooltip"
+                        aria-live="polite"
+                        style={
+                          tracePreviewPosition
+                            ? {
+                                top: `${tracePreviewPosition.top}px`,
+                                left: `${tracePreviewPosition.left}px`,
+                              }
+                            : undefined
+                        }
+                      >
                         {selectedMessage.providerTracePreview}
                       </div>
                     ) : null}
@@ -183,11 +239,12 @@ export function BishopPanel({
                   <div className="trace-confidence-popover">
                     <button
                       type="button"
+                      ref={needButtonRef}
                       className="trace-confidence-help"
                       title="Show the improvement hint"
-                      onMouseEnter={() => setShowNeedPreview(true)}
+                      onMouseEnter={openNeedPreview}
                       onMouseLeave={() => setShowNeedPreview(false)}
-                      onFocus={() => setShowNeedPreview(true)}
+                      onFocus={openNeedPreview}
                       onBlur={() => setShowNeedPreview(false)}
                       aria-describedby={showNeedPreview ? 'bishop-need-preview' : undefined}
                       disabled={!selectedMessage.improvementHint}
@@ -196,7 +253,20 @@ export function BishopPanel({
                       ?
                     </button>
                     {showNeedPreview && selectedMessage.improvementHint ? (
-                      <div id="bishop-need-preview" className="trace-preview trace-preview-popover" role="tooltip" aria-live="polite">
+                      <div
+                        id="bishop-need-preview"
+                        className="trace-preview trace-preview-popover"
+                        role="tooltip"
+                        aria-live="polite"
+                        style={
+                          needPreviewPosition
+                            ? {
+                                top: `${needPreviewPosition.top}px`,
+                                left: `${needPreviewPosition.left}px`,
+                              }
+                            : undefined
+                        }
+                      >
                         {selectedMessage.improvementHint}
                       </div>
                     ) : null}
