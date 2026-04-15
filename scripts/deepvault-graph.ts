@@ -42,6 +42,8 @@ export interface GraphDriveItem {
   folder?: { childCount?: number }
   lastModifiedDateTime?: string
   createdDateTime?: string
+  createdBy?: { user?: { displayName?: string } }
+  lastModifiedBy?: { user?: { displayName?: string } }
   parentReference?: { driveId?: string; path?: string }
 }
 
@@ -53,6 +55,8 @@ export interface CorpusDocumentLike {
   path: string
   webUrl?: string
   author: string
+  createdBy?: string
+  lastModifiedBy?: string
   updatedAt: string
   summary: string
   directAnswer: string
@@ -127,6 +131,10 @@ function buildSummary(text: string, fallback: string): string {
   }
   const sentence = cleaned.split(/(?<=[.!?])\s+/)[0]
   return sentence.slice(0, 240) || fallback
+}
+
+function getGraphPersonName(value?: { user?: { displayName?: string } }): string {
+  return value?.user?.displayName?.trim() || ''
 }
 
 function buildDirectAnswer(text: string, fallback: string): string {
@@ -506,6 +514,8 @@ async function crawlDriveItems(
       path: normalizedPath,
       webUrl: item.webUrl,
       author: siteName,
+      createdBy: getGraphPersonName(item.createdBy),
+      lastModifiedBy: getGraphPersonName(item.lastModifiedBy),
       updatedAt: item.lastModifiedDateTime || item.createdDateTime || new Date().toISOString(),
       summary: buildSummary(text, title),
       directAnswer: buildDirectAnswer(text, title),

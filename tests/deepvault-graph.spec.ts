@@ -113,4 +113,48 @@ describe('GraphClient', () => {
     expect(result.documents[0]).toMatchObject({ title: 'new', path: '/Docs/new.txt' })
     expect(result.skippedDocuments).toBe(1)
   })
+
+  it('captures creator and last modifier names when Graph provides them', async () => {
+    const client = {
+      getJson: vi.fn(async (path: string) => {
+        if (path.includes('/sites/') && !path.includes('/drives') && !path.includes('/lists')) {
+          return { id: 'site-1', displayName: 'Pilot', webUrl: 'https://example.sharepoint.com/sites/pilot' }
+        }
+        throw new Error(`unexpected getJson path: ${path}`)
+      }),
+      listAll: vi.fn(async (path: string) => {
+        if (path.includes('/children')) {
+          return [
+            {
+              id: 'doc-1',
+              name: 'plan.txt',
+              file: { mimeType: 'text/plain' },
+              lastModifiedDateTime: '2026-04-11T12:00:00.000Z',
+              createdBy: { user: { displayName: 'Alice Martin' } },
+              lastModifiedBy: { user: { displayName: 'Bob Dupont' } },
+              size: 20,
+            },
+          ]
+        }
+        if (path.includes('/drives')) {
+          return [{ id: 'drive-1', name: 'Docs' }]
+        }
+        if (path.includes('/lists')) {
+          return [{ id: 'list-1' }]
+        }
+        throw new Error(`unexpected listAll path: ${path}`)
+      }),
+      getText: vi.fn(async () => ({ text: 'Project plan', contentType: 'text/plain' })),
+    }
+
+    const result = await exportSiteCorpus(
+      client as unknown as GraphClient,
+      { url: 'https://example.sharepoint.com/sites/pilot', name: 'Pilot' },
+    )
+
+    expect(result.documents[0]).toMatchObject({
+      createdBy: 'Alice Martin',
+      lastModifiedBy: 'Bob Dupont',
+    })
+  })
 })
