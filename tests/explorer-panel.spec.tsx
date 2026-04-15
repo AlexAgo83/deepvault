@@ -34,6 +34,7 @@ describe('ExplorerPanel', () => {
         onExportMarkdown={vi.fn()}
         resolveFileHref={() => null}
         selectedExplorerDoc={explorerRow}
+        showRightPanel={true}
       />,
     )
 
@@ -49,12 +50,40 @@ describe('ExplorerPanel', () => {
     expect(explorerCell).not.toHaveTextContent('Planning de livraison.xlsx')
   })
 
-  it('reveals the source excerpt on demand', async () => {
+  it('reveals the excerpt and details on demand', async () => {
     const user = userEvent.setup()
     const explorerRowWithExcerpt: ExplorerRow = {
       ...explorerRow,
       content: 'Full source excerpt text with extra context.',
+      directAnswer: 'Compact answer summary',
+      summary: 'Compact answer summary',
     }
+
+    const { unmount } = render(
+      <ExplorerPanel
+        explorerRows={[explorerRowWithExcerpt]}
+        onSelectDocument={vi.fn()}
+        onExportJson={vi.fn()}
+        onExportMarkdown={vi.fn()}
+        resolveFileHref={() => null}
+        selectedExplorerDoc={explorerRowWithExcerpt}
+        showRightPanel={true}
+      />,
+    )
+
+    expect(screen.queryByText('Excerpt')).toBeInTheDocument()
+    expect(screen.queryByText('Details')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Show details' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Show excerpt' }))
+    expect(screen.getByRole('button', { name: 'Hide excerpt' })).toBeInTheDocument()
+    expect(screen.getByText('Full source excerpt text with extra context.')).toBeInTheDocument()
+    expect(screen.queryByText('Compact answer summary')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Show details' }))
+    expect(screen.getByRole('button', { name: 'Hide details' })).toBeInTheDocument()
+    expect(screen.getByText('Compact answer summary')).toBeInTheDocument()
+
+    unmount()
 
     render(
       <ExplorerPanel
@@ -64,12 +93,10 @@ describe('ExplorerPanel', () => {
         onExportMarkdown={vi.fn()}
         resolveFileHref={() => null}
         selectedExplorerDoc={explorerRowWithExcerpt}
+        showRightPanel={true}
       />,
     )
 
-    expect(screen.queryByText('Source excerpt')).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Show source excerpt' }))
-    expect(screen.getByRole('button', { name: 'Hide source excerpt' })).toBeInTheDocument()
-    expect(screen.getByText('Full source excerpt text with extra context.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Hide details' })).toBeInTheDocument()
   })
 })

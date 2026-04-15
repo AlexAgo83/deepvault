@@ -1440,6 +1440,16 @@ select:focus-visible {
   overflow: visible;
 }
 
+.bishop-trace-scroll {
+  display: grid;
+  gap: 14px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  align-content: start;
+  overscroll-behavior: contain;
+}
+
 .bishop-chat-panel .message-list {
   flex: 1 1 auto;
   min-height: 0;
@@ -1449,11 +1459,7 @@ select:focus-visible {
 }
 
 .bishop-trace-panel .source-list {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
   padding: 10px 4px 0;
-  overscroll-behavior: contain;
   align-content: start;
 }
 
@@ -2412,8 +2418,9 @@ code {
 @media (max-width: 900px) {
   .app-shell {
     grid-template-columns: 1fr;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
   }
 
   .sidebar {
@@ -2432,12 +2439,14 @@ code {
   }
 
   body {
-    overflow: hidden;
+    overflow: auto;
   }
 
   .main-content {
-    height: 100vh;
-    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    padding-bottom: 24px;
   }
 
   .sidebar-mobile-open {
@@ -2452,6 +2461,15 @@ code {
 
   .topbar-menu-button {
     display: inline-flex;
+  }
+
+  .page-footer {
+    position: static;
+    margin-top: auto;
+    padding: 10px 4px 0;
+    background: none;
+    border-top: 0;
+    backdrop-filter: none;
   }
 
   .sidebar-backdrop {
@@ -2479,16 +2497,57 @@ code {
     grid-template-columns: 1fr;
   }
 
+  .explorer-grid,
+  .bishop-grid,
+  .ai-stats-grid {
+    display: block;
+  }
+
+  .explorer-list-panel,
+  .bishop-chat-panel {
+    margin-bottom: 18px;
+  }
+
+  .ai-stats-main-column {
+    margin-bottom: 18px;
+  }
+
   .explorer-detail-panel,
   .bishop-trace-panel,
+  .ai-stats-needs-panel {
+    margin-top: 0;
+  }
+
+  .explorer-detail-panel,
+  .explorer-list-panel,
+  .bishop-trace-panel,
+  .bishop-chat-panel,
+  .ai-stats-main-column,
+  .ai-stats-panel,
   .ai-stats-needs-panel {
     justify-self: stretch;
     width: 100%;
     max-width: none;
+    height: auto;
+    overflow: visible;
+  }
+
+  .explorer-detail-scroll,
+  .bishop-trace-scroll,
+  .message-list,
+  .bishop-chat-panel .message-list,
+  .bishop-trace-panel .source-list,
+  .ai-stats-panel .ai-response-list,
+  .ai-stats-scroll {
+    flex: none;
+    min-height: 0;
+    overflow: visible;
+    padding-right: 0;
   }
 
   .explorer-list-panel .document-list {
-    max-height: 48vh;
+    max-height: none;
+    overflow: visible;
   }
 
   .sync-view-switcher-head {
