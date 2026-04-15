@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { SettingsChangelogPanel } from '../src/components/panels/settings-changelog-panel'
 
@@ -54,8 +54,29 @@ describe('SettingsChangelogPanel', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByText('2026-04-10')).toBeInTheDocument()
+      expect(screen.queryByText('Release date: 2026-04-10')).not.toBeInTheDocument()
     })
-    expect(screen.getByText(/first release of the local V1 workspace/)).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'DeepVault Nexus 1.0.0' })).not.toBeInTheDocument()
+    })
+
+    const releaseCard = screen.getByText('1.0.0').closest('article')
+    expect(releaseCard).not.toBeNull()
+    const card = releaseCard as HTMLElement
+
+    await waitFor(() => {
+      const head = card.querySelector('.changelog-card-head')
+      expect(head?.firstElementChild).toHaveTextContent('2026-04-10')
+      expect(head?.lastElementChild).toHaveTextContent('1.0.0')
+    })
+
+    const glanceSummary = within(card).getByText('At a glance')
+    const glanceSection = glanceSummary.closest('details')
+    expect(glanceSection).not.toBeNull()
+    expect(glanceSection).not.toHaveAttribute('open')
+
+    fireEvent.click(glanceSummary)
+
+    expect(glanceSection).toHaveAttribute('open')
   })
 })
