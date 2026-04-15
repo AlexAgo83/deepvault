@@ -2389,6 +2389,10 @@ code {
     grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
   }
 
+  .content-grid.content-grid-panel-hidden {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .sync-subnav {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
