@@ -115,7 +115,7 @@ describe('DeepVault app', () => {
     await waitFor(() => expect(within(answerTrace as HTMLElement).getByText('answered')).toBeInTheDocument())
   })
 
-  it('shows AI View and response hints after Bishop responds', async () => {
+  it('shows and hides AI View response hints with focus', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -129,8 +129,16 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('heading', { name: 'AI View' })).toBeInTheDocument()
     expect(screen.getByText('Responses')).toBeInTheDocument()
     expect(screen.getByText('Need hints')).toBeInTheDocument()
+
+    const responseCard = screen.getAllByRole('button', { name: /answered response/i })[0]
+    responseCard.focus()
+
+    expect(document.activeElement).toBe(responseCard)
     expect(screen.getByText('What would help next')).toBeInTheDocument()
     expect(screen.getAllByText(/document title|site name|keyword/i).length).toBeGreaterThan(0)
+
+    responseCard.blur()
+    expect(document.activeElement).not.toBe(responseCard)
   })
 
   it('keeps explorer search hidden while bishop is active', async () => {

@@ -52,27 +52,38 @@ export function AIStatsPanel({ messages, showRightPanel }: { messages: AppModel[
           <div className="ai-response-list">
             {recentResponses.length ? (
               recentResponses.map((message) => (
-                <article key={message.id} className="sync-card ai-response-card" title={message.improvementHint || message.text}>
-                  <div className="source-card-top">
-                    <strong>{message.status === 'answered' ? 'Answered response' : message.status}</strong>
+                <button
+                  key={message.id}
+                  type="button"
+                  className="sync-card ai-response-card"
+                  title={message.improvementHint || message.text}
+                >
+                  <div className="ai-response-head">
+                    <div className="ai-response-head-copy">
+                      <strong>{message.status === 'answered' ? 'Answered response' : message.status}</strong>
+                    </div>
                     <div className="ai-response-badges">
                       <Pill tone={getStatusTone(message.status)}>{message.status}</Pill>
                       <Pill tone="accent">{formatConfidence(message.confidenceScore)}</Pill>
                     </div>
                   </div>
-                  <div className="source-meta">
+                  <div className="ai-response-meta">
                     <span>{message.createdAt ? <CompactDateTime value={message.createdAt} /> : 'recent'}</span>
-                    <span>{message.provider || 'local'}</span>
-                    <span>{message.orchestrationMode || 'local'}</span>
+                    <div className="ai-response-source-badges" aria-label="Response source metadata">
+                      <Pill tone="neutral">{message.provider || 'local'}</Pill>
+                      <Pill tone="neutral">{message.orchestrationMode || 'local'}</Pill>
+                    </div>
                   </div>
                   <p>{message.text}</p>
                   {message.improvementHint ? (
                     <div className="message-need ai-response-need">
-                      <strong>What would help next</strong>
-                      <span>{message.improvementHint}</span>
+                      <div className="message-need-head">
+                        <strong>What would help next</strong>
+                      </div>
+                      <p>{message.improvementHint}</p>
                     </div>
                   ) : null}
-                </article>
+                </button>
               ))
             ) : (
               <div className="empty-state">Ask Bishop a question to populate the response stats.</div>
