@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
+import { extractMeaningfulTokens } from '../src/lib/scoring'
 
 export interface DeepVaultSiteDefinition {
   url: string
@@ -121,7 +122,7 @@ function stripExtension(name: string): string {
 
 function buildSummary(text: string, fallback: string): string {
   const cleaned = text.replace(/\s+/g, ' ').trim()
-  if (!cleaned) {
+  if (!cleaned || isMetadataOnlyText(cleaned)) {
     return fallback
   }
   const sentence = cleaned.split(/(?<=[.!?])\s+/)[0]
@@ -130,15 +131,40 @@ function buildSummary(text: string, fallback: string): string {
 
 function buildDirectAnswer(text: string, fallback: string): string {
   const cleaned = text.replace(/\s+/g, ' ').trim()
-  if (!cleaned) {
+  if (!cleaned || isMetadataOnlyText(cleaned)) {
     return fallback
   }
   return cleaned.slice(0, 360)
 }
 
-function buildTags(siteName: string, driveName: string, itemPath: string, kind: string): string[] {
-  const tokens = [siteName, driveName, kind, ...itemPath.split('/').filter(Boolean).map((part) => part.replace(/\.[^.]+$/, ''))]
-  return [...new Set(tokens.map((token) => token.toLowerCase()).filter(Boolean))].slice(0, 12)
+function isMetadataOnlyText(text: string): boolean {
+  return /^Source:\s/i.test(text) && /\bPath:\s/i.test(text)
+}
+
+function buildTags(siteName: string, driveName: string, itemPath: string, kind: string, title: string, text: string): string[] {
+  const firstSentence = text.replace(/\s+/g, ' ').trim().split(/(?<=[.!?])\s+/)[0]
+  const candidates = [
+    title,
+    siteName,
+    driveName,
+    kind,
+    ...itemPath.split('/').filter(Boolean).map((part) => part.replace(/\.[^.]+$/, '')),
+    firstSentence,
+  ]
+
+  const tags: string[] = []
+  for (const candidate of candidates) {
+    for (const token of extractMeaningfulTokens(candidate)) {
+      if (!tags.includes(token)) {
+        tags.push(token)
+      }
+      if (tags.length >= 12) {
+        return tags
+      }
+    }
+  }
+
+  return tags
 }
 
 const TEXTUAL_MIME_PREFIXES = ['text/', 'application/json', 'application/xml', 'application/xhtml+xml']
@@ -484,7 +510,7 @@ async function crawlDriveItems(
       summary: buildSummary(text, title),
       directAnswer: buildDirectAnswer(text, title),
       content: text.slice(0, 4000),
-      tags: buildTags(siteName, drive.name, currentPath, extension || 'file'),
+      tags: buildTags(siteName, drive.name, currentPath, extension || 'file', title, text),
       access: ['analyst', 'admin'],
       source: 'SharePoint',
     })

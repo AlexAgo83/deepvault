@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getDocumentScore, tokenize } from '../src/lib/scoring'
+import { extractMeaningfulTokens, getDocumentScore, tokenize } from '../src/lib/scoring'
 
 const BASE_DOC = {
   title: 'Notes',
@@ -12,6 +12,10 @@ const BASE_DOC = {
 describe('scoring helpers', () => {
   it('tokenizes by removing stop words and punctuation', () => {
     expect(tokenize('What is the Q3 budget for the pilot site?')).toEqual(['q3', 'budget', 'pilot', 'site'])
+  })
+
+  it('extracts meaningful tokens while skipping generic document noise', () => {
+    expect(extractMeaningfulTokens('Shared documents for the Smart Connector PDF')).toEqual(['smart', 'connector'])
   })
 
   it('scores title matches above broad content matches', () => {
