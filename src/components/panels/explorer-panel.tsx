@@ -5,6 +5,15 @@ import type { ExplorerRow } from '../../hooks/useAppModel'
 
 const EXPLORER_BATCH_SIZE = 10
 const EXPLORER_MAX_VISIBLE = 50
+const EXPLORER_DETAILS_STORAGE_KEY = 'deepvault_explorer_details_visible'
+
+function readExplorerDetailsVisible(): boolean {
+  try {
+    return localStorage.getItem(EXPLORER_DETAILS_STORAGE_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
 
 export function ExplorerPanel({
   explorerRows,
@@ -25,6 +34,7 @@ export function ExplorerPanel({
 }) {
   const [visibleCount, setVisibleCount] = useState(EXPLORER_BATCH_SIZE)
   const [showSourceExcerpt, setShowSourceExcerpt] = useState(false)
+  const [showDetails, setShowDetails] = useState(() => readExplorerDetailsVisible())
   const loadMoreSentinelRef = useRef<HTMLDivElement | null>(null)
   const selectedSourceExcerpt = selectedExplorerDoc?.content?.trim() || ''
   const selectedDirectAnswer = selectedExplorerDoc?.directAnswer?.trim() || ''
@@ -72,6 +82,14 @@ export function ExplorerPanel({
   useEffect(() => {
     setShowSourceExcerpt(false)
   }, [selectedExplorerDoc?.id])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(EXPLORER_DETAILS_STORAGE_KEY, String(showDetails))
+    } catch {
+      // ignore storage failures
+    }
+  }, [showDetails])
 
   return (
     <section className={`content-grid explorer-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
@@ -180,7 +198,29 @@ export function ExplorerPanel({
                 <div className="document-content">
                   <div className="document-content-header">
                     <h3>Details</h3>
-                    {hasDistinctSourceExcerpt ? (
+                    <button
+                      type="button"
+                      className="text-button text-button-sm"
+                      onClick={() => setShowDetails((current) => !current)}
+                      aria-expanded={showDetails}
+                      aria-controls="explorer-details"
+                    >
+                      {showDetails ? 'Hide details' : 'Show details'}
+                    </button>
+                  </div>
+                  {showDetails ? (
+                    <p id="explorer-details">
+                      <CompactPathText
+                        value={selectedDirectAnswer || selectedSummary || selectedExplorerDoc.title}
+                        href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
+                      />
+                    </p>
+                  ) : null}
+                </div>
+                {hasDistinctSourceExcerpt ? (
+                  <div className="document-content">
+                    <div className="document-content-header">
+                      <h3>Excerpt</h3>
                       <button
                         type="button"
                         className="text-button text-button-sm"
@@ -188,31 +228,19 @@ export function ExplorerPanel({
                         aria-expanded={showSourceExcerpt}
                         aria-controls="explorer-source-excerpt"
                       >
-                        {showSourceExcerpt ? 'Hide source excerpt' : 'Show source excerpt'}
+                        {showSourceExcerpt ? 'Hide excerpt' : 'Show excerpt'}
                       </button>
-                    ) : null}
-                  </div>
-                  <p>
-                    <CompactPathText
-                      value={selectedDirectAnswer || selectedSummary || selectedExplorerDoc.title}
-                      href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
-                    />
-                  </p>
-                  {showSourceExcerpt ? (
-                    hasDistinctSourceExcerpt ? (
+                    </div>
+                    {showSourceExcerpt ? (
                       <p id="explorer-source-excerpt" className="document-content-source">
                         <CompactPathText
                           value={selectedSourceExcerpt}
                           href={resolveFileHref(selectedExplorerDoc.siteId, selectedExplorerDoc.path, selectedExplorerDoc.webUrl)}
                         />
                       </p>
-                    ) : (
-                      <div id="explorer-source-excerpt" className="document-content-note">
-                        This source does not expose a separate body excerpt here, so the summary and source view are the same.
-                      </div>
-                    )
-                  ) : null}
-                </div>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             </>
           ) : (

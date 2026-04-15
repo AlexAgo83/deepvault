@@ -94,8 +94,8 @@ const NAV_SECTIONS: ReadonlyArray<NavSection> = [
 function ExplorerIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M4 4.75A1.75 1.75 0 0 1 5.75 3h8.5A1.75 1.75 0 0 1 16 4.75v10.5A1.75 1.75 0 0 1 14.25 17h-8.5A1.75 1.75 0 0 1 4 15.25z" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M6.5 7.5h7M6.5 10h5.5M6.5 12.5h3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="9" cy="9" r="4.4" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <path d="m12.3 12.3 3.7 3.7" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
     </svg>
   )
 }
@@ -103,8 +103,10 @@ function ExplorerIcon() {
 function BishopIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M10 3.75c1.15 0 2.08.93 2.08 2.08 0 .7-.35 1.32-.88 1.7.88.67 1.44 1.73 1.44 2.92 0 1.05-.45 2-1.17 2.67l1.03 2.38h-5l1.03-2.38a3.78 3.78 0 0 1-1.17-2.67c0-1.19.56-2.25 1.44-2.92a2.06 2.06 0 0 1-.88-1.7c0-1.15.93-2.08 2.08-2.08Z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M7.5 16.25h5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <circle cx="10" cy="10" r="5.25" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <circle cx="8.2" cy="8.9" r="0.65" fill="currentColor" />
+      <circle cx="11.8" cy="8.9" r="0.65" fill="currentColor" />
+      <path d="M8.2 11.6c.45.58 1.1.9 1.8.9s1.35-.32 1.8-.9" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -112,9 +114,9 @@ function BishopIcon() {
 function SyncIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M5.25 7.25A6.12 6.12 0 0 1 10 5.25c2.12 0 4.02 1.08 5.16 2.72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M14.5 5.75v2.9h-2.9M14.75 12.75A6.12 6.12 0 0 1 10 14.75c-2.12 0-4.02-1.08-5.16-2.72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M5.5 14.25v-2.9h2.9" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <ellipse cx="10" cy="4.75" rx="4.75" ry="1.75" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M5.25 4.75v4.5c0 .97 2.13 1.75 4.75 1.75s4.75-.78 4.75-1.75v-4.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M5.25 9.25v4.5c0 .97 2.13 1.75 4.75 1.75s4.75-.78 4.75-1.75v-4.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
     </svg>
   )
 }
