@@ -697,6 +697,7 @@ export function AppShell(model: AppModel) {
   const needHints = responses.filter((message) => Boolean(message.improvementHint))
   const showKpiGrid = (activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats') ? statsHeaderState[activeTab] : false
   const showStatsToggle = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats'
+  const isKnowledgeTab = activeTab === 'sync'
   const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
   const toggleMobileMenu = () => {
     if (isMobileViewport) {
@@ -731,6 +732,46 @@ export function AppShell(model: AppModel) {
     setStatsHeaderState((current) => ({ ...current, [activeTab]: !current[activeTab] }))
   }
   const currentStatsHeadersVisible = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' ? statsHeaderState[activeTab] : false
+  const kpiGridSection = showKpiGrid ? (
+    <section className="kpi-grid">
+      {activeTab === 'ai-stats' ? (
+        <>
+          <StatCard label="Responses" value={responses.length} note="Completed Bishop responses in the current session." />
+          <StatCard label="Answered" value={answeredCount} note="Responses that were grounded enough to answer." />
+          <StatCard
+            label="Avg confidence"
+            value={confidenceAverage === null ? 'n/a' : `${confidenceAverage}%`}
+            note="Average confidence across completed responses with a numeric score."
+          />
+          <StatCard label="Need hints" value={needHints.length} note="Responses that surfaced a brief hint about better input." />
+        </>
+      ) : (
+        <>
+          <StatCard
+            label="Sites in scope"
+            value={scopedSyncOverview.siteSummaries.length}
+            note="Site scope is shared across Explorer, Bishop, and Knowledge."
+          />
+          <StatCard
+            label="Visible docs"
+            value={scopedSyncOverview.documentCount}
+            note="Role-filtered corpus entries available in the current site scope."
+          />
+          <StatCard
+            label="Last refresh"
+            value={scopedSyncOverview.lastRun ? <CompactDateTime value={scopedSyncOverview.lastRun.finishedAt} /> : 'n/a'}
+            note={scopedSyncOverview.refreshPolicy}
+            valueClassName="stat-value-compact stat-value-datetime"
+          />
+          <StatCard
+            label="Provider readiness"
+            value={corpusProviders.filter((item) => item.ready).length}
+            note="OpenAI, Gemini, and Claude are available in the local abstraction."
+          />
+        </>
+      )}
+    </section>
+  ) : null
 
   return (
     <div className={`app-shell ${!isMobileViewport && isSidebarCollapsed ? 'app-shell-sidebar-collapsed' : ''}`}>
@@ -763,7 +804,7 @@ export function AppShell(model: AppModel) {
         update={updateApp}
       />
 
-      <main className="main-content">
+      <main className={`main-content ${isKnowledgeTab ? 'main-content-knowledge' : ''}`}>
         <AppTopbar
           activeScopeLabel={activeScopeLabel}
           hasRightPanel={hasRightPanel}
@@ -794,46 +835,24 @@ export function AppShell(model: AppModel) {
           </section>
         ) : null}
 
-        {showKpiGrid ? (
-          <section className="kpi-grid">
-            {activeTab === 'ai-stats' ? (
-              <>
-                <StatCard label="Responses" value={responses.length} note="Completed Bishop responses in the current session." />
-                <StatCard label="Answered" value={answeredCount} note="Responses that were grounded enough to answer." />
-                <StatCard
-                  label="Avg confidence"
-                  value={confidenceAverage === null ? 'n/a' : `${confidenceAverage}%`}
-                  note="Average confidence across completed responses with a numeric score."
+        {isKnowledgeTab ? (
+          <div className="knowledge-body">
+            {kpiGridSection}
+            <div className="knowledge-scroll-region">
+              <ErrorBoundary fallback={<div className="empty-state">Sync panel failed to render.</div>}>
+                <SyncPanel
+                  scopedCorpusSummary={scopedCorpusSummary}
+                  scopedSiteSummaries={scopedSiteSummaries}
+                  scopedSyncOverview={scopedSyncOverview}
+                  syncOperations={syncOperations}
+                  workerSettings={workerSettings}
                 />
-                <StatCard label="Need hints" value={needHints.length} note="Responses that surfaced a brief hint about better input." />
-              </>
-            ) : (
-              <>
-                <StatCard
-                  label="Sites in scope"
-                  value={scopedSyncOverview.siteSummaries.length}
-                  note="Site scope is shared across Explorer, Bishop, and Knowledge."
-                />
-                <StatCard
-                  label="Visible docs"
-                  value={scopedSyncOverview.documentCount}
-                  note="Role-filtered corpus entries available in the current site scope."
-                />
-                <StatCard
-                  label="Last refresh"
-                  value={scopedSyncOverview.lastRun ? <CompactDateTime value={scopedSyncOverview.lastRun.finishedAt} /> : 'n/a'}
-                  note={scopedSyncOverview.refreshPolicy}
-                  valueClassName="stat-value-compact stat-value-datetime"
-                />
-                <StatCard
-                  label="Provider readiness"
-                  value={corpusProviders.filter((item) => item.ready).length}
-                  note="OpenAI, Gemini, and Claude are available in the local abstraction."
-                />
-              </>
-            )}
-          </section>
-        ) : null}
+              </ErrorBoundary>
+            </div>
+          </div>
+        ) : (
+          kpiGridSection
+        )}
 
         {activeTab === 'settings' ? (
           <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
@@ -903,25 +922,13 @@ export function AppShell(model: AppModel) {
           </ErrorBoundary>
         ) : null}
 
-        {activeTab === 'sync' ? (
-          <ErrorBoundary fallback={<div className="empty-state">Sync panel failed to render.</div>}>
-            <SyncPanel
-              scopedCorpusSummary={scopedCorpusSummary}
-              scopedSiteSummaries={scopedSiteSummaries}
-              scopedSyncOverview={scopedSyncOverview}
-              syncOperations={syncOperations}
-              workerSettings={workerSettings}
-            />
-          </ErrorBoundary>
-        ) : null}
-
         {activeTab === 'ai-stats' ? (
           <ErrorBoundary fallback={<div className="empty-state">AI View panel failed to render.</div>}>
             <AIStatsPanel messages={messages} showRightPanel={showRightPanel} />
           </ErrorBoundary>
         ) : null}
 
-        <footer className="page-footer" aria-label="Site footer">
+        <footer className={`page-footer ${activeTab === 'sync' ? 'page-footer-knowledge' : ''}`} aria-label="Site footer">
           <span>Nexus · v{version} · © {new Date().getFullYear()}</span>
         </footer>
       </main>
