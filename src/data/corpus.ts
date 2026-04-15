@@ -77,6 +77,8 @@ export function isCorpusLike(value: unknown): value is Corpus {
         typeof document.title === 'string' &&
         typeof document.path === 'string' &&
         typeof document.author === 'string' &&
+        (typeof document.createdBy === 'string' || typeof document.createdBy === 'undefined') &&
+        (typeof document.lastModifiedBy === 'string' || typeof document.lastModifiedBy === 'undefined') &&
         typeof document.updatedAt === 'string' &&
         typeof document.summary === 'string' &&
         typeof document.directAnswer === 'string' &&

@@ -48,6 +48,8 @@ export interface CorpusDocument {
   path: string
   webUrl?: string
   author: string
+  createdBy?: string
+  lastModifiedBy?: string
   updatedAt: string
   summary: string
   directAnswer: string
@@ -79,6 +81,8 @@ export interface SourceRecord {
   webUrl?: string
   updatedAt: string
   author: string
+  createdBy?: string
+  lastModifiedBy?: string
   score: number
   summary: string
   tags: string[]
