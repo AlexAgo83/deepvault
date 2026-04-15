@@ -840,15 +840,26 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    expect(screen.getByRole('button', { name: 'Knowledge' })).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
+    expect(screen.queryByRole('button', { name: 'Hide stats headers' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    expect(screen.getByRole('button', { name: 'Hide stats headers' })).toBeInTheDocument()
     expect(screen.getByText('Sites in scope')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Hide stats headers' }))
     expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Show stats headers' }))
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
+    expect(screen.getByRole('button', { name: 'Hide stats headers' })).toBeInTheDocument()
     expect(screen.getByText('Sites in scope')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'AI View' }))
+    expect(screen.getByRole('button', { name: 'Hide stats headers' })).toBeInTheDocument()
+    expect(await screen.findByText('Responses')).toBeInTheDocument()
+    expect(screen.getByText('Need hints')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    expect(screen.getByRole('button', { name: 'Show stats headers' })).toBeInTheDocument()
+    expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
   })
 
   it('toggles the right panel from the topbar question button', async () => {
