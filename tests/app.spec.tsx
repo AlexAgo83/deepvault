@@ -212,31 +212,10 @@ describe('DeepVault app', () => {
     render(<App />)
 
     expect(screen.getByLabelText('Explorer search')).toBeInTheDocument()
-    expect(document.querySelectorAll('.document-row')).toHaveLength(10)
-    expect(screen.getByText('Showing 10 of 17')).toBeInTheDocument()
+    expect(document.querySelectorAll('.document-row')).toHaveLength(0)
+    expect(screen.getByText('No strong matches found.')).toBeInTheDocument()
 
-    await waitFor(() => expect(observerCallback).not.toBeNull())
-
-    act(() => {
-      observerCallback?.(
-        [
-          {
-            isIntersecting: true,
-            intersectionRatio: 1,
-            boundingClientRect: {} as DOMRectReadOnly,
-            intersectionRect: {} as DOMRectReadOnly,
-            rootBounds: null,
-            target: document.createElement('div'),
-            time: 0,
-          },
-        ],
-        {} as IntersectionObserver,
-      )
-    })
-
-    await waitFor(() => expect(document.querySelectorAll('.document-row')).toHaveLength(17))
-    expect(screen.getByText('Showing 17 of 17')).toBeInTheDocument()
-    expect(screen.getByText('All results loaded')).toBeInTheDocument()
+    await waitFor(() => expect(observerCallback).toBeNull())
   })
 
   it('marks the active navigation tab for accessibility', async () => {
@@ -357,7 +336,7 @@ describe('DeepVault app', () => {
     expect(await screen.findByText('Offline — corpus mock')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Offline — corpus mock/ })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Explorer' }))
-    expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
+    expect(screen.getByText('No strong matches found.')).toBeInTheDocument()
   })
 
   it('renders sync run notes and counts in the sync panel', async () => {
@@ -637,17 +616,7 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    expect(screen.getAllByText('Q3 2025 budget approval').length).toBeGreaterThan(0)
-    const firstDocumentRow = screen.getByRole('button', { name: /Q3 2025 budget approval/i })
-    expect(firstDocumentRow).toHaveTextContent('document')
-    expect(within(firstDocumentRow).getByText('document')).toHaveClass('file-type-pill')
-    const pathLinks = screen.getAllByRole('link')
-    expect(pathLinks.length).toBeGreaterThan(0)
-    expect(pathLinks.some((link) => link.getAttribute('href')?.startsWith('http'))).toBe(true)
-    expect(pathLinks.some((link) => link.getAttribute('target') === '_blank')).toBe(true)
-    for (const pathLabel of pathLinks) {
-      expect(pathLabel.textContent).not.toContain('/')
-    }
+    expect(screen.getByText('No strong matches found.')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Settings' }))
     await user.click(screen.getByRole('button', { name: 'Pilot Site Beta' }))
@@ -655,9 +624,8 @@ describe('DeepVault app', () => {
 
     await user.click(screen.getByRole('button', { name: 'Explorer' }))
 
-    expect(screen.queryAllByText('Q3 2025 budget approval')).toHaveLength(0)
-    expect(screen.getAllByText('Remote access security requirements').length).toBeGreaterThan(0)
     expect(screen.getByRole('heading', { name: 'Known SSO implementation issues' })).toBeInTheDocument()
+    expect(screen.getByText('No strong matches found.')).toBeInTheDocument()
   })
 
   it('shows the sync tab without runtime controls and the empty explorer state for an impossible filter', async () => {

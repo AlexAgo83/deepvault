@@ -50,6 +50,30 @@ describe('ExplorerPanel', () => {
     expect(explorerCell).not.toHaveTextContent('Planning de livraison.xlsx')
   })
 
+  it('hides rows scored at 1 and shows an empty state when nothing remains', () => {
+    render(
+      <ExplorerPanel
+        explorerRows={[
+          {
+            ...explorerRow,
+            id: 'low-score',
+            title: 'Low score document',
+            score: 1,
+          },
+        ]}
+        onSelectDocument={vi.fn()}
+        onExportJson={vi.fn()}
+        onExportMarkdown={vi.fn()}
+        resolveFileHref={() => null}
+        selectedExplorerDoc={null}
+        showRightPanel={true}
+      />,
+    )
+
+    expect(screen.queryByTitle('Open Low score document')).not.toBeInTheDocument()
+    expect(screen.getByText('No strong matches found.')).toBeInTheDocument()
+  })
+
   it('reveals the excerpt and details on demand', async () => {
     const user = userEvent.setup()
     const explorerRowWithExcerpt: ExplorerRow = {

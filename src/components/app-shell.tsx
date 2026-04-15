@@ -928,7 +928,7 @@ export function AppShell(model: AppModel) {
           </ErrorBoundary>
         ) : null}
 
-        <footer className={`page-footer ${activeTab === 'sync' ? 'page-footer-knowledge' : ''}`} aria-label="Site footer">
+        <footer className="page-footer" aria-label="Site footer">
           <span>Nexus · v{version} · © {new Date().getFullYear()}</span>
         </footer>
       </main>

@@ -46,8 +46,9 @@ export function ExplorerPanel({
     selectedSourceExcerpt !== selectedDirectAnswer.trim() &&
     selectedSourceExcerpt !== selectedSummary.trim() &&
     !/^Source:\s/i.test(selectedSourceExcerpt)
-  const visibleExplorerRows = explorerRows.slice(0, Math.min(visibleCount, EXPLORER_MAX_VISIBLE))
-  const hasMoreExplorerRows = explorerRows.length > visibleExplorerRows.length
+  const displayExplorerRows = explorerRows.filter((document) => document.score !== 1)
+  const visibleExplorerRows = displayExplorerRows.slice(0, Math.min(visibleCount, EXPLORER_MAX_VISIBLE))
+  const hasMoreExplorerRows = displayExplorerRows.length > visibleExplorerRows.length
 
   useEffect(() => {
     setVisibleCount(EXPLORER_BATCH_SIZE)
@@ -66,7 +67,9 @@ export function ExplorerPanel({
           return
         }
 
-        setVisibleCount((current) => Math.min(EXPLORER_MAX_VISIBLE, explorerRows.length, current + EXPLORER_BATCH_SIZE))
+        setVisibleCount((current) =>
+          Math.min(EXPLORER_MAX_VISIBLE, displayExplorerRows.length, current + EXPLORER_BATCH_SIZE),
+        )
       },
       {
         root: null,
@@ -77,7 +80,7 @@ export function ExplorerPanel({
 
     observer.observe(sentinel)
     return () => observer.disconnect()
-  }, [explorerRows.length, hasMoreExplorerRows])
+  }, [displayExplorerRows.length, hasMoreExplorerRows])
 
   useEffect(() => {
     setShowSourceExcerpt(false)
@@ -131,10 +134,13 @@ export function ExplorerPanel({
             </button>
           ))}
           {explorerRows.length === 0 ? <div className="empty-state">No permitted sources matched this search.</div> : null}
-          {explorerRows.length > 0 ? (
+          {explorerRows.length > 0 && displayExplorerRows.length === 0 ? (
+            <div className="empty-state">No strong matches found.</div>
+          ) : null}
+          {displayExplorerRows.length > 0 ? (
             <div className="document-list-footer">
               <span>
-                Showing {visibleExplorerRows.length} of {explorerRows.length}
+                Showing {visibleExplorerRows.length} of {displayExplorerRows.length}
               </span>
               <span>{hasMoreExplorerRows ? 'Scroll to load 10 more' : 'All results loaded'}</span>
             </div>

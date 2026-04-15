@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react'
+import { useCallback, useDeferredValue, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react'
 import {
   buildExplorerRows,
   buildSiteSummaries,
@@ -124,6 +124,7 @@ export function useAppModel(): AppModel {
   const [provider, setProvider] = useState<ProviderId>(corpus.providers[0].id)
   const [siteFilter, setSiteFilter] = useState<string>('all')
   const [search, setSearch] = useState<string>('')
+  const deferredSearch = useDeferredValue(search)
   const [selectedDocId, setSelectedDocId] = useState<string>(corpus.documents[0].id)
   const { providerSecrets, setApiKey: setProviderSecret, clearProviderSecrets } = useProviderSecrets()
 
@@ -133,8 +134,8 @@ export function useAppModel(): AppModel {
   const scopedSyncOverview = useMemo(() => buildSyncOverview(scopedCorpus, role), [scopedCorpus, role])
   const scopedCorpusSummary = useMemo(() => summarizeCorpus(scopedCorpus, role), [scopedCorpus, role])
   const explorerRows = useMemo<ExplorerRow[]>(
-    () => buildExplorerRows(scopedCorpus, search, { role }) as ExplorerRow[],
-    [scopedCorpus, role, search],
+    () => buildExplorerRows(scopedCorpus, deferredSearch, { role }) as ExplorerRow[],
+    [scopedCorpus, deferredSearch, role],
   )
   const selectedExplorerDoc = explorerRows.find((document) => document.id === selectedDocId) || explorerRows[0] || null
   const activeSiteSummary = siteSummaries.find((site) => site.id === siteFilter)
