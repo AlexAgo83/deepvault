@@ -15,12 +15,13 @@ type NavSection = {
   items: ReadonlyArray<{ id: AppTab; label: string; icon: () => ReactElement }>
 }
 
-type RightPanelState = Record<Exclude<AppTab, 'settings' | 'sync'>, boolean>
+type RightPanelState = Record<Exclude<AppTab, 'sync'>, boolean>
 type TopbarScrollTarget = 'settings-runtime' | 'settings-ai-providers' | 'sync-status'
 type StatsHeaderState = Record<Extract<AppTab, 'settings' | 'sync' | 'ai-stats'>, boolean>
 
 const RIGHT_PANEL_STORAGE_KEY = 'deepvault_right_panel_visibility'
 const STATS_HEADER_STORAGE_KEY = 'deepvault_stats_headers_visibility'
+const TOPBAR_DETAILS_STORAGE_KEY = 'deepvault_topbar_details_expanded'
 const MOBILE_VIEWPORT_QUERY = '(max-width: 900px)'
 
 function readIsMobileViewport(): boolean {
@@ -34,6 +35,7 @@ function readRightPanelState(): RightPanelState {
     explorer: true,
     bishop: false,
     'ai-stats': true,
+    settings: true,
   }
 
   try {
@@ -44,6 +46,7 @@ function readRightPanelState(): RightPanelState {
       explorer: typeof parsed.explorer === 'boolean' ? parsed.explorer : defaultState.explorer,
       bishop: typeof parsed.bishop === 'boolean' ? parsed.bishop : defaultState.bishop,
       'ai-stats': typeof parsed['ai-stats'] === 'boolean' ? parsed['ai-stats'] : defaultState['ai-stats'],
+      settings: typeof parsed.settings === 'boolean' ? parsed.settings : defaultState.settings,
     }
   } catch {
     return defaultState
@@ -68,6 +71,16 @@ function readStatsHeaderState(): StatsHeaderState {
     }
   } catch {
     return defaultState
+  }
+}
+
+function readTopbarDetailsState(): boolean {
+  try {
+    const raw = localStorage.getItem(TOPBAR_DETAILS_STORAGE_KEY)
+    if (raw === null) return true
+    return raw === 'true'
+  } catch {
+    return true
   }
 }
 
@@ -383,7 +396,11 @@ function AppTopbar({
   onToggleRightPanel: () => void
   onToggleMobileMenu: () => void
 }) {
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState<boolean>(() => readTopbarDetailsState())
+
+  useEffect(() => {
+    localStorage.setItem(TOPBAR_DETAILS_STORAGE_KEY, String(isExpanded))
+  }, [isExpanded])
 
   return (
     <header className="topbar">
@@ -656,6 +673,12 @@ export function AppShell(model: AppModel) {
     setGettingStartedOpen(false)
   }
 
+  useEffect(() => {
+    if (activeTab !== 'explorer' && gettingStartedOpen) {
+      setGettingStartedOpen(false)
+    }
+  }, [activeTab, gettingStartedOpen])
+
   const explorerExportHandlers = createExplorerExportHandlers({
     activeScopeLabel,
     explorerRows,
@@ -683,7 +706,7 @@ export function AppShell(model: AppModel) {
     setIsSidebarCollapsed((value) => !value)
   }
   const closeMobileMenu = () => setIsMobileMenuOpen(false)
-  const hasRightPanel = activeTab === 'explorer' || activeTab === 'bishop' || activeTab === 'ai-stats'
+  const hasRightPanel = activeTab === 'explorer' || activeTab === 'bishop' || activeTab === 'ai-stats' || activeTab === 'settings'
   const showRightPanel = hasRightPanel ? rightPanelState[activeTab] : false
   const toggleRightPanel = () => {
     if (!hasRightPanel) return
@@ -814,26 +837,26 @@ export function AppShell(model: AppModel) {
 
         {activeTab === 'settings' ? (
           <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
-            <SettingsPanel
-              activeScopeLabel={activeScopeLabel}
-              corpusProviders={corpusProviders}
-              entraSettings={entraSettings}
-              providerSecrets={providerSecrets}
+          <SettingsPanel
+            corpusProviders={corpusProviders}
+            entraSettings={entraSettings}
+            providerSecrets={providerSecrets}
               workerSettings={workerSettings}
               onClear={clearProviderSecrets}
               onClearEntra={clearEntraSettings}
               onClearWorker={clearWorkerSettings}
               onEntraChange={setEntraSetting}
               onKeyChange={setProviderSecret}
-              onProviderChange={(value) => setProvider(value)}
-              onRoleChange={(value) => setRole(value)}
-              onSiteFilterChange={setSiteFilter}
-              onWorkerChange={setWorkerSetting}
-              provider={provider}
-              role={role}
-              siteFilter={siteFilter}
-              siteSummaries={siteSummaries}
-            />
+            onProviderChange={(value) => setProvider(value)}
+            onRoleChange={(value) => setRole(value)}
+            onSiteFilterChange={setSiteFilter}
+            onWorkerChange={setWorkerSetting}
+            showRightPanel={showRightPanel}
+            provider={provider}
+            role={role}
+            siteFilter={siteFilter}
+            siteSummaries={siteSummaries}
+          />
           </ErrorBoundary>
         ) : null}
 

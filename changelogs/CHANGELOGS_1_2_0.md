@@ -15,12 +15,18 @@ DeepVault Nexus 1.2.0 tightens the product surface, improves corpus enrichment, 
 - Made Sync history, logs, and durations more compact while preserving persisted job state and cleanup behavior
 - Polished the topbar and mobile shell with persistent per-screen toggles, independent right-panel visibility, and a more usable mobile menu
 - Added process cleanup wrappers around the heavier scripts to reduce stray Vite and Chrome processes after interrupted runs
+- Renamed the public `AI stats` surface to `AI View` and tightened the naming across the shell
+- Improved mobile layout behavior so the sidebar becomes a modal, right panels can stack cleanly, and the footer remains visible in the normal page flow
+- Split the explorer details surface into more intentional reveal/hide blocks so secondary information stays available without overwhelming the card
+- Persisted Sync operation history and bounded streamed logs to keep the UI responsive during long runs
 
 ### Why it matters
 
 - The app now exposes more useful provenance for each file without forcing the user to inspect raw SharePoint metadata.
 - Explorer, Bishop, and AI View are easier to scan because secondary detail is hidden until needed.
 - Long-running operations are easier to trust because the UI is more compact, the logs are bounded, and the shell is less likely to leave orphaned processes behind.
+- The shell now behaves better on smaller screens without sacrificing the desktop layout.
+- The product vocabulary is more consistent across navigation, status, and inspection surfaces.
 
 ### Validation
 
@@ -39,3 +45,4 @@ npm run e2e
 - `createdBy` and `lastModifiedBy` are filled for documents only after a new export regenerates the corpus.
 - `Resume Sync` remains checkpoint-driven; a full export is still the right choice for a retroactive backfill.
 - `public/live-corpus.json`, `data/runtime/`, and `data/eval/*.live.json` stay generated locally and out of Git.
+- The changelog intentionally summarizes the major user-facing slices rather than every small layout tweak.

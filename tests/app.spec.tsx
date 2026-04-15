@@ -51,6 +51,18 @@ describe('DeepVault app', () => {
     expect(screen.queryByRole('dialog', { name: /getting started/i })).not.toBeInTheDocument()
   })
 
+  it('closes the getting started modal when switching away from Explorer', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByRole('dialog', { name: /getting started/i })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+
+    expect(screen.queryByRole('dialog', { name: /getting started/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+  })
+
   it('returns to Bishop after asking a question', async () => {
     const user = userEvent.setup()
     render(<App />)
@@ -247,6 +259,22 @@ describe('DeepVault app', () => {
       geminiApiKey: '',
       anthropicApiKey: '',
     })
+  })
+
+  it('shows the changelog panel in Settings and toggles it from the topbar', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+
+    expect(screen.getByRole('heading', { name: 'Changelogs' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Hide right panel' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Hide right panel' }))
+    expect(screen.queryByRole('heading', { name: 'Changelogs' })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Show right panel' }))
+    expect(screen.getByRole('heading', { name: 'Changelogs' })).toBeInTheDocument()
   })
 
   it('uses the configured OpenAI key when Bishop calls the provider', async () => {
@@ -773,7 +801,7 @@ describe('DeepVault app', () => {
 
   it('displays runtime context pills in the topbar across all tabs (AC3)', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    const { unmount } = render(<App />)
 
     const topbar = document.querySelector('.topbar')
     expect(topbar).not.toBeNull()
@@ -804,6 +832,15 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
     expect(within(badges as HTMLElement).getByText('analyst')).toBeInTheDocument()
     expect(within(badges as HTMLElement).getByText('openai')).toBeInTheDocument()
+
+    await user.click(infoButton)
+    expect(within(topbar as HTMLElement).queryByText('analyst')).not.toBeInTheDocument()
+
+    unmount()
+    render(<App />)
+    const remountedTopbar = document.querySelector('.topbar')
+    expect(remountedTopbar).not.toBeNull()
+    expect(within(remountedTopbar as HTMLElement).queryByText('analyst')).not.toBeInTheDocument()
   })
 
   it('opens the matching screen when clicking the topbar pills', async () => {

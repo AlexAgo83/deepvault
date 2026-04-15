@@ -1,4 +1,4 @@
-# CHANGELOGS_1.0.0
+# CHANGELOGS_1_0_0
 
 Release date: 2026-04-10
 
