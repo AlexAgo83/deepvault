@@ -10,6 +10,15 @@ const WORKER_API_VERSION = '1.0.0'
 const MAX_OPS_JOB_LINES = 200
 const MAX_OPS_JOBS = 20
 
+function isLoopbackAddress(address?: string | null): boolean {
+  if (!address) {
+    return false
+  }
+  return address === '127.0.0.1'
+    || address === '::1'
+    || address === '::ffff:127.0.0.1'
+}
+
 export default defineConfig({
   plugins: [
     {
@@ -155,6 +164,12 @@ export default defineConfig({
         server.middlewares.use((req, res, next) => {
           const url = req.url ?? ''
           const method = req.method ?? ''
+
+          if ((url.startsWith('/api/ops/') || url.startsWith('/api/worker/')) && !isLoopbackAddress(req.socket.remoteAddress)) {
+            res.writeHead(403, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({ error: 'Loopback access only.' }))
+            return
+          }
 
           // ── Legacy ops routes (preserved for backward compatibility) ──────────
 
@@ -331,7 +346,7 @@ export default defineConfig({
       },
     }),
   ],
-  envPrefix: ['VITE_', 'ANTHROPIC_'],
+  envPrefix: ['VITE_'],
   server: {
     host: '0.0.0.0',
     port: 4173,

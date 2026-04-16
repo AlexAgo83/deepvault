@@ -212,6 +212,7 @@ export function useSyncOperations({
   const activeJobRef = useRef<SyncOperationJob | null>(null)
   const eventSourceRef = useRef<WorkerEventStream | null>(null)
   const serverJobIdRef = useRef<string | null>(null)
+  const watchdogTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
     activeJobRef.current = activeJob
@@ -224,10 +225,24 @@ export function useSyncOperations({
     timersRef.current = []
   }, [])
 
+  const clearWatchdog = useCallback(() => {
+    if (watchdogTimerRef.current !== null) {
+      window.clearTimeout(watchdogTimerRef.current)
+      watchdogTimerRef.current = null
+    }
+  }, [])
+
+  const closeActiveStream = useCallback(() => {
+    clearWatchdog()
+    eventSourceRef.current?.close()
+    eventSourceRef.current = null
+    serverJobIdRef.current = null
+  }, [clearWatchdog])
+
   useEffect(() => () => {
     clearTimers()
-    eventSourceRef.current?.close()
-  }, [clearTimers])
+    closeActiveStream()
+  }, [clearTimers, closeActiveStream])
 
   // On mount: reconnect to a process that was running before a page reload
   useEffect(() => {
@@ -263,8 +278,11 @@ export function useSyncOperations({
     let lineCount = 0
     const es = workerClient.openJobEvents(persisted.serverJobId)
     eventSourceRef.current = es
+    const closeStream = () => closeActiveStream()
+    attachJobWatchdog(persisted.jobId, persisted.serverJobId, def.label, def.summary, closeStream)
 
     es.onmessage = (event: MessageEvent<string>) => {
+      attachJobWatchdog(persisted.jobId, persisted.serverJobId, def.label, def.summary, closeStream)
       const data = JSON.parse(event.data) as { type: string; text?: string; isError?: boolean; exitCode?: number }
       if (data.type === 'line' && data.text) {
         lineCount++
@@ -278,18 +296,14 @@ export function useSyncOperations({
         const success = data.exitCode === 0
         clearPersistedJob()
         finalizeJob(persisted.jobId, success ? 'completed' : 'failed', success ? def.summary : `${def.label} failed.`)
-        es.close()
-        eventSourceRef.current = null
-        serverJobIdRef.current = null
+        closeStream()
       }
     }
 
     es.onerror = () => {
       clearPersistedJob()
       finalizeJob(persisted.jobId, 'failed', `Could not reconnect to ${def.label}.`)
-      es.close()
-      eventSourceRef.current = null
-      serverJobIdRef.current = null
+      closeStream()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only reconnect effect
   }, []) // intentionally runs once on mount only
@@ -336,15 +350,47 @@ export function useSyncOperations({
         ]),
       }
 
-      setActiveJob(finalized)
-      setJobHistory((currentHistory) => {
-        const nextHistory = [finalized, ...currentHistory.filter((job) => job.id !== jobId)].slice(0, JOB_HISTORY_LIMIT)
-        persistJobHistory(nextHistory)
-        return nextHistory
-      })
-    },
-    [],
+    setActiveJob(finalized)
+    setJobHistory((currentHistory) => {
+      const nextHistory = [finalized, ...currentHistory.filter((job) => job.id !== jobId)].slice(0, JOB_HISTORY_LIMIT)
+      persistJobHistory(nextHistory)
+      return nextHistory
+    })
+  },
+  [],
   )
+
+  const attachJobWatchdog = useCallback((
+    jobId: string,
+    serverJobId: string,
+    label: string,
+    successSummary: string,
+    closeStream: () => void,
+  ) => {
+    clearWatchdog()
+    watchdogTimerRef.current = window.setTimeout(async () => {
+      try {
+        const state = await workerClient.getJob(serverJobId)
+        if (state.status === 'completed' || state.status === 'failed' || state.status === 'cancelled') {
+          clearPersistedJob()
+          finalizeJob(
+            jobId,
+            state.status === 'completed' ? 'completed' : state.status === 'cancelled' ? 'cancelled' : 'failed',
+            state.status === 'completed' ? successSummary : state.notes?.trim() || `${label} failed.`,
+          )
+          closeStream()
+          return
+        }
+      } catch {
+        clearPersistedJob()
+        finalizeJob(jobId, 'failed', `Lost contact with ${label}.`)
+        closeStream()
+        return
+      }
+
+      attachJobWatchdog(jobId, serverJobId, label, successSummary, closeStream)
+    }, workerSettings.workerTimeoutSeconds * 1000)
+  }, [clearWatchdog, finalizeJob, workerClient, workerSettings.workerTimeoutSeconds])
 
   // Simulated operation — refresh only (drives onRefreshCorpus, fake timer UX).
   const runRefresh = useCallback(() => {
@@ -409,8 +455,7 @@ export function useSyncOperations({
     }
 
     clearTimers()
-    eventSourceRef.current?.close()
-    eventSourceRef.current = null
+    closeActiveStream()
 
     const def = LIVE_OP_DEFS[kind]
     const jobId = `${kind}-${Date.now()}`
@@ -481,8 +526,11 @@ export function useSyncOperations({
       let lineCount = 0
       const es = workerClient.openJobEvents(serverJobId)
       eventSourceRef.current = es
+      const closeStream = () => closeActiveStream()
+      attachJobWatchdog(jobId, serverJobId, def.label, def.summary, closeStream)
 
       es.onmessage = (event: MessageEvent<string>) => {
+        attachJobWatchdog(jobId, serverJobId, def.label, def.summary, closeStream)
         const data = JSON.parse(event.data) as { type: string; text?: string; isError?: boolean; exitCode?: number }
 
         if (data.type === 'line' && data.text) {
@@ -498,42 +546,37 @@ export function useSyncOperations({
           const success = data.exitCode === 0
           clearPersistedJob()
           finalizeJob(jobId, success ? 'completed' : 'failed', success ? def.summary : `${def.label} failed.`)
-          es.close()
-          eventSourceRef.current = null
-          serverJobIdRef.current = null
+          closeStream()
         }
       }
 
       es.onerror = () => {
         clearPersistedJob()
         finalizeJob(jobId, 'failed', `${def.label} failed.`)
-        es.close()
-        eventSourceRef.current = null
-        serverJobIdRef.current = null
+        closeStream()
       }
     }
 
     void start()
-  }, [activeScopeLabel, clearTimers, extraEnv, finalizeJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, workerClient, workerSettings])
+  }, [activeScopeLabel, attachJobWatchdog, clearTimers, closeActiveStream, extraEnv, finalizeJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, workerClient, workerSettings])
 
   const cancelActiveJob = useCallback(() => {
     const current = activeJobRef.current
     if (!current || current.status !== 'running') {
       return
     }
+    const serverJobId = serverJobIdRef.current
 
     clearTimers()
-    eventSourceRef.current?.close()
-    eventSourceRef.current = null
+    closeActiveStream()
 
-    if (serverJobIdRef.current) {
-      void workerClient.cancelJob(serverJobIdRef.current)
-      serverJobIdRef.current = null
+    if (serverJobId) {
+      void workerClient.cancelJob(serverJobId)
     }
     clearPersistedJob()
 
     finalizeJob(current.id, 'cancelled', `${current.label} cancelled.`)
-  }, [clearTimers, finalizeJob, workerClient])
+  }, [clearTimers, closeActiveStream, finalizeJob, workerClient])
 
   const startRefresh = useCallback(() => runRefresh(), [runRefresh])
   const startIngest = useCallback(() => runLiveOperation('ingest'), [runLiveOperation])

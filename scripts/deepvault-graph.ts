@@ -196,6 +196,7 @@ export interface ExportSiteCorpusOptions {
 export interface ExportSiteCorpusResult {
   site: CorpusSiteLike
   documents: CorpusDocumentLike[]
+  currentDocumentIds: string[]
   driveCount: number
   listCount: number
   skippedDocuments: number
@@ -456,7 +457,7 @@ async function crawlDriveItems(
   rootPath = '',
   report?: DeepVaultProgressReporter,
   updatedAfter?: string | null,
-): Promise<{ documents: CorpusDocumentLike[]; skippedDocuments: number }> {
+): Promise<{ documents: CorpusDocumentLike[]; currentDocumentIds: string[]; skippedDocuments: number }> {
   const cutoffMs = parseUpdatedAfter(updatedAfter)
   report?.(`[${siteName}] Scanning ${drive.name}${rootPath ? `/${rootPath}` : ''}`)
   const items = await client.listAll<GraphDriveItem>(
@@ -467,6 +468,7 @@ async function crawlDriveItems(
     `[${siteName}] ${drive.name}${rootPath ? `/${rootPath}` : ''}`,
   )
   const documents: CorpusDocumentLike[] = []
+  const currentDocumentIds: string[] = []
   let skippedDocuments = 0
 
   for (let index = 0; index < items.length; index += 1) {
@@ -475,6 +477,7 @@ async function crawlDriveItems(
     if (item.folder) {
       const nested = await crawlDriveItems(client, siteId, siteName, drive, currentPath, report, updatedAfter)
       documents.push(...nested.documents)
+      currentDocumentIds.push(...nested.currentDocumentIds)
       skippedDocuments += nested.skippedDocuments
       continue
     }
@@ -484,6 +487,8 @@ async function crawlDriveItems(
     }
 
     const extension = item.name.includes('.') ? item.name.split('.').pop()?.toLowerCase() || '' : ''
+    const documentId = contentHash(`${siteId}:${drive.id}:${item.id}`)
+    currentDocumentIds.push(documentId)
     if (!isNewerThanCutoff(item.lastModifiedDateTime || item.createdDateTime, cutoffMs)) {
       skippedDocuments += 1
       report?.(
@@ -507,7 +512,7 @@ async function crawlDriveItems(
     const title = stripExtension(item.name)
 
     documents.push({
-      id: contentHash(`${siteId}:${drive.id}:${item.id}`),
+      id: documentId,
       siteId,
       kind: extension || 'file',
       title,
@@ -526,7 +531,7 @@ async function crawlDriveItems(
     })
   }
 
-  return { documents, skippedDocuments }
+  return { documents, currentDocumentIds, skippedDocuments }
 }
 
 export async function exportSiteCorpus(
@@ -541,6 +546,7 @@ export async function exportSiteCorpus(
   const drives = await client.listAll<GraphDrive>(`/sites/${site.id}/drives?$top=100`, report, `[${siteDefinition.name}] drives`)
   const lists = await client.listAll<{ id: string }>(`/sites/${site.id}/lists?$top=100`, report, `[${siteDefinition.name}] lists`)
   const documents: CorpusDocumentLike[] = []
+  const currentDocumentIds: string[] = []
   let skippedDocuments = 0
   report?.(`[${siteDefinition.name}] Found ${drives.length} libraries and ${lists.length} lists`)
 
@@ -556,6 +562,7 @@ export async function exportSiteCorpus(
       options.updatedAfter,
     )
     documents.push(...nestedDocuments.documents)
+    currentDocumentIds.push(...nestedDocuments.currentDocumentIds)
     skippedDocuments += nestedDocuments.skippedDocuments
     report?.(`[${siteDefinition.name}] Library ${drive.name} yielded ${nestedDocuments.documents.length} documents`)
   }
@@ -574,6 +581,7 @@ export async function exportSiteCorpus(
       owner: siteDefinition.name || site.displayName,
     },
     documents,
+    currentDocumentIds,
     driveCount: drives.length,
     listCount: lists.length,
     skippedDocuments,

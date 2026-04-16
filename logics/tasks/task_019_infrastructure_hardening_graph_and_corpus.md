@@ -93,7 +93,7 @@ stateDiagram-v2
 
 # Validation
 - Wave 1 : `npm run check` complet + test manuel du wrapper retry sur un appel Graph avec réseau dégradé simulé.
-- Wave 2 : `npm run export:live --dry-run` + vérification que les checkpoints existants se chargent sans erreur.
+- Wave 2 : `npm run export:live --dry-run` + vérification que les checkpoints existants se chargent sans erreur et que la reprise réconcilie les documents absents du crawl courant.
 
 # Definition of Done (DoD)
 - [x] Scope implémenté et critères d'acceptance couverts.
