@@ -26,6 +26,8 @@ export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
 
 export type ExplorerRow = CorpusDocument & { score: number; siteName: string; siteUrl: string }
 
+const RUNTIME_ROLE_STORAGE_KEY = 'deepvault_runtime_role'
+
 const DEFAULT_PROVIDER_OPTIONS: Array<{ id: ProviderId; name: string }> = [
   { id: 'openai', name: 'OpenAI' },
   { id: 'gemini', name: 'Gemini' },
@@ -119,6 +121,19 @@ function buildScopedCorpus(corpus: Corpus, siteFilter: string): Corpus {
   }
 }
 
+function readStoredRole(defaultRole: UserRole): UserRole {
+  try {
+    const stored = window.localStorage.getItem(RUNTIME_ROLE_STORAGE_KEY)
+    if (stored === 'analyst' || stored === 'admin' || stored === 'guest') {
+      return stored
+    }
+  } catch {
+    // ignore storage failures
+  }
+
+  return defaultRole
+}
+
 export function useAppModel(): AppModel {
   const { entraSettings, setEntraSetting, clearEntraSettings } = useEntraSettings()
   const { workerSettings, setWorkerSetting, clearWorkerSettings } = useWorkerSettings()
@@ -126,7 +141,7 @@ export function useAppModel(): AppModel {
   const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(requestedCorpusMode)
   const corpus = corpusBundle.corpus
   const [activeTab, setActiveTab] = useState<AppTab>(() => parseActiveTab(window.location.hash))
-  const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
+  const [role, setRole] = useState<UserRole>(() => readStoredRole(corpus.defaultUserRole))
   const [provider, setProvider] = useState<ProviderId>('openai')
   const [siteFilter, setSiteFilter] = useState<string>('all')
   const [search, setSearch] = useState<string>('')
@@ -224,6 +239,14 @@ export function useAppModel(): AppModel {
       setProvider(corpusProviders[0]?.id || 'openai')
     }
   }, [corpusProviders, provider])
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(RUNTIME_ROLE_STORAGE_KEY, role)
+    } catch {
+      // ignore storage failures
+    }
+  }, [role])
 
   useEffect(() => {
     if (explorerRows.length === 0) {
