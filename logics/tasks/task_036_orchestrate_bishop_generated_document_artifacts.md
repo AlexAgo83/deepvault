@@ -1,10 +1,10 @@
 ## task_036_orchestrate_bishop_generated_document_artifacts - Orchestrate Bishop generated document artifacts
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Proposed
-> Understanding: 95%
-> Confidence: 91%
-> Progress: 0%
+> Status: Done
+> Understanding: 98%
+> Confidence: 95%
+> Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references when you edit this doc.
@@ -31,7 +31,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-bishop-generated-document-art|prod-009-enable-bishop-generated-documen|1-lock-the-first-wave-artifact-scope|wave-2-rtk-npm-run-check
+%% logics-signature: task|orchestrate-bishop-generated-document-ar|item-068-deliver-bishop-first-wave-gener|1-wave-1-lock-the-first|run-rtk-npm-run-typecheck-for
 stateDiagram-v2
     state "prod_009_enable_bishop_generated_document" as Product
     state "1. Lock the first-wave artifact scope" as Scope
@@ -49,18 +49,18 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Wave 1 — lock the first shipped scope from `prod_009_enable_bishop_generated_document_artifacts`: explicit artifact intent, supported lightweight formats, naming rules, and unsupported-format behavior.
-- [ ] 2. Wave 1 — create or update the linked backlog item(s) and architecture decision(s) needed to formalize the Bishop artifact response contract.
-- [ ] 3. Wave 2 — implement the bounded artifact response shape for first-wave formats (`.txt`, `.md`, `.json`, `.csv`) and expose a `Download` affordance both in the Bishop message header before the confidence and improvement pills and in a dedicated `Artifact` row under `Confidence` in the right-side trace panel.
-- [ ] 4. Wave 2 — keep a normal Bishop text answer in every artifact-bearing turn, and add the file only when the request is explicitly document-oriented.
-- [ ] 5. Wave 2 — add validation coverage for artifact generation success, unsupported requests, malformed artifact payloads, and normal answer-only behavior.
-- [ ] 6. Wave 3 — harden the UX so users can distinguish grounded answer, downloadable artifact, unsupported format, and generation failure without ambiguity.
-- [ ] 7. Wave 3 — keep provenance, traceability, and artifact messaging aligned in the same Bishop turn.
-- [ ] 8. Wave 4 — define the boundary for richer or heavier document outputs and document when the worker path becomes mandatory.
-- [ ] 9. Update linked Logics docs during each wave, not only at final closure.
-- [ ] CHECKPOINT: leave each wave commit-ready before moving to the next one.
-- [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
-- [ ] FINAL: close the orchestration task only when the first-wave artifact flow is documented, validated, and linked follow-up work for richer formats is explicit.
+- [x] 1. Wave 1 — lock the first shipped scope from `prod_009_enable_bishop_generated_document_artifacts`: explicit artifact intent, supported lightweight formats, naming rules, and unsupported-format behavior.
+- [x] 2. Wave 1 — create or update the linked backlog item(s) and architecture decision(s) needed to formalize the Bishop artifact response contract.
+- [x] 3. Wave 2 — implement the bounded artifact response shape for first-wave formats (`.txt`, `.md`, `.json`, `.csv`) and expose a `Download` affordance both in the Bishop message header before the confidence and improvement pills and in a dedicated `Artifact` row under `Confidence` in the right-side trace panel.
+- [x] 4. Wave 2 — keep a normal Bishop text answer in every artifact-bearing turn, and add the file only when the request is explicitly document-oriented.
+- [x] 5. Wave 2 — add validation coverage for artifact generation success, unsupported requests, malformed artifact payloads, and normal answer-only behavior.
+- [x] 6. Wave 3 — harden the UX so users can distinguish grounded answer, downloadable artifact, unsupported format, and generation failure without ambiguity.
+- [x] 7. Wave 3 — keep provenance, traceability, and artifact messaging aligned in the same Bishop turn.
+- [x] 8. Wave 4 — define the boundary for richer or heavier document outputs and document when the worker path becomes mandatory.
+- [x] 9. Update linked Logics docs during each wave, not only at final closure.
+- [x] CHECKPOINT: leave each wave commit-ready before moving to the next one.
+- [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
+- [x] FINAL: close the orchestration task only when the first-wave artifact flow is documented, validated, and linked follow-up work for richer formats is explicit.
 
 # Delivery checkpoints
 - After Wave 1: the first-wave product scope is frozen and the missing backlog / architecture links exist.
@@ -89,10 +89,10 @@ stateDiagram-v2
 
 # Links
 - Product brief(s): `logics/product/prod_009_enable_bishop_generated_document_artifacts.md`
-- Architecture decision(s): `adr_017_bishop_llm_orchestration_after_local_grounding`, `adr_020_clarify_bishop_orchestration_states_and_response_contract`
+- Architecture decision(s): `adr_017_bishop_llm_orchestration_after_local_grounding`, `adr_020_clarify_bishop_orchestration_states_and_response_contract`, `adr_028_bound_bishop_generated_artifact_response_and_download_contract`
 - Derived from: `prod_009_enable_bishop_generated_document_artifacts`
 - Request(s): (none yet)
-- Backlog item(s): (none yet)
+- Backlog item(s): `item_068_deliver_bishop_first_wave_generated_artifact_contract`
 - Task(s): (this orchestration task)
 
 # AI Context
@@ -108,11 +108,18 @@ stateDiagram-v2
 - Run `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text` after updating linked Logics docs.
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered for the shipped wave.
-- [ ] Validation commands executed and results captured.
-- [ ] Linked product / backlog / architecture docs updated during the wave.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status moved to `Done` only when the bounded first-wave artifact path is complete and richer-format follow-up is explicitly linked.
+- [x] Scope implemented and acceptance criteria covered for the shipped wave.
+- [x] Validation commands executed and results captured.
+- [x] Linked product / backlog / architecture docs updated during the wave.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status moved to `Done` only when the bounded first-wave artifact path is complete and richer-format follow-up is explicitly linked.
 
 # Report
-- Pending.
+- Delivered a bounded first-wave Bishop artifact contract for explicit `.txt`, `.md`, `.json`, and `.csv` requests.
+- Added `artifact`, `artifactStatus`, and `artifactNotice` to the Bishop response path, with explicit handling for unsupported formats and malformed remote payloads.
+- Exposed `Download` in the Bishop message header before the confidence and improvement pills and added an `Artifact` row under `Confidence` in the right-side trace panel.
+- Kept a normal Bishop text answer in artifact-bearing turns and surfaced artifact notices in the same turn for traceability.
+- Captured the shipped contract and richer-format boundary in `item_068`, `adr_028`, and `spec_007`.
+- Validation:
+  - `rtk npm run test -- tests/bishop.spec.ts tests/app-ui.spec.tsx tests/bishop-panel.spec.tsx tests/use-bishop-conversation.spec.tsx tests/file-download.spec.ts`
+  - `rtk npm run typecheck`

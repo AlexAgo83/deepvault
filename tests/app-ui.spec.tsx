@@ -2,6 +2,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { CompactPathText, Message, PathLabel, SectionHeading, StatCard } from '../src/components/app-ui'
+import { downloadTextFile } from '../src/lib/file-download'
+
+vi.mock('../src/lib/file-download', () => ({
+  downloadTextFile: vi.fn(),
+}))
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -144,5 +149,40 @@ describe('app ui helpers', () => {
     const needButton = screen.getByRole('button', { name: 'Show improvement hint' })
     await user.hover(needButton)
     expect(screen.getByText('A more specific document title or site name would improve the response — try refining around circlesas, documents.')).toBeInTheDocument()
+  })
+
+  it('renders the artifact download button before the confidence pills and dispatches the download', async () => {
+    const user = userEvent.setup()
+    const mockedDownload = vi.mocked(downloadTextFile)
+
+    render(
+      <Message
+        message={{
+          id: 'assistant-2',
+          role: 'assistant',
+          text: 'Grounded answer',
+          status: 'answered',
+          sources: [],
+          confidenceScore: 87,
+          artifact: {
+            kind: 'document',
+            format: 'txt',
+            filename: 'budget.txt',
+            mimeType: 'text/plain',
+            content: 'Grounded answer\n',
+          },
+          artifactStatus: 'ready',
+          artifactNotice: 'Artifact ready: budget.txt',
+        }}
+        resolveFileHref={vi.fn()}
+      />,
+    )
+
+    const metaActions = screen.getByRole('button', { name: 'Download' }).closest('.message-meta-actions')
+    expect(metaActions?.firstElementChild).toHaveTextContent('Download')
+    expect(screen.getByText('Artifact ready: budget.txt')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Download' }))
+    expect(mockedDownload).toHaveBeenCalledWith('budget.txt', 'Grounded answer\n', 'text/plain')
   })
 })

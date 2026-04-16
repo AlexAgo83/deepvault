@@ -159,6 +159,7 @@ function formatMessageMarkdown(message: ChatMessage): string {
     '',
     `Status: ${message.status || 'ready'}`,
     ...(message.role === 'assistant' && message.improvementHint ? [`Need: ${message.improvementHint}`] : []),
+    ...(message.role === 'assistant' && message.artifactNotice ? [`Artifact: ${message.artifactNotice}`] : []),
     '',
     message.text,
     '',
@@ -310,6 +311,9 @@ export function useBishopConversation({
                 confidenceScore: result.confidenceScore,
                 providerTracePreview: result.providerTracePreview,
                 improvementHint: result.improvementHint,
+                artifact: result.artifact,
+                artifactStatus: result.artifactStatus,
+                artifactNotice: result.artifactNotice,
               }
             : message,
         ),

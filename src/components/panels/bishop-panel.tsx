@@ -1,6 +1,7 @@
 import { type FormEvent, type KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Message, SectionHeading, SourceCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
+import { downloadTextFile } from '../../lib/file-download'
 
 const BISHOP_POPOVER_WIDTH = 320
 const BISHOP_POPOVER_MARGIN = 16
@@ -119,6 +120,13 @@ export function BishopPanel({
 
     event.preventDefault()
     event.currentTarget.form?.requestSubmit()
+  }
+
+  const handleArtifactDownload = () => {
+    if (!selectedMessage.artifact) {
+      return
+    }
+    downloadTextFile(selectedMessage.artifact.filename, selectedMessage.artifact.content, selectedMessage.artifact.mimeType)
   }
 
   return (
@@ -280,6 +288,25 @@ export function BishopPanel({
                 </div>
               </div>
             </div>
+            {selectedMessage.artifactStatus && selectedMessage.artifactStatus !== 'none' ? (
+              <div className="detail-row detail-row-action">
+                <span>Artifact</span>
+                <div className="trace-confidence-group">
+                  {selectedMessage.artifact ? (
+                    <button
+                      type="button"
+                      className="secondary-button secondary-button-sm"
+                      title={`Download ${selectedMessage.artifact.filename}`}
+                      onClick={handleArtifactDownload}
+                    >
+                      Download
+                    </button>
+                  ) : (
+                    <strong className="trace-artifact-status">{selectedMessage.artifactNotice || selectedMessage.artifactStatus}</strong>
+                  )}
+                </div>
+              </div>
+            ) : null}
             <div className="document-content bishop-sources-section">
               <div className="document-content-header">
                 <h3>Details</h3>

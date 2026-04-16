@@ -95,6 +95,17 @@ export interface SourceRecord {
   fileType?: string
 }
 
+export type BishopArtifactFormat = 'txt' | 'md' | 'json' | 'csv'
+export type BishopArtifactStatus = 'none' | 'ready' | 'unsupported_format' | 'generation_failed'
+
+export interface BishopArtifact {
+  kind: 'document'
+  format: BishopArtifactFormat
+  filename: string
+  mimeType: string
+  content: string
+}
+
 export interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
@@ -110,6 +121,9 @@ export interface ChatMessage {
   confidenceScore?: number
   providerTracePreview?: string
   improvementHint?: string
+  artifact?: BishopArtifact
+  artifactStatus?: BishopArtifactStatus
+  artifactNotice?: string
 }
 
 export interface EvaluationRow {
@@ -149,6 +163,9 @@ export interface AnswerResult {
   chunkCount: number
   tokenCount: number
   latencyMs: number
+  artifact?: BishopArtifact
+  artifactStatus?: BishopArtifactStatus
+  artifactNotice?: string
 }
 
 export interface GroundingResult {

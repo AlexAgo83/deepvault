@@ -2,6 +2,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BishopPanel } from '../src/components/panels'
+import { downloadTextFile } from '../src/lib/file-download'
+
+vi.mock('../src/lib/file-download', () => ({
+  downloadTextFile: vi.fn(),
+}))
 
 function createMessage(id: string, text: string) {
   return {
@@ -301,5 +306,81 @@ describe('BishopPanel confidence trace', () => {
     await user.click(screen.getByRole('button', { name: 'Show' }))
     expect(screen.getByRole('button', { name: 'Hide' })).toBeInTheDocument()
     expect(screen.getByTitle('/Shared Documents/Essayage paul et romaric tenue TEST.jpg')).toBeInTheDocument()
+  })
+
+  it('shows the artifact row under confidence and downloads the selected artifact', async () => {
+    const user = userEvent.setup()
+    const mockedDownload = vi.mocked(downloadTextFile)
+
+    render(
+      <BishopPanel
+        conversationContextEnabled={true}
+        clearHistory={vi.fn()}
+        exportJson={vi.fn()}
+        exportMarkdown={vi.fn()}
+        messages={[createMessage('seed', 'Seed'), createMessage('assistant-1', 'Answer')]}
+        question=""
+        onConversationContextChange={vi.fn()}
+        onQuestionChange={vi.fn()}
+        isAsking={false}
+        onSubmit={vi.fn()}
+        provider="openai"
+        selectedMessage={{
+          id: 'assistant-1',
+          status: 'answered',
+          provider: 'openai',
+          orchestrationMode: 'remote',
+          sources: [],
+          confidenceScore: 84,
+          artifact: {
+            kind: 'document',
+            format: 'txt',
+            filename: 'answer.txt',
+            mimeType: 'text/plain',
+            content: 'Answer\n',
+          },
+          artifactStatus: 'ready',
+          artifactNotice: 'Artifact ready: answer.txt',
+        } as never}
+        resolveFileHref={vi.fn().mockReturnValue(null)}
+        showRightPanel={true}
+      />,
+    )
+
+    expect(screen.getByText('Artifact')).toBeInTheDocument()
+    await user.click(screen.getAllByRole('button', { name: 'Download' })[0])
+    expect(mockedDownload).toHaveBeenCalledWith('answer.txt', 'Answer\n', 'text/plain')
+  })
+
+  it('shows an explicit unsupported-format artifact state in the trace panel', () => {
+    render(
+      <BishopPanel
+        conversationContextEnabled={true}
+        clearHistory={vi.fn()}
+        exportJson={vi.fn()}
+        exportMarkdown={vi.fn()}
+        messages={[createMessage('seed', 'Seed'), createMessage('assistant-1', 'Answer')]}
+        question=""
+        onConversationContextChange={vi.fn()}
+        onQuestionChange={vi.fn()}
+        isAsking={false}
+        onSubmit={vi.fn()}
+        provider="openai"
+        selectedMessage={{
+          id: 'assistant-1',
+          status: 'answered',
+          provider: 'openai',
+          orchestrationMode: 'fallback',
+          sources: [],
+          artifactStatus: 'unsupported_format',
+          artifactNotice: 'Unsupported format .pdf. Bishop currently supports .txt, .md, .json, and .csv.',
+        } as never}
+        resolveFileHref={vi.fn().mockReturnValue(null)}
+        showRightPanel={true}
+      />,
+    )
+
+    expect(screen.getByText('Artifact')).toBeInTheDocument()
+    expect(screen.getByText('Unsupported format .pdf. Bishop currently supports .txt, .md, .json, and .csv.')).toBeInTheDocument()
   })
 })

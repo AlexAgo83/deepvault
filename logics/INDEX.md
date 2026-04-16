@@ -25,6 +25,7 @@
 | [adr_019_split_deepvault_retrieval_and_evaluation_helpers](architecture/adr_019_split_deepvault_retrieval_and_evaluation_helpers.md) | Split DeepVault retrieval and evaluation helpers | Proposed |  | architecture/adr_019_split_deepvault_retrieval_and_evaluation_helpers.md |
 | [adr_020_clarify_bishop_orchestration_states_and_response_contract](architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md) | Clarify Bishop orchestration states and response contract | Proposed |  | architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md |
 | [adr_021_harden_live_export_and_checkpoint_boundaries](architecture/adr_021_harden_live_export_and_checkpoint_boundaries.md) | Harden live export and checkpoint boundaries | Proposed |  | architecture/adr_021_harden_live_export_and_checkpoint_boundaries.md |
+| [adr_028_bound_bishop_generated_artifact_response_and_download_contract](architecture/adr_028_bound_bishop_generated_artifact_response_and_download_contract.md) | Bound Bishop generated artifact response and download contract | Accepted |  | architecture/adr_028_bound_bishop_generated_artifact_response_and_download_contract.md |
 
 ## Product briefs
 
@@ -38,7 +39,7 @@
 | [prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints](product/prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints.md) | Improve ingestion metadata and chunking for Bishop hints | Proposed |  | product/prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints.md |
 | [prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar](product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md) | Add a discrete light and dark theme switch in the sidebar | Proposed |  | product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md |
 | [prod_008_make_ingestion_and_live_export_operable_across_app_and_cli](product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md) | Make ingestion and live export operable across app and CLI | Proposed |  | product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md |
-| [prod_009_enable_bishop_generated_document_artifacts](product/prod_009_enable_bishop_generated_document_artifacts.md) | Enable Bishop generated document artifacts | Proposed |  | product/prod_009_enable_bishop_generated_document_artifacts.md |
+| [prod_009_enable_bishop_generated_document_artifacts](product/prod_009_enable_bishop_generated_document_artifacts.md) | Enable Bishop generated document artifacts | Active |  | product/prod_009_enable_bishop_generated_document_artifacts.md |
 
 ## Requests
 
@@ -120,6 +121,7 @@
 | [item_056_pwa_install_button_in_header](backlog/item_056_pwa_install_button_in_header.md) | PWA: install button in header | Done | 100% | backlog/item_056_pwa_install_button_in_header.md |
 | [item_057_pwa_update_banner](backlog/item_057_pwa_update_banner.md) | PWA: update banner | Done | 100% | backlog/item_057_pwa_update_banner.md |
 | [item_058_pwa_offline_cache_and_mock_fallback](backlog/item_058_pwa_offline_cache_and_mock_fallback.md) | PWA: offline cache and mock corpus fallback | Done | 100% | backlog/item_058_pwa_offline_cache_and_mock_fallback.md |
+| [item_068_deliver_bishop_first_wave_generated_artifact_contract](backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md) | Deliver Bishop first-wave generated artifact contract | Done | 100% | backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md |
 
 ## Tasks
 
@@ -143,4 +145,16 @@
 | [task_021_bishop_intelligence_and_ux](tasks/task_021_bishop_intelligence_and_ux.md) | Bishop intelligence and UX | Done | 100% | tasks/task_021_bishop_intelligence_and_ux.md |
 | [task_022_pwa_progressive_web_app_delivery](tasks/task_022_pwa_progressive_web_app_delivery.md) | PWA progressive web app delivery | Done | 100% | tasks/task_022_pwa_progressive_web_app_delivery.md |
 | [task_025_non_v2_delivery_orchestration_and_validation_hardening](tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md) | Wave map | Done | 100% | tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md |
-| [task_036_orchestrate_bishop_generated_document_artifacts](tasks/task_036_orchestrate_bishop_generated_document_artifacts.md) | Orchestrate Bishop generated document artifacts | Proposed | 0% | tasks/task_036_orchestrate_bishop_generated_document_artifacts.md |
+| [task_036_orchestrate_bishop_generated_document_artifacts](tasks/task_036_orchestrate_bishop_generated_document_artifacts.md) | Orchestrate Bishop generated document artifacts | Done | 100% | tasks/task_036_orchestrate_bishop_generated_document_artifacts.md |
+
+## Specs
+
+| Doc | Title | Status | Progress | Path |
+|---|---|---|---|---|
+| [spec_000_deepvault_navy_experience_and_state_matrix](specs/spec_000_deepvault_navy_experience_and_state_matrix.md) | DeepVault Navy experience and state matrix |  |  | specs/spec_000_deepvault_navy_experience_and_state_matrix.md |
+| [spec_002_deepvault_bishop_chat_flow_and_answer_quality](specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md) | DeepVault bishop chat flow and answer quality |  |  | specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md |
+| [spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality](specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md) | DeepVault pilot site onboarding and retrieval quality |  |  | specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md |
+| [spec_004_deepvault_data_schema_and_storage_contracts](specs/spec_004_deepvault_data_schema_and_storage_contracts.md) | DeepVault data schema and storage contracts |  |  | specs/spec_004_deepvault_data_schema_and_storage_contracts.md |
+| [spec_005_deepvault_permission_mapping_and_retrieval_filters](specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md) | DeepVault permission mapping and retrieval filters |  |  | specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md |
+| [spec_006_deepvault_prompt_and_context_assembly](specs/spec_006_deepvault_prompt_and_context_assembly.md) | DeepVault prompt and context assembly |  |  | specs/spec_006_deepvault_prompt_and_context_assembly.md |
+| [spec_007_bishop_generated_artifact_response_and_download_contract](specs/spec_007_bishop_generated_artifact_response_and_download_contract.md) | Bishop generated artifact response and download contract |  |  | specs/spec_007_bishop_generated_artifact_response_and_download_contract.md |

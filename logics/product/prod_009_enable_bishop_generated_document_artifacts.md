@@ -1,10 +1,10 @@
 ## prod_009_enable_bishop_generated_document_artifacts - Enable Bishop generated document artifacts
 > Date: 2026-04-16
-> Status: Proposed
+> Status: Active
 > Related request: (none yet)
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md`
 > Related task: `logics/tasks/task_036_orchestrate_bishop_generated_document_artifacts.md`
-> Related architecture: `logics/architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md`, `logics/architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md`
+> Related architecture: `logics/architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md`, `logics/architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md`, `logics/architecture/adr_028_bound_bishop_generated_artifact_response_and_download_contract.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
 
 # Overview
@@ -67,10 +67,12 @@ That mismatch weakens trust in the assistant and breaks the flow from request to
 # References
 - `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`
 - `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
+- `logics/specs/spec_007_bishop_generated_artifact_response_and_download_contract.md`
 - `logics/architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md`
 - `logics/architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md`
+- `logics/architecture/adr_028_bound_bishop_generated_artifact_response_and_download_contract.md`
 
 # Open questions
 - Which artifact formats should be included in the first shipped wave beyond `.txt`, `.md`, `.json`, and `.csv`?
-- Should artifact generation live entirely in the app for the first wave, or should some outputs immediately require the worker boundary?
+- Which richer formats should move to the worker boundary first once the in-app text-like path is stable?
 - How should Bishop present artifact generation failures so users can distinguish model failure, contract failure, and unsupported format requests?

@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import type { ChatMessage, SourceRecord } from '../lib/deepvault'
+import { downloadTextFile } from '../lib/file-download'
 
 export type PillTone = 'neutral' | 'accent' | 'success' | 'danger'
 
@@ -204,14 +205,30 @@ export function Message({
   }, [message.id])
 
   const sourceCount = message.sources?.length || 0
+  const handleArtifactDownload = () => {
+    if (!message.artifact) {
+      return
+    }
+    downloadTextFile(message.artifact.filename, message.artifact.content, message.artifact.mimeType)
+  }
 
   return (
     <article className={`message message-${message.role}`}>
       <div className="message-meta">
         <strong>{message.role === 'assistant' ? 'Bishop' : 'You'}</strong>
         <span>{message.status ? message.status : ''}</span>
-        {message.role === 'assistant' && (typeof message.confidenceScore === 'number' || message.improvementHint) ? (
+        {message.role === 'assistant' && (message.artifact || typeof message.confidenceScore === 'number' || message.improvementHint) ? (
           <div className="message-meta-actions">
+            {message.artifact ? (
+              <button
+                type="button"
+                className="secondary-button secondary-button-sm message-download-button"
+                title={`Download ${message.artifact.filename}`}
+                onClick={handleArtifactDownload}
+              >
+                Download
+              </button>
+            ) : null}
             {typeof message.confidenceScore === 'number' ? (
               <div className="message-confidence-popover">
                 <button
@@ -268,6 +285,7 @@ export function Message({
         ) : null}
       </div>
       <p>{message.text}</p>
+      {message.role === 'assistant' && message.artifactNotice ? <p className="message-artifact-note">{message.artifactNotice}</p> : null}
       {message.sources?.length ? (
         <div className="message-sources-block">
           {showSources ? (
