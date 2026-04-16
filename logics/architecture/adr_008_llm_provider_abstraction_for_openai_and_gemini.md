@@ -3,8 +3,8 @@
 > Status: Proposed
 > Drivers: Keep the chat backend provider-agnostic, use the keys already configured in the environment, and allow quality or cost trade-offs without changing the UI.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-> Related backlog: `item_007_llm_provider_abstraction_for_openai_and_gemini`
-> Related task: `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
+> Related backlog: `item_007_v1_llm_provider_abstraction_for_openai_and_gemini`
+> Related task: `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md`
 > Reminder: Keep the provider contract stable so the local app can switch models without changing product behavior, using version-neutral wording. Default to OpenAI primary with Gemini fallback routing. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
@@ -62,11 +62,10 @@ Start with OpenAI as primary. Keep Gemini configured but inactive by default. En
 - Logging: provider name, model identifier, and latency logged on every request.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
-- `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`
-- `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
-- `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md`
+- `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
+- `logics/tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md`
 # Follow-up work
 - Define the provider contract and response schema
 - Add primary/fallback selection in the backend

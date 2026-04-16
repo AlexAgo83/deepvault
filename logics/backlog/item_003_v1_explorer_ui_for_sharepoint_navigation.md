@@ -51,7 +51,7 @@ flowchart TD
 - Product brief(s): `prod_000_sharepoint_knowledge_graph_product_vision`
 - Architecture decision(s): `adr_001_identity_and_access_model_for_sharepoint_knowledge_graph`, `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_004_teams_bot_architecture_for_llm_chat`, `adr_005_explorer_ui_for_sharepoint_navigation`, `adr_006_runtime_configuration_and_operations`
 - Request: `req_000_v0_bootstrap_and_initial_foundations`
-- Related backlog: `item_008_local_explorer_shell_and_navigation`
+- Related backlog: `item_008_v1_local_explorer_shell_and_navigation`
 - Primary task(s): `task_XXX_example`
 
 # AI Context

@@ -70,9 +70,9 @@ The spec covers the navigation states, detail states, and operational states tha
 # References
 - `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - `logics/product/prod_001_local_first_development_and_test_strategy.md`
-- `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`
-- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-- `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
+- `logics/backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md`
+- `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
+- `logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md`
 - `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`
 - `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`
 - `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`

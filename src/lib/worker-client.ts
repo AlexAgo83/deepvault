@@ -79,6 +79,12 @@ export interface WorkerStartJobResponse {
   jobId: string
 }
 
+export interface WorkerEventStream {
+  onmessage: ((_event: MessageEvent<string>) => void) | null
+  onerror: (() => void) | null
+  close: () => void
+}
+
 function buildHeaders(config: WorkerClientConfig, audit?: WorkerAuditContext): Record<string, string> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -134,6 +140,55 @@ async function fetchWithTimeout(
     return await fetch(url, { ...options, signal: controller.signal })
   } finally {
     clearTimeout(timer)
+  }
+}
+
+async function streamRemoteEvents(
+  url: string,
+  headers: Record<string, string>,
+  signal: AbortSignal,
+  stream: WorkerEventStream,
+): Promise<void> {
+  const response = await fetch(url, { headers, signal })
+  if (!response.ok || !response.body) {
+    throw new Error(`Worker event stream failed: ${response.status}`)
+  }
+
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+
+  function emitBufferedEvents(flush = false) {
+    const chunks = flush ? [buffer] : buffer.split('\n\n')
+    if (!flush) {
+      buffer = chunks.pop() || ''
+    } else {
+      buffer = ''
+    }
+
+    for (const chunk of chunks) {
+      const data = chunk
+        .split('\n')
+        .filter((line) => line.startsWith('data:'))
+        .map((line) => line.slice(5).trimStart())
+        .join('\n')
+
+      if (data) {
+        stream.onmessage?.({ data } as MessageEvent<string>)
+      }
+    }
+  }
+
+  while (!signal.aborted) {
+    const { done, value } = await reader.read()
+    if (done) {
+      buffer += decoder.decode()
+      emitBufferedEvents(true)
+      return
+    }
+
+    buffer += decoder.decode(value, { stream: true })
+    emitBufferedEvents(false)
   }
 }
 
@@ -204,14 +259,28 @@ export function createWorkerClient(config: WorkerClientConfig) {
     return res.json() as Promise<WorkerJobManifest>
   }
 
-  function openJobEvents(jobId: string): EventSource {
-    if (config.workerMode === 'remote') {
-      const url = new URL(`${base}/api/worker/jobs/${jobId}/events`)
-      url.searchParams.set('token', config.workerToken)
-      url.searchParams.set('client', auditContext.client)
-      return new EventSource(url.toString())
+  function openJobEvents(jobId: string): WorkerEventStream {
+    if (config.workerMode !== 'remote') {
+      return new EventSource(`${base}/api/worker/jobs/${jobId}/events`) as unknown as WorkerEventStream
     }
-    return new EventSource(`${base}/api/worker/jobs/${jobId}/events`)
+
+    const controller = new AbortController()
+    const stream: WorkerEventStream = {
+      onmessage: null,
+      onerror: null,
+      close: () => controller.abort(),
+    }
+
+    void streamRemoteEvents(`${base}/api/worker/jobs/${jobId}/events`, headers, controller.signal, stream)
+      .catch((error) => {
+        if (controller.signal.aborted) {
+          return
+        }
+        console.error('Worker event stream failed', error)
+        stream.onerror?.()
+      })
+
+    return stream
   }
 
   return {

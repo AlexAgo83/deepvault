@@ -34,6 +34,25 @@ export function resolveCheckpointSyncedAt(checkpoint: LiveExportCheckpoint | nul
   return checkpoint?.syncedAt || checkpoint?.syncRuns?.[0]?.finishedAt || null
 }
 
+export function resolveLiveExportResumeState(
+  resumeRequested: boolean,
+  checkpoint: LiveExportCheckpoint | null | undefined,
+): { seedFromCheckpoint: boolean; updatedAfter: string | null } {
+  if (!resumeRequested) {
+    return { seedFromCheckpoint: false, updatedAfter: null }
+  }
+
+  const updatedAfter = resolveCheckpointSyncedAt(checkpoint)
+  if (!checkpoint || !updatedAfter) {
+    return { seedFromCheckpoint: false, updatedAfter: null }
+  }
+
+  return {
+    seedFromCheckpoint: true,
+    updatedAfter,
+  }
+}
+
 export async function readCorpusLikeFile(path: string): Promise<LiveExportCheckpoint | null> {
   try {
     const payload: unknown = JSON.parse(await readFile(path, 'utf8'))

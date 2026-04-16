@@ -81,7 +81,7 @@ flowchart TD
 
 # Links
 - Product brief(s): (none yet)
-- Architecture decision(s): (none yet)
+- Architecture decision(s): `logics/architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md`
 - Request: `req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up`
 - Primary task(s): `task_012_nexus_v1_1_remaining_polish_orchestration`
 

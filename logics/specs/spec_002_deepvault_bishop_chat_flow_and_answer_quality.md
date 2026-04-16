@@ -54,8 +54,8 @@ The spec covers answer flow, citations, loading and error states, and the qualit
 # References
 - `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - `logics/product/prod_001_local_first_development_and_test_strategy.md`
-- `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
-- `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`
+- `logics/backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md`
+- `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`
 - `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`
 - `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`
 - `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`

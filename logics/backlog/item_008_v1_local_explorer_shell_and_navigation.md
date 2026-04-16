@@ -15,7 +15,7 @@
 
 # Scope
 - In: the local web shell, routing, navigation chrome, and a site/library tree.
-- In: implementation of the explorer navigation contract defined in `item_003_explorer_ui_for_sharepoint_navigation`.
+- In: implementation of the explorer navigation contract defined in `item_003_v1_explorer_ui_for_sharepoint_navigation`.
 - In: opening a selected SharePoint object with basic detail context.
 - Out: chat, sync status, hosted backend, and Teams integration.
 
@@ -50,8 +50,8 @@ flowchart TD
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - Architecture decision(s): `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-- Related backlog: `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`
-- Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
+- Related backlog: `logics/backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md`
+- Related backlog: `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
 - Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): (none yet)
 

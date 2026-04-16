@@ -2,7 +2,7 @@
 > Date: 2026-04-10
 > Status: Proposed
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-> Related backlog: `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
+> Related backlog: `logics/backlog/item_000_v1_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`, `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
 > Related task: `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
 > Related architecture: `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
 > Reminder: Update status, linked refs, scope, decisions, and success signals when you edit this doc. Keep the default decisions section current. For any UX/UI or frontend work tied to this product, use `logics/skills/logics-ui-steering/SKILL.md`. Reviewed during the 2026-04-12 release/doc sync.
@@ -85,20 +85,20 @@ Users need a way to find content, understand what is available, and later ask na
 ## V1: Local development and validation
 - Focus: `DeepVault - Navy`, `DeepVault - Bishop`, shared foundations, and local sync visibility.
 - Goal: prove the end-to-end SharePoint discovery, ingestion, retrieval, and answer loop without external hosting.
-- Primary tasks: `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_001_local_companion_vertical_slice.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
+- Primary tasks: `logics/tasks/task_001_v1_local_companion_vertical_slice.md`, `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`
-- `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
-- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
-- `logics/backlog/item_003_explorer_ui_for_sharepoint_navigation.md`
-- `logics/backlog/item_005_runtime_config_and_operations.md`
-- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-- `logics/backlog/item_007_llm_provider_abstraction_for_openai_and_gemini.md`
-- `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
-- `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`
-- `logics/backlog/item_010_local_sync_status_and_operational_view.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_000_v1_graph_discovery_and_pilot_scope.md`
+- `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`
+- `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
+- `logics/backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md`
+- `logics/backlog/item_005_v1_runtime_config_and_operations.md`
+- `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
+- `logics/backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md`
+- `logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md`
+- `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`
+- `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
 - `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
 - `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`
 - `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`

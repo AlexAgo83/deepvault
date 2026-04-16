@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Support document, list, page, and metadata indexing while keeping source traceability for future LLM answers.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-> Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_011_hosted_backend_core.md`
+> Related backlog: `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`
 > Related task: (none yet)
 > Reminder: Keep the storage model able to back citations, search, and future semantic retrieval. Default to source records, normalized metadata, and chunked text. Reviewed during the 2026-04-10 release/doc sync.
 
@@ -53,10 +53,9 @@ Backfill the hybrid store from the first pilot crawl.
 - Embeddings: defer until the baseline store is stable.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
-- `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`
-- `logics/backlog/item_011_hosted_backend_core.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
+- `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`
 # Follow-up work
 - Define storage schema for source objects and chunks
 - Add ranking and citation fields

@@ -72,6 +72,11 @@ stateDiagram-v2
 # Links
 - Product brief(s): `logics/product/prod_003_navigation_and_runtime_control_clarity.md`, `logics/product/prod_005_split_sync_status_into_dedicated_operations_screens.md`, `logics/product/prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints.md`, `logics/product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md`, `logics/product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md`
 - Architecture decision(s): `logics/architecture/adr_022_separate_runtime_controls_from_sync_operations.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_024_split_sync_status_into_dedicated_operations_screens.md`, `logics/architecture/adr_025_add_a_discrete_light_and_dark_theme_switch_with_persisted_shell_mode.md`, `logics/architecture/adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints.md`
+- Derived from backlog item `logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
+- Derived from backlog item `logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md`
+- Derived from backlog item `logics/backlog/item_061_stabilize_navigation_and_runtime_ownership.md`
+- Derived from backlog item `logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md`
+- Derived from backlog item `logics/backlog/item_063_add_persisted_sidebar_theme_switch.md`
 - Derived from `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 - Request(s): `req_017_implement_the_full_app_worker_corpus_and_shell_plan`
 

@@ -1,9 +1,17 @@
 import { renderHook, act } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { useWorkerSettings, WORKER_SETTINGS_STORAGE_KEY, WORKER_SETTINGS_DEFAULTS } from '../src/hooks/useWorkerSettings'
+import {
+  useWorkerSettings,
+  WORKER_SETTINGS_STORAGE_KEY,
+  WORKER_SETTINGS_DEFAULTS,
+  WORKER_TOKEN_STORAGE_KEY,
+} from '../src/hooks/useWorkerSettings'
 
 describe('useWorkerSettings', () => {
-  afterEach(() => localStorage.clear())
+  afterEach(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+  })
 
   it('returns defaults when nothing is stored', () => {
     const { result } = renderHook(() => useWorkerSettings())
@@ -14,7 +22,7 @@ describe('useWorkerSettings', () => {
     expect(result.current.workerSettings.workerFallbackMode).toBe('read_only')
   })
 
-  it('reads stored values from localStorage', () => {
+  it('reads non-secret values from localStorage', () => {
     localStorage.setItem(
       WORKER_SETTINGS_STORAGE_KEY,
       JSON.stringify({ workerMode: 'remote', workerUrl: 'https://worker.example.com', workerTimeoutSeconds: 60 }),
@@ -23,6 +31,17 @@ describe('useWorkerSettings', () => {
     expect(result.current.workerSettings.workerMode).toBe('remote')
     expect(result.current.workerSettings.workerUrl).toBe('https://worker.example.com')
     expect(result.current.workerSettings.workerTimeoutSeconds).toBe(60)
+  })
+
+  it('reads the worker token from sessionStorage', () => {
+    localStorage.setItem(
+      WORKER_SETTINGS_STORAGE_KEY,
+      JSON.stringify({ workerMode: 'remote', workerUrl: 'https://worker.example.com' }),
+    )
+    sessionStorage.setItem(WORKER_TOKEN_STORAGE_KEY, JSON.stringify({ workerToken: 'secret-token' }))
+
+    const { result } = renderHook(() => useWorkerSettings())
+    expect(result.current.workerSettings.workerToken).toBe('secret-token')
   })
 
   it('rejects invalid workerMode and falls back to local', () => {
@@ -83,10 +102,14 @@ describe('useWorkerSettings', () => {
     expect(result.current.workerSettings.workerTimeoutSeconds).toBe(30)
   })
 
-  it('persists changes to localStorage', () => {
+  it('persists non-secret settings to localStorage and the token to sessionStorage', () => {
     const { result } = renderHook(() => useWorkerSettings())
     act(() => { result.current.setWorkerSetting('workerUrl', 'https://worker.example.com') })
+    act(() => { result.current.setWorkerSetting('workerToken', 'secret-token') })
     const stored = JSON.parse(localStorage.getItem(WORKER_SETTINGS_STORAGE_KEY) ?? '{}') as Record<string, unknown>
+    const storedToken = JSON.parse(sessionStorage.getItem(WORKER_TOKEN_STORAGE_KEY) ?? '{}') as Record<string, unknown>
     expect(stored.workerUrl).toBe('https://worker.example.com')
+    expect(stored.workerToken).toBeUndefined()
+    expect(storedToken.workerToken).toBe('secret-token')
   })
 })

@@ -36,10 +36,14 @@ flowchart TD
 - AC4: Mock export mode continues to work so the pipeline can be validated without Graph access.
 
 # AC Traceability
-- AC1 -> Scope: Incremental change detection and skip behavior for unchanged sources.
-- AC2 -> Scope: Resume behavior after interruption through checkpoint persistence.
-- AC3 -> Scope: Live corpus and sync state consistency after a resumed run.
-- AC4 -> Scope: Mock export mode preserved for local validation.
+- AC1 -> Scope: Incremental change detection and skip behavior for unchanged sources. Proof: TODO.
+- AC2 -> Scope: Resume behavior after interruption through checkpoint persistence. Proof: TODO.
+- AC3 -> Scope: Live corpus and sync state consistency after a resumed run. Proof: TODO.
+- AC4 -> Scope: Mock export mode preserved for local validation. Proof: TODO.
+- AC5 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC6 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC7 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC8 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Required

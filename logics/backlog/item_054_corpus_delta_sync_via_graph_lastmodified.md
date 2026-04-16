@@ -61,7 +61,7 @@ flowchart TD
 
 # Links
 - Product brief(s): (none yet)
-- Architecture decision(s): (none yet)
+- Architecture decision(s): `logics/architecture/adr_021_harden_live_export_and_checkpoint_boundaries.md`
 - Request: `req_015_architecture_robustness_and_product_improvements`
 - Primary task(s): `task_019_infrastructure_hardening_graph_and_corpus`
 

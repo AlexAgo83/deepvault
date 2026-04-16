@@ -78,12 +78,12 @@ stateDiagram-v2
 - `npm run check` complet à la fermeture.
 
 # Definition of Done (DoD)
-- [ ] Scope implémenté et critères d'acceptance couverts.
-- [ ] Commandes de validation exécutées et résultats capturés.
-- [ ] Aucune wave fermée avant que les checks automatiques passent.
-- [ ] Docs Logics liés mis à jour pendant et à la fermeture.
-- [ ] Chaque wave a laissé un checkpoint commit-ready.
-- [ ] Status à `Done` et progress à `100%`.
+- [x] Scope implémenté et critères d'acceptance couverts.
+- [x] Commandes de validation exécutées et résultats capturés.
+- [x] Aucune wave fermée avant que les checks automatiques passent.
+- [x] Docs Logics liés mis à jour pendant et à la fermeture.
+- [x] Chaque wave a laissé un checkpoint commit-ready.
+- [x] Status à `Done` et progress à `100%`.
 # Report
 - Wave 1 completed: added Vitest coverage for scoring query-empty and stop-word-only behavior, Bishop remote 500 fallback, and Anthropic provider failure branches while keeping the code surface unchanged.
 - Wave 1 validated: `rtk npm run test:coverage` now passes with global coverage above the required thresholds.

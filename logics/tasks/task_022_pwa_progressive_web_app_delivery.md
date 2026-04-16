@@ -62,6 +62,7 @@ stateDiagram-v2
 - item_056 AC1-AC5 -> Wave 2. Proof: capture validation evidence in this doc.
 - item_057 AC1-AC4 -> Wave 3. Proof: capture validation evidence in this doc.
 - item_058 AC1-AC5 -> Wave 4. Proof: capture validation evidence in this doc.
+- AC7 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Consider
@@ -73,7 +74,7 @@ stateDiagram-v2
 
 # Links
 - Product brief(s): (none yet)
-- Architecture decision(s): (none yet — à créer pour la stratégie cache)
+- Architecture decision(s): `logics/architecture/adr_027_pwa_cache_and_offline_fallback_strategy.md`
 - Derived from `item_055_pwa_vite_plugin_and_workbox_setup`, `item_056_pwa_install_button_in_header`, `item_057_pwa_update_banner`, `item_058_pwa_offline_cache_and_mock_fallback`
 - Request(s): `req_016_pwa_install_and_offline_first`
 
@@ -94,12 +95,12 @@ stateDiagram-v2
 - `npm run check` complet à la fermeture.
 
 # Definition of Done (DoD)
-- [ ] Scope implémenté et critères d'acceptance couverts.
-- [ ] Commandes de validation exécutées et résultats capturés.
-- [ ] Aucune wave fermée avant que les checks automatiques passent.
-- [ ] Docs Logics liés mis à jour pendant et à la fermeture.
-- [ ] Chaque wave a laissé un checkpoint commit-ready.
-- [ ] Status à `Done` et progress à `100%`.
+- [x] Scope implémenté et critères d'acceptance couverts.
+- [x] Commandes de validation exécutées et résultats capturés.
+- [x] Aucune wave fermée avant que les checks automatiques passent.
+- [x] Docs Logics liés mis à jour pendant et à la fermeture.
+- [x] Chaque wave a laissé un checkpoint commit-ready.
+- [x] Status à `Done` et progress à `100%`.
 # Report
 - Wave 1 completed: `vite-plugin-pwa` installed and configured with prompt registration, SW disabled in dev, static manifest added, and square icon assets prepared.
 - Wave 1 validated: `rtk npm run build` generated `dist/sw.js` and `rtk npm run check` passed.

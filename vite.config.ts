@@ -7,6 +7,8 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 const WORKER_API_VERSION = '1.0.0'
+const MAX_OPS_JOB_LINES = 200
+const MAX_OPS_JOBS = 20
 
 export default defineConfig({
   plugins: [
@@ -37,7 +39,26 @@ export default defineConfig({
 
         function broadcast(job: OpsJob, payload: string) {
           job.lines.push(payload)
+          if (job.lines.length > MAX_OPS_JOB_LINES) {
+            job.lines.splice(0, job.lines.length - MAX_OPS_JOB_LINES)
+          }
           for (const fn of job.listeners) fn(payload)
+        }
+
+        function pruneCompletedJobs() {
+          if (jobs.size <= MAX_OPS_JOBS) {
+            return
+          }
+
+          for (const [jobId, job] of jobs) {
+            if (!job.done) {
+              continue
+            }
+            jobs.delete(jobId)
+            if (jobs.size <= MAX_OPS_JOBS) {
+              return
+            }
+          }
         }
 
         function spawnJob(kind: string, extraEnv?: Record<string, string>): { jobId: string } | null {
@@ -66,6 +87,7 @@ export default defineConfig({
             done: false,
           }
           jobs.set(jobId, job)
+          pruneCompletedJobs()
 
           proc.stdout?.setEncoding('utf8')
           proc.stderr?.setEncoding('utf8')
@@ -89,6 +111,7 @@ export default defineConfig({
             job.finishedAt = new Date().toISOString()
             job.exitCode = code ?? 1
             broadcast(job, JSON.stringify({ type: 'done', exitCode: code ?? 1 }))
+            pruneCompletedJobs()
           })
 
           return { jobId }

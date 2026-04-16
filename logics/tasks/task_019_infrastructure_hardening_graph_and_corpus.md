@@ -41,10 +41,10 @@ stateDiagram-v2
 - [x] 1. Vérifier le format de checkpoint dans `scripts/live-export-state.ts` pour confirmer la compatibilité avec Wave 2 (extension sans breaking change).
 - [x] 2. Wave 1 — créer un wrapper fetch Graph avec retry (max 3, backoff 1s/2s/4s) sur 429 et 5xx ; ajouter `AbortController` + timeout configurable (défaut 30s) ; ajouter validation de schéma corpus au chargement dans `src/data/corpus.ts`.
 - [x] 3. Décider Zod vs assertions TypeScript pour la validation corpus (documenter le choix dans un ADR si Zod est ajouté comme dépendance runtime).
-- [ ] 4. Wave 2 — étendre le checkpoint avec un champ `syncedAt` ; filtrer les documents par `lastModifiedDateTime > syncedAt` dans `scripts/export-live.ts` ; ajouter le mode dry-run avec stats (skipped vs ingested).
-- [ ] 5. Fermer la task en mettant à jour les backlog items et les requests liés.
-- [ ] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
-- [ ] GATE: ne pas fermer une wave avant que `npm run check` passe.
+- [x] 4. Wave 2 — étendre le checkpoint avec un champ `syncedAt` ; filtrer les documents par `lastModifiedDateTime > syncedAt` dans `scripts/export-live.ts` ; ajouter le mode dry-run avec stats (skipped vs ingested).
+- [x] 5. Fermer la task en mettant à jour les backlog items et les requests liés.
+- [x] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
+- [x] GATE: ne pas fermer une wave avant que `npm run check` passe.
 
 # Delivery checkpoints
 - Après Wave 1 : `npm run check` passe, le wrapper retry est utilisé dans tous les appels Graph identifiables, la validation corpus lève une erreur explicite sur données malformées.
@@ -81,7 +81,7 @@ stateDiagram-v2
 
 # Links
 - Product brief(s): (none yet)
-- Architecture decision(s): (none yet — à créer si Zod ajouté)
+- Architecture decision(s): `logics/architecture/adr_021_harden_live_export_and_checkpoint_boundaries.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`
 - Derived from `item_049_graph_api_retry_timeout_and_corpus_validation`, `item_054_corpus_delta_sync_via_graph_lastmodified`
 - Request(s): `req_015_architecture_robustness_and_product_improvements`
 
@@ -96,10 +96,10 @@ stateDiagram-v2
 - Wave 2 : `npm run export:live --dry-run` + vérification que les checkpoints existants se chargent sans erreur.
 
 # Definition of Done (DoD)
-- [ ] Scope implémenté et critères d'acceptance couverts.
-- [ ] Commandes de validation exécutées et résultats capturés.
-- [ ] Aucune wave fermée avant que les checks automatiques passent.
-- [ ] Docs Logics liés mis à jour pendant et à la fermeture.
-- [ ] Chaque wave a laissé un checkpoint commit-ready.
-- [ ] Status à `Done` et progress à `100%`.
+- [x] Scope implémenté et critères d'acceptance couverts.
+- [x] Commandes de validation exécutées et résultats capturés.
+- [x] Aucune wave fermée avant que les checks automatiques passent.
+- [x] Docs Logics liés mis à jour pendant et à la fermeture.
+- [x] Chaque wave a laissé un checkpoint commit-ready.
+- [x] Status à `Done` et progress à `100%`.
 # Report

@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Support one or more SharePoint sites, keep the pilot configurable, and allow both manual and scheduled refreshes.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-> Related backlog: `item_001_sharepoint_ingestion_and_sync_pipeline`
+> Related backlog: `item_001_v1_sharepoint_ingestion_and_sync_pipeline`
 > Related task: (none yet)
 > Reminder: Keep site discovery, crawl order, and sync behavior aligned with the pilot configuration. Default to incremental sync with manual refresh available. Reviewed during the 2026-04-10 release/doc sync.
 
@@ -52,8 +52,8 @@ Expose a manual trigger before introducing scheduled automation.
 - Scheduling: conservative per-environment cadence.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`
 # Follow-up work
 - Define sync state storage
 - Implement crawl ordering and retries

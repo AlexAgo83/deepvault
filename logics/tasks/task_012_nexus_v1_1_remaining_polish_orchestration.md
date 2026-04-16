@@ -52,6 +52,15 @@ stateDiagram-v2
 
 # AC Traceability
 - AC1 -> Scope: Orchestrate the remaining Nexus V1.1 polish request across the four bounded backlog items. Proof: capture validation evidence in this doc.
+- AC10 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC11 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC12 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC13 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC5 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC6 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC7 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC8 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC9 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Not needed

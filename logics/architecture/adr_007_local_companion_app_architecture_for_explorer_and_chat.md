@@ -3,8 +3,8 @@
 > Status: Proposed
 > Drivers: Reduce `DeepVault - Gordon` dependency for the first release, keep the explorer and chat experience under our control, and reuse the same backend for later channels.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-> Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-> Related task: `logics/tasks/task_001_local_companion_vertical_slice.md`, `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
+> Related backlog: `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
+> Related task: `logics/tasks/task_001_v1_local_companion_vertical_slice.md`, `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
 > Reminder: Keep `DeepVault - Navy`, future `DeepVault - Gordon`, and shared backend aligned when the product surface changes, using version-neutral wording. For any UX/UI or frontend implementation work, use `logics/skills/logics-ui-steering/SKILL.md`. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
@@ -48,9 +48,9 @@ Keep the backend contracts channel-agnostic.
 When the product is ready, add Teams as an extra surface without rewriting ingestion or retrieval logic.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-- `logics/tasks/task_001_local_companion_vertical_slice.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
+- `logics/tasks/task_001_v1_local_companion_vertical_slice.md`
 - `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
 # Follow-up work
 - Build the `DeepVault - Navy` shell and route structure

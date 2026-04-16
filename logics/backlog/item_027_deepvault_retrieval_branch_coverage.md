@@ -52,7 +52,7 @@ flowchart TD
 
 # Links
 - Product brief(s): (none yet)
-- Architecture decision(s): (none yet)
+- Architecture decision(s): `logics/architecture/adr_019_split_deepvault_retrieval_and_evaluation_helpers.md`
 - Request: `req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core`
 - Primary task(s): `task_013_coverage_and_explorer_polish_orchestration`
 

@@ -47,8 +47,8 @@ flowchart TD
 - [x] Problem statement est explicite et l'impact utilisateur est clair.
 - [x] Périmètre (in/out) est défini.
 - [x] Acceptance criteria sont testables.
-- [ ] Icônes DeepVault aux formats requis disponibles ou à créer.
-- [ ] Décision sur le `theme_color` et `background_color` (à aligner avec `styles.css`).
+- [x] Icônes DeepVault aux formats requis disponibles ou à créer.
+- [x] Décision sur le `theme_color` et `background_color` (à aligner avec `styles.css`).
 
 # Scope
 **In scope**

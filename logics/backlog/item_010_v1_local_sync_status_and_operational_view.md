@@ -49,7 +49,7 @@ flowchart TD
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - Architecture decision(s): `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-- Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
+- Related backlog: `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
 - Request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 - Primary task(s): (none yet)
 

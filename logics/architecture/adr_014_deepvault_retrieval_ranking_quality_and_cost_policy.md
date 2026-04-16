@@ -3,8 +3,8 @@
 > Status: Proposed
 > Drivers: Keep retrieval permission-safe, make answer quality measurable, and keep token and inference cost under control as the corpus grows.
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-> Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
-> Related task: `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
+> Related backlog: `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
+> Related task: `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
 > Reminder: Keep the ranking policy, cost guardrails, and quality thresholds aligned with the current retrieval design and pilot scope. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
@@ -123,10 +123,9 @@ If context assembly reaches the token budget before 20 chunks, the lowest-scorin
 - Keep the policy configurable so the local and hosted runtimes can share the same logic.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
-- `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
-- `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
+- `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
 # Follow-up work
 - Run the evaluation set from `task_008` against V1 defaults and record scores.
 - Capture weight and budget overrides in a config block so they can change without code.

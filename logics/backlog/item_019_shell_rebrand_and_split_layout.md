@@ -45,6 +45,9 @@ flowchart TD
 - AC5 -> Scope: The application favicon is added or replaced with a Nexus-branded icon. Proof: capture validation evidence in this doc.
 - AC6 -> Scope: The shell uses a split layout with a fixed left menu and an independently scrolling right content area. Proof: capture validation evidence in this doc.
 - AC7 -> Scope: The shell still feels coherent on desktop and does not lose the core local validation surfaces. Proof: capture validation evidence in this doc.
+- AC10 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC8 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC9 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Consider

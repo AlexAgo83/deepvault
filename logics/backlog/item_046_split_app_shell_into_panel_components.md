@@ -39,6 +39,12 @@ flowchart TD
 - AC2 -> Scope: trois fichiers panels/ créés. Proof: capture validation evidence in this doc.
 - AC3 -> Scope: npm run check passe. Proof: capture validation evidence in this doc.
 - AC4 -> Scope: tests app.spec.tsx inchangés. Proof: capture validation evidence in this doc.
+- AC10 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC11 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC12 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC7 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC8 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC9 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Not needed

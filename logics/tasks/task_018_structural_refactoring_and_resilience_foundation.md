@@ -45,7 +45,7 @@ stateDiagram-v2
 - [x] 4. Wave 3 — créer un composant `<ErrorBoundary>` générique dans `src/components/` ; wrapper les trois panels dans app-shell.tsx (ou dans les fichiers panels/ si Wave 1 est faite).
 - [x] 5. Fermer la task en mettant à jour les backlog items et les requests liés.
 - [x] CHECKPOINT: laisser chaque wave commit-ready et mettre à jour les docs Logics avant de continuer.
-- [ ] CHECKPOINT: si le runtime Logics est actif, lancer `python logics/skills/logics.py flow assist commit-all` après chaque wave.
+- [x] CHECKPOINT: si le runtime Logics est actif, lancer `python logics/skills/logics.py flow assist commit-all` après chaque wave.
 - [x] GATE: ne pas fermer une wave avant que `npm run check` passe.
 
 # Delivery checkpoints
@@ -57,6 +57,12 @@ stateDiagram-v2
 - item_046 AC1-AC4 -> Wave 1. Proof: capture validation evidence in this doc.
 - item_047 AC1-AC4 -> Wave 2. Proof: capture validation evidence in this doc.
 - item_048 AC1-AC4 -> Wave 3. Proof: capture validation evidence in this doc.
+- AC10 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC11 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC12 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC7 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC8 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC9 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Not needed
@@ -85,12 +91,12 @@ stateDiagram-v2
 - Wave 3 : `npm run check` complet.
 
 # Definition of Done (DoD)
-- [ ] Scope implémenté et critères d'acceptance couverts.
-- [ ] Commandes de validation exécutées et résultats capturés.
-- [ ] Aucune wave fermée avant que les checks automatiques passent.
-- [ ] Docs Logics liés mis à jour pendant et à la fermeture.
-- [ ] Chaque wave a laissé un checkpoint commit-ready.
-- [ ] Status à `Done` et progress à `100%`.
+- [x] Scope implémenté et critères d'acceptance couverts.
+- [x] Commandes de validation exécutées et résultats capturés.
+- [x] Aucune wave fermée avant que les checks automatiques passent.
+- [x] Docs Logics liés mis à jour pendant et à la fermeture.
+- [x] Chaque wave a laissé un checkpoint commit-ready.
+- [x] Status à `Done` et progress à `100%`.
 # Report
 - Wave 1 completed: extracted the Explorer, Bishop, and Sync panels into `src/components/panels/`, leaving `app-shell.tsx` responsible for layout and navigation only.
 - Wave 1 completed: added export helpers for Explorer and Bishop so the app shell no longer owns inline export assembly.

@@ -100,9 +100,9 @@ Ranking weights (defined in ADR 014) must not be changed before the evaluation b
 - `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`
 - `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - `logics/product/prod_001_local_first_development_and_test_strategy.md`
-- `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`
-- `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
-- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
+- `logics/backlog/item_000_v1_graph_discovery_and_pilot_scope.md`
+- `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`
+- `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
 - `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`
 - `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`
 - `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`

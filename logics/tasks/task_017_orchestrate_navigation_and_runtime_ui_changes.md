@@ -59,6 +59,7 @@ stateDiagram-v2
 
 # AC Traceability
 - AC1 -> Scope: Orchestrate the three UI slices that improve navigation clarity and runtime placement without changing the underlying corpus behavior. Proof: capture validation evidence in this doc.
+- AC5 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Required

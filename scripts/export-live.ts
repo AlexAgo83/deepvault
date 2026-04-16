@@ -8,7 +8,7 @@ import {
   readCliArg,
   readCliFlag,
   readCorpusLikeFile,
-  resolveCheckpointSyncedAt,
+  resolveLiveExportResumeState,
 } from './live-export-state'
 import {
   acquireGraphAccessToken,
@@ -41,22 +41,26 @@ async function runMockExport(outputPath: string, dryRun: boolean): Promise<void>
   console.log(`Pilot sites: ${corpus.sites.length}`)
 }
 
-async function runLiveExport(config: DeepVaultExportConfig, outputPath: string): Promise<void> {
+async function runLiveExport(
+  config: DeepVaultExportConfig,
+  outputPath: string,
+  options: { dryRun: boolean; resumeCheckpoint: boolean },
+): Promise<void> {
   const token = await acquireGraphAccessToken(config)
   const client = new GraphClient(config.baseUrl, token, config.timeoutSeconds)
   const siteDefinitions = buildSiteDefinitions(config)
-  const dryRun = readCliFlag(process.argv, '--dry-run')
-  const checkpointCorpus = await readCorpusLikeFile(liveCheckpointPath)
-  const checkpointSyncedAt = resolveCheckpointSyncedAt(checkpointCorpus)
-  const deltaSyncEnabled = Boolean(checkpointCorpus && checkpointSyncedAt)
+  const checkpointCorpus = options.resumeCheckpoint ? await readCorpusLikeFile(liveCheckpointPath) : null
+  const resumeState = resolveLiveExportResumeState(options.resumeCheckpoint, checkpointCorpus)
 
   if (siteDefinitions.length === 0) {
     throw new Error('DEEPVAULT_ENTRA_SITES must list at least one SharePoint site URL.')
   }
 
-  const sites: CorpusLike['sites'] = checkpointCorpus?.sites ? [...checkpointCorpus.sites] : []
-  let documents: CorpusLike['documents'] = checkpointCorpus?.documents ? [...checkpointCorpus.documents] : []
-  const siteIds: string[] = checkpointCorpus?.syncRuns?.[0]?.siteIds ? [...checkpointCorpus.syncRuns[0].siteIds] : []
+  const sites: CorpusLike['sites'] = resumeState.seedFromCheckpoint && checkpointCorpus?.sites ? [...checkpointCorpus.sites] : []
+  let documents: CorpusLike['documents'] = resumeState.seedFromCheckpoint && checkpointCorpus?.documents ? [...checkpointCorpus.documents] : []
+  const siteIds: string[] = resumeState.seedFromCheckpoint && checkpointCorpus?.syncRuns?.[0]?.siteIds
+    ? [...checkpointCorpus.syncRuns[0].siteIds]
+    : []
   const startedAt = new Date().toISOString()
   let totalLibraries = sites.reduce((sum, site) => sum + site.libraryCount, 0)
   let totalLists = sites.reduce((sum, site) => sum + site.listCount, 0)
@@ -81,7 +85,7 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   }
 
   async function writeCheckpoint(syncedAt: string) {
-    if (dryRun) {
+    if (options.dryRun) {
       return
     }
     await writeCorpusFile(
@@ -102,12 +106,14 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
 
   for (const definition of siteDefinitions) {
     try {
-      console.log(`[${definition.name}] Starting export${deltaSyncEnabled ? ` (delta from ${checkpointSyncedAt})` : ''}`)
+      console.log(
+        `[${definition.name}] Starting export${resumeState.updatedAfter ? ` (delta from ${resumeState.updatedAfter})` : ' (full sync)'}`,
+      )
       const exported = await exportSiteCorpus(
         client,
         definition,
         (message) => console.log(message),
-        { updatedAfter: deltaSyncEnabled ? checkpointSyncedAt : null },
+        { updatedAfter: resumeState.updatedAfter },
       )
       upsertSite(exported.site)
       documents = upsertDocuments(documents, exported.documents)
@@ -155,7 +161,7 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
 
   console.log(`Export summary: ${documents.length} documents across ${totalLibraries} libraries and ${totalLists} lists`)
   console.log(`Delta stats: skipped ${skippedDocuments}, ingested ${ingestedDocuments}`)
-  if (dryRun) {
+  if (options.dryRun) {
     console.log('Dry run: no files were written.')
   } else {
     await writeCorpusFile(outputPath, corpus)
@@ -163,9 +169,9 @@ async function runLiveExport(config: DeepVaultExportConfig, outputPath: string):
   }
   const role = corpus.defaultUserRole || 'analyst'
   const summary = summarizeCorpus(corpus as Corpus, role)
-  console.log(dryRun ? `Dry run target: ${outputPath}` : `Wrote ${outputPath}`)
+  console.log(options.dryRun ? `Dry run target: ${outputPath}` : `Wrote ${outputPath}`)
   console.log(`Mode: live`)
-  console.log(`Dry run: ${dryRun ? 'yes' : 'no'}`)
+  console.log(`Dry run: ${options.dryRun ? 'yes' : 'no'}`)
   console.log(`Visible documents: ${summary.visibleSources}`)
   console.log(`Pilot sites: ${corpus.sites.length}`)
   console.log(`Libraries: ${totalLibraries}`)
@@ -190,5 +196,5 @@ console.log(`Dry run: ${dryRun ? 'yes' : 'no'}`)
 if (useMock) {
   await runMockExport(outputPath, dryRun)
 } else {
-  await runLiveExport(config, outputPath)
+  await runLiveExport(config, outputPath, { dryRun, resumeCheckpoint })
 }

@@ -18,7 +18,7 @@ The goal is to prove the product loop before industrialization begins.
 %% logics-kind: task
 %% logics-signature: task|v1-local-development-and-validation-mile|item-000-graph-discovery-and-pilot-scope|complete-the-shared-foundations-and-cros|python3-logics-skills-logics-doc-linter-
 stateDiagram-v2
-    state "item_000_graph_discovery_and_pilot_scope" as Backlog
+    state "item_000_v1_graph_discovery_and_pilot_scope" as Backlog
     state "Complete the shared foundations and cross" as Scope
     state "Ship DeepVault - Navy DeepVault -" as Build
     state "Harden ingestion sync retrieval and provid" as Verify
@@ -50,11 +50,11 @@ stateDiagram-v2
 
 # AC Traceability
 - `task_000_sharepoint_foundations_and_shared_contracts` -> shared scope, shared contracts, Azure fallback decision
-- `task_001_local_companion_vertical_slice` -> `DeepVault - Navy`, `DeepVault - Bishop`, local sync visibility
-- `task_002_ingestion_sync_and_retrieval_hardening` -> ingestion, sync, retrieval, permissions, provider abstraction
-- `item_000_graph_discovery_and_pilot_scope` -> pilot scope and kickoff
-- `item_001_sharepoint_ingestion_and_sync_pipeline` -> ingestion and refresh
-- `item_002_hybrid_knowledge_store_and_retrieval` -> hybrid store and retrieval
+- `task_001_v1_local_companion_vertical_slice` -> `DeepVault - Navy`, `DeepVault - Bishop`, local sync visibility
+- `task_002_v1_ingestion_sync_and_retrieval_hardening` -> ingestion, sync, retrieval, permissions, provider abstraction
+- `item_000_v1_graph_discovery_and_pilot_scope` -> pilot scope and kickoff
+- `item_001_v1_sharepoint_ingestion_and_sync_pipeline` -> ingestion and refresh
+- `item_002_v1_hybrid_knowledge_store_and_retrieval` -> hybrid store and retrieval
 
 # Decision framing
 - Product framing: Required
@@ -67,7 +67,7 @@ stateDiagram-v2
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_006_runtime_configuration_and_operations.md`, `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-- Related task(s): `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_001_local_companion_vertical_slice.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
+- Related task(s): `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_001_v1_local_companion_vertical_slice.md`, `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
 - Request(s): `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # AI Context
