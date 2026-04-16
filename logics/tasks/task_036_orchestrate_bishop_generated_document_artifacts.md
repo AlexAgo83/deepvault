@@ -2,8 +2,8 @@
 > From version: 1.3.0
 > Schema version: 1.0
 > Status: Done
-> Understanding: 98%
-> Confidence: 95%
+> Understanding: 100%
+> Confidence: 97%
 > Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
@@ -117,6 +117,8 @@ stateDiagram-v2
 # Report
 - Delivered a bounded first-wave Bishop artifact contract for explicit `.txt`, `.md`, `.json`, and `.csv` requests.
 - Added `artifact`, `artifactStatus`, and `artifactNotice` to the Bishop response path, with explicit handling for unsupported formats and malformed remote payloads.
+- Hardened text-like artifact packaging so downloaded files strip obvious copy-paste wrapper prose and keep the requested payload body.
+- Normalized artifact-bearing chat replies so file-only model output is replaced by a concise conversational confirmation in the Bishop message.
 - Exposed `Download` in the Bishop message header before the confidence and improvement pills and added an `Artifact` row under `Confidence` in the right-side trace panel.
 - Kept a normal Bishop text answer in artifact-bearing turns and surfaced artifact notices in the same turn for traceability.
 - Captured the shipped contract and richer-format boundary in `item_068`, `adr_028`, and `spec_007`.

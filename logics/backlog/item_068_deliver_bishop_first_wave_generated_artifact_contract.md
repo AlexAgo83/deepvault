@@ -70,6 +70,8 @@ flowchart TD
 
 # Notes
 - The shipped app packages the final grounded answer into a bounded local artifact for supported formats.
+- Artifact packaging trims obvious chat wrapper prose so downloads keep the requested payload instead of copy-paste instructions.
+- Artifact-bearing turns normalize file-only model replies back into a conversational Bishop message in chat.
 - Unsupported formats surface an explicit notice instead of a broken download control.
 - Richer document formats remain follow-up work behind the worker boundary.
 

@@ -133,6 +133,11 @@ interface ArtifactOutcome {
   artifactNotice?: string
 }
 
+interface ArtifactTextNormalization {
+  artifactBody: string
+  displayAnswer: string
+}
+
 function truncateText(value: string, maxLength = 180): string {
   const normalized = value.replace(/\s+/g, ' ').trim()
   if (normalized.length <= maxLength) {
@@ -169,6 +174,130 @@ function slugifyFilenameSegment(value: string): string {
 function buildDefaultArtifactFilename(query: string, format: BishopArtifactFormat): string {
   const stem = slugifyFilenameSegment(query).slice(0, 48) || 'bishop-artifact'
   return `${stem}.${format}`
+}
+
+function trimEmptyLines(lines: string[]): string[] {
+  let start = 0
+  let end = lines.length
+
+  while (start < end && !lines[start]?.trim()) {
+    start += 1
+  }
+  while (end > start && !lines[end - 1]?.trim()) {
+    end -= 1
+  }
+
+  return lines.slice(start, end)
+}
+
+function isArtifactWrapperIntro(line: string): boolean {
+  const normalized = line.trim().toLowerCase()
+  return (
+    /^here(?: is|'s) (?:the )?(?:content|text)/.test(normalized) ||
+    /^below is (?:the )?(?:content|text)/.test(normalized) ||
+    /^voici (?:le )?(?:contenu|texte)/.test(normalized)
+  )
+}
+
+function isArtifactWrapperOutro(line: string): boolean {
+  const normalized = line.trim().toLowerCase()
+  return (
+    /^you can copy\b/.test(normalized) ||
+    /^copy (?:this|the text)\b/.test(normalized) ||
+    /^tu peux copier\b/.test(normalized) ||
+    /^vous pouvez copier\b/.test(normalized)
+  )
+}
+
+function extractDownloadableAnswerBody(answer: string): string {
+  const normalizedAnswer = answer.replace(/\r\n/g, '\n').trim()
+  if (!normalizedAnswer) {
+    return ''
+  }
+
+  const lines = trimEmptyLines(normalizedAnswer.split('\n').map((line) => line.trimEnd()))
+  if (!lines.length) {
+    return ''
+  }
+
+  const introIndex = lines.findIndex((line) => isArtifactWrapperIntro(line))
+  if (introIndex === -1) {
+    return trimEmptyLines(lines).join('\n')
+  }
+
+  const candidateLines = trimEmptyLines(lines.slice(introIndex + 1))
+  if (!candidateLines.length) {
+    return trimEmptyLines(lines).join('\n')
+  }
+
+  const outroIndex = candidateLines.findIndex((line) => isArtifactWrapperOutro(line))
+  const contentLines = trimEmptyLines(outroIndex >= 0 ? candidateLines.slice(0, outroIndex) : candidateLines)
+
+  return contentLines.length ? contentLines.join('\n') : trimEmptyLines(lines).join('\n')
+}
+
+function isLikelyFileOnlyAnswer(answer: string, artifactBody: string, format: BishopArtifactFormat): boolean {
+  const normalizedAnswer = answer.replace(/\r\n/g, '\n').trim()
+  const normalizedBody = artifactBody.replace(/\r\n/g, '\n').trim()
+
+  if (!normalizedAnswer || !normalizedBody) {
+    return false
+  }
+
+  const lines = trimEmptyLines(normalizedAnswer.split('\n').map((line) => line.trim()))
+  if (lines.some((line) => isArtifactWrapperIntro(line) || isArtifactWrapperOutro(line))) {
+    return true
+  }
+
+  if (format === 'json' && /^[\[{]/.test(normalizedAnswer)) {
+    return true
+  }
+
+  if (format === 'csv' && normalizedAnswer.includes(',') && lines.length > 1) {
+    return true
+  }
+
+  if (format === 'txt' && lines.length > 1 && normalizedBody.includes('\n')) {
+    return true
+  }
+
+  if (format === 'md' && /^(#|\*|-|\d+[.)]\s)/.test(lines[0] || '')) {
+    return true
+  }
+
+  return false
+}
+
+function buildArtifactDisplayAnswer(filename: string, format: BishopArtifactFormat): string {
+  return `I prepared the requested ${format.toUpperCase()} file \`${filename}\`.`
+}
+
+function normalizeArtifactText(
+  answer: string,
+  format: BishopArtifactFormat,
+  filename: string,
+): ArtifactTextNormalization {
+  const artifactBody = extractDownloadableAnswerBody(answer)
+  const normalizedAnswer = answer.trim()
+
+  if (!normalizedAnswer) {
+    return {
+      artifactBody,
+      displayAnswer: buildArtifactDisplayAnswer(filename, format),
+    }
+  }
+
+  if (isLikelyFileOnlyAnswer(normalizedAnswer, artifactBody, format)) {
+    return {
+      artifactBody,
+      displayAnswer: buildArtifactDisplayAnswer(filename, format),
+    }
+  }
+
+  return {
+    artifactBody,
+    displayAnswer: normalizedAnswer,
+  }
 }
 
 function parseRequestedFilename(query: string): string | undefined {
@@ -286,9 +415,10 @@ function buildArtifactFromAnswer(
   sources: SourceRecord[],
   format: BishopArtifactFormat,
   requestedFilename?: string,
-): BishopArtifact {
+): { artifact: BishopArtifact; displayAnswer: string } {
   const filename = requestedFilename ? sanitizeRequestedFilename(requestedFilename, format) : buildDefaultArtifactFilename(query, format)
-  const trimmedAnswer = answer.trim()
+  const normalizedText = normalizeArtifactText(answer, format, filename)
+  const trimmedAnswer = normalizedText.artifactBody.trim()
   const content =
     format === 'txt'
       ? `${trimmedAnswer}\n`
@@ -299,11 +429,14 @@ function buildArtifactFromAnswer(
           : buildCsvArtifactContent(trimmedAnswer, sources)
 
   return {
-    kind: 'document',
-    format,
-    filename,
-    mimeType: ARTIFACT_MIME_TYPES[format],
-    content,
+    artifact: {
+      kind: 'document',
+      format,
+      filename,
+      mimeType: ARTIFACT_MIME_TYPES[format],
+      content,
+    },
+    displayAnswer: normalizedText.displayAnswer,
   }
 }
 
@@ -362,11 +495,11 @@ function resolveArtifactOutcome(
     }
   }
 
-  const artifact = buildArtifactFromAnswer(query, result.answer, result.sources, intent.format, intent.filename)
+  const packaged = buildArtifactFromAnswer(query, result.answer, result.sources, intent.format, intent.filename)
   return {
-    artifact,
+    artifact: packaged.artifact,
     artifactStatus: 'ready',
-    artifactNotice: `Artifact ready: ${artifact.filename}`,
+    artifactNotice: `Artifact ready: ${packaged.artifact.filename}`,
   }
 }
 
@@ -380,8 +513,15 @@ function withArtifactOutcome(
   },
 ): BishopOrchestrationResult {
   const artifactOutcome = resolveArtifactOutcome(query, result, remotePayload)
+  const intent = inferArtifactIntent(query)
+  const normalizedAnswer =
+    artifactOutcome.artifact && intent.format
+      ? normalizeArtifactText(result.answer, intent.format, artifactOutcome.artifact.filename).displayAnswer
+      : result.answer
+
   return {
     ...result,
+    answer: normalizedAnswer,
     artifact: artifactOutcome.artifact,
     artifactStatus: artifactOutcome.artifactStatus,
     artifactNotice: artifactOutcome.artifactNotice,
@@ -547,6 +687,7 @@ export function buildBishopPrompt(context: BishopPromptContext): string {
         : [
             `Artifact request: supported ${context.artifactIntent.format ? `.${context.artifactIntent.format}` : 'text-like'} file.`,
             'Provide the grounded answer content directly and assume the app will package it as a downloadable file.',
+            'Do not wrap the answer in meta commentary like "Here is the file content" or "You can copy this into a file."',
             'Do not say that you cannot create, generate, or download files from this interface.',
           ]
       : []
@@ -581,6 +722,7 @@ function buildBishopSystemPrompt(context: Omit<BishopPromptContext, 'query' | 'g
         : [
             'When the user explicitly asks for a supported file, provide the file-ready grounded content in your answer.',
             'Assume the app can attach the downloadable file separately.',
+            'Do not wrap the answer in meta commentary like "Here is the file content" or "You can copy this into a file."',
             'Do not say that the interface cannot create, generate, or download files.',
           ]
       : []

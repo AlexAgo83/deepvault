@@ -82,6 +82,10 @@ The first-wave app packages the final grounded answer into a downloadable artifa
 - `.json`: structured payload containing query, answer, and source metadata
 - `.csv`: line-oriented answer rows when available, otherwise a bounded export of source metadata
 
+Packaging hygiene:
+- When Bishop answers a supported artifact request, the downloadable artifact must exclude wrapper prose such as "Here is the file content" or "You can copy this into a file."
+- `.txt`, `.md`, `.json`, and `.csv` artifacts should preserve the grounded payload, not copy-paste instructions or chat-only framing.
+
 Filenames:
 - use a sanitized requested filename when the user explicitly names one,
 - otherwise derive a slug from the query and append the resolved extension.
@@ -92,6 +96,7 @@ When `artifactStatus = "ready"`:
 - the Bishop message header shows `Download` before the `100%` and `?` pills,
 - the Bishop right-side trace panel shows an `Artifact` row under `Confidence` with `Download`,
 - the turn may also show an artifact notice for traceability.
+- the Bishop chat message should remain a normal conversational answer and should not degrade into a verbatim replay of the downloadable file payload.
 
 When `artifactStatus = "unsupported_format"` or `artifactStatus = "generation_failed"`:
 - no download button is shown for that surface,
