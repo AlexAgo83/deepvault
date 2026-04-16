@@ -30,10 +30,14 @@ describe('AIStatsPanel', () => {
       <AIStatsPanel
         showRightPanel={false}
         messages={[
+          { id: 'user-1', role: 'user', text: 'What is the budget?', status: 'answered' },
           assistantMessage({ id: '1', improvementHint: 'Need site name', text: 'one' }),
+          { id: 'user-2', role: 'user', text: 'Which title should I inspect?', status: 'answered' },
           assistantMessage({ id: '2', improvementHint: 'Need document title', text: 'two', confidenceScore: undefined }),
+          { id: 'user-3', role: 'user', text: 'Can you answer without more context?', status: 'answered' },
           assistantMessage({ id: '3', improvementHint: 'Need site name', text: 'three', status: 'no_answer' }),
           assistantMessage({ id: '4', improvementHint: 'Need site name', text: 'four', status: 'answering' }),
+          { id: 'user-5', role: 'user', text: 'Show restricted sources', status: 'answered' },
           assistantMessage({ id: '5', text: 'five', status: 'no_permitted_sources' }),
         ] as never}
       />,
@@ -42,7 +46,23 @@ describe('AIStatsPanel', () => {
     expect(screen.getAllByText('Answered response')).toHaveLength(2)
     expect(screen.getAllByText('no_answer')).toHaveLength(2)
     expect(screen.getByText('n/a')).toBeInTheDocument()
+    expect(screen.getAllByText('Question')).toHaveLength(4)
+    expect(screen.getByText('What is the budget?')).toBeInTheDocument()
+    expect(screen.getAllByText('Response')).toHaveLength(4)
     expect(screen.queryByText('AI needs')).not.toBeInTheDocument()
+  })
+
+  it('omits the question block when no preceding user message exists', () => {
+    render(
+      <AIStatsPanel
+        showRightPanel={false}
+        messages={[assistantMessage({ id: 'assistant-only', text: 'Standalone answer' })] as never}
+      />,
+    )
+
+    expect(screen.queryByText('Question')).not.toBeInTheDocument()
+    expect(screen.getByText('Response')).toBeInTheDocument()
+    expect(screen.getByText('Standalone answer')).toBeInTheDocument()
   })
 
   it('sorts top AI needs by count then alphabetically', () => {
@@ -61,7 +81,8 @@ describe('AIStatsPanel', () => {
 
     const aside = screen.getByText('AI needs').closest('aside')
     expect(aside).not.toBeNull()
-    const rows = within(aside as HTMLElement).getAllByText(/hint$/).map((node) => node.textContent)
+    const rows = Array.from((aside as HTMLElement).querySelectorAll('.ai-need-row .ai-need-row-copy span:last-child')).map((node) => node.textContent)
     expect(rows).toEqual(['Alpha hint', 'Beta hint', 'Gamma hint'])
+    expect(within(aside as HTMLElement).getByRole('img', { name: /need distribution/i })).toBeInTheDocument()
   })
 })
