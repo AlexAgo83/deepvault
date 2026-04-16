@@ -486,12 +486,12 @@ export function SyncPanel({
                     <strong>{job.label}</strong>
                     <Pill tone={getJobTone(job.status)}>{job.status}</Pill>
                   </div>
-                  <div className="source-meta">
+                  <div className="sync-history-meta">
                     <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
-                    <span>{job.command}</span>
                     <span>{job.progress}%</span>
                     {job.durationMs != null ? <span>{formatDuration(job.durationMs)}</span> : null}
                   </div>
+                  <code className="sync-history-command">{job.command}</code>
                   <p>{job.summary}</p>
                 </article>
               ))

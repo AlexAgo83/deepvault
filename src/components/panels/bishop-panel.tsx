@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { type FormEvent, type KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Message, SectionHeading, SourceCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 
@@ -114,6 +114,15 @@ export function BishopPanel({
     setShowNeedPreview(true)
   }
 
+  const handleQuestionKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) {
+      return
+    }
+
+    event.preventDefault()
+    event.currentTarget.form?.requestSubmit()
+  }
+
   return (
     <section className={`content-grid bishop-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <article className="panel chat-panel bishop-chat-panel">
@@ -155,13 +164,14 @@ export function BishopPanel({
             id="question"
             value={question}
             onChange={(event) => onQuestionChange(event.target.value)}
+            onKeyDown={handleQuestionKeyDown}
             rows={4}
             placeholder="What is the deadline for the compliance audit?"
             disabled={isAsking}
           />
           <div className="chat-form-actions">
             <div className="chat-note">
-              Current provider: {provider}. Current role: {role}. No fallback mixing during evaluation.
+              Enter sends. Shift+Enter adds a new line. Current provider: {provider}. Current role: {role}. No fallback mixing during evaluation.
             </div>
             <button type="submit" className="primary-button" title="Send the question to Bishop" disabled={isAsking}>
               {isAsking ? 'Thinking...' : 'Ask bishop'}

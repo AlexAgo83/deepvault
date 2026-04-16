@@ -81,6 +81,21 @@ describe('DeepVault app', () => {
     expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
   })
 
+  it('submits Bishop from the keyboard when Enter is pressed', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Bishop' }))
+    const questionField = screen.getByLabelText('Ask a question')
+    await user.type(questionField, 'What is the budget for Q3 2025?')
+    await user.click(questionField)
+    await user.keyboard('{Enter}')
+
+    expect(screen.getByRole('button', { name: 'Thinking...' })).toBeDisabled()
+    expect(screen.getByText('Bishop is drafting the answer from grounded sources.')).toBeInTheDocument()
+    expect(await screen.findAllByText('The Q3 2025 budget is 4.8M USD.')).not.toHaveLength(0)
+  })
+
   it('lets the bishop context toggle be changed from the conversation header', async () => {
     const user = userEvent.setup()
     render(<App />)
@@ -480,6 +495,10 @@ describe('DeepVault app', () => {
     expect(screen.getAllByText('100%').length).toBeGreaterThan(0)
     expect(screen.getAllByText('completed').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Ingest').length).toBeGreaterThan(0)
+
+    fireEvent.click(screen.getByRole('button', { name: 'History' }))
+    expect(screen.getByText('Run history')).toBeInTheDocument()
+    expect(screen.getAllByText('npm run ingest').length).toBeGreaterThan(0)
   })
 
   it('marks job as failed when SSE connection errors', async () => {
