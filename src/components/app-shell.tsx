@@ -16,7 +16,8 @@ type NavSection = {
 }
 
 type RightPanelState = Record<Exclude<AppTab, 'sync'>, boolean>
-type TopbarScrollTarget = 'settings-runtime' | 'settings-ai-providers' | 'sync-status'
+type TopbarScrollTarget = 'sync-status'
+type SettingsShortcutTarget = 'runtime' | 'ai-providers' | null
 type StatsHeaderState = Record<Extract<AppTab, 'settings' | 'sync' | 'ai-stats'>, boolean>
 
 const RIGHT_PANEL_STORAGE_KEY = 'deepvault_right_panel_visibility'
@@ -602,6 +603,7 @@ export function AppShell(model: AppModel) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [rightPanelState, setRightPanelState] = useState<RightPanelState>(() => readRightPanelState())
   const [pendingScrollTarget, setPendingScrollTarget] = useState<TopbarScrollTarget | null>(null)
+  const [requestedSettingsView, setRequestedSettingsView] = useState<SettingsShortcutTarget>(null)
   const [statsHeaderState, setStatsHeaderState] = useState<StatsHeaderState>(() => readStatsHeaderState())
 
   useEffect(() => {
@@ -654,8 +656,6 @@ export function AppShell(model: AppModel) {
     }
 
     const selectors: Record<TopbarScrollTarget, string> = {
-      'settings-runtime': '#settings-runtime-panel',
-      'settings-ai-providers': '#settings-ai-providers-panel',
       'sync-status': '#sync-status-panel',
     }
 
@@ -719,9 +719,9 @@ export function AppShell(model: AppModel) {
     if (!hasRightPanel) return
     setRightPanelState((current) => ({ ...current, [activeTab]: !current[activeTab] }))
   }
-  const openSettingsPanel = (target: TopbarScrollTarget) => {
+  const openSettingsPanel = (target: Exclude<SettingsShortcutTarget, null>) => {
     setActiveTab('settings')
-    setPendingScrollTarget(target)
+    setRequestedSettingsView(target)
   }
   const openSyncStatus = () => {
     setActiveTab('sync')
@@ -819,8 +819,8 @@ export function AppShell(model: AppModel) {
           liveStateDetail={liveState.detail}
           liveStateLabel={liveState.label}
           liveStateTone={liveState.tone}
-          onOpenAiProviders={() => openSettingsPanel('settings-ai-providers')}
-          onOpenSettings={() => openSettingsPanel('settings-runtime')}
+          onOpenAiProviders={() => openSettingsPanel('ai-providers')}
+          onOpenSettings={() => openSettingsPanel('runtime')}
           onOpenSyncStatus={openSyncStatus}
           onToggleStatsHeader={toggleStatsHeader}
           onToggleRightPanel={toggleRightPanel}
@@ -866,18 +866,19 @@ export function AppShell(model: AppModel) {
             corpusProviders={corpusProviders}
             entraSettings={entraSettings}
             providerSecrets={providerSecrets}
-              workerSettings={workerSettings}
-              onClear={clearProviderSecrets}
-              onClearEntra={clearEntraSettings}
-              onClearWorker={clearWorkerSettings}
-              onEntraChange={setEntraSetting}
-              onKeyChange={setProviderSecret}
+            workerSettings={workerSettings}
+            onClear={clearProviderSecrets}
+            onClearEntra={clearEntraSettings}
+            onClearWorker={clearWorkerSettings}
+            onEntraChange={setEntraSetting}
+            onKeyChange={setProviderSecret}
             onProviderChange={(value) => setProvider(value)}
             onRoleChange={(value) => setRole(value)}
             onSiteFilterChange={setSiteFilter}
             onWorkerChange={setWorkerSetting}
             showRightPanel={showRightPanel}
             provider={provider}
+            requestedView={requestedSettingsView}
             role={role}
             siteFilter={siteFilter}
             siteSummaries={siteSummaries}
