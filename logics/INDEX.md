@@ -33,6 +33,12 @@
 | [prod_000_sharepoint_knowledge_graph_product_vision](product/prod_000_sharepoint_knowledge_graph_product_vision.md) | V1: Local development and validation | Proposed |  | product/prod_000_sharepoint_knowledge_graph_product_vision.md |
 | [prod_001_local_first_development_and_test_strategy](product/prod_001_local_first_development_and_test_strategy.md) | DeepVault - Navy local-first development and test strategy | Active |  | product/prod_001_local_first_development_and_test_strategy.md |
 | [prod_003_navigation_and_runtime_control_clarity](product/prod_003_navigation_and_runtime_control_clarity.md) | Navigation and runtime control clarity | Proposed |  | product/prod_003_navigation_and_runtime_control_clarity.md |
+| [prod_004_nexus_v1_1_0_product_direction_and_release_pulse](product/prod_004_nexus_v1_1_0_product_direction_and_release_pulse.md) | Nexus v1.1.0 product direction and release pulse | Proposed |  | product/prod_004_nexus_v1_1_0_product_direction_and_release_pulse.md |
+| [prod_005_split_sync_status_into_dedicated_operations_screens](product/prod_005_split_sync_status_into_dedicated_operations_screens.md) | Split sync status into dedicated operations screens | Proposed |  | product/prod_005_split_sync_status_into_dedicated_operations_screens.md |
+| [prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints](product/prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints.md) | Improve ingestion metadata and chunking for Bishop hints | Proposed |  | product/prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints.md |
+| [prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar](product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md) | Add a discrete light and dark theme switch in the sidebar | Proposed |  | product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md |
+| [prod_008_make_ingestion_and_live_export_operable_across_app_and_cli](product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md) | Make ingestion and live export operable across app and CLI | Proposed |  | product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md |
+| [prod_009_enable_bishop_generated_document_artifacts](product/prod_009_enable_bishop_generated_document_artifacts.md) | Enable Bishop generated document artifacts | Proposed |  | product/prod_009_enable_bishop_generated_document_artifacts.md |
 
 ## Requests
 
@@ -137,3 +143,4 @@
 | [task_021_bishop_intelligence_and_ux](tasks/task_021_bishop_intelligence_and_ux.md) | Bishop intelligence and UX | Done | 100% | tasks/task_021_bishop_intelligence_and_ux.md |
 | [task_022_pwa_progressive_web_app_delivery](tasks/task_022_pwa_progressive_web_app_delivery.md) | PWA progressive web app delivery | Done | 100% | tasks/task_022_pwa_progressive_web_app_delivery.md |
 | [task_025_non_v2_delivery_orchestration_and_validation_hardening](tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md) | Wave map | Done | 100% | tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md |
+| [task_036_orchestrate_bishop_generated_document_artifacts](tasks/task_036_orchestrate_bishop_generated_document_artifacts.md) | Orchestrate Bishop generated document artifacts | Proposed | 0% | tasks/task_036_orchestrate_bishop_generated_document_artifacts.md |
