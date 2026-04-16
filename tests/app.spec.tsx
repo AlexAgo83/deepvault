@@ -126,11 +126,11 @@ describe('DeepVault app', () => {
     expect(within(answerTrace as HTMLElement).getByText('Chunk count')).toBeInTheDocument()
     expect(within(answerTrace as HTMLElement).getByText('Token count')).toBeInTheDocument()
     expect(within(answerTrace as HTMLElement).getByText('Latency')).toBeInTheDocument()
-    expect(within(answerTrace as HTMLElement).getByRole('button', { name: 'Show sources' })).toBeInTheDocument()
+    expect(within(answerTrace as HTMLElement).getByRole('button', { name: 'Show' })).toBeInTheDocument()
     await waitFor(() => expect(within(answerTrace as HTMLElement).getByText('answered')).toBeInTheDocument())
   })
 
-  it('shows and hides AI View response hints with focus', async () => {
+  it('shows and hides AI View response details with focus', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -146,14 +146,20 @@ describe('DeepVault app', () => {
     expect(screen.getByText('Need hints')).toBeInTheDocument()
 
     const responseCard = screen.getAllByRole('button', { name: /answered response/i })[0]
-    responseCard.focus()
+    act(() => {
+      responseCard.focus()
+    })
 
     expect(document.activeElement).toBe(responseCard)
     expect(screen.getByText('What would help next')).toBeInTheDocument()
+    await user.click(within(responseCard).getByRole('button', { name: 'Show what would help next' }))
     expect(screen.getAllByText(/document title|site name|keyword/i).length).toBeGreaterThan(0)
 
-    responseCard.blur()
+    act(() => {
+      fireEvent.blur(responseCard, { relatedTarget: null })
+    })
     expect(document.activeElement).not.toBe(responseCard)
+    await waitFor(() => expect(responseCard).toHaveAttribute('aria-expanded', 'false'))
   })
 
   it('keeps explorer search hidden while bishop is active', async () => {

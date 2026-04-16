@@ -305,10 +305,10 @@ describe('BishopPanel confidence trace', () => {
       />,
     )
 
-    expect(screen.getByRole('button', { name: 'Show sources' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Show' })).toBeInTheDocument()
     expect(screen.queryByTitle('/Shared Documents/Essayage paul et romaric tenue TEST.jpg')).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Show sources' }))
-    expect(screen.getByRole('button', { name: 'Hide sources' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Show' }))
+    expect(screen.getByRole('button', { name: 'Hide' })).toBeInTheDocument()
     expect(screen.getByTitle('/Shared Documents/Essayage paul et romaric tenue TEST.jpg')).toBeInTheDocument()
   })
 })

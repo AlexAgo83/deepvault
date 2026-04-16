@@ -203,6 +203,8 @@ export function Message({
     setShowSources(false)
   }, [message.id])
 
+  const sourceCount = message.sources?.length || 0
+
   return (
     <article className={`message message-${message.role}`}>
       <div className="message-meta">
@@ -271,7 +273,7 @@ export function Message({
           {showSources ? (
             <>
               <div className="message-sources-header">
-                <span>Sources</span>
+                <span>{`Sources (${sourceCount})`}</span>
                 <button
                   type="button"
                   className="text-button text-button-sm"
@@ -279,13 +281,13 @@ export function Message({
                   aria-expanded={showSources}
                   aria-controls={`message-sources-${message.id}`}
                 >
-                  Hide sources
+                  Hide
                 </button>
               </div>
               <div id={`message-sources-${message.id}`} className="message-sources">
                 {message.sources.map((source) => (
                   <div key={source.id} className="message-source">
-                    <strong>{source.title}</strong>
+                    <span>{source.siteName}</span>
                     <PathLabel value={source.path} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
                   </div>
                 ))}
@@ -300,7 +302,7 @@ export function Message({
                 aria-expanded={showSources}
                 aria-controls={`message-sources-${message.id}`}
               >
-                Show sources
+                Show
               </button>
             </div>
           )}

@@ -1,4 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { AIStatsPanel } from '../src/components/panels/ai-stats-panel'
 
@@ -19,7 +20,7 @@ function assistantMessage(overrides: Record<string, unknown> = {}) {
 
 describe('AIStatsPanel', () => {
   it('renders empty states when there are no eligible assistant responses', () => {
-    render(<AIStatsPanel messages={[{ id: 'seed', role: 'assistant', text: 'seed', status: 'draft' } as never]} showRightPanel={true} />)
+    render(<AIStatsPanel messages={[{ id: 'seed', role: 'assistant', text: 'seed', status: 'draft' } as never]} resolveFileHref={() => null} showRightPanel={true} />)
 
     expect(screen.getByText('Ask Bishop a question to populate the response stats.')).toBeInTheDocument()
     expect(screen.getByText('No AI needs have been surfaced yet.')).toBeInTheDocument()
@@ -29,6 +30,7 @@ describe('AIStatsPanel', () => {
     render(
       <AIStatsPanel
         showRightPanel={false}
+        resolveFileHref={() => null}
         messages={[
           { id: 'user-1', role: 'user', text: 'What is the budget?', status: 'answered' },
           assistantMessage({ id: '1', improvementHint: 'Need site name', text: 'one' }),
@@ -56,6 +58,7 @@ describe('AIStatsPanel', () => {
     render(
       <AIStatsPanel
         showRightPanel={false}
+        resolveFileHref={() => null}
         messages={[assistantMessage({ id: 'assistant-only', text: 'Standalone answer' })] as never}
       />,
     )
@@ -69,6 +72,7 @@ describe('AIStatsPanel', () => {
     render(
       <AIStatsPanel
         showRightPanel={true}
+        resolveFileHref={() => null}
         messages={[
           assistantMessage({ id: '1', improvementHint: 'Beta hint' }),
           assistantMessage({ id: '2', improvementHint: 'Alpha hint' }),
@@ -84,5 +88,100 @@ describe('AIStatsPanel', () => {
     const rows = Array.from((aside as HTMLElement).querySelectorAll('.ai-need-row .ai-need-row-copy span:last-child')).map((node) => node.textContent)
     expect(rows).toEqual(['Alpha hint', 'Beta hint', 'Gamma hint'])
     expect(within(aside as HTMLElement).getByRole('img', { name: /need distribution/i })).toBeInTheDocument()
+  })
+
+  it('shows the sources used for a response when details are visible', async () => {
+    const user = userEvent.setup()
+    render(
+      <AIStatsPanel
+        showRightPanel={false}
+        resolveFileHref={() => 'https://example.test/source.json'}
+        messages={[
+          { id: 'user-1', role: 'user', text: 'Qui est Paul ?', status: 'answered' },
+          assistantMessage({
+            id: 'assistant-1',
+            text: 'Paul Mondou est mentionne dans le corpus.',
+            sources: [
+              {
+                id: 'source-1',
+                title: 'e-plan HVAC Paul 260301',
+                siteId: 'site-a',
+                siteName: 'CSAS-OP-Prod',
+                path: '/Docs/e-plan HVAC Paul 260301.json',
+                updatedAt: '2026-03-24T12:33:48.922Z',
+                author: 'Paul Mondou',
+                score: 29,
+                summary: 'HVAC prototype note',
+                snippet: 'HVAC prototype note',
+                tags: [],
+                access: ['admin'],
+                source: 'sharepoint',
+              },
+            ],
+          }),
+        ] as never}
+      />,
+    )
+
+    expect(screen.getByText('Sources (1)')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Show sources' }))
+    expect(screen.getByText('Sources (1)')).toBeInTheDocument()
+    expect(screen.getByText('CSAS-OP-Prod')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /e-plan hvac paul 260301\.json/i })).toBeInTheDocument()
+  })
+
+  it('only shows provider badges when the response card is expanded', async () => {
+    const user = userEvent.setup()
+    render(
+      <AIStatsPanel
+        showRightPanel={false}
+        resolveFileHref={() => null}
+        messages={[
+          { id: 'user-1', role: 'user', text: 'Who is Paul?', status: 'answered' },
+          assistantMessage({ id: 'assistant-1', text: 'First answer' }),
+        ] as never}
+      />,
+    )
+
+    expect(screen.queryByLabelText('Response source metadata')).not.toBeInTheDocument()
+
+    const responseCard = screen.getByRole('button', { name: /who is paul\?/i })
+    await user.click(responseCard)
+
+    const metadata = within(responseCard).getByLabelText('Response source metadata')
+    expect(metadata).toBeVisible()
+    expect(within(metadata).getByText('openai')).toBeInTheDocument()
+    expect(within(metadata).getByText('remote')).toBeInTheDocument()
+  })
+
+  it('closes the previous response details when another card is opened', async () => {
+    const user = userEvent.setup()
+    render(
+      <AIStatsPanel
+        showRightPanel={false}
+        resolveFileHref={() => null}
+        messages={[
+          { id: 'user-1', role: 'user', text: 'Who is Paul?', status: 'answered' },
+          assistantMessage({ id: 'assistant-1', text: 'First answer', improvementHint: 'Need first hint' }),
+          { id: 'user-2', role: 'user', text: 'Who is Romaric?', status: 'answered' },
+          assistantMessage({ id: 'assistant-2', text: 'Second answer', improvementHint: 'Need second hint' }),
+        ] as never}
+      />,
+    )
+
+    const firstCard = screen.getByRole('button', { name: /who is paul\?/i })
+    const secondCard = screen.getByRole('button', { name: /who is romaric\?/i })
+
+    await user.click(firstCard)
+    expect(firstCard).toHaveAttribute('aria-expanded', 'true')
+    await user.click(within(firstCard).getByRole('button', { name: 'Show what would help next' }))
+    expect(screen.getByText('Need first hint')).toBeInTheDocument()
+
+    await user.click(secondCard)
+    expect(firstCard).toHaveAttribute('aria-expanded', 'false')
+    expect(secondCard).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.queryByText('Need first hint')).not.toBeInTheDocument()
+    await user.click(within(secondCard).getByRole('button', { name: 'Show what would help next' }))
+    expect(screen.getByText('Need second hint')).toBeInTheDocument()
   })
 })

@@ -1,4 +1,5 @@
-import { CompactDateTime, Pill, SectionHeading } from '../app-ui'
+import { useEffect, useState } from 'react'
+import { CompactDateTime, PathLabel, Pill, SectionHeading } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 
 const AI_NEED_CHART_COLORS = ['#b96a43', '#2f6d4c', '#c48a2f', '#6b7b8c', '#8c5a7b', '#5c6bc0']
@@ -74,7 +75,169 @@ function buildNeedChartSegments(needs: Array<{ hint: string; count: number }>) {
   return { segments, total, gradient, label }
 }
 
-export function AIStatsPanel({ messages, showRightPanel }: { messages: AppModel['messages']; showRightPanel: boolean }) {
+function AIResponseCard({
+  isExpanded,
+  message,
+  onCollapse,
+  onExpand,
+  messages,
+  resolveFileHref,
+}: {
+  isExpanded: boolean
+  message: AppModel['messages'][number]
+  onCollapse: () => void
+  onExpand: () => void
+  messages: AppModel['messages']
+  resolveFileHref: AppModel['resolveFileHref']
+}) {
+  const [showSources, setShowSources] = useState(false)
+  const [showNeed, setShowNeed] = useState(false)
+  const prompt = getPromptForResponse(messages, message.id)
+  const sourceCount = message.sources?.length || 0
+
+  useEffect(() => {
+    if (isExpanded) {
+      return
+    }
+
+    setShowSources(false)
+    setShowNeed(false)
+  }, [isExpanded, message.id])
+
+  return (
+    <div
+      className={`sync-card ai-response-card ${isExpanded ? 'ai-response-card-expanded' : ''}`}
+      title={prompt || message.improvementHint || message.text}
+      role="button"
+      tabIndex={0}
+      aria-expanded={isExpanded}
+      onClick={() => onExpand()}
+      onFocus={() => {
+        if (!isExpanded) {
+          onExpand()
+        }
+      }}
+      onBlur={(event) => {
+        if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          return
+        }
+
+        onCollapse()
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') {
+          return
+        }
+
+        event.preventDefault()
+        if (isExpanded) {
+          onCollapse()
+          return
+        }
+
+        onExpand()
+      }}
+    >
+      <div className="ai-response-head">
+        <div className="ai-response-head-copy">
+          <strong>{message.status === 'answered' ? 'Answered response' : message.status}</strong>
+        </div>
+        <div className="ai-response-badges">
+          <Pill tone={getStatusTone(message.status)}>{message.status}</Pill>
+          <Pill tone="accent">{formatConfidence(message.confidenceScore)}</Pill>
+        </div>
+      </div>
+      <div className="ai-response-meta">
+        <span>{message.createdAt ? <CompactDateTime value={message.createdAt} /> : 'recent'}</span>
+        {isExpanded ? (
+          <div className="ai-response-source-badges" aria-label="Response source metadata">
+            <Pill tone="neutral">{message.provider || 'local'}</Pill>
+            <Pill tone="neutral">{message.orchestrationMode || 'local'}</Pill>
+          </div>
+        ) : null}
+      </div>
+      {prompt ? (
+        <div className="ai-response-question">
+          <strong>Question</strong>
+          <p>{prompt}</p>
+        </div>
+      ) : null}
+      <div className="ai-response-answer">
+        <strong>Response</strong>
+        <p>{message.text}</p>
+      </div>
+      {message.sources?.length ? (
+        <div className="ai-response-sources">
+          <div className="message-sources-header">
+            <span>{`Sources (${sourceCount})`}</span>
+            <button
+              type="button"
+              className="text-button text-button-sm"
+              onClick={(event) => {
+                event.stopPropagation()
+                if (!showSources && !isExpanded) {
+                  onExpand()
+                }
+                setShowSources((value) => !value)
+              }}
+              aria-label={showSources ? 'Hide sources' : 'Show sources'}
+              aria-expanded={showSources}
+              aria-controls={`ai-response-sources-${message.id}`}
+            >
+              {showSources ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          {showSources ? (
+            <>
+              <div id={`ai-response-sources-${message.id}`} className="message-sources">
+                {message.sources.map((source) => (
+                  <div key={source.id} className="message-source">
+                    <span>{source.siteName}</span>
+                    <PathLabel value={source.path} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : null}
+        </div>
+      ) : null}
+      {message.improvementHint ? (
+        <div className="message-need ai-response-need">
+          <div className="message-need-head">
+            <strong>What would help next</strong>
+            <button
+              type="button"
+              className="text-button text-button-sm"
+              onClick={(event) => {
+                event.stopPropagation()
+                if (!showNeed && !isExpanded) {
+                  onExpand()
+                }
+                setShowNeed((value) => !value)
+              }}
+              aria-label={showNeed ? 'Hide what would help next' : 'Show what would help next'}
+              aria-expanded={showNeed}
+              aria-controls={`ai-response-need-${message.id}`}
+            >
+              {showNeed ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          {showNeed ? <p id={`ai-response-need-${message.id}`}>{message.improvementHint}</p> : null}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+export function AIStatsPanel({
+  messages,
+  resolveFileHref,
+  showRightPanel,
+}: {
+  messages: AppModel['messages']
+  resolveFileHref: AppModel['resolveFileHref']
+  showRightPanel: boolean
+}) {
   const responses = messages.filter(
     (message) => message.role === 'assistant' && message.id !== 'seed' && message.status !== 'draft' && message.status !== 'answering',
   )
@@ -96,6 +259,17 @@ export function AIStatsPanel({ messages, showRightPanel }: { messages: AppModel[
   const chartNeeds = remainingNeedCount ? [...topNeeds, { hint: 'Other needs', count: remainingNeedCount }] : topNeeds
   const needChart = buildNeedChartSegments(chartNeeds)
   const recentResponses = [...responses].slice(-5).reverse()
+  const [expandedResponseId, setExpandedResponseId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!expandedResponseId) {
+      return
+    }
+
+    if (!recentResponses.some((message) => message.id === expandedResponseId)) {
+      setExpandedResponseId(null)
+    }
+  }, [expandedResponseId, recentResponses])
 
   return (
     <section className={`content-grid ai-stats-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
@@ -108,53 +282,19 @@ export function AIStatsPanel({ messages, showRightPanel }: { messages: AppModel[
 
           <div className="ai-response-list">
             {recentResponses.length ? (
-              recentResponses.map((message) => {
-                const prompt = getPromptForResponse(messages, message.id)
-
-                return (
-                  <button
-                    key={message.id}
-                    type="button"
-                    className="sync-card ai-response-card"
-                    title={prompt || message.improvementHint || message.text}
-                  >
-                    <div className="ai-response-head">
-                      <div className="ai-response-head-copy">
-                        <strong>{message.status === 'answered' ? 'Answered response' : message.status}</strong>
-                      </div>
-                      <div className="ai-response-badges">
-                        <Pill tone={getStatusTone(message.status)}>{message.status}</Pill>
-                        <Pill tone="accent">{formatConfidence(message.confidenceScore)}</Pill>
-                      </div>
-                    </div>
-                    <div className="ai-response-meta">
-                      <span>{message.createdAt ? <CompactDateTime value={message.createdAt} /> : 'recent'}</span>
-                      <div className="ai-response-source-badges" aria-label="Response source metadata">
-                        <Pill tone="neutral">{message.provider || 'local'}</Pill>
-                        <Pill tone="neutral">{message.orchestrationMode || 'local'}</Pill>
-                      </div>
-                    </div>
-                    {prompt ? (
-                      <div className="ai-response-question">
-                        <strong>Question</strong>
-                        <p>{prompt}</p>
-                      </div>
-                    ) : null}
-                    <div className="ai-response-answer">
-                      <strong>Response</strong>
-                      <p>{message.text}</p>
-                    </div>
-                    {message.improvementHint ? (
-                      <div className="message-need ai-response-need">
-                        <div className="message-need-head">
-                          <strong>What would help next</strong>
-                        </div>
-                        <p>{message.improvementHint}</p>
-                      </div>
-                    ) : null}
-                  </button>
-                )
-              })
+              recentResponses.map((message) => (
+                <AIResponseCard
+                  key={message.id}
+                  isExpanded={expandedResponseId === message.id}
+                  message={message}
+                  onCollapse={() =>
+                    setExpandedResponseId((current) => (current === message.id ? null : current))
+                  }
+                  onExpand={() => setExpandedResponseId(message.id)}
+                  messages={messages}
+                  resolveFileHref={resolveFileHref}
+                />
+              ))
             ) : (
               <div className="empty-state">Ask Bishop a question to populate the response stats.</div>
             )}

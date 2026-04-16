@@ -114,6 +114,8 @@ export function BishopPanel({
     setShowNeedPreview(true)
   }
 
+  const sourceCount = selectedMessage.sources?.length || 0
+
   const handleQuestionKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) {
       return
@@ -292,7 +294,7 @@ export function BishopPanel({
                   aria-expanded={showSources}
                   aria-controls="bishop-source-list"
                 >
-                  {showSources ? 'Hide sources' : 'Show sources'}
+                  {showSources ? 'Hide' : 'Show'}
                 </button>
               </div>
             </div>
