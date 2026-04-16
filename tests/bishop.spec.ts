@@ -138,6 +138,66 @@ describe('bishop orchestration helpers', () => {
     expect(result.latencyMs).toBe(84)
   })
 
+  it('packages supported explicit file requests into a downloadable artifact while keeping a text answer', async () => {
+    const result = await orchestrateBishopAnswer(corpus, 'Create a JSON file of the Q3 2025 budget answer named budget.json', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    expect(result.answer).toContain('Q3 2025 budget')
+    expect(result.artifactStatus).toBe('ready')
+    expect(result.artifact?.filename).toBe('budget.json')
+    expect(result.artifact?.mimeType).toBe('application/json')
+    expect(result.artifact?.content).toContain('"query"')
+    expect(result.artifactNotice).toContain('Artifact ready')
+  })
+
+  it('keeps normal answer-only behavior when no artifact was requested', async () => {
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    expect(result.answer).toContain('Q3 2025 budget')
+    expect(result.artifact).toBeUndefined()
+    expect(result.artifactStatus).toBe('none')
+  })
+
+  it('marks unsupported artifact requests explicitly', async () => {
+    const result = await orchestrateBishopAnswer(corpus, 'Create a PDF file for the Q3 2025 budget answer', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    expect(result.artifact).toBeUndefined()
+    expect(result.artifactStatus).toBe('unsupported_format')
+    expect(result.artifactNotice).toContain('.pdf')
+  })
+
+  it('treats malformed remote artifact payloads as generation failures', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        answer: 'Remote answer from Bishop orchestration.',
+        artifact: {
+          filename: 'broken.txt',
+        },
+      }),
+    })
+
+    const result = await orchestrateBishopAnswer(corpus, 'Create a txt file for the Q3 2025 budget answer', {
+      role: 'analyst',
+      provider: 'openai',
+      endpoint: 'https://example.test/bishop',
+      fetchImpl: fetchMock as typeof fetch,
+    })
+
+    expect(result.mode).toBe('remote')
+    expect(result.artifact).toBeUndefined()
+    expect(result.artifactStatus).toBe('generation_failed')
+    expect(result.artifactNotice).toBe('Bishop returned an invalid artifact payload.')
+  })
+
   it('uses OpenAI when the provider is openai and the API key is available', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

@@ -1,6 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk'
 import {
   answerQuestion,
+  type BishopArtifact,
+  type BishopArtifactFormat,
+  type BishopArtifactStatus,
   groundQuestion as buildGrounding,
   type ChatMessage,
   type AnswerResult,
@@ -107,6 +110,27 @@ const DEFAULT_OPENAI_MODEL = 'gpt-4.1-mini'
 const DEFAULT_GEMINI_MODEL = 'gemini-2.0-flash'
 const DEFAULT_ANTHROPIC_MODEL = 'claude-sonnet-4-6'
 const PROMPT_CACHING_BETA = 'prompt-caching-2024-07-31'
+const SUPPORTED_ARTIFACT_FORMATS: BishopArtifactFormat[] = ['txt', 'md', 'json', 'csv']
+const ARTIFACT_MIME_TYPES: Record<BishopArtifactFormat, string> = {
+  txt: 'text/plain',
+  md: 'text/markdown',
+  json: 'application/json',
+  csv: 'text/csv',
+}
+const UNSUPPORTED_ARTIFACT_FORMATS = ['pdf', 'docx', 'xlsx', 'pptx']
+
+interface ArtifactIntent {
+  requested: boolean
+  format?: BishopArtifactFormat
+  unsupportedFormat?: string
+  filename?: string
+}
+
+interface ArtifactOutcome {
+  artifact?: BishopArtifact
+  artifactStatus: BishopArtifactStatus
+  artifactNotice?: string
+}
 
 function truncateText(value: string, maxLength = 180): string {
   const normalized = value.replace(/\s+/g, ' ').trim()
@@ -119,6 +143,248 @@ function truncateText(value: string, maxLength = 180): string {
 
 function clampConfidence(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)))
+}
+
+function isSupportedArtifactFormat(value: string): value is BishopArtifactFormat {
+  return SUPPORTED_ARTIFACT_FORMATS.includes(value as BishopArtifactFormat)
+}
+
+function escapeCsvCell(value: string): string {
+  const normalized = value.replace(/\r?\n/g, ' ').trim()
+  if (/[",]/.test(normalized)) {
+    return `"${normalized.replace(/"/g, '""')}"`
+  }
+  return normalized
+}
+
+function slugifyFilenameSegment(value: string): string {
+  const slug = value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return slug || 'bishop-artifact'
+}
+
+function buildDefaultArtifactFilename(query: string, format: BishopArtifactFormat): string {
+  const stem = slugifyFilenameSegment(query).slice(0, 48) || 'bishop-artifact'
+  return `${stem}.${format}`
+}
+
+function parseRequestedFilename(query: string): string | undefined {
+  const match = query.match(/(?:named|called)\s+["']?([a-z0-9._-]+\.[a-z0-9]+)["']?/i)
+  return match?.[1]
+}
+
+function sanitizeRequestedFilename(filename: string, format: BishopArtifactFormat): string {
+  const parts = filename.split('.')
+  const requestedStem = parts.slice(0, -1).join('.') || parts[0] || 'bishop-artifact'
+  const safeStem = slugifyFilenameSegment(requestedStem)
+  return `${safeStem}.${format}`
+}
+
+function inferArtifactIntent(query: string): ArtifactIntent {
+  const normalizedQuery = query.toLowerCase()
+  const explicitVerb = /\b(create|generate|make|prepare|write|produce|export|draft)\b/.test(normalizedQuery)
+  const explicitObject = /\b(file|document|artifact|download|report|list|table|template|markdown|json|csv|text)\b/.test(normalizedQuery)
+  const extensionMatch = normalizedQuery.match(/\.(txt|md|json|csv|pdf|docx|xlsx|pptx)\b/)
+  const namedUnsupportedFormat =
+    (/\bpdf\b/.test(normalizedQuery) && 'pdf') ||
+    (/\bdocx\b/.test(normalizedQuery) && 'docx') ||
+    (/\bxlsx\b/.test(normalizedQuery) && 'xlsx') ||
+    (/\bpptx\b/.test(normalizedQuery) && 'pptx') ||
+    undefined
+  const namedFormat =
+    (/\bplain text\b/.test(normalizedQuery) && 'txt') ||
+    (/\bmarkdown\b/.test(normalizedQuery) && 'md') ||
+    (/\bjson\b/.test(normalizedQuery) && 'json') ||
+    (/\bcsv\b/.test(normalizedQuery) && 'csv') ||
+    undefined
+  const unsupportedFormat =
+    (extensionMatch?.[1] && UNSUPPORTED_ARTIFACT_FORMATS.includes(extensionMatch[1]) ? extensionMatch[1] : undefined) ||
+    namedUnsupportedFormat
+  const requested = Boolean(extensionMatch || namedFormat || namedUnsupportedFormat || (explicitVerb && explicitObject))
+
+  if (!requested) {
+    return { requested: false }
+  }
+
+  const formatCandidate = extensionMatch?.[1] || namedFormat || 'txt'
+  const filename = parseRequestedFilename(query)
+
+  if (unsupportedFormat || UNSUPPORTED_ARTIFACT_FORMATS.includes(formatCandidate)) {
+    return {
+      requested: true,
+      unsupportedFormat: unsupportedFormat || formatCandidate,
+      filename,
+    }
+  }
+
+  return {
+    requested: true,
+    format: isSupportedArtifactFormat(formatCandidate) ? formatCandidate : 'txt',
+    filename,
+  }
+}
+
+function buildMarkdownArtifactContent(query: string, answer: string): string {
+  const title = query.trim().replace(/\s+/g, ' ').slice(0, 80) || 'Bishop artifact'
+  return `# ${title}\n\n${answer.trim()}\n`
+}
+
+function buildJsonArtifactContent(query: string, answer: string, sources: SourceRecord[]): string {
+  return `${JSON.stringify(
+    {
+      query,
+      answer: answer.trim(),
+      sources: sources.map((source, index) => ({
+        index: index + 1,
+        title: source.title,
+        siteName: source.siteName,
+        path: source.path,
+        updatedAt: source.updatedAt,
+        author: source.author,
+        score: source.score,
+      })),
+    },
+    null,
+    2,
+  )}\n`
+}
+
+function buildCsvArtifactContent(answer: string, sources: SourceRecord[]): string {
+  const answerLines = answer
+    .split(/\r?\n/)
+    .map((line) => line.trim().replace(/^[-*]\s+/, '').replace(/^\d+[.)]\s+/, ''))
+    .filter(Boolean)
+
+  if (answerLines.length > 1) {
+    return ['value', ...answerLines.map((line) => escapeCsvCell(line))].join('\n')
+  }
+
+  const rows = [
+    ['index', 'title', 'site_name', 'path', 'updated_at', 'author', 'score'],
+    ...sources.map((source, index) => [
+      String(index + 1),
+      source.title,
+      source.siteName,
+      source.path,
+      source.updatedAt,
+      source.author,
+      String(source.score),
+    ]),
+  ]
+
+  return rows
+    .map((row) => row.map((cell) => escapeCsvCell(cell)).join(','))
+    .join('\n')
+}
+
+function buildArtifactFromAnswer(
+  query: string,
+  answer: string,
+  sources: SourceRecord[],
+  format: BishopArtifactFormat,
+  requestedFilename?: string,
+): BishopArtifact {
+  const filename = requestedFilename ? sanitizeRequestedFilename(requestedFilename, format) : buildDefaultArtifactFilename(query, format)
+  const trimmedAnswer = answer.trim()
+  const content =
+    format === 'txt'
+      ? `${trimmedAnswer}\n`
+      : format === 'md'
+        ? buildMarkdownArtifactContent(query, trimmedAnswer)
+        : format === 'json'
+          ? buildJsonArtifactContent(query, trimmedAnswer, sources)
+          : buildCsvArtifactContent(trimmedAnswer, sources)
+
+  return {
+    kind: 'document',
+    format,
+    filename,
+    mimeType: ARTIFACT_MIME_TYPES[format],
+    content,
+  }
+}
+
+function isArtifactLike(value: unknown): value is BishopArtifact {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as BishopArtifact).kind === 'document' &&
+    typeof (value as BishopArtifact).filename === 'string' &&
+    typeof (value as BishopArtifact).mimeType === 'string' &&
+    typeof (value as BishopArtifact).content === 'string' &&
+    isSupportedArtifactFormat((value as BishopArtifact).format)
+  )
+}
+
+function resolveArtifactOutcome(
+  query: string,
+  result: AnswerResult,
+  remotePayload?: {
+    artifact?: unknown
+    artifactStatus?: BishopArtifactStatus
+    artifactNotice?: string
+  },
+): ArtifactOutcome {
+  if (isArtifactLike(remotePayload?.artifact)) {
+    return {
+      artifact: remotePayload.artifact,
+      artifactStatus: 'ready',
+      artifactNotice: remotePayload?.artifactNotice || `Artifact ready: ${remotePayload.artifact.filename}`,
+    }
+  }
+
+  if (remotePayload && 'artifact' in remotePayload && remotePayload.artifact != null && !isArtifactLike(remotePayload.artifact)) {
+    return {
+      artifactStatus: 'generation_failed',
+      artifactNotice: 'Bishop returned an invalid artifact payload.',
+    }
+  }
+
+  const intent = inferArtifactIntent(query)
+  if (!intent.requested) {
+    return { artifactStatus: 'none' }
+  }
+
+  if (intent.unsupportedFormat) {
+    return {
+      artifactStatus: 'unsupported_format',
+      artifactNotice: `Unsupported format .${intent.unsupportedFormat}. Bishop currently supports .txt, .md, .json, and .csv.`,
+    }
+  }
+
+  if (!intent.format || result.status !== 'answered' || !result.answer.trim()) {
+    return {
+      artifactStatus: 'generation_failed',
+      artifactNotice: 'No grounded answer was available to package into a downloadable artifact.',
+    }
+  }
+
+  const artifact = buildArtifactFromAnswer(query, result.answer, result.sources, intent.format, intent.filename)
+  return {
+    artifact,
+    artifactStatus: 'ready',
+    artifactNotice: `Artifact ready: ${artifact.filename}`,
+  }
+}
+
+function withArtifactOutcome(
+  query: string,
+  result: BishopOrchestrationResult,
+  remotePayload?: {
+    artifact?: unknown
+    artifactStatus?: BishopArtifactStatus
+    artifactNotice?: string
+  },
+): BishopOrchestrationResult {
+  const artifactOutcome = resolveArtifactOutcome(query, result, remotePayload)
+  return {
+    ...result,
+    artifact: artifactOutcome.artifact,
+    artifactStatus: artifactOutcome.artifactStatus,
+    artifactNotice: artifactOutcome.artifactNotice,
+  }
 }
 
 function buildConfidenceScore(
@@ -613,14 +879,14 @@ export async function orchestrateBishopAnswer(
   const fetchImpl = options.fetchImpl || fetch
 
   if (grounding.status !== 'answered') {
-    return {
+    return withArtifactOutcome(query, {
       ...fallback,
       mode: 'grounded-only',
       prompt,
       confidenceScore: buildConfidenceScore(fallback, 'grounded-only'),
       providerTracePreview: buildProviderTracePreview('grounded-only', fallback.provider, fallback.answer),
       improvementHint: buildImprovementHint(fallback),
-    }
+    })
   }
 
   if (endpoint) {
@@ -644,7 +910,12 @@ export async function orchestrateBishopAnswer(
         throw new Error(`Bishop orchestration failed with status ${response.status}${errorText.trim() ? `: ${errorText.trim()}` : ''}`)
       }
 
-      const payload = (await response.json()) as Partial<AnswerResult> & { answer?: string }
+      const payload = (await response.json()) as Partial<AnswerResult> & {
+        answer?: string
+        artifact?: unknown
+        artifactStatus?: BishopArtifactStatus
+        artifactNotice?: string
+      }
       const answer = typeof payload.answer === 'string' && payload.answer.trim() ? payload.answer.trim() : fallback.answer
 
       const result = augmentResultWithTrace(
@@ -663,17 +934,17 @@ export async function orchestrateBishopAnswer(
         prompt,
       )
 
-      return result
+      return withArtifactOutcome(query, result, payload)
     } catch (error) {
       const errorPreview = error instanceof Error ? error.message : 'Remote orchestration endpoint failed'
-      return {
+      return withArtifactOutcome(query, {
         ...fallback,
         mode: 'fallback',
         prompt,
         confidenceScore: buildConfidenceScore(fallback, 'fallback'),
         providerTracePreview: buildProviderTracePreview('fallback', fallback.provider, fallback.answer, errorPreview),
         improvementHint: buildImprovementHint(fallback),
-      }
+      })
     }
   }
 
@@ -684,15 +955,15 @@ export async function orchestrateBishopAnswer(
       ? await runGeminiRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
         : await runAnthropicRemoteAnswer(query, role, provider, grounding, prompt, options, fallback)
   if (remoteAnswer.result) {
-    return remoteAnswer.result
+    return withArtifactOutcome(query, remoteAnswer.result)
   }
 
-  return {
+  return withArtifactOutcome(query, {
     ...fallback,
     mode: 'fallback',
     prompt,
     confidenceScore: buildConfidenceScore(fallback, 'fallback'),
     providerTracePreview: buildProviderTracePreview('fallback', fallback.provider, fallback.answer, remoteAnswer.errorPreview),
     improvementHint: buildImprovementHint(fallback),
-  }
+  })
 }

@@ -528,6 +528,10 @@ select:focus-visible {
   margin-left: auto;
 }
 
+.message-download-button {
+  white-space: nowrap;
+}
+
 .message-confidence-button {
   border: 1px solid rgba(185, 106, 67, 0.24);
   border-radius: 999px;
@@ -569,6 +573,12 @@ select:focus-visible {
 .message-need-help:disabled {
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+.message-artifact-note {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.88rem;
 }
 
 .message-confidence-popover {
@@ -2129,6 +2139,14 @@ select:focus-visible {
   gap: 6px;
   justify-content: flex-end;
   flex: 0 0 auto;
+}
+
+.trace-artifact-status {
+  max-width: 280px;
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
 }
 
 .trace-confidence-popover {
