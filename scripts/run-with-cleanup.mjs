@@ -34,7 +34,7 @@ function killChild(signal = 'SIGTERM') {
 }
 
 function resolveCommand(name) {
-  if (name.includes('/') || name.startsWith('.')) {
+  if (name.includes('/') || name.includes('\\') || name.startsWith('.')) {
     return name
   }
 
@@ -62,7 +62,9 @@ function exitWith(code, signal) {
 
 process.on('SIGINT', () => killChild('SIGINT'))
 process.on('SIGTERM', () => killChild('SIGTERM'))
-process.on('SIGHUP', () => killChild('SIGHUP'))
+if (process.platform !== 'win32') {
+  process.on('SIGHUP', () => killChild('SIGHUP'))
+}
 process.on('exit', () => killChild('SIGTERM'))
 
 child.on('error', (error) => {

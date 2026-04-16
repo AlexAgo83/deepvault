@@ -8,7 +8,11 @@ on:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +32,12 @@ jobs:
         run: npm run typecheck
 
       - name: Coverage
+        if: matrix.os == 'ubuntu-latest'
         run: npm run test:coverage
+
+      - name: Test
+        if: matrix.os != 'ubuntu-latest'
+        run: npm run test
 
       - name: Build
         run: npm run build
@@ -37,7 +46,12 @@ jobs:
         run: npm run evaluate
 
       - name: Install Playwright browsers
+        if: matrix.os == 'ubuntu-latest'
         run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright browsers
+        if: matrix.os == 'windows-latest'
+        run: npx playwright install chromium
 
       - name: E2E tests
         run: npm run e2e
@@ -46,6 +60,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.os }}
           path: playwright-report/
           retention-days: 7
