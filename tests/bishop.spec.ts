@@ -151,7 +151,56 @@ describe('bishop orchestration helpers', () => {
     expect(result.artifact?.content).toContain('"query"')
     expect(result.artifactNotice).toContain('Artifact ready')
     expect(result.prompt).toContain('assume the app will package it as a downloadable file')
+    expect(result.prompt).toContain('Do not wrap the answer in meta commentary')
     expect(result.prompt).toContain('Do not say that you cannot create, generate, or download files from this interface.')
+  })
+
+  it('strips copy-paste wrapper prose from downloaded text artifacts', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        answer: `Voici le contenu du fichier texte demandé :
+fraise
+pomme
+kiwi
+
+Tu peux copier ce texte dans un fichier au format .txt.`,
+      }),
+    })
+
+    const result = await orchestrateBishopAnswer(corpus, 'Create a txt file for the Q3 2025 budget answer', {
+      role: 'analyst',
+      provider: 'openai',
+      endpoint: 'https://example.test/bishop',
+      fetchImpl: fetchMock as typeof fetch,
+    })
+
+    expect(result.mode).toBe('remote')
+    expect(result.answer).toBe('I prepared the requested TXT file `create-a-txt-file-for-the-q3-2025-budget-answer.txt`.')
+    expect(result.artifactStatus).toBe('ready')
+    expect(result.artifact?.format).toBe('txt')
+    expect(result.artifact?.content).toBe('fraise\npomme\nkiwi\n')
+  })
+
+  it('replaces file-only remote answers with a conversational artifact confirmation', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        answer: 'fraise\npomme\nkiwi',
+      }),
+    })
+
+    const result = await orchestrateBishopAnswer(corpus, 'Create a txt file for the Q3 2025 budget answer named fruits.txt', {
+      role: 'analyst',
+      provider: 'openai',
+      endpoint: 'https://example.test/bishop',
+      fetchImpl: fetchMock as typeof fetch,
+    })
+
+    expect(result.mode).toBe('remote')
+    expect(result.answer).toBe('I prepared the requested TXT file `fruits.txt`.')
+    expect(result.artifactStatus).toBe('ready')
+    expect(result.artifact?.content).toBe('fraise\npomme\nkiwi\n')
   })
 
   it('keeps normal answer-only behavior when no artifact was requested', async () => {
