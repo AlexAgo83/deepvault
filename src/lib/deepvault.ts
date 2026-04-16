@@ -296,11 +296,12 @@ function findSectionHint(document: CorpusDocument, query: string): string | unde
 export function groundQuestion(
   corpusData: Corpus,
   query: string,
-  options: { role?: UserRole; provider?: ProviderId; limit?: number } = {},
+  options: { role?: UserRole; provider?: ProviderId; limit?: number; candidateLimit?: number } = {},
 ): GroundingResult {
   const role = options.role || 'analyst'
   const provider = options.provider || 'openai'
-  const limit = options.limit || 3
+  const limit = Math.max(1, options.limit || 3)
+  const candidateLimit = Math.max(limit, options.candidateLimit || 10)
   const normalizedQuery = normalizeText(query)
 
   if (/sharepoint\s+sites|sites\s+are\s+available|available\s+sites/.test(normalizedQuery)) {
@@ -318,7 +319,7 @@ export function groundQuestion(
     }
   }
 
-  const allResults = searchDocuments(corpusData, query, { role, limit: 10, includeDenied: true })
+  const allResults = searchDocuments(corpusData, query, { role, limit: candidateLimit, includeDenied: true })
   const deniedMatches = allResults.filter(({ document }) => !canAccessDocument(document, role))
   const permittedMatches = allResults.filter(({ document }) => canAccessDocument(document, role))
   const deniedSources = deniedMatches.map(({ document, score }) => buildSource(document, score, corpusData, query))
@@ -451,7 +452,7 @@ export function buildExplorerRows(
 export function answerQuestion(
   corpusData: Corpus,
   query: string,
-  options: { role?: UserRole; provider?: ProviderId; limit?: number } = {},
+  options: { role?: UserRole; provider?: ProviderId; limit?: number; candidateLimit?: number } = {},
 ): AnswerResult {
   const grounding = groundQuestion(corpusData, query, options)
 

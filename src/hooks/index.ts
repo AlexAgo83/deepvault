@@ -1,5 +1,6 @@
 export * from './useAppModel'
 export * from './useBishopConversation'
+export * from './useBishopSettings'
 export * from './useInstallPrompt'
 export * from './useProviderSecrets'
 export * from './useLiveCorpus'

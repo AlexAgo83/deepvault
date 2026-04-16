@@ -22,7 +22,7 @@ It gives you:
 - `DeepVault - Bishop` for permission-aware grounded Q&A
 - `Sync status` for ingestion state, refresh timing, provenance, and the streamed operations console
 - `AI View` for response confidence, recent answers, and the inputs that would have helped
-- `Settings` for runtime scope, persisted role selection, provider selection, and local API keys
+- `Settings` for runtime scope, assistant-context tuning, persisted role selection, provider selection, and local API keys
 - a mock corpus for fast local work
 - a live corpus path for testing against real SharePoint exports
 
@@ -144,6 +144,7 @@ Use this when you want to work with the bundled mock corpus.
 - ask a grounded question about the corpus
 - press `Enter` to send, or `Shift + Enter` to add a new line
 - optionally keep conversation context enabled so Bishop reuses previous turns
+- tune grounded source count, retrieval candidate pool, and reused history turns from `Settings -> Runtime -> Assistant context`
 - check the answer trace for sources, chunk count, token count, and latency
 
 ### 4. Check sync status
@@ -213,7 +214,7 @@ The live exporter reads these settings from `.env.local`:
 - `GEMINI_API_KEY`
 - `ANTHROPIC_API_KEY`
 
-You can use [`.env.exemple`](./.env.exemple) as the starting point. The in-app `Settings` screen currently covers the Entra app ID, tenant ID, client secret value, site URLs, site names, provider API keys, and worker connection settings.
+You can use [`.env.exemple`](./.env.exemple) as the starting point. The in-app `Settings` screen currently covers the Entra app ID, tenant ID, client secret value, site URLs, site names, provider API keys, Bishop context tuning, and worker connection settings.
 
 ### 2. Generate the live corpus
 

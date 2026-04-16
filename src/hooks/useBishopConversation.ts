@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { orchestrateBishopAnswer } from '../lib/bishop'
 import { type ChatMessage, type Corpus, type ProviderId, type SourceRecord, type UserRole } from '../lib/deepvault'
+import type { BishopSettings } from './useBishopSettings'
 
 export const BISHOP_HISTORY_STORAGE_KEY = 'deepvault_bishop_history'
 export const BISHOP_CONTEXT_STORAGE_KEY = 'deepvault_bishop_context_enabled'
@@ -16,6 +17,7 @@ export interface UseBishopConversationOptions {
   corpus: Corpus
   role: UserRole
   provider: ProviderId
+  bishopSettings?: BishopSettings
   endpoint?: string | null
   openaiApiKey?: string | null
   geminiApiKey?: string | null
@@ -188,6 +190,7 @@ export function useBishopConversation({
   corpus,
   role,
   provider,
+  bishopSettings,
   endpoint,
   openaiApiKey,
   geminiApiKey,
@@ -196,6 +199,9 @@ export function useBishopConversation({
 }: UseBishopConversationOptions) {
   const answerTimers = useRef<number[]>([])
   const persistNextChange = useRef(true)
+  const historyTurnLimit = bishopSettings?.historyTurnLimit ?? BISHOP_PROMPT_HISTORY_LIMIT
+  const sourceLimit = bishopSettings?.sourceLimit ?? 3
+  const candidateLimit = bishopSettings?.candidateLimit ?? 10
   const [question, setQuestion] = useState('')
   const [isAsking, setIsAsking] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadBishopMessages() || [createBishopSeedMessage()])
@@ -225,7 +231,7 @@ export function useBishopConversation({
     const conversationHistory = conversationContextEnabled
       ? messages
           .filter((message) => message.id !== 'seed')
-          .slice(-BISHOP_PROMPT_HISTORY_LIMIT)
+          .slice(-historyTurnLimit)
           .map(({ role: messageRole, text }) => ({ role: messageRole, text }))
       : []
     const assistantId = `${Date.now()}-assistant`
@@ -269,7 +275,8 @@ export function useBishopConversation({
       const result = await orchestrateBishopAnswer(corpus, trimmed, {
         role,
         provider,
-        limit: 3,
+        limit: sourceLimit,
+        candidateLimit,
         endpoint,
         openaiApiKey,
         geminiApiKey,

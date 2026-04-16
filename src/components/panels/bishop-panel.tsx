@@ -147,19 +147,9 @@ export function BishopPanel({
           ))}
         </div>
         <form className="chat-form" onSubmit={onSubmit}>
-          <div className="chat-form-head">
-            <label htmlFor="question">Ask a question</label>
-            <label className="chat-context-toggle" title="Keep previous Bishop turns in the prompt">
-              <input
-                type="checkbox"
-                checked={conversationContextEnabled}
-                onChange={(event) => onConversationContextChange(event.target.checked)}
-              />
-              <span>Keep context</span>
-            </label>
-          </div>
           <textarea
             id="question"
+            aria-label="Ask a question"
             value={question}
             onChange={(event) => onQuestionChange(event.target.value)}
             onKeyDown={handleQuestionKeyDown}
@@ -169,9 +159,19 @@ export function BishopPanel({
           />
           <div className="chat-form-actions">
             <div className="chat-note">Enter sends. Shift+Enter adds a new line.</div>
-            <button type="submit" className="primary-button" title="Send the question to Bishop" disabled={isAsking}>
-              {isAsking ? 'Thinking...' : 'Ask bishop'}
-            </button>
+            <div className="chat-form-submit-group">
+              <label className="chat-context-toggle" title="Keep previous Bishop turns in the prompt">
+                <input
+                  type="checkbox"
+                  checked={conversationContextEnabled}
+                  onChange={(event) => onConversationContextChange(event.target.checked)}
+                />
+                <span>Keep context</span>
+              </label>
+              <button type="submit" className="primary-button" title="Send the question to Bishop" disabled={isAsking}>
+                {isAsking ? 'Thinking...' : 'Ask bishop'}
+              </button>
+            </div>
           </div>
         </form>
       </article>

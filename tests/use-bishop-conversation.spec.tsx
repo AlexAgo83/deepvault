@@ -2,11 +2,20 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getMockCorpusBundle } from '../src/data/corpus'
+import { orchestrateBishopAnswer } from '../src/lib/bishop'
 import {
   BISHOP_CONTEXT_STORAGE_KEY,
   BISHOP_HISTORY_STORAGE_KEY,
   useBishopConversation,
 } from '../src/hooks/useBishopConversation'
+
+vi.mock('../src/lib/bishop', async () => {
+  const actual = await vi.importActual<typeof import('../src/lib/bishop')>('../src/lib/bishop')
+  return {
+    ...actual,
+    orchestrateBishopAnswer: vi.fn(actual.orchestrateBishopAnswer),
+  }
+})
 
 function BishopProbe() {
   const { conversationContextEnabled, messages, setConversationContextEnabled } = useBishopConversation({
@@ -27,6 +36,26 @@ function BishopProbe() {
         onChange={(event) => setConversationContextEnabled(event.target.checked)}
       />
     </div>
+  )
+}
+
+function BishopAskProbe() {
+  const { question, setQuestion, handleAsk } = useBishopConversation({
+    corpus: getMockCorpusBundle().corpus,
+    role: 'analyst',
+    provider: 'openai',
+    bishopSettings: {
+      sourceLimit: 5,
+      candidateLimit: 14,
+      historyTurnLimit: 2,
+    },
+  })
+
+  return (
+    <form onSubmit={handleAsk}>
+      <input aria-label="Question" value={question} onChange={(event) => setQuestion(event.target.value)} />
+      <button type="submit">Ask</button>
+    </form>
   )
 }
 
@@ -138,5 +167,39 @@ describe('useBishopConversation', () => {
 
     expect(checkbox).not.toBeChecked()
     expect(window.localStorage.getItem(BISHOP_CONTEXT_STORAGE_KEY)).toBe('false')
+  })
+
+  it('passes the configured context settings into bishop orchestration', async () => {
+    const user = userEvent.setup()
+    const orchestrateMock = vi.mocked(orchestrateBishopAnswer)
+
+    orchestrateMock.mockResolvedValueOnce({
+      status: 'answered',
+      provider: 'openai',
+      query: 'What is the budget for Q3 2025?',
+      answer: 'Configured answer',
+      sources: [],
+      deniedSources: [],
+      chunkCount: 6,
+      tokenCount: 120,
+      latencyMs: 50,
+      mode: 'fallback',
+      prompt: 'prompt',
+      confidenceScore: 60,
+      providerTracePreview: 'trace',
+      improvementHint: 'hint',
+    })
+
+    render(<BishopAskProbe />)
+
+    await user.type(screen.getByRole('textbox', { name: 'Question' }), 'What is the budget for Q3 2025?')
+    await user.click(screen.getByRole('button', { name: 'Ask' }))
+
+    await waitFor(() => expect(orchestrateMock).toHaveBeenCalledTimes(1))
+    expect(orchestrateMock.mock.calls[0]?.[2]).toMatchObject({
+      limit: 5,
+      candidateLimit: 14,
+      conversationHistory: [],
+    })
   })
 })

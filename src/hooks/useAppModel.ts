@@ -13,6 +13,7 @@ import {
 import { useBishopConversation } from './useBishopConversation'
 import { useLiveCorpus } from './useLiveCorpus'
 import { useEntraSettings } from './useEntraSettings'
+import { useBishopSettings } from './useBishopSettings'
 import { useProviderSecrets } from './useProviderSecrets'
 import { useSyncOperations } from './useSyncOperations'
 import { useWorkerSettings } from './useWorkerSettings'
@@ -20,6 +21,7 @@ import type { LiveState } from './useLiveCorpus'
 import type { EntraSettings } from './useEntraSettings'
 import type { SyncOperationJob } from './useSyncOperations'
 import type { WorkerSettings } from './useWorkerSettings'
+import type { BishopSettings } from './useBishopSettings'
 import { resolveCorpusMode } from '../lib/corpus-mode'
 
 export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
@@ -65,6 +67,9 @@ export interface AppModel {
   workerSettings: WorkerSettings
   setWorkerSetting: ReturnType<typeof useWorkerSettings>['setWorkerSetting']
   clearWorkerSettings: ReturnType<typeof useWorkerSettings>['clearWorkerSettings']
+  bishopSettings: BishopSettings
+  setBishopSetting: ReturnType<typeof useBishopSettings>['setBishopSetting']
+  clearBishopSettings: ReturnType<typeof useBishopSettings>['clearBishopSettings']
   question: string
   setQuestion: Dispatch<SetStateAction<string>>
   isAsking: boolean
@@ -137,6 +142,7 @@ function readStoredRole(defaultRole: UserRole): UserRole {
 export function useAppModel(): AppModel {
   const { entraSettings, setEntraSetting, clearEntraSettings } = useEntraSettings()
   const { workerSettings, setWorkerSetting, clearWorkerSettings } = useWorkerSettings()
+  const { bishopSettings, setBishopSetting, clearBishopSettings } = useBishopSettings()
   const requestedCorpusMode = resolveCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE, entraSettings.dataMode)
   const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(requestedCorpusMode)
   const corpus = corpusBundle.corpus
@@ -201,6 +207,7 @@ export function useAppModel(): AppModel {
     corpus: scopedCorpus,
     role,
     provider,
+    bishopSettings,
     endpoint: import.meta.env.VITE_BISHOP_LLM_ENDPOINT,
     openaiApiKey: providerSecrets.openaiApiKey,
     geminiApiKey: providerSecrets.geminiApiKey,
@@ -323,6 +330,9 @@ export function useAppModel(): AppModel {
     workerSettings,
     setWorkerSetting,
     clearWorkerSettings,
+    bishopSettings,
+    setBishopSetting,
+    clearBishopSettings,
     question,
     setQuestion,
     isAsking,
