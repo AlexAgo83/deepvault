@@ -9,9 +9,11 @@ if (process.argv.length < 3) {
 
 const [command, ...args] = process.argv.slice(2)
 const resolvedCommand = resolveCommand(command)
+const usesWindowsCommandShim = process.platform === 'win32' && resolvedCommand.toLowerCase().endsWith('.cmd')
 const child = spawn(resolvedCommand, args, {
   stdio: 'inherit',
   detached: process.platform !== 'win32',
+  shell: usesWindowsCommandShim,
   env: process.env,
   cwd: process.cwd(),
 })
