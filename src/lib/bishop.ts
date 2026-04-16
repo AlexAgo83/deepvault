@@ -21,6 +21,7 @@ export interface BishopPromptContext {
   provider: ProviderId
   grounding: GroundingResult
   conversationHistory?: Array<Pick<ChatMessage, 'role' | 'text'>>
+  artifactIntent?: ArtifactIntent
 }
 
 export const groundQuestion = buildGrounding
@@ -535,6 +536,20 @@ export function buildBishopPrompt(context: BishopPromptContext): string {
   const conversationHistory = context.conversationHistory && context.conversationHistory.length > 0
     ? ['Conversation history:', formatConversationHistory(context.conversationHistory)]
     : []
+  const artifactInstructions =
+    context.artifactIntent?.requested
+      ? context.artifactIntent.unsupportedFormat
+        ? [
+            `Artifact request: unsupported format .${context.artifactIntent.unsupportedFormat}.`,
+            'Explain briefly that Bishop currently supports only .txt, .md, .json, and .csv in this app.',
+            'Do not claim that the interface cannot create files in general.',
+          ]
+        : [
+            `Artifact request: supported ${context.artifactIntent.format ? `.${context.artifactIntent.format}` : 'text-like'} file.`,
+            'Provide the grounded answer content directly and assume the app will package it as a downloadable file.',
+            'Do not say that you cannot create, generate, or download files from this interface.',
+          ]
+      : []
 
   return [
     'You are Bishop, a grounded assistant.',
@@ -544,6 +559,7 @@ export function buildBishopPrompt(context: BishopPromptContext): string {
     ...conversationHistory,
     `Grounding status: ${context.grounding.status}`,
     'Use only the grounded context below.',
+    ...artifactInstructions,
     'Sources:',
     sourceLines.length ? sourceLines.join('\n') : '- none',
     'Denied sources:',
@@ -555,11 +571,26 @@ export function buildBishopPrompt(context: BishopPromptContext): string {
 }
 
 function buildBishopSystemPrompt(context: Omit<BishopPromptContext, 'query' | 'grounding'>): string {
+  const artifactInstructions =
+    context.artifactIntent?.requested
+      ? context.artifactIntent.unsupportedFormat
+        ? [
+            'When the user asks for an unsupported file format, explain the supported formats briefly and stay grounded.',
+            'Do not say that the interface cannot create files in general.',
+          ]
+        : [
+            'When the user explicitly asks for a supported file, provide the file-ready grounded content in your answer.',
+            'Assume the app can attach the downloadable file separately.',
+            'Do not say that the interface cannot create, generate, or download files.',
+          ]
+      : []
+
   return [
     'You are Bishop, a grounded assistant.',
     `Role: ${context.role}`,
     `Provider: ${context.provider}`,
     'Use the conversation history to preserve follow-up context, but keep factual claims grounded in the corpus context in the user message.',
+    ...artifactInstructions,
     'Answer in one concise grounded paragraph.',
   ].join('\n')
 }
@@ -625,7 +656,7 @@ function getProviderRuntimeConfig(
 }
 
 async function runOpenAIRemoteAnswer(
-  _query: string,
+  query: string,
   role: UserRole,
   provider: ProviderId,
   _grounding: GroundingResult,
@@ -639,7 +670,7 @@ async function runOpenAIRemoteAnswer(
   }
 
   const startedAt = Date.now()
-  const systemPrompt = buildBishopSystemPrompt({ role, provider })
+  const systemPrompt = buildBishopSystemPrompt({ role, provider, artifactIntent: inferArtifactIntent(query) })
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -695,7 +726,7 @@ async function runOpenAIRemoteAnswer(
 }
 
 async function runGeminiRemoteAnswer(
-  _query: string,
+  query: string,
   role: UserRole,
   provider: ProviderId,
   grounding: GroundingResult,
@@ -709,7 +740,7 @@ async function runGeminiRemoteAnswer(
   }
 
   const startedAt = Date.now()
-  const systemPrompt = buildBishopSystemPrompt({ role, provider })
+  const systemPrompt = buildBishopSystemPrompt({ role, provider, artifactIntent: inferArtifactIntent(query) })
 
   try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -791,7 +822,7 @@ async function runAnthropicRemoteAnswer(
 
   const client = options.anthropicClient || new Anthropic({ apiKey })
   const startedAt = Date.now()
-  const systemPrompt = buildBishopSystemPrompt({ role, provider })
+  const systemPrompt = buildBishopSystemPrompt({ role, provider, artifactIntent: inferArtifactIntent(query) })
   const groundingContext = buildBishopGroundingContext(grounding)
   const createMessage = client.beta.messages.create as (_params: Record<string, unknown>) => Promise<AnthropicResponseLike>
 
@@ -856,6 +887,7 @@ export async function orchestrateBishopAnswer(
 ): Promise<BishopOrchestrationResult> {
   const role = options.role || 'analyst'
   const provider = options.provider || 'openai'
+  const artifactIntent = inferArtifactIntent(query)
   const grounding = buildGrounding(corpus, query, {
     role,
     provider,
@@ -868,6 +900,7 @@ export async function orchestrateBishopAnswer(
     provider,
     grounding,
     conversationHistory: options.conversationHistory,
+    artifactIntent,
   })
   const fallback = answerQuestion(corpus, query, {
     role,
