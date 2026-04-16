@@ -230,7 +230,7 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('button', { name: 'Knowledge' })).toHaveAttribute('aria-current', 'page')
   })
 
-  it('opens settings and persists provider keys for the current browser session', async () => {
+  it('opens settings and persists provider keys for the current browser', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -241,7 +241,7 @@ describe('DeepVault app', () => {
 
     await user.type(screen.getByLabelText('OpenAI API key'), 'test-openai-key')
 
-    expect(JSON.parse(sessionStorage.getItem('deepvault_provider_secrets') || '{}')).toMatchObject({
+    expect(JSON.parse(localStorage.getItem('deepvault_provider_secrets') || '{}')).toMatchObject({
       openaiApiKey: 'test-openai-key',
       geminiApiKey: '',
       anthropicApiKey: '',

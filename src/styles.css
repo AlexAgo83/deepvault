@@ -635,7 +635,9 @@ select:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 8px;
+  justify-content: center;
   align-items: center;
+  text-align: center;
   font-size: 0.56rem;
   line-height: 1;
   letter-spacing: 0.015em;
