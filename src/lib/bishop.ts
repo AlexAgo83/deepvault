@@ -249,7 +249,7 @@ function isLikelyFileOnlyAnswer(answer: string, artifactBody: string, format: Bi
     return true
   }
 
-  if (format === 'json' && /^[\[{]/.test(normalizedAnswer)) {
+  if (format === 'json' && /^[[{]/.test(normalizedAnswer)) {
     return true
   }
 
