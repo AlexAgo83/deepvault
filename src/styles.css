@@ -1686,6 +1686,7 @@ select:focus-visible {
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  min-width: 0;
 }
 
 .bishop-chat-panel {
@@ -1701,6 +1702,7 @@ select:focus-visible {
   gap: 14px;
   flex: 1 1 auto;
   min-height: 0;
+  min-width: 0;
   overflow: auto;
   align-content: start;
   overscroll-behavior: contain;
@@ -1717,6 +1719,7 @@ select:focus-visible {
 .bishop-trace-panel .source-list {
   padding: 10px 4px 0;
   align-content: start;
+  min-width: 0;
 }
 
 .bishop-sources-section {
@@ -1738,6 +1741,27 @@ select:focus-visible {
 
 .bishop-trace-panel .source-card {
   align-self: start;
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.bishop-trace-panel .source-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 6px 10px;
+  align-items: start;
+}
+
+.bishop-trace-panel .source-card p,
+.bishop-trace-panel .source-path,
+.bishop-trace-panel .path-inline {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .sync-main-column {
