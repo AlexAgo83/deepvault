@@ -256,6 +256,7 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Settings' }))
+    await user.click(screen.getByRole('button', { name: 'AI providers' }))
 
     expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
     expect(screen.getByLabelText('OpenAI API key')).toBeInTheDocument()
@@ -336,6 +337,7 @@ describe('DeepVault app', () => {
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
     await user.click(screen.getByRole('button', { name: 'Settings' }))
+    await user.click(screen.getByRole('button', { name: 'AI providers' }))
     await user.type(screen.getByLabelText('OpenAI API key'), 'test-openai-key')
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
 
@@ -384,6 +386,7 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Settings' }))
+    await user.click(screen.getByRole('button', { name: 'AI providers' }))
     await user.type(screen.getByLabelText('OpenAI API key'), 'test-openai-key')
     await user.click(screen.getByRole('button', { name: 'Bishop' }))
     await user.type(screen.getByLabelText('Ask a question'), 'What is the budget for Q3 2025?')
@@ -934,7 +937,7 @@ describe('DeepVault app', () => {
     expect(screen.getByText('Role')).toBeInTheDocument()
 
     await user.click(within(topbarRoot).getByText('openai').closest('button') as HTMLElement)
-    expect(screen.getByRole('heading', { name: 'AI providers' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'AI providers' })).toHaveAttribute('aria-current', 'page')
     expect(screen.getByLabelText('OpenAI API key')).toBeInTheDocument()
 
     await user.click(within(topbarRoot).getByText('analyst').closest('button') as HTMLElement)

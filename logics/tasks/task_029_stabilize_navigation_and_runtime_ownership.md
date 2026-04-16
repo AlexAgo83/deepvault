@@ -95,3 +95,4 @@ stateDiagram-v2
 - [x] Status is `Done` and progress is `100%`.
 
 # Report
+- April 2026 follow-up: the Settings screen now uses an inline view switcher above the main panel so Runtime, SharePoint, AI providers, and Worker each render as a focused sub-view while topbar shortcuts still open the matching Settings section directly.

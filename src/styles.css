@@ -1245,6 +1245,24 @@ select:focus-visible {
   overflow: hidden;
 }
 
+.settings-view-switcher {
+  display: grid;
+  gap: 16px;
+}
+
+.settings-view-switcher .sync-view-switcher-head {
+  justify-content: flex-start;
+}
+
+.settings-view-switcher .sync-view-switcher-head > div:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.settings-view-switcher .sync-view-switcher-head p {
+  max-width: none;
+}
+
 .settings-main-scroll {
   display: grid;
   gap: 18px;
@@ -1266,6 +1284,36 @@ select:focus-visible {
 .settings-main-scroll > .settings-section:first-child {
   padding-top: 0;
   border-top: 0;
+}
+
+.settings-subnav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.settings-subnav-item {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-height: 96px;
+  padding: 12px 13px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+}
+
+.settings-subnav-item:hover {
+  border-color: rgba(185, 106, 67, 0.35);
+  background: var(--surface-soft);
+}
+
+.settings-subnav-item-active {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(185, 106, 67, 0.08), var(--surface));
+  box-shadow: none;
 }
 
 .settings-changelog-panel {
@@ -1481,6 +1529,13 @@ select:focus-visible {
 .settings-actions {
   display: flex;
   justify-content: flex-start;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.settings-actions-filler {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .settings-runtime-form {
@@ -1504,10 +1559,12 @@ select:focus-visible {
 .settings-scope-field .site-list {
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 8px;
 }
 
 .settings-scope-field .site-chip {
+  flex: 0 0 auto;
   min-height: 38px;
 }
 
@@ -2968,6 +3025,10 @@ code {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .settings-subnav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .sync-view-switcher-meta {
     min-width: 0;
   }
@@ -3145,6 +3206,10 @@ code {
   }
 
   .sync-subnav {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-subnav {
     grid-template-columns: 1fr;
   }
 
