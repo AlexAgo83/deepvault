@@ -37,7 +37,7 @@ test.describe('DeepVault workflows', () => {
     await expect(page.locator('.detail-row').filter({ hasText: 'Status' }).locator('strong')).toHaveText('no_permitted_sources')
     await expect(page.getByText('I found relevant content, but your current role cannot access the matching sources.')).toBeVisible()
     await expect(page.locator('.source-card')).toHaveCount(0)
-    await page.getByRole('button', { name: 'Show sources' }).click()
+    await page.getByRole('button', { name: 'Show', exact: true }).click()
     await expect(page.getByText('No grounded sources yet. Ask Bishop a question to populate this trace.')).toBeVisible()
   })
 

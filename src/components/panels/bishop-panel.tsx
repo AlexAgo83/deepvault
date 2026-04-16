@@ -19,7 +19,6 @@ export function BishopPanel({
   isAsking,
   onSubmit,
   provider,
-  role,
   selectedMessage,
   resolveFileHref,
   showRightPanel = true,
@@ -35,7 +34,6 @@ export function BishopPanel({
   isAsking: boolean
   onSubmit: (_event: FormEvent<HTMLFormElement>) => void
   provider: string
-  role: string
   selectedMessage: AppModel['selectedMessage']
   resolveFileHref: AppModel['resolveFileHref']
   showRightPanel?: boolean
@@ -113,8 +111,6 @@ export function BishopPanel({
     setNeedPreviewPosition(positionPopover(needButtonRef.current, 140))
     setShowNeedPreview(true)
   }
-
-  const sourceCount = selectedMessage.sources?.length || 0
 
   const handleQuestionKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) {
