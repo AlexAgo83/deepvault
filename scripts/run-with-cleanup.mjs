@@ -39,13 +39,13 @@ function resolveCommand(name) {
   }
 
   const localBin = resolve(process.cwd(), 'node_modules/.bin', name)
-  if (existsSync(localBin)) {
-    return localBin
-  }
-
   if (process.platform === 'win32') {
     const windowsBin = `${localBin}.cmd`
     if (existsSync(windowsBin)) return windowsBin
+  }
+
+  if (existsSync(localBin)) {
+    return localBin
   }
 
   return name

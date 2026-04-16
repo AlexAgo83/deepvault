@@ -22,7 +22,7 @@ It gives you:
 - `DeepVault - Bishop` for permission-aware grounded Q&A
 - `Sync status` for ingestion state, refresh timing, provenance, and the streamed operations console
 - `AI stats` for response confidence, recent answers, and the inputs that would have helped
-- `Settings` for runtime scope, provider selection, and local API keys
+- `Settings` for runtime scope, persisted role selection, provider selection, and local API keys
 - a mock corpus for fast local work
 - a live corpus path for testing against real SharePoint exports
 
@@ -175,6 +175,7 @@ npm run check
 
 That runs lint, typecheck, tests, build, and the mock evaluation.
 `npm run check` is implemented in Node and is intended to run the same way on macOS, Linux, and Windows.
+The helper launcher used by `evaluate`, `ingest`, `export:live`, and `e2e` resolves the Windows `node_modules/.bin/*.cmd` shims explicitly so those commands stay runnable on GitHub Actions Windows runners.
 
 If you want the coverage report and threshold check:
 

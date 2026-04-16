@@ -248,6 +248,23 @@ describe('DeepVault app', () => {
     })
   })
 
+  it('persists the selected runtime role for the current browser', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    await user.selectOptions(screen.getByLabelText('Role'), 'guest')
+
+    expect(localStorage.getItem('deepvault_runtime_role')).toBe('guest')
+    expect(screen.getByLabelText('Role')).toHaveValue('guest')
+
+    unmount()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    expect(screen.getByLabelText('Role')).toHaveValue('guest')
+  })
+
   it('stays operable when a live corpus loads without providers or documents', async () => {
     vi.stubEnv('VITE_DEEPVAULT_DATA_MODE', 'live')
     const fetchMock = vi.fn().mockResolvedValue({
