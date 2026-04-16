@@ -15,8 +15,8 @@
 - L'API Graph expose `lastModifiedDateTime` sur chaque élément — la base pour un delta sync est disponible.
 
 # Scope
-- In: utilisation de `lastModifiedDateTime` pour n'ingérer que les documents modifiés depuis le dernier checkpoint ; mise à jour du checkpoint avec la date du dernier sync.
-- Out: sync bidirectionnel, suppression de documents retirés de SharePoint (tombstone), sync temps-réel (webhook Graph).
+- In: utilisation de `lastModifiedDateTime` pour n'ingérer que les documents modifiés depuis le dernier checkpoint ; mise à jour du checkpoint avec la date du dernier sync ; réconciliation par site pour retirer du corpus les documents absents du crawl courant lors d'une reprise.
+- Out: sync bidirectionnel, sync temps-réel (webhook Graph).
 
 ```mermaid
 %% logics-kind: backlog
@@ -43,7 +43,7 @@ flowchart TD
 - AC5 -> Scope: dry-run avec stats. Proof: capture validation evidence in this doc.
 
 # Report
-- Wave 2 completed: `scripts/export-live.ts` now reuses the checkpoint corpus, compares `lastModifiedDateTime` against the last sync time, skips unchanged documents, writes `syncedAt` into the checkpoint, and supports dry-run output without writing files.
+- Wave 2 completed: `scripts/export-live.ts` now reuses the checkpoint corpus, compares `lastModifiedDateTime` against the last sync time, skips unchanged documents, writes `syncedAt` into the checkpoint, supports dry-run output without writing files, and reconciles per-site document ids so a resume run no longer keeps deleted SharePoint documents forever.
 - Validation passed:
   - `rtk npm run test -- tests/deepvault-graph.spec.ts tests/live-export-state.spec.ts tests/corpus-loader.spec.ts tests/corpus.spec.ts`
   - `rtk npm run typecheck`
@@ -57,7 +57,7 @@ flowchart TD
 - Product framing: Not needed
 - Architecture framing: Required
 - Architecture signals: data model and persistence, contracts and integration, runtime and boundaries
-- Architecture follow-up: Décider si les documents supprimés de SharePoint sont retirés du corpus local (tombstone) ou ignorés — hors scope mais à documenter.
+- Architecture follow-up: Documenter que la reprise réconcilie désormais les documents vus par site, et garder une future wave dédiée si un vrai delta Graph avec tombstones natifs remplace ce mécanisme.
 
 # Links
 - Product brief(s): (none yet)
@@ -81,4 +81,4 @@ flowchart TD
 # Notes
 - Derived from request `req_015_architecture_robustness_and_product_improvements`.
 - Vérifier la compatibilité avec item_014 (incremental live sync) — possible overlap partiel à aligner avant démarrage.
-- La suppression de documents (tombstone) est explicitement hors scope ici mais devra être adressée dans une request dédiée.
+- La suppression de documents côté SharePoint est maintenant réconciliée lors d'une reprise à partir de l'ensemble courant d'identifiants vus pendant le crawl.

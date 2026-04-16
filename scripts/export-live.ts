@@ -75,6 +75,22 @@ async function runLiveExport(
     return [...byId.values()]
   }
 
+  function reconcileSiteDocuments(
+    existingDocuments: CorpusLike['documents'],
+    incomingDocuments: CorpusLike['documents'],
+    siteId: string,
+    currentDocumentIds: string[],
+  ) {
+    const currentIds = new Set(currentDocumentIds)
+    const retainedDocuments = existingDocuments.filter((document) => {
+      if (document.siteId !== siteId) {
+        return true
+      }
+      return currentIds.has(document.id)
+    })
+    return upsertDocuments(retainedDocuments, incomingDocuments)
+  }
+
   function upsertSite(existingSite: CorpusLike['sites'][number]) {
     const index = sites.findIndex((site) => site.id === existingSite.id || site.url === existingSite.url)
     if (index >= 0) {
@@ -116,7 +132,7 @@ async function runLiveExport(
         { updatedAfter: resumeState.updatedAfter },
       )
       upsertSite(exported.site)
-      documents = upsertDocuments(documents, exported.documents)
+      documents = reconcileSiteDocuments(documents, exported.documents, exported.site.id, exported.currentDocumentIds)
       if (!siteIds.includes(exported.site.id)) {
         siteIds.push(exported.site.id)
       }

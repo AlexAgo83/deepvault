@@ -99,8 +99,8 @@ stateDiagram-v2
 # Report
 - Worker boundary established: `src/lib/worker-client.ts` exposes a typed HTTP client (`checkHealth`, `getEffectiveConfig`, `startJob`, `getJob`, `cancelJob`, `getManifest`, `openJobEvents`) that routes to either the local Vite ops-server or a configurable remote endpoint.
 - Worker connection settings: `src/hooks/useWorkerSettings.ts` persists `workerMode`, `workerUrl`, `workerToken`, `workerTimeoutSeconds`, and `workerFallbackMode` to localStorage.
-- Vite ops-server extended with `/api/worker/*` routes: `GET /health`, `GET /config/effective`, `POST /jobs`, `GET /jobs/:id`, `POST /jobs/:id/cancel`, `GET /jobs/:id/manifest`, `GET /jobs/:id/events`. Legacy `/api/ops/*` routes preserved for backward compatibility.
-- `useSyncOperations` refactored to use `createWorkerClient` instead of raw fetch. Job start and cancel go through the worker client.
+- Vite ops-server extended with `/api/worker/*` routes: `GET /health`, `GET /config/effective`, `POST /jobs`, `GET /jobs/:id`, `POST /jobs/:id/cancel`, `GET /jobs/:id/manifest`, `GET /jobs/:id/events`. Legacy `/api/ops/*` routes preserved for backward compatibility, the in-memory log history is bounded, and local control routes now reject non-loopback clients.
+- `useSyncOperations` refactored to use `createWorkerClient` instead of raw fetch. Job start and cancel go through the worker client, and stalled worker streams now fall back to job-state polling before the UI gives up.
 - `useAppModel` includes `workerSettings`, `setWorkerSetting`, and `clearWorkerSettings`.
 - Settings panel extended with a Worker section exposing all connection settings.
 - Tests: 23 test files, 164 tests passing. New: `tests/use-worker-settings.spec.ts` (11 tests), `tests/worker-client.spec.ts` (13 tests). Coverage above all thresholds.
