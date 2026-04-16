@@ -1,10 +1,6 @@
 # DeepVault Nexus
 
 <p align="center">
-  <img src="./deepvault-logo.png" alt="DeepVault Nexus logo" width="120" height="120" />
-</p>
-
-<p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4C8BF5" alt="MIT License" /></a>
   <img src="https://img.shields.io/badge/version-v1.3.0-4C8BF5" alt="Version 1.3.0" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
