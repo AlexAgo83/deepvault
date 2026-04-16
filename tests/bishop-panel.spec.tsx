@@ -34,7 +34,6 @@ describe('BishopPanel scroll behavior', () => {
         isAsking={false}
         onSubmit={vi.fn()}
         provider="openai"
-        role="analyst"
         selectedMessage={{ status: 'answered', provider: 'openai', orchestrationMode: 'fallback', sources: [] } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
       />,
@@ -59,7 +58,6 @@ describe('BishopPanel scroll behavior', () => {
         isAsking={false}
         onSubmit={vi.fn()}
         provider="openai"
-        role="analyst"
         selectedMessage={{ status: 'answered', provider: 'openai', orchestrationMode: 'fallback', sources: [] } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
       />,
@@ -83,7 +81,6 @@ describe('BishopPanel scroll behavior', () => {
         isAsking={false}
         onSubmit={vi.fn()}
         provider="openai"
-        role="analyst"
         selectedMessage={{ status: 'answered', provider: 'openai', orchestrationMode: 'fallback', sources: [] } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
       />,
@@ -109,7 +106,6 @@ describe('BishopPanel scroll behavior', () => {
         isAsking={false}
         onSubmit={vi.fn()}
         provider="openai"
-        role="analyst"
         selectedMessage={{ status: 'answered', provider: 'openai', orchestrationMode: 'fallback', sources: [] } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
       />,
@@ -137,7 +133,6 @@ describe('BishopPanel composer shortcuts', () => {
         isAsking={false}
         onSubmit={onSubmit}
         provider="openai"
-        role="analyst"
         selectedMessage={{ id: 'seed', status: 'ready', provider: 'openai', orchestrationMode: 'fallback', sources: [] } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
       />,
@@ -167,7 +162,6 @@ describe('BishopPanel composer shortcuts', () => {
         isAsking={false}
         onSubmit={onSubmit}
         provider="openai"
-        role="analyst"
         selectedMessage={{ id: 'seed', status: 'ready', provider: 'openai', orchestrationMode: 'fallback', sources: [] } as never}
         resolveFileHref={vi.fn().mockReturnValue(null)}
       />,
@@ -199,7 +193,6 @@ describe('BishopPanel confidence trace', () => {
         isAsking={false}
         onSubmit={vi.fn()}
         provider="openai"
-        role="analyst"
         selectedMessage={{
           id: 'assistant-1',
           status: 'answered',
@@ -237,7 +230,6 @@ describe('BishopPanel confidence trace', () => {
         isAsking={false}
         onSubmit={vi.fn()}
         provider="openai"
-        role="analyst"
         selectedMessage={{
           id: 'assistant-1',
           status: 'answered',
@@ -275,7 +267,6 @@ describe('BishopPanel confidence trace', () => {
         isAsking={false}
         onSubmit={vi.fn()}
         provider="openai"
-        role="analyst"
         selectedMessage={{
           id: 'assistant-1',
           status: 'answered',

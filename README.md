@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4C8BF5" alt="MIT License" /></a>
-  <img src="https://img.shields.io/badge/version-v1.2.0-4C8BF5" alt="Version 1.2.0" />
+  <img src="https://img.shields.io/badge/version-v1.3.0-4C8BF5" alt="Version 1.3.0" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript Strict" />
   <img src="https://img.shields.io/badge/local--first-deepvault-0F766E" alt="Local first" />
@@ -21,7 +21,7 @@ It gives you:
 - `Explorer` for browsing sources and inspecting documents
 - `DeepVault - Bishop` for permission-aware grounded Q&A
 - `Sync status` for ingestion state, refresh timing, provenance, and the streamed operations console
-- `AI stats` for response confidence, recent answers, and the inputs that would have helped
+- `AI View` for response confidence, recent answers, and the inputs that would have helped
 - `Settings` for runtime scope, persisted role selection, provider selection, and local API keys
 - a mock corpus for fast local work
 - a live corpus path for testing against real SharePoint exports
@@ -95,7 +95,7 @@ npm run dev
 Open the Vite URL shown in the terminal.
 
 When the app opens, it shows a `Getting started` modal with the project vision and the main navigation areas.
-That modal now introduces `Explorer`, `Bishop`, `Sync status`, `AI stats`, and `Settings`.
+That modal now introduces `Explorer`, `Bishop`, `Sync status`, `AI View`, and `Settings`.
 
 If you want to use the live corpus file in the browser:
 
@@ -152,9 +152,9 @@ Use this when you want to work with the bundled mock corpus.
 - verify site counts, visible docs, and refresh metadata
 - use the operations console to run refresh, ingest, or evaluation jobs and follow the streamed log
 
-### 5. Review AI stats
+### 5. Review AI View
 
-- switch to `AI stats`
+- switch to `AI View`
 - inspect recent Bishop responses with their confidence and status
 - review the recurring hints about what input would have improved the answer
 
@@ -177,6 +177,14 @@ npm run check
 That runs lint, typecheck, tests, build, and the mock evaluation.
 `npm run check` is implemented in Node and is intended to run the same way on macOS, Linux, and Windows.
 The helper launcher used by `evaluate`, `ingest`, `export:live`, and `e2e` resolves the Windows `node_modules/.bin/*.cmd` shims explicitly and runs them through the Windows shell so those commands stay runnable on GitHub Actions Windows runners.
+
+### 8. Reproduce the CI lane locally
+
+```bash
+npm run ci:local
+```
+
+That command runs lint, typecheck, coverage, build, mock evaluation, Playwright browser install, and the end-to-end suite in one pass.
 
 If you want the coverage report and threshold check:
 

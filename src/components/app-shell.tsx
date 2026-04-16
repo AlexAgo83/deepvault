@@ -922,7 +922,6 @@ export function AppShell(model: AppModel) {
               provider={provider}
               question={question}
               resolveFileHref={resolveFileHref}
-              role={role}
               selectedMessage={selectedMessage}
               showRightPanel={showRightPanel}
             />
