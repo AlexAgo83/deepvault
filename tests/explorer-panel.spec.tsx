@@ -44,7 +44,7 @@ describe('ExplorerPanel', () => {
     expect(explorerCell).toHaveTextContent('document')
     expect(explorerCell).toHaveTextContent('0.92')
     expect(explorerCell).toHaveTextContent('Operations')
-    expect(explorerCell).toHaveTextContent('27 Jan 2026, 11:00')
+    expect(explorerCell).toHaveTextContent('27 Jan 2026')
     expect(explorerCell).not.toHaveTextContent('Source:')
     expect(explorerCell).not.toHaveTextContent('CARESOFT')
     expect(explorerCell).not.toHaveTextContent('Planning de livraison.xlsx')
