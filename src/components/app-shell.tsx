@@ -930,7 +930,7 @@ export function AppShell(model: AppModel) {
 
         {activeTab === 'ai-stats' ? (
           <ErrorBoundary fallback={<div className="empty-state">AI View panel failed to render.</div>}>
-            <AIStatsPanel messages={messages} showRightPanel={showRightPanel} />
+            <AIStatsPanel messages={messages} resolveFileHref={resolveFileHref} showRightPanel={showRightPanel} />
           </ErrorBoundary>
         ) : null}
 

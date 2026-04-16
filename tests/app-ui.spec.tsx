@@ -109,12 +109,13 @@ describe('app ui helpers', () => {
 
     expect(screen.getByText('Bishop')).toBeInTheDocument()
     expect(screen.getByText('You')).toBeInTheDocument()
-    expect(screen.queryByText('Sources')).not.toBeInTheDocument()
-    expect(screen.queryByText('Budget')).not.toBeInTheDocument()
+    expect(screen.queryByText('Sources (1)')).not.toBeInTheDocument()
+    expect(screen.queryByText('Site A')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Show sources' }))
-    expect(screen.getByText('Sources')).toBeInTheDocument()
-    expect(screen.getByText('Budget')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Show' }))
+    expect(screen.getByText('Sources (1)')).toBeInTheDocument()
+    expect(screen.getByText('Site A')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /budget\.docx/i })).toBeInTheDocument()
     expect(resolveFileHref).toHaveBeenCalledWith('site-a', '/Documents/Budget.docx', undefined)
   })
 
