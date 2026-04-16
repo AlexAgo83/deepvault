@@ -248,6 +248,65 @@ describe('DeepVault app', () => {
     })
   })
 
+  it('stays operable when a live corpus loads without providers or documents', async () => {
+    vi.stubEnv('VITE_DEEPVAULT_DATA_MODE', 'live')
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        schemaVersion: '1.1',
+        defaultUserRole: 'analyst',
+        providers: [],
+        sites: [],
+        syncRuns: [],
+        documents: [],
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const user = userEvent.setup()
+    render(<App />)
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+
+    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Provider')).toHaveValue('openai')
+    expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
+  })
+
+  it('derives provider readiness from session keys even when the live corpus snapshot marks providers unavailable', async () => {
+    vi.stubEnv('VITE_DEEPVAULT_DATA_MODE', 'live')
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        schemaVersion: '1.1',
+        defaultUserRole: 'analyst',
+        providers: [
+          { id: 'openai', name: 'OpenAI', ready: false },
+          { id: 'gemini', name: 'Gemini', ready: false },
+          { id: 'anthropic', name: 'Claude', ready: false },
+        ],
+        sites: [],
+        syncRuns: [],
+        documents: [],
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const user = userEvent.setup()
+    render(<App />)
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    await user.type(screen.getByLabelText('OpenAI API key'), 'test-openai-key')
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
+
+    const kpiGrid = document.querySelector('.kpi-grid')
+    expect(kpiGrid).not.toBeNull()
+    expect(kpiGrid).toHaveTextContent('Provider readiness')
+    expect(kpiGrid).toHaveTextContent('1')
+  })
+
   it('shows the changelog panel in Settings and toggles it from the topbar', async () => {
     const user = userEvent.setup()
     render(<App />)

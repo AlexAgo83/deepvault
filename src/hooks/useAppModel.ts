@@ -26,6 +26,12 @@ export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
 
 export type ExplorerRow = CorpusDocument & { score: number; siteName: string; siteUrl: string }
 
+const DEFAULT_PROVIDER_OPTIONS: Array<{ id: ProviderId; name: string }> = [
+  { id: 'openai', name: 'OpenAI' },
+  { id: 'gemini', name: 'Gemini' },
+  { id: 'anthropic', name: 'Claude' },
+]
+
 export interface AppModel {
   activeTab: AppTab
   setActiveTab: Dispatch<SetStateAction<AppTab>>
@@ -121,12 +127,36 @@ export function useAppModel(): AppModel {
   const corpus = corpusBundle.corpus
   const [activeTab, setActiveTab] = useState<AppTab>(() => parseActiveTab(window.location.hash))
   const [role, setRole] = useState<UserRole>(corpus.defaultUserRole)
-  const [provider, setProvider] = useState<ProviderId>(corpus.providers[0].id)
+  const [provider, setProvider] = useState<ProviderId>('openai')
   const [siteFilter, setSiteFilter] = useState<string>('all')
   const [search, setSearch] = useState<string>('')
   const deferredSearch = useDeferredValue(search)
-  const [selectedDocId, setSelectedDocId] = useState<string>(corpus.documents[0].id)
+  const [selectedDocId, setSelectedDocId] = useState<string>(() => corpus.documents[0]?.id || '')
   const { providerSecrets, setApiKey: setProviderSecret, clearProviderSecrets } = useProviderSecrets()
+
+  const corpusProviders = useMemo<Corpus['providers']>(() => {
+    const providerNames = new Map(DEFAULT_PROVIDER_OPTIONS.map((item) => [item.id, item.name]))
+
+    for (const item of corpus.providers) {
+      providerNames.set(item.id, item.name)
+    }
+
+    return DEFAULT_PROVIDER_OPTIONS.map((item) => {
+      const fromCorpus = corpus.providers.find((providerOption) => providerOption.id === item.id)
+      const sessionReady =
+        item.id === 'openai'
+          ? Boolean(providerSecrets.openaiApiKey)
+          : item.id === 'gemini'
+            ? Boolean(providerSecrets.geminiApiKey)
+            : Boolean(providerSecrets.anthropicApiKey)
+
+      return {
+        id: item.id,
+        name: providerNames.get(item.id) || item.name,
+        ready: Boolean(fromCorpus?.ready) || sessionReady,
+      }
+    })
+  }, [corpus.providers, providerSecrets])
 
   const siteSummaries = useMemo(() => buildSiteSummaries(corpus, role), [corpus, role])
   const scopedCorpus = useMemo(() => buildScopedCorpus(corpus, siteFilter), [corpus, siteFilter])
@@ -190,6 +220,12 @@ export function useAppModel(): AppModel {
   })
 
   useEffect(() => {
+    if (!corpusProviders.some((item) => item.id === provider)) {
+      setProvider(corpusProviders[0]?.id || 'openai')
+    }
+  }, [corpusProviders, provider])
+
+  useEffect(() => {
     if (explorerRows.length === 0) {
       if (selectedDocId !== '') {
         setSelectedDocId('')
@@ -237,7 +273,7 @@ export function useAppModel(): AppModel {
     activeTab,
     setActiveTab,
     activeScopeLabel,
-    corpusProviders: corpus.providers,
+    corpusProviders,
     liveState,
     provider,
     setProvider,

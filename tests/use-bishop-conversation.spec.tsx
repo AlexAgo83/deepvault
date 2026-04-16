@@ -35,10 +35,11 @@ describe('useBishopConversation', () => {
     vi.unstubAllGlobals()
     vi.restoreAllMocks()
     window.localStorage.clear()
+    window.sessionStorage.clear()
   })
 
-  it('loads an array payload from storage and restores the seeded history', async () => {
-    window.localStorage.setItem(
+  it('loads an array payload from session storage and restores the seeded history', async () => {
+    window.sessionStorage.setItem(
       BISHOP_HISTORY_STORAGE_KEY,
       JSON.stringify([
         {
@@ -81,7 +82,7 @@ describe('useBishopConversation', () => {
       sources: [],
     }))
 
-    window.localStorage.setItem(
+    window.sessionStorage.setItem(
       BISHOP_HISTORY_STORAGE_KEY,
       JSON.stringify({
         messages,
@@ -96,12 +97,33 @@ describe('useBishopConversation', () => {
   })
 
   it('falls back to the seeded history when storage JSON is invalid', async () => {
-    window.localStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, '{"invalid":')
+    window.sessionStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, '{"invalid":')
 
     render(<BishopProbe />)
 
     await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('1'))
     expect(screen.getByTestId('first')).toHaveTextContent('seed')
+  })
+
+  it('migrates legacy bishop history from localStorage into sessionStorage', async () => {
+    window.localStorage.setItem(
+      BISHOP_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          id: 'assistant-1',
+          role: 'assistant',
+          text: 'Legacy answer',
+          status: 'answered',
+          sources: [],
+        },
+      ]),
+    )
+
+    render(<BishopProbe />)
+
+    await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('2'))
+    expect(window.localStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)).toBeNull()
+    expect(window.sessionStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)).toContain('Legacy answer')
   })
 
   it('keeps conversation context enabled by default and persists the toggle', async () => {

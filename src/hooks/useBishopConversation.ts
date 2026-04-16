@@ -76,27 +76,38 @@ function loadBishopMessages(): ChatMessage[] | null {
     return null
   }
 
-  const raw = window.localStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)
-  if (!raw) {
+  const raw = window.sessionStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)
+  const legacyRaw = raw ? null : window.localStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)
+  const payload = raw || legacyRaw
+  if (!payload) {
     return null
   }
 
   try {
-    const parsed: unknown = JSON.parse(raw)
+    const parsed: unknown = JSON.parse(payload)
+    let messages: ChatMessage[] | null = null
+
     if (Array.isArray(parsed)) {
-      const messages = parsed.filter(isChatMessageLike)
-      return messages.length ? normalizeBishopMessages(messages) : null
+      const parsedMessages = parsed.filter(isChatMessageLike)
+      messages = parsedMessages.length ? normalizeBishopMessages(parsedMessages) : null
+    }
+    if (!messages && typeof parsed === 'object' && parsed !== null && Array.isArray((parsed as { messages?: unknown }).messages)) {
+      const parsedMessages = ((parsed as { messages: unknown[] }).messages).filter(isChatMessageLike)
+      messages = parsedMessages.length ? normalizeBishopMessages(parsedMessages) : null
     }
 
-    if (typeof parsed === 'object' && parsed !== null && Array.isArray((parsed as { messages?: unknown }).messages)) {
-      const messages = ((parsed as { messages: unknown[] }).messages).filter(isChatMessageLike)
-      return messages.length ? normalizeBishopMessages(messages) : null
+    if (messages && legacyRaw) {
+      window.sessionStorage.setItem(
+        BISHOP_HISTORY_STORAGE_KEY,
+        JSON.stringify({ exportedAt: new Date().toISOString(), messages }, null, 2),
+      )
+      window.localStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
     }
+
+    return messages
   } catch {
     return null
   }
-
-  return null
 }
 
 function loadBishopConversationContextEnabled(): boolean {
@@ -121,7 +132,8 @@ function persistBishopMessages(messages: ChatMessage[]): void {
     exportedAt: new Date().toISOString(),
     messages: normalizeBishopMessages(messages),
   }
-  window.localStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, JSON.stringify(payload, null, 2))
+  window.sessionStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, JSON.stringify(payload, null, 2))
+  window.localStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
 }
 
 function persistBishopConversationContextEnabled(enabled: boolean): void {
@@ -306,6 +318,7 @@ export function useBishopConversation({
     persistNextChange.current = false
     setMessages([createBishopSeedMessage()])
     if (typeof window !== 'undefined') {
+      window.sessionStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
       window.localStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
     }
   }
