@@ -1,9 +1,9 @@
 ## req_011_audit_de_dette_technique_et_cleanup_structurel - Technical debt and structural cleanup audit
-> From version: 1.2.0
+> From version: 1.2.1
 > Schema version: 1.0
 > Status: Done
-> Understanding: 100%
-> Confidence: 100%
+> Understanding: 99%
+> Confidence: 99%
 > Complexity: High
 > Theme: General
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -69,3 +69,4 @@ flowchart TD
 # Outcome
 - Completed via `task_016_orchestrate_technical_debt_cleanup_waves` and its five bounded waves.
 - Maintenance follow-up applied in April 2026 to realign validation, docs, and secret-handling boundaries after a post-delivery audit.
+- Additional April 2026 hardening follow-up applied to keep empty live corpus payloads non-fatal, align provider readiness with current session credentials, and move Bishop conversation persistence to session scope.
