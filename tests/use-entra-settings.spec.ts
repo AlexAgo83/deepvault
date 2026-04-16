@@ -35,6 +35,16 @@ describe('useEntraSettings', () => {
 
     const { result } = renderHook(() => useEntraSettings())
     expect(result.current.entraSettings.secretValue).toBe('super-secret')
+    expect(sessionStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)).toBeNull()
+    expect(JSON.parse(localStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY) ?? '{}')).toEqual({ secretValue: 'super-secret' })
+  })
+
+  it('reads the client secret from localStorage', () => {
+    localStorage.setItem(ENTRA_SETTINGS_STORAGE_KEY, JSON.stringify({ appId: 'abc123', dataMode: 'live' }))
+    localStorage.setItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY, JSON.stringify({ secretValue: 'super-secret' }))
+
+    const { result } = renderHook(() => useEntraSettings())
+    expect(result.current.entraSettings.secretValue).toBe('super-secret')
   })
 
   it('accepts mock as a valid dataMode', () => {
@@ -76,12 +86,12 @@ describe('useEntraSettings', () => {
     expect(result.current.entraSettings.dataMode).toBe('')
   })
 
-  it('persists non-secret values to localStorage and the client secret to sessionStorage', () => {
+  it('persists non-secret values and the client secret to localStorage', () => {
     const { result } = renderHook(() => useEntraSettings())
     act(() => { result.current.setEntraSetting('tenantId', 'tenant-123') })
     act(() => { result.current.setEntraSetting('secretValue', 'super-secret') })
     const stored = JSON.parse(localStorage.getItem(ENTRA_SETTINGS_STORAGE_KEY) ?? '{}') as Record<string, string>
-    const storedSecret = JSON.parse(sessionStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY) ?? '{}') as Record<string, string>
+    const storedSecret = JSON.parse(localStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY) ?? '{}') as Record<string, string>
     expect(stored.tenantId).toBe('tenant-123')
     expect(stored.secretValue).toBeUndefined()
     expect(storedSecret.secretValue).toBe('super-secret')

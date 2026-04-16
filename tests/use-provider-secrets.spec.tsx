@@ -8,7 +8,7 @@ describe('useProviderSecrets', () => {
     localStorage.clear()
   })
 
-  it('migrates legacy localStorage secrets into sessionStorage', () => {
+  it('reads provider secrets from localStorage', () => {
     localStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify({
       openaiApiKey: ' sk-openai ',
       geminiApiKey: ' sk-gemini ',
@@ -22,8 +22,29 @@ describe('useProviderSecrets', () => {
       geminiApiKey: 'sk-gemini',
       anthropicApiKey: 'sk-anthropic',
     })
-    expect(localStorage.getItem(PROVIDER_SECRETS_STORAGE_KEY)).toBeNull()
-    expect(JSON.parse(sessionStorage.getItem(PROVIDER_SECRETS_STORAGE_KEY) || '{}')).toEqual({
+    expect(JSON.parse(localStorage.getItem(PROVIDER_SECRETS_STORAGE_KEY) || '{}')).toEqual({
+      openaiApiKey: 'sk-openai',
+      geminiApiKey: 'sk-gemini',
+      anthropicApiKey: 'sk-anthropic',
+    })
+  })
+
+  it('migrates legacy sessionStorage secrets into localStorage', () => {
+    sessionStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify({
+      openaiApiKey: ' sk-openai ',
+      geminiApiKey: ' sk-gemini ',
+      anthropicApiKey: ' sk-anthropic ',
+    }))
+
+    const { result } = renderHook(() => useProviderSecrets())
+
+    expect(result.current.providerSecrets).toEqual({
+      openaiApiKey: 'sk-openai',
+      geminiApiKey: 'sk-gemini',
+      anthropicApiKey: 'sk-anthropic',
+    })
+    expect(sessionStorage.getItem(PROVIDER_SECRETS_STORAGE_KEY)).toBeNull()
+    expect(JSON.parse(localStorage.getItem(PROVIDER_SECRETS_STORAGE_KEY) || '{}')).toEqual({
       openaiApiKey: 'sk-openai',
       geminiApiKey: 'sk-gemini',
       anthropicApiKey: 'sk-anthropic',
@@ -54,7 +75,7 @@ describe('useProviderSecrets', () => {
       geminiApiKey: '',
       anthropicApiKey: '',
     })
-    expect(JSON.parse(sessionStorage.getItem(PROVIDER_SECRETS_STORAGE_KEY) || '{}')).toEqual({
+    expect(JSON.parse(localStorage.getItem(PROVIDER_SECRETS_STORAGE_KEY) || '{}')).toEqual({
       openaiApiKey: '',
       geminiApiKey: '',
       anthropicApiKey: '',

@@ -34,7 +34,7 @@ This repo is intentionally local-first:
 
 ## Security Notes
 
-- Provider API keys entered in `Settings` are browser-scoped session values, not server-side secrets.
+- Provider API keys entered in `Settings` are browser-scoped local values persisted on the current device, not server-side secrets.
 - Bishop remote calls are made from the app runtime, so treat those keys as local development credentials only.
 - Worker jobs receive only the environment variables required for the selected operation instead of the full in-browser secret set.
 - Bishop conversation history is session-scoped and is cleared when the browser session ends unless you export it explicitly.

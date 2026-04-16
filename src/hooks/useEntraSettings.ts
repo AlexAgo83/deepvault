@@ -25,20 +25,25 @@ function readEntraSettings(): EntraSettings {
   if (typeof window === 'undefined') return EMPTY
 
   const raw = window.localStorage.getItem(ENTRA_SETTINGS_STORAGE_KEY)
-  const secretRaw = window.sessionStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)
-  const legacySecretRaw = raw ? raw : null
+  const secretRaw = window.localStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)
+  const legacySecretRaw = window.sessionStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)
+  const legacyInlineSecretRaw = raw ? raw : null
 
   try {
     const parsed = raw ? JSON.parse(raw) as Partial<EntraSettings> : {}
     const secretParsed = secretRaw ? JSON.parse(secretRaw) as Partial<Pick<EntraSettings, 'secretValue'>> : {}
-    const legacyParsed = legacySecretRaw ? JSON.parse(legacySecretRaw) as Partial<EntraSettings> : {}
-    const secretValue = secretParsed.secretValue?.trim() || legacyParsed.secretValue?.trim() || ''
+    const legacySecretParsed = legacySecretRaw ? JSON.parse(legacySecretRaw) as Partial<Pick<EntraSettings, 'secretValue'>> : {}
+    const legacyInlineParsed = legacyInlineSecretRaw ? JSON.parse(legacyInlineSecretRaw) as Partial<EntraSettings> : {}
+    const secretValue = secretParsed.secretValue?.trim() || legacySecretParsed.secretValue?.trim() || legacyInlineParsed.secretValue?.trim() || ''
 
     if (secretValue && !secretRaw) {
-      window.sessionStorage.setItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY, JSON.stringify({ secretValue }, null, 2))
+      window.localStorage.setItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY, JSON.stringify({ secretValue }, null, 2))
     }
-    if (legacyParsed.secretValue) {
-      const sanitized = { ...legacyParsed }
+    if (legacySecretRaw) {
+      window.sessionStorage.removeItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)
+    }
+    if (legacyInlineParsed.secretValue) {
+      const sanitized = { ...legacyInlineParsed }
       delete sanitized.secretValue
       window.localStorage.setItem(ENTRA_SETTINGS_STORAGE_KEY, JSON.stringify(sanitized, null, 2))
     }
@@ -64,7 +69,8 @@ export function useEntraSettings() {
 
     const { secretValue, ...rest } = entraSettings
     window.localStorage.setItem(ENTRA_SETTINGS_STORAGE_KEY, JSON.stringify(rest, null, 2))
-    window.sessionStorage.setItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY, JSON.stringify({ secretValue }, null, 2))
+    window.localStorage.setItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY, JSON.stringify({ secretValue }, null, 2))
+    window.sessionStorage.removeItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)
   }, [entraSettings])
 
   const setEntraSetting = (key: keyof EntraSettings, value: string) => {

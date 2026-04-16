@@ -72,3 +72,4 @@ flowchart TD
 - Additional April 2026 hardening follow-up applied to keep empty live corpus payloads non-fatal, align provider readiness with current session credentials, and move Bishop conversation persistence to session scope.
 - Additional April 2026 CI hardening follow-up applied to keep `npm run evaluate` hermetic by ignoring ambient provider API keys and local data-mode/path overrides during the deterministic mock baseline, while filtering generic single-heading collisions for unrelated multi-term queries.
 - Additional April 2026 cross-platform follow-up applied to remove the shell-specific `sh -lc` validation path, document Windows setup/runtime commands, and extend CI coverage to both Ubuntu and Windows.
+- Additional April 2026 settings persistence follow-up applied to persist provider API keys and the Entra client secret in browser-local settings storage, with migration from the previous session-only storage.

@@ -39,24 +39,24 @@ function readProviderSecrets(): ProviderSecrets {
     return emptySecrets()
   }
 
-  const sessionValue = readStorage(window.sessionStorage)
-  if (sessionValue) {
+  const localValue = readStorage(window.localStorage)
+  if (localValue) {
     return {
-      openaiApiKey: sessionValue.openaiApiKey?.trim() || '',
-      geminiApiKey: sessionValue.geminiApiKey?.trim() || '',
-      anthropicApiKey: sessionValue.anthropicApiKey?.trim() || '',
+      openaiApiKey: localValue.openaiApiKey?.trim() || '',
+      geminiApiKey: localValue.geminiApiKey?.trim() || '',
+      anthropicApiKey: localValue.anthropicApiKey?.trim() || '',
     }
   }
 
-  const legacyValue = readStorage(window.localStorage)
+  const legacyValue = readStorage(window.sessionStorage)
   if (legacyValue) {
     const migrated = {
       openaiApiKey: legacyValue.openaiApiKey?.trim() || '',
       geminiApiKey: legacyValue.geminiApiKey?.trim() || '',
       anthropicApiKey: legacyValue.anthropicApiKey?.trim() || '',
     }
-    window.sessionStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify(migrated, null, 2))
-    window.localStorage.removeItem(PROVIDER_SECRETS_STORAGE_KEY)
+    window.localStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify(migrated, null, 2))
+    window.sessionStorage.removeItem(PROVIDER_SECRETS_STORAGE_KEY)
     return migrated
   }
 
@@ -71,8 +71,8 @@ export function useProviderSecrets() {
       return
     }
 
-    window.sessionStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify(providerSecrets, null, 2))
-    window.localStorage.removeItem(PROVIDER_SECRETS_STORAGE_KEY)
+    window.localStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify(providerSecrets, null, 2))
+    window.sessionStorage.removeItem(PROVIDER_SECRETS_STORAGE_KEY)
   }, [providerSecrets])
 
   const setApiKey = (provider: ProviderId, value: string) => {
