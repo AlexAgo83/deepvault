@@ -352,8 +352,6 @@ export function SyncPanel({
       {syncView === 'operations' ? (
         <>
           <article className="panel sync-controls-panel" aria-label="Sync operations controls">
-            <SectionHeading title="Operations" subtitleTooltip="Launch, resume, or cancel sync operations." />
-
             <div className="sync-controls-panel-body">
               <div className="sync-controls-group">
                 <span className="sync-controls-label">Knowledge</span>

@@ -170,9 +170,7 @@ export function BishopPanel({
             disabled={isAsking}
           />
           <div className="chat-form-actions">
-            <div className="chat-note">
-              Enter sends. Shift+Enter adds a new line. Current provider: {provider}. Current role: {role}. No fallback mixing during evaluation.
-            </div>
+            <div className="chat-note">Enter sends. Shift+Enter adds a new line.</div>
             <button type="submit" className="primary-button" title="Send the question to Bishop" disabled={isAsking}>
               {isAsking ? 'Thinking...' : 'Ask bishop'}
             </button>
