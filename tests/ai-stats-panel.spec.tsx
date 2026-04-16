@@ -27,7 +27,7 @@ describe('AIStatsPanel', () => {
   })
 
   it('aggregates recurring AI needs and hides the right panel when requested', () => {
-    render(
+    const { container } = render(
       <AIStatsPanel
         showRightPanel={false}
         resolveFileHref={() => null}
@@ -45,7 +45,9 @@ describe('AIStatsPanel', () => {
       />,
     )
 
-    expect(screen.getAllByText('Answered response')).toHaveLength(2)
+    const headings = Array.from(container.querySelectorAll('.ai-response-head-copy strong')).map((node) => node.textContent)
+    expect(headings).toContain('#1')
+    expect(headings).toContain('#2')
     expect(screen.getAllByText('no_answer')).toHaveLength(2)
     expect(screen.getByText('n/a')).toBeInTheDocument()
     expect(screen.getAllByText('Question')).toHaveLength(4)
@@ -154,6 +156,54 @@ describe('AIStatsPanel', () => {
     expect(within(metadata).getByText('remote')).toBeInTheDocument()
   })
 
+  it('keeps the response card accessible without exposing a hover tooltip', () => {
+    const { container } = render(
+      <AIStatsPanel
+        showRightPanel={false}
+        resolveFileHref={() => null}
+        messages={[
+          { id: 'user-1', role: 'user', text: 'Who is Paul?', status: 'answered' },
+          assistantMessage({ id: 'assistant-1', text: 'First answer' }),
+        ] as never}
+      />,
+    )
+
+    const responseCard = screen.getByRole('button', { name: /who is paul\?/i })
+    expect(responseCard).toHaveAttribute('aria-label', 'Who is Paul?')
+    expect(responseCard).not.toHaveAttribute('title')
+    expect(container.querySelector('.ai-response-head-copy strong')?.textContent).toBe('#assistant-1')
+  })
+
+  it('falls back to an incremental response id when the message id is missing', () => {
+    const { container } = render(
+      <AIStatsPanel
+        showRightPanel={false}
+        resolveFileHref={() => null}
+        messages={[
+          { id: 'user-1', role: 'user', text: 'Who is Paul?', status: 'answered' },
+          assistantMessage({ id: '   ', text: 'First answer' }),
+        ] as never}
+      />,
+    )
+
+    expect(container.querySelector('.ai-response-head-copy strong')?.textContent).toBe('#1')
+  })
+
+  it('removes the assistant suffix from the displayed response id', () => {
+    const { container } = render(
+      <AIStatsPanel
+        showRightPanel={false}
+        resolveFileHref={() => null}
+        messages={[
+          { id: 'user-1', role: 'user', text: 'Who is Paul?', status: 'answered' },
+          assistantMessage({ id: '1776350858179-assistant', text: 'First answer' }),
+        ] as never}
+      />,
+    )
+
+    expect(container.querySelector('.ai-response-head-copy strong')?.textContent).toBe('#1776350858179')
+  })
+
   it('closes the previous response details when another card is opened', async () => {
     const user = userEvent.setup()
     render(
@@ -180,8 +230,72 @@ describe('AIStatsPanel', () => {
     await user.click(secondCard)
     expect(firstCard).toHaveAttribute('aria-expanded', 'false')
     expect(secondCard).toHaveAttribute('aria-expanded', 'true')
-    expect(screen.queryByText('Need first hint')).not.toBeInTheDocument()
-    await user.click(within(secondCard).getByRole('button', { name: 'Show what would help next' }))
-    expect(screen.getByText('Need second hint')).toBeInTheDocument()
+    expect(within(secondCard).getByText('Need second hint')).toBeVisible()
+  })
+
+  it('persists the sources toggle when switching between response cards', async () => {
+    const user = userEvent.setup()
+    render(
+      <AIStatsPanel
+        showRightPanel={false}
+        resolveFileHref={() => 'https://example.test/source.json'}
+        messages={[
+          { id: 'user-1', role: 'user', text: 'Who is Paul?', status: 'answered' },
+          assistantMessage({
+            id: 'assistant-1',
+            text: 'First answer',
+            sources: [
+              {
+                id: 'source-1',
+                title: 'Doc 1',
+                siteId: 'site-a',
+                siteName: 'Site A',
+                path: '/Docs/doc-1.json',
+                updatedAt: '2026-03-24T12:33:48.922Z',
+                author: 'Paul Mondou',
+                score: 29,
+                summary: 'Doc 1',
+                snippet: 'Doc 1',
+                tags: [],
+                access: ['admin'],
+                source: 'sharepoint',
+              },
+            ],
+          }),
+          { id: 'user-2', role: 'user', text: 'Who is Romaric?', status: 'answered' },
+          assistantMessage({
+            id: 'assistant-2',
+            text: 'Second answer',
+            sources: [
+              {
+                id: 'source-2',
+                title: 'Doc 2',
+                siteId: 'site-b',
+                siteName: 'Site B',
+                path: '/Docs/doc-2.json',
+                updatedAt: '2026-03-24T12:33:48.922Z',
+                author: 'Romaric',
+                score: 31,
+                summary: 'Doc 2',
+                snippet: 'Doc 2',
+                tags: [],
+                access: ['admin'],
+                source: 'sharepoint',
+              },
+            ],
+          }),
+        ] as never}
+      />,
+    )
+
+    const firstCard = screen.getByRole('button', { name: /who is paul\?/i })
+    const secondCard = screen.getByRole('button', { name: /who is romaric\?/i })
+
+    await user.click(firstCard)
+    await user.click(within(firstCard).getByRole('button', { name: 'Show sources' }))
+    expect(screen.getByText('Site A')).toBeInTheDocument()
+
+    await user.click(secondCard)
+    expect(within(secondCard).getByText('Site B')).toBeVisible()
   })
 })
