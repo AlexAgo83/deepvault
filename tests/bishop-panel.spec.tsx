@@ -119,6 +119,69 @@ describe('BishopPanel scroll behavior', () => {
   })
 })
 
+describe('BishopPanel composer shortcuts', () => {
+  it('submits the form when Enter is pressed in the question field', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn((event: React.FormEvent<HTMLFormElement>) => event.preventDefault())
+
+    render(
+      <BishopPanel
+        conversationContextEnabled={true}
+        clearHistory={vi.fn()}
+        exportJson={vi.fn()}
+        exportMarkdown={vi.fn()}
+        messages={[createMessage('seed', 'Seed')]}
+        question="What is the budget for Q3 2025?"
+        onConversationContextChange={vi.fn()}
+        onQuestionChange={vi.fn()}
+        isAsking={false}
+        onSubmit={onSubmit}
+        provider="openai"
+        role="analyst"
+        selectedMessage={{ id: 'seed', status: 'ready', provider: 'openai', orchestrationMode: 'fallback', sources: [] } as never}
+        resolveFileHref={vi.fn().mockReturnValue(null)}
+      />,
+    )
+
+    await user.click(screen.getByLabelText('Ask a question'))
+    await user.keyboard('{Enter}')
+
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps multiline entry available when Shift+Enter is pressed', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn((event: React.FormEvent<HTMLFormElement>) => event.preventDefault())
+    const onQuestionChange = vi.fn()
+
+    render(
+      <BishopPanel
+        conversationContextEnabled={true}
+        clearHistory={vi.fn()}
+        exportJson={vi.fn()}
+        exportMarkdown={vi.fn()}
+        messages={[createMessage('seed', 'Seed')]}
+        question="Line 1"
+        onConversationContextChange={vi.fn()}
+        onQuestionChange={onQuestionChange}
+        isAsking={false}
+        onSubmit={onSubmit}
+        provider="openai"
+        role="analyst"
+        selectedMessage={{ id: 'seed', status: 'ready', provider: 'openai', orchestrationMode: 'fallback', sources: [] } as never}
+        resolveFileHref={vi.fn().mockReturnValue(null)}
+      />,
+    )
+
+    const textarea = screen.getByLabelText('Ask a question')
+    await user.click(textarea)
+    await user.keyboard('{Shift>}{Enter}{/Shift}')
+
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(onQuestionChange).toHaveBeenCalledWith('Line 1\n')
+  })
+})
+
 describe('BishopPanel confidence trace', () => {
   it('shows the confidence score and reveals the provider trace on hover', async () => {
     const user = userEvent.setup()

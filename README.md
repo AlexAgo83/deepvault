@@ -142,6 +142,7 @@ Use this when you want to work with the bundled mock corpus.
 
 - switch to `Bishop`
 - ask a grounded question about the corpus
+- press `Enter` to send, or `Shift + Enter` to add a new line
 - optionally keep conversation context enabled so Bishop reuses previous turns
 - check the answer trace for sources, chunk count, token count, and latency
 

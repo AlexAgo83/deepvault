@@ -2591,6 +2591,32 @@ th {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: var(--shadow);
+  display: grid;
+  gap: 10px;
+}
+
+.sync-history-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, max-content));
+  gap: 8px 14px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.sync-history-command {
+  display: block;
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  font-family: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, monospace;
+  white-space: nowrap;
+  overflow-x: auto;
 }
 
 .source-path {

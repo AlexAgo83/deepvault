@@ -35,6 +35,7 @@ The spec covers answer flow, citations, loading and error states, and the qualit
 - The chat flow must respect permission-aware retrieval before context reaches the model.
 - The surface must support swapping OpenAI and Gemini behind one contract.
 - The UI must remain source-first and should not hide provenance behind a generic chatbot shell.
+- The composer must send on `Enter` and keep multiline drafting on `Shift + Enter`.
 
 # Acceptance criteria
 - Users can ask questions locally and get grounded answers with citations.
