@@ -26,6 +26,7 @@ export interface BishopOrchestrationOptions {
   role?: UserRole
   provider?: ProviderId
   limit?: number
+  candidateLimit?: number
   endpoint?: string | null
   fetchImpl?: typeof fetch
   allowEnvProviderKeys?: boolean
@@ -589,7 +590,12 @@ export async function orchestrateBishopAnswer(
 ): Promise<BishopOrchestrationResult> {
   const role = options.role || 'analyst'
   const provider = options.provider || 'openai'
-  const grounding = buildGrounding(corpus, query, { role, provider, limit: options.limit })
+  const grounding = buildGrounding(corpus, query, {
+    role,
+    provider,
+    limit: options.limit,
+    candidateLimit: options.candidateLimit,
+  })
   const prompt = buildBishopPrompt({
     query,
     role,
@@ -597,7 +603,12 @@ export async function orchestrateBishopAnswer(
     grounding,
     conversationHistory: options.conversationHistory,
   })
-  const fallback = answerQuestion(corpus, query, { role, provider, limit: options.limit })
+  const fallback = answerQuestion(corpus, query, {
+    role,
+    provider,
+    limit: options.limit,
+    candidateLimit: options.candidateLimit,
+  })
   const endpoint = options.endpoint?.trim() || ''
   const fetchImpl = options.fetchImpl || fetch
 

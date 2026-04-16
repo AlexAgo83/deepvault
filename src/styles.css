@@ -1265,6 +1265,7 @@ select:focus-visible {
 
 .settings-main-scroll {
   display: grid;
+  align-content: start;
   gap: 18px;
   flex: 1 1 auto;
   min-height: 0;
@@ -1275,6 +1276,7 @@ select:focus-visible {
 
 .settings-section {
   display: grid;
+  align-content: start;
   gap: 14px;
   padding-top: 18px;
   border-top: 1px solid var(--border);
@@ -1288,7 +1290,7 @@ select:focus-visible {
 
 .settings-subnav {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -1542,6 +1544,16 @@ select:focus-visible {
   gap: 12px;
 }
 
+.settings-runtime-filler {
+  display: none;
+}
+
+@media (min-width: 1181px) {
+  .settings-runtime-filler {
+    display: block;
+  }
+}
+
 .settings-runtime-panel .settings-field {
   gap: 6px;
 }
@@ -1549,6 +1561,19 @@ select:focus-visible {
 .settings-runtime-panel .settings-field > span {
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.settings-section-block {
+  display: grid;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.settings-field small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .settings-scope-field {
@@ -2304,6 +2329,14 @@ th {
 
 .chat-form-actions {
   align-items: center;
+}
+
+.chat-form-submit-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-left: auto;
 }
 
 .chat-note {

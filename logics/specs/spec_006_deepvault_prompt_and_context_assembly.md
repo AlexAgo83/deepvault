@@ -8,6 +8,7 @@
 This spec defines the prompt template structure and context assembly strategy used by the DeepVault chat backend.
 It covers the system prompt, context injection format, token budgets, chunk selection order, and how citation metadata is passed through to the answer surface.
 The goal is a predictable, auditable, and cost-bounded answer flow that works the same way in local and hosted runtimes.
+In Nexus, the local operator can tune the effective source count, retrieval candidate pool, and reused conversation-history depth from `Settings`, but those values must stay inside the bounded ranges defined below.
 
 # Goals
 - Define the system prompt template so it is consistent across providers and environments.
@@ -62,7 +63,7 @@ Rules:
 - Sources are numbered sequentially starting at 1. The number corresponds to the citation the LLM should use.
 - Each source header includes: title (from `chunk.display_name`), site name (resolved from `chunk.site_id`), and last modified date (from `chunk.last_modified`, formatted as YYYY-MM-DD).
 - Chunk text is inserted as-is (plain text, no markdown, no HTML). The backend must strip any formatting before injection.
-- If fewer than 20 chunks are available after permission filtering and score thresholding, the number of sources is the actual available count.
+- The local Nexus runtime currently caps the final grounded source count to 8 and the retrieval candidate pool to 20. If fewer eligible chunks are available after permission filtering and score thresholding, the number of sources is the actual available count.
 - The `[/SOURCES]` tag closes the context block. Everything after it and before `[/QUESTION]` is empty.
 
 # Token budget
@@ -98,9 +99,10 @@ After permission filtering and scoring (per ADR 014), the top-ranked chunks are 
 
 1. Sort all permitted chunks by composite score descending.
 2. Drop any chunk with a composite score below the minimum threshold (0.35).
-3. Take up to 20 chunks.
+3. Take up to the configured candidate-pool size, capped at 20 chunks.
 4. If the cumulative token count of the selected chunks exceeds 8,000 tokens, drop the lowest-scoring chunks until the budget is met.
-5. Order the selected chunks in the context by composite score descending (highest score = source [1]).
+5. Trim the final prompt context to the configured grounded-source count, capped at 8.
+6. Order the selected chunks in the context by composite score descending (highest score = source [1]).
 
 The ordering in the context is intentional: the LLM should cite the most relevant sources first. Do not randomize or alphabetize chunk order.
 

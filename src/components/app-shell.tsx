@@ -554,6 +554,8 @@ export function AppShell(model: AppModel) {
     activeScopeLabel,
     activeTab,
     corpusProviders,
+    bishopSettings,
+    clearBishopSettings,
     clearEntraSettings,
     clearProviderSecrets,
     clearWorkerSettings,
@@ -577,6 +579,7 @@ export function AppShell(model: AppModel) {
     selectedExplorerDoc,
     selectedMessage,
     setActiveTab,
+    setBishopSetting,
     setProvider,
     setEntraSetting,
     setProviderSecret,
@@ -864,10 +867,14 @@ export function AppShell(model: AppModel) {
           <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
           <SettingsPanel
             corpusProviders={corpusProviders}
+            bishopSettings={bishopSettings}
+            conversationContextEnabled={conversationContextEnabled}
             entraSettings={entraSettings}
             providerSecrets={providerSecrets}
             workerSettings={workerSettings}
+            onBishopChange={setBishopSetting}
             onClear={clearProviderSecrets}
+            onClearBishop={clearBishopSettings}
             onClearEntra={clearEntraSettings}
             onClearWorker={clearWorkerSettings}
             onEntraChange={setEntraSetting}
@@ -875,6 +882,7 @@ export function AppShell(model: AppModel) {
             onProviderChange={(value) => setProvider(value)}
             onRoleChange={(value) => setRole(value)}
             onSiteFilterChange={setSiteFilter}
+            onConversationContextEnabledChange={setConversationContextEnabled}
             onWorkerChange={setWorkerSetting}
             showRightPanel={showRightPanel}
             provider={provider}

@@ -1,30 +1,37 @@
 import { useEffect, useState } from 'react'
 import type { EntraSettings } from '../../hooks/useEntraSettings'
+import type { BishopSettings } from '../../hooks/useBishopSettings'
 import type { ProviderSecrets } from '../../hooks/useProviderSecrets'
 import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 import type { AppModel } from '../../hooks/useAppModel'
 import { type ProviderId, type UserRole } from '../../lib/deepvault'
 import { SettingsChangelogPanel } from './settings-changelog-panel'
 
-type SettingsView = 'runtime' | 'sharepoint' | 'ai-providers' | 'worker'
+type SettingsView = 'runtime' | 'assistant-context' | 'sharepoint' | 'ai-providers' | 'worker'
 
 const SETTINGS_VIEWS: Array<{ id: SettingsView; label: string; detail: string }> = [
   { id: 'runtime', label: 'Runtime', detail: 'Role, site scope, provider, and data mode' },
+  { id: 'assistant-context', label: 'Assistant context', detail: 'Grounded source count, candidate pool, and reused history' },
   { id: 'sharepoint', label: 'SharePoint', detail: 'Entra app, tenant, secret, and target sites' },
   { id: 'ai-providers', label: 'AI providers', detail: 'Browser-scoped model keys and provider readiness' },
   { id: 'worker', label: 'Worker', detail: 'Worker mode, endpoint, timeout, and fallback' },
 ]
 
 export function SettingsPanel({
+  bishopSettings,
+  conversationContextEnabled,
   corpusProviders,
   entraSettings,
   providerSecrets,
   workerSettings,
   onClear,
+  onClearBishop,
   onClearEntra,
   onClearWorker,
+  onBishopChange,
   onEntraChange,
   onKeyChange,
+  onConversationContextEnabledChange,
   onProviderChange,
   onRoleChange,
   onSiteFilterChange,
@@ -36,22 +43,27 @@ export function SettingsPanel({
   siteFilter,
   siteSummaries,
 }: {
+  bishopSettings: BishopSettings
+  conversationContextEnabled: boolean
   corpusProviders: AppModel['corpusProviders']
   entraSettings: EntraSettings
   providerSecrets: ProviderSecrets
   workerSettings: WorkerSettings
   onClear: () => void
+  onClearBishop: () => void
   onClearEntra: () => void
   onClearWorker: () => void
+  onBishopChange: <K extends keyof BishopSettings>(_key: K, _value: BishopSettings[K]) => void
   onEntraChange: (_key: keyof EntraSettings, _value: string) => void
   onKeyChange: (_provider: 'openai' | 'gemini' | 'anthropic', _value: string) => void
+  onConversationContextEnabledChange: (_value: boolean) => void
   onProviderChange: (_value: ProviderId) => void
   onRoleChange: (_value: UserRole) => void
   onSiteFilterChange: (_value: string) => void
   onWorkerChange: <K extends keyof WorkerSettings>(_key: K, _value: WorkerSettings[K]) => void
   showRightPanel: boolean
   provider: string
-  requestedView?: 'runtime' | 'ai-providers' | null
+  requestedView?: 'runtime' | 'assistant-context' | 'ai-providers' | null
   role: string
   siteFilter: string
   siteSummaries: AppModel['siteSummaries']
@@ -73,7 +85,7 @@ export function SettingsPanel({
           <div className="sync-view-switcher-head">
             <div>
               <h2>Settings</h2>
-              <p>Switch between runtime controls, SharePoint credentials, AI provider keys, and worker configuration from one screen.</p>
+              <p>Switch between runtime controls, a dedicated assistant-context screen, SharePoint credentials, AI provider keys, and worker configuration from one screen.</p>
             </div>
           </div>
 
@@ -92,6 +104,7 @@ export function SettingsPanel({
                 <span className="sync-subnav-detail">{detail}</span>
                 <span className="sync-subnav-status">
                   {id === 'runtime' ? role : null}
+                  {id === 'assistant-context' ? `${bishopSettings.sourceLimit} src` : null}
                   {id === 'sharepoint' ? (entraSettings.appId && entraSettings.tenantId ? 'Configured' : 'Missing fields') : null}
                   {id === 'ai-providers' ? 'Local keys' : null}
                   {id === 'worker' ? workerSettings.workerMode : null}
@@ -162,6 +175,68 @@ export function SettingsPanel({
                       ))}
                     </div>
                   </div>
+                  <div className="settings-runtime-filler" aria-hidden="true" />
+                </div>
+              </section>
+            ) : null}
+
+            {settingsView === 'assistant-context' ? (
+              <section className="settings-section">
+                <div className="settings-form-grid">
+                  <label className="settings-field">
+                    <span>Keep conversation context</span>
+                    <select
+                      value={conversationContextEnabled ? 'enabled' : 'disabled'}
+                      title="Reuse previous Bishop turns in the prompt"
+                      onChange={(event) => onConversationContextEnabledChange(event.target.value === 'enabled')}
+                    >
+                      <option value="enabled">enabled</option>
+                      <option value="disabled">disabled</option>
+                    </select>
+                  </label>
+
+                  <label className="settings-field">
+                    <span>Grounded sources</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={8}
+                      value={bishopSettings.sourceLimit}
+                      onChange={(event) => onBishopChange('sourceLimit', Number(event.target.value) || 1)}
+                    />
+                    <small>The final number of sources injected into the grounded prompt.</small>
+                  </label>
+
+                  <label className="settings-field">
+                    <span>Candidate pool</span>
+                    <input
+                      type="number"
+                      min={bishopSettings.sourceLimit}
+                      max={20}
+                      value={bishopSettings.candidateLimit}
+                      onChange={(event) => onBishopChange('candidateLimit', Number(event.target.value) || bishopSettings.sourceLimit)}
+                    />
+                    <small>How many candidate documents are ranked before trimming to the final grounded sources.</small>
+                  </label>
+
+                  <label className="settings-field">
+                    <span>History turns</span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={20}
+                      value={bishopSettings.historyTurnLimit}
+                      onChange={(event) => onBishopChange('historyTurnLimit', Number(event.target.value) || 0)}
+                    />
+                    <small>The number of previous Bishop turns reused when conversation context is enabled.</small>
+                  </label>
+                </div>
+
+                <div className="settings-actions">
+                  <button type="button" className="secondary-button" title="Reset Bishop context settings to their defaults" onClick={onClearBishop}>
+                    Reset assistant context
+                  </button>
+                  <span className="settings-actions-filler" aria-hidden="true" />
                 </div>
               </section>
             ) : null}

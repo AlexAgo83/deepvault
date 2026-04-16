@@ -111,6 +111,29 @@ describe('DeepVault app', () => {
     expect(localStorage.getItem('deepvault_bishop_context_enabled')).toBe('false')
   })
 
+  it('lets Settings tune the assistant context payload', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    await user.click(screen.getByRole('button', { name: 'Assistant context' }))
+
+    expect(screen.getByRole('button', { name: 'Assistant context' })).toHaveAttribute('aria-current', 'page')
+
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Keep conversation context' }), 'disabled')
+    const [sourceLimitInput, candidatePoolInput, historyTurnsInput] = screen.getAllByRole('spinbutton')
+    fireEvent.change(sourceLimitInput, { target: { value: '5' } })
+    fireEvent.change(candidatePoolInput, { target: { value: '14' } })
+    fireEvent.change(historyTurnsInput, { target: { value: '4' } })
+
+    expect(localStorage.getItem('deepvault_bishop_context_enabled')).toBe('false')
+    expect(JSON.parse(localStorage.getItem('deepvault_bishop_settings') || '{}')).toEqual({
+      sourceLimit: 5,
+      candidateLimit: 14,
+      historyTurnLimit: 4,
+    })
+  })
+
   it('shows the answer trace metrics after bishop responds', async () => {
     const user = userEvent.setup()
     render(<App />)
