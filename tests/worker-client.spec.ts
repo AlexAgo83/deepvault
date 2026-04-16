@@ -98,6 +98,20 @@ describe('createWorkerClient — local mode', () => {
     const client = createWorkerClient(LOCAL_CONFIG)
     await expect(client.checkHealth()).rejects.toThrow()
   })
+
+  it('includes worker error details when startJob returns a JSON error payload', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      text: () => Promise.resolve(JSON.stringify({ error: 'AADSTS7000215: Invalid client secret provided.' })),
+    }))
+
+    const client = createWorkerClient(LOCAL_CONFIG)
+
+    await expect(client.startJob({ kind: 'export-live' })).rejects.toThrow(
+      'Failed to start job: 400: AADSTS7000215: Invalid client secret provided.',
+    )
+  })
 })
 
 describe('createWorkerClient — remote mode', () => {

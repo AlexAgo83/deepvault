@@ -141,6 +141,7 @@ npm run evaluate
 ```
 
 These commands validate the local mock corpus pipeline and the deterministic baseline.
+`npm run evaluate` explicitly ignores ambient provider API keys plus local `DEEPVAULT_DATA_MODE` / `DEEPVAULT_CORPUS_PATH` overrides so the mock baseline stays hermetic across developer machines and CI runners.
 
 ### 7. Run the full local check
 
@@ -234,6 +235,8 @@ npm run build
 npm run evaluate
 npm run e2e
 ```
+
+`npm run evaluate` stays on the deterministic local baseline even if `OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `DEEPVAULT_DATA_MODE`, or `DEEPVAULT_CORPUS_PATH` are set in the shell or `.env.local`.
 
 For live-data validation:
 

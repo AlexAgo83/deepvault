@@ -206,6 +206,22 @@ describe('bishop orchestration helpers', () => {
     expect(body.messages[1].content).toContain('- Bishop: We talked about the budget.')
   })
 
+  it('ignores ambient provider keys when env fallback is disabled', async () => {
+    vi.stubEnv('OPENAI_API_KEY', 'ambient-openai-key')
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+      role: 'analyst',
+      provider: 'openai',
+      allowEnvProviderKeys: false,
+    })
+
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(result.mode).toBe('fallback')
+    expect(result.answer).toContain('Q3 2025 budget')
+  })
+
   it('uses Gemini when the provider is gemini and the API key is available', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
