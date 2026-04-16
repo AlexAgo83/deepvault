@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4C8BF5" alt="MIT License" /></a>
-  <img src="https://img.shields.io/badge/version-v1.1.0-4C8BF5" alt="Version 1.1.0" />
+  <img src="https://img.shields.io/badge/version-v1.2.0-4C8BF5" alt="Version 1.2.0" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript Strict" />
   <img src="https://img.shields.io/badge/local--first-deepvault-0F766E" alt="Local first" />
@@ -31,6 +31,13 @@ This repo is intentionally local-first:
 - mock mode runs without Microsoft Graph
 - live mode uses a browser-ready JSON export from your SharePoint sites
 - the live export is generated from the Microsoft Graph / Entra settings in `.env.local`
+
+## Security Notes
+
+- Provider API keys entered in `Settings` are browser-scoped session values, not server-side secrets.
+- Bishop remote calls are made from the app runtime, so treat those keys as local development credentials only.
+- Worker jobs receive only the environment variables required for the selected operation instead of the full in-browser secret set.
+- Prefer `.env.local` and CLI workflows for higher-trust live export and evaluation runs.
 
 ## What You Can Test
 
@@ -164,12 +171,12 @@ The live exporter reads these settings from `.env.local`:
 - `DEEPVAULT_PILOT_SITE_NAMES`
 - `DEEPVAULT_ENTRA_APP_ID`
 - `DEEPVAULT_ENTRA_TENANT_ID`
-- `DEEPVAULT_ENTRA_SECRET_ID`
 - `DEEPVAULT_ENTRA_SECRET_VALUE`
 - `OPENAI_API_KEY`
 - `GEMINI_API_KEY`
+- `ANTHROPIC_API_KEY`
 
-You can use [`.env.exemple`](./.env.exemple) as the starting point.
+You can use [`.env.exemple`](./.env.exemple) as the starting point. The in-app `Settings` screen currently covers the Entra app ID, tenant ID, client secret value, site URLs, site names, provider API keys, and worker connection settings.
 
 ### 2. Generate the live corpus
 

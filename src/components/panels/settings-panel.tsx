@@ -120,7 +120,7 @@ export function SettingsPanel({
           <section className="settings-section">
             <SectionHeading
               title="SharePoint / Entra ID"
-              subtitleTooltip="Credentials passed as env vars to ops console scripts (ingest, evaluate, live export). Stored locally in this browser only."
+              subtitleTooltip="Browser-scoped local settings used for worker jobs and live export. Treat them as local development credentials, not server-side secrets."
             />
 
             <div className="settings-form-grid">
@@ -195,11 +195,11 @@ export function SettingsPanel({
           <section id="settings-ai-providers-panel" className="settings-section settings-ai-providers-panel">
             <SectionHeading
               title="AI providers"
-              subtitleTooltip="Provider API keys stored locally in this browser. Bishop uses them when a remote provider is selected."
+              subtitleTooltip="Browser-scoped session keys used directly by Bishop for provider calls and by evaluate jobs when needed."
             />
 
             <div className="kpi-grid compact settings-summary-grid">
-              <StatCard label="Configured providers" value={configuredCount} note="Keys stored in this browser only." />
+              <StatCard label="Configured providers" value={configuredCount} note="Session-scoped keys for local development." />
               <StatCard label="OpenAI" value={providerSecrets.openaiApiKey ? 'Set' : 'Missing'} note="Used when provider is openai." />
               <StatCard label="Gemini" value={providerSecrets.geminiApiKey ? 'Set' : 'Missing'} note="Used when provider is gemini." />
               <StatCard label="Anthropic" value={providerSecrets.anthropicApiKey ? 'Set' : 'Missing'} note="Used when provider is anthropic." />

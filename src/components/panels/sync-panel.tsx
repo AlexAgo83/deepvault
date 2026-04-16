@@ -1,17 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-
-export function formatDuration(ms: number): string {
-  const safeMs = Math.max(0, Math.round(ms))
-  if (safeMs < 1000) return `${safeMs}ms`
-  const s = Math.floor(safeMs / 1000)
-  if (s < 60) return `${s}s`
-  return `${Math.floor(s / 60)}m ${s % 60}s`
-}
 import { Pill, SectionHeading, StatCard } from '../app-ui'
 import { ConfirmModal } from '../confirm-modal'
 import { formatUpdatedAt } from '../../lib/deepvault'
 import type { AppModel } from '../../hooks/useAppModel'
 import type { WorkerSettings } from '../../hooks/useWorkerSettings'
+import { formatDuration } from './sync-panel-utils'
 
 type OpsKey = 'ingest' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
 export type SyncView = 'status' | 'operations' | 'history' | 'config' | 'recovery'

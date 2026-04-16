@@ -193,7 +193,8 @@ describe('useSyncOperations', () => {
 
     expect(result.current.activeJob?.status).toBe('completed')
     expect(result.current.activeJob?.summary).toBe('Wrote a new local sync snapshot.')
-    expect(mockEs?.close).toHaveBeenCalled()
+    expect(mockEs).not.toBeNull()
+    expect(mockEs!.close).toHaveBeenCalled()
   })
 
   it('surfaces the block-mode worker startup error message', async () => {
@@ -214,6 +215,64 @@ describe('useSyncOperations', () => {
 
     expect(result.current.activeJob?.status).toBe('failed')
     expect(result.current.activeJob?.summary).toBe('Could not reach the worker. Make sure you are running the Vite dev server.')
+  })
+
+  it('passes only the env needed for each worker job kind', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve({ jobId: 'job-env-scope' }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+
+    const { result } = renderHook(() => useSyncOperations({
+      ...DEFAULT_OPTIONS,
+      extraEnv: {
+        DEEPVAULT_DATA_MODE: 'live',
+        OPENAI_API_KEY: 'openai-key',
+        GEMINI_API_KEY: 'gemini-key',
+        ANTHROPIC_API_KEY: 'anthropic-key',
+        DEEPVAULT_ENTRA_APP_ID: 'app-id',
+        DEEPVAULT_ENTRA_TENANT_ID: 'tenant-id',
+        DEEPVAULT_ENTRA_SECRET_VALUE: 'entra-secret',
+        DEEPVAULT_ENTRA_SITES: 'https://tenant.sharepoint.com/sites/A',
+        DEEPVAULT_PILOT_SITE_NAMES: 'Site A',
+      },
+    }))
+
+    await act(async () => {
+      result.current.startIngest()
+    })
+    await act(async () => {})
+
+    const ingestBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
+      env: Record<string, string>
+    }
+    expect(ingestBody.env).toEqual({
+      DEEPVAULT_DATA_MODE: 'live',
+    })
+
+    await act(async () => {
+      result.current.cancelActiveJob()
+    })
+
+    fetchMock.mockClear()
+
+    await act(async () => {
+      result.current.startEvaluate()
+    })
+    await act(async () => {})
+
+    const evaluateBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
+      env: Record<string, string>
+    }
+    expect(evaluateBody.env).toEqual({
+      DEEPVAULT_DATA_MODE: 'live',
+      OPENAI_API_KEY: 'openai-key',
+      GEMINI_API_KEY: 'gemini-key',
+      ANTHROPIC_API_KEY: 'anthropic-key',
+    })
   })
 
   it('reconnects a persisted job and marks it failed when the stream errors', async () => {
@@ -248,6 +307,7 @@ describe('useSyncOperations', () => {
     expect(result.current.activeJob?.status).toBe('failed')
     expect(result.current.activeJob?.summary).toBe('Could not reconnect to Ingest.')
     expect(sessionStorage.getItem('deepvault_active_job')).toBeNull()
-    expect(mockEs?.close).toHaveBeenCalled()
+    expect(mockEs).not.toBeNull()
+    expect(mockEs!.close).toHaveBeenCalled()
   })
 })

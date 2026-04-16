@@ -137,6 +137,30 @@ interface PersistedActiveJob {
   startedAt: string
 }
 
+function buildOperationEnv(kind: LiveOpKind, extraEnv: Record<string, string>): Record<string, string> {
+  const env: Record<string, string> = {}
+
+  if (extraEnv.DEEPVAULT_DATA_MODE) {
+    env.DEEPVAULT_DATA_MODE = extraEnv.DEEPVAULT_DATA_MODE
+  }
+
+  if (kind === 'evaluate') {
+    if (extraEnv.OPENAI_API_KEY) env.OPENAI_API_KEY = extraEnv.OPENAI_API_KEY
+    if (extraEnv.GEMINI_API_KEY) env.GEMINI_API_KEY = extraEnv.GEMINI_API_KEY
+    if (extraEnv.ANTHROPIC_API_KEY) env.ANTHROPIC_API_KEY = extraEnv.ANTHROPIC_API_KEY
+  }
+
+  if (kind === 'export-live' || kind === 'export-live-resume') {
+    if (extraEnv.DEEPVAULT_ENTRA_APP_ID) env.DEEPVAULT_ENTRA_APP_ID = extraEnv.DEEPVAULT_ENTRA_APP_ID
+    if (extraEnv.DEEPVAULT_ENTRA_TENANT_ID) env.DEEPVAULT_ENTRA_TENANT_ID = extraEnv.DEEPVAULT_ENTRA_TENANT_ID
+    if (extraEnv.DEEPVAULT_ENTRA_SECRET_VALUE) env.DEEPVAULT_ENTRA_SECRET_VALUE = extraEnv.DEEPVAULT_ENTRA_SECRET_VALUE
+    if (extraEnv.DEEPVAULT_ENTRA_SITES) env.DEEPVAULT_ENTRA_SITES = extraEnv.DEEPVAULT_ENTRA_SITES
+    if (extraEnv.DEEPVAULT_PILOT_SITE_NAMES) env.DEEPVAULT_PILOT_SITE_NAMES = extraEnv.DEEPVAULT_PILOT_SITE_NAMES
+  }
+
+  return env
+}
+
 function persistActiveJob(data: PersistedActiveJob) {
   sessionStorage.setItem(ACTIVE_JOB_SESSION_KEY, JSON.stringify(data))
 }
@@ -458,6 +482,7 @@ export function useSyncOperations({
     closeActiveStream()
 
     const def = LIVE_OP_DEFS[kind]
+    const operationEnv = buildOperationEnv(kind, extraEnv)
     const jobId = `${kind}-${Date.now()}`
     const startedAt = new Date().toISOString()
 
@@ -497,7 +522,7 @@ export function useSyncOperations({
       try {
         const result = await workerClient.startJob({
           kind,
-          env: extraEnv,
+          env: operationEnv,
           launchedBy: role,
           client: 'deepvault-app-shell',
           effectiveConfig: {

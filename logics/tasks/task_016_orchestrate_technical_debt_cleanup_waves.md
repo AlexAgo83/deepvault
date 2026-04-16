@@ -1,10 +1,10 @@
 ## task_016_orchestrate_technical_debt_cleanup_waves - Orchestrate technical debt cleanup waves
-> From version: 1.0.0
+> From version: 1.2.0
 > Schema version: 1.0
 > Status: Done
-> Understanding: 95%
-> Confidence: 90%
-> Progress: 100%
+> Understanding: 99%
+> Confidence: 97%
+> Progress: 100.0%
 > Complexity: Medium
 > Theme: General
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -98,3 +98,4 @@ stateDiagram-v2
 - Wave 3 completed: split evaluation and formatting helpers into a dedicated module and kept the public deepvault surface stable.
 - Wave 4 completed: clarified the Bishop orchestration contract by making the grounded-only path explicit, aligning the shared chat message type, and validating the hook/tests against the new mode.
 - Wave 5 completed: split live export CLI/runtime state from checkpoint persistence, added checkpoint snapshot helpers and replayable state tests, and kept the live export workflow observable.
+- April 2026 maintenance follow-up: fixed a `typecheck` regression in `tests/use-sync-operations.spec.tsx`, moved `formatDuration` out of `sync-panel.tsx` to clear the fast-refresh lint warning, narrowed worker job env propagation to the minimum required per operation, switched Gemini REST auth from query string to `x-goog-api-key`, and realigned README version/security notes with the shipped `1.2.0` state.
