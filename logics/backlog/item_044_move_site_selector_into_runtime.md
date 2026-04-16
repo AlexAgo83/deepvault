@@ -54,7 +54,7 @@ flowchart TD
 
 # Links
 - Product brief(s): `prod_003_navigation_and_runtime_control_clarity`
-- Architecture decision(s): (none yet)
+- Architecture decision(s): `logics/architecture/adr_022_separate_runtime_controls_from_sync_operations.md`
 - Request: `req_013_move_site_selector_into_runtime`
 - Primary task(s): `task_017_orchestrate_navigation_and_runtime_ui_changes`
 

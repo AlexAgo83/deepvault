@@ -9,38 +9,58 @@ export interface ProviderSecrets {
   anthropicApiKey: string
 }
 
-function readProviderSecrets(): ProviderSecrets {
-  if (typeof window === 'undefined') {
-    return {
-      openaiApiKey: '',
-      geminiApiKey: '',
-      anthropicApiKey: '',
-    }
+function emptySecrets(): ProviderSecrets {
+  return {
+    openaiApiKey: '',
+    geminiApiKey: '',
+    anthropicApiKey: '',
+  }
+}
+
+function readStorage(storage: Storage | undefined): Partial<ProviderSecrets> | null {
+  if (!storage) {
+    return null
   }
 
-  const raw = window.localStorage.getItem(PROVIDER_SECRETS_STORAGE_KEY)
+  const raw = storage.getItem(PROVIDER_SECRETS_STORAGE_KEY)
   if (!raw) {
-    return {
-      openaiApiKey: '',
-      geminiApiKey: '',
-      anthropicApiKey: '',
-    }
+    return null
   }
 
   try {
-    const parsed = JSON.parse(raw) as Partial<ProviderSecrets>
-    return {
-      openaiApiKey: parsed.openaiApiKey?.trim() || '',
-      geminiApiKey: parsed.geminiApiKey?.trim() || '',
-      anthropicApiKey: parsed.anthropicApiKey?.trim() || '',
-    }
+    return JSON.parse(raw) as Partial<ProviderSecrets>
   } catch {
+    return null
+  }
+}
+
+function readProviderSecrets(): ProviderSecrets {
+  if (typeof window === 'undefined') {
+    return emptySecrets()
+  }
+
+  const sessionValue = readStorage(window.sessionStorage)
+  if (sessionValue) {
     return {
-      openaiApiKey: '',
-      geminiApiKey: '',
-      anthropicApiKey: '',
+      openaiApiKey: sessionValue.openaiApiKey?.trim() || '',
+      geminiApiKey: sessionValue.geminiApiKey?.trim() || '',
+      anthropicApiKey: sessionValue.anthropicApiKey?.trim() || '',
     }
   }
+
+  const legacyValue = readStorage(window.localStorage)
+  if (legacyValue) {
+    const migrated = {
+      openaiApiKey: legacyValue.openaiApiKey?.trim() || '',
+      geminiApiKey: legacyValue.geminiApiKey?.trim() || '',
+      anthropicApiKey: legacyValue.anthropicApiKey?.trim() || '',
+    }
+    window.sessionStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify(migrated, null, 2))
+    window.localStorage.removeItem(PROVIDER_SECRETS_STORAGE_KEY)
+    return migrated
+  }
+
+  return emptySecrets()
 }
 
 export function useProviderSecrets() {
@@ -51,7 +71,8 @@ export function useProviderSecrets() {
       return
     }
 
-    window.localStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify(providerSecrets, null, 2))
+    window.sessionStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, JSON.stringify(providerSecrets, null, 2))
+    window.localStorage.removeItem(PROVIDER_SECRETS_STORAGE_KEY)
   }, [providerSecrets])
 
   const setApiKey = (provider: ProviderId, value: string) => {
@@ -68,11 +89,7 @@ export function useProviderSecrets() {
   }
 
   const clearProviderSecrets = () => {
-    setProviderSecrets({
-      openaiApiKey: '',
-      geminiApiKey: '',
-      anthropicApiKey: '',
-    })
+    setProviderSecrets(emptySecrets())
   }
 
   return {

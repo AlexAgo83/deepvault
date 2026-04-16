@@ -3,8 +3,8 @@
 > Status: Proposed
 > Drivers: Keep the local and hosted runtimes simple, make derived content durable without duplicating SharePoint, and keep audit, secrets, and retrieval state in the right stores.
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-> Related backlog: `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
-> Related task: `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_003_hosted_backend_core_delivery.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
+> Related backlog: `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`
+> Related task: `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
 > Reminder: Keep the storage layout, derived data boundaries, and environment-specific persistence rules aligned with the current local and hosted runtime design. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
@@ -54,13 +54,11 @@ For hosted production, prefer Azure Blob Storage, Azure SQL or managed Postgres,
 - Keep audit and secret boundaries stable as the hosted backend is introduced.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`
-- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
-- `logics/backlog/item_005_runtime_config_and_operations.md`
-- `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
-- `logics/tasks/task_003_hosted_backend_core_delivery.md`
-- `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`
+- `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
+- `logics/backlog/item_005_v1_runtime_config_and_operations.md`
+- `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
 # Follow-up work
 - Specify the exact Azure services for blobs, relational state, retrieval index, and audit.
 - Define what is persisted locally versus only in hosted production.

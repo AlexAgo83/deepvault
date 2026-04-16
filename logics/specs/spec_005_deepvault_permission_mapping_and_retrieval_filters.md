@@ -153,4 +153,4 @@ Rules:
 - `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
 - `logics/specs/spec_004_deepvault_data_schema_and_storage_contracts.md`
 - `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`
-- `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
+- `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`

@@ -126,7 +126,7 @@ Store these results in `data/eval/v1_baseline_{YYYY-MM-DD}.json` for future regr
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
 - Spec(s): `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`, `logics/specs/spec_003_deepvault_pilot_site_onboarding_and_retrieval_quality.md`, `logics/specs/spec_006_deepvault_prompt_and_context_assembly.md`
-- Backlog item: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
+- Backlog item: `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
 - Request(s): `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # AI Context

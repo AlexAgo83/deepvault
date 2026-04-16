@@ -3,7 +3,7 @@
 > Status: Proposed
 > Drivers: Keep runtime secrets easy to manage locally, protect secrets, and leave room for future scale and governance.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`, `logics/request/req_015_architecture_robustness_and_product_improvements.md`
-> Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`
+> Related backlog: `logics/backlog/item_005_v1_runtime_config_and_operations.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`
 > Related task: `logics/tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md`
 > Reminder: Revisit this decision when the pilot site list moves from a developer-managed setup to a user-managed setup. Default to env vars locally and secret-backed config in Azure. Use GitHub Actions for CI/CD, not for scheduled refresh jobs. Reviewed during the 2026-04-12 release/doc sync; browser-local Settings now covers provider keys for local testing.
 
@@ -55,9 +55,9 @@ Keep the current secret model compatible with that future migration.
 - Scheduled jobs: Azure Functions timer trigger for backend refresh automation.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_005_runtime_config_and_operations.md`
-- `logics/backlog/item_010_local_sync_status_and_operational_view.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_005_v1_runtime_config_and_operations.md`
+- `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
 # Follow-up work
 - Define a canonical env schema
 - Add config validation on startup

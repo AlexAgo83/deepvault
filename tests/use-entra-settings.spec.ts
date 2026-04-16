@@ -1,9 +1,16 @@
 import { renderHook, act } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
-import { useEntraSettings, ENTRA_SETTINGS_STORAGE_KEY } from '../src/hooks/useEntraSettings'
+import {
+  useEntraSettings,
+  ENTRA_SETTINGS_STORAGE_KEY,
+  ENTRA_SETTINGS_SECRET_STORAGE_KEY,
+} from '../src/hooks/useEntraSettings'
 
 describe('useEntraSettings', () => {
-  afterEach(() => localStorage.clear())
+  afterEach(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+  })
 
   it('returns empty defaults when nothing is stored', () => {
     const { result } = renderHook(() => useEntraSettings())
@@ -20,6 +27,14 @@ describe('useEntraSettings', () => {
     const { result } = renderHook(() => useEntraSettings())
     expect(result.current.entraSettings.appId).toBe('abc123')
     expect(result.current.entraSettings.dataMode).toBe('live')
+  })
+
+  it('reads the client secret from sessionStorage', () => {
+    localStorage.setItem(ENTRA_SETTINGS_STORAGE_KEY, JSON.stringify({ appId: 'abc123', dataMode: 'live' }))
+    sessionStorage.setItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY, JSON.stringify({ secretValue: 'super-secret' }))
+
+    const { result } = renderHook(() => useEntraSettings())
+    expect(result.current.entraSettings.secretValue).toBe('super-secret')
   })
 
   it('accepts mock as a valid dataMode', () => {
@@ -61,10 +76,14 @@ describe('useEntraSettings', () => {
     expect(result.current.entraSettings.dataMode).toBe('')
   })
 
-  it('persists changes to localStorage', () => {
+  it('persists non-secret values to localStorage and the client secret to sessionStorage', () => {
     const { result } = renderHook(() => useEntraSettings())
     act(() => { result.current.setEntraSetting('tenantId', 'tenant-123') })
+    act(() => { result.current.setEntraSetting('secretValue', 'super-secret') })
     const stored = JSON.parse(localStorage.getItem(ENTRA_SETTINGS_STORAGE_KEY) ?? '{}') as Record<string, string>
+    const storedSecret = JSON.parse(sessionStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY) ?? '{}') as Record<string, string>
     expect(stored.tenantId).toBe('tenant-123')
+    expect(stored.secretValue).toBeUndefined()
+    expect(storedSecret.secretValue).toBe('super-secret')
   })
 })

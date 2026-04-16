@@ -3,8 +3,8 @@
 > Status: Proposed
 > Drivers: Preserve trust and debuggability without leaking secrets, personal data, or unnecessary content into logs and traces.
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-> Related backlog: `logics/backlog/item_005_runtime_config_and_operations.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
-> Related task: `logics/tasks/task_003_hosted_backend_core_delivery.md`, `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
+> Related backlog: `logics/backlog/item_005_v1_runtime_config_and_operations.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
+> Related task: (none in current repo scope)
 > Reminder: Keep audit boundaries, retention policy, and redaction rules aligned across the local and hosted runtimes. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
@@ -53,11 +53,9 @@ Use shorter retention for local debug output and longer, governed retention for 
 - Make user-visible provenance a subset of the durable audit model rather than a separate ad hoc path.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_005_runtime_config_and_operations.md`
-- `logics/backlog/item_010_local_sync_status_and_operational_view.md`
-- `logics/tasks/task_003_hosted_backend_core_delivery.md`
-- `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_005_v1_runtime_config_and_operations.md`
+- `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
 # Follow-up work
 - Define the audit event schema and redaction rules.
 - Decide which records are user visible versus backend only.

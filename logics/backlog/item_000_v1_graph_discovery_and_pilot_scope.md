@@ -56,6 +56,13 @@ flowchart TD
 - AC8 -> Scope: The request defines the first explorer UI as a required part of the product direction.. Proof: capture validation evidence in this doc.
 - AC9 -> Scope: The request captures the hybrid ingestion and chunked retrieval model for the knowledge base.. Proof: capture validation evidence in this doc.
 - AC10 -> Scope: The request explicitly allows a Teams bot-based chatbot path with Entra-backed identity and permission checks.. Proof: capture validation evidence in this doc.
+- AC11 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC12 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC13 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC14 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC15 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC16 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC17 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Required

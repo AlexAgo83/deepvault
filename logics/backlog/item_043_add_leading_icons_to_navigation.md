@@ -52,7 +52,7 @@ flowchart TD
 
 # Links
 - Product brief(s): `prod_003_navigation_and_runtime_control_clarity`
-- Architecture decision(s): (none yet)
+- Architecture decision(s): `logics/architecture/adr_018_split_the_app_shell_and_ui_state_boundaries.md`
 - Request: `req_012_add_leading_icons_to_navigation`
 - Primary task(s): `task_017_orchestrate_navigation_and_runtime_ui_changes`
 

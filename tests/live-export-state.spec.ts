@@ -8,6 +8,7 @@ import {
   readCliFlag,
   readCorpusLikeFile,
   resolveCheckpointSyncedAt,
+  resolveLiveExportResumeState,
 } from '../scripts/live-export-state'
 
 const config = {
@@ -152,5 +153,41 @@ describe('live export state helpers', () => {
         documents: [],
       }),
     ).toBe('2026-04-11T11:40:00.000Z')
+  })
+
+  it('only enables delta resume when resume was requested and a checkpoint timestamp exists', () => {
+    const checkpoint = {
+      schemaVersion: '1.1',
+      defaultUserRole: 'analyst' as const,
+      providers: [],
+      sites: [],
+      syncRuns: [
+        {
+          id: 'sync-1',
+          startedAt: '2026-04-11T11:30:00.000Z',
+          finishedAt: '2026-04-11T11:40:00.000Z',
+          scope: 'scope',
+          status: 'synced' as const,
+          siteIds: [],
+          documentsSynced: 0,
+          chunksWritten: 0,
+          notes: 'done',
+        },
+      ],
+      documents: [],
+    }
+
+    expect(resolveLiveExportResumeState(false, checkpoint)).toEqual({
+      seedFromCheckpoint: false,
+      updatedAfter: null,
+    })
+    expect(resolveLiveExportResumeState(true, checkpoint)).toEqual({
+      seedFromCheckpoint: true,
+      updatedAfter: '2026-04-11T11:40:00.000Z',
+    })
+    expect(resolveLiveExportResumeState(true, null)).toEqual({
+      seedFromCheckpoint: false,
+      updatedAfter: null,
+    })
   })
 })

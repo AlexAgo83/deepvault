@@ -153,12 +153,26 @@ describe('createWorkerClient — remote mode', () => {
   })
 
   it('attaches token and client metadata to event stream URLs in remote mode', () => {
-    const mockES = { close: vi.fn(), onmessage: null, onerror: null }
-    vi.stubGlobal('EventSource', vi.fn(() => mockES))
+    const reader = {
+      read: vi.fn().mockResolvedValue({ done: true, value: undefined }),
+    }
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      body: { getReader: () => reader },
+    }))
+    vi.stubGlobal('EventSource', vi.fn())
     const client = createWorkerClient(REMOTE_CONFIG)
     client.openJobEvents('job-abc')
-    expect(vi.mocked(EventSource)).toHaveBeenCalledWith(
-      'https://worker.example.com/api/worker/jobs/job-abc/events?token=test-token&client=deepvault-app-shell',
+    expect(vi.mocked(EventSource)).not.toHaveBeenCalled()
+    expect(vi.mocked(fetch)).toHaveBeenCalledWith(
+      'https://worker.example.com/api/worker/jobs/job-abc/events',
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: 'Bearer test-token',
+          'X-DeepVault-Client': 'deepvault-app-shell',
+        }),
+      }),
     )
   })
 })

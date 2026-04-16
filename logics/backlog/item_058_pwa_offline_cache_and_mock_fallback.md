@@ -51,7 +51,7 @@ flowchart TD
 
 # Links
 - Product brief(s): (none yet)
-- Architecture decision(s): (none yet)
+- Architecture decision(s): `logics/architecture/adr_027_pwa_cache_and_offline_fallback_strategy.md`
 - Request: `req_016_pwa_install_and_offline_first`
 - Primary task(s): `task_022_pwa_progressive_web_app_delivery`
 

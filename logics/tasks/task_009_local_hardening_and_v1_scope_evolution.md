@@ -57,11 +57,11 @@ stateDiagram-v2
 - Do not mark the task complete until the live export, live ingest, live evaluation, and live UI checks have all been exercised in the final state.
 
 # AC Traceability
-- `item_014_incremental_live_sync_and_resumable_export` -> Wave 1 incremental sync and resumable export.
-- `item_017_crawl_resilience_and_artifact_governance` -> Wave 1 crawl resilience, memory guards, and artifact governance.
-- `item_015_live_explorer_site_filter_alignment` -> Wave 2 live explorer site filtering.
-- `item_016_live_evaluation_set_and_quality_gate` -> Wave 3 live evaluation set and quality gate.
-- `item_018_pre_v2_backlog_and_doc_cleanup` -> Wave 4 V1 backlog cleanup and doc framing.
+- `item_014_v1_incremental_live_sync_and_resumable_export` -> Wave 1 incremental sync and resumable export.
+- `item_017_v1_crawl_resilience_and_artifact_governance` -> Wave 1 crawl resilience, memory guards, and artifact governance.
+- `item_015_v1_live_explorer_site_filter_alignment` -> Wave 2 live explorer site filtering.
+- `item_016_v1_live_evaluation_set_and_quality_gate` -> Wave 3 live evaluation set and quality gate.
+- `item_018_v1_pre_v2_backlog_and_doc_cleanup` -> Wave 4 V1 backlog cleanup and doc framing.
 
 # Decision framing
 - Product framing: Required
@@ -75,7 +75,7 @@ stateDiagram-v2
 - Product brief(s): `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
 - Request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-- Backlog items: `logics/backlog/item_014_incremental_live_sync_and_resumable_export.md`, `logics/backlog/item_015_live_explorer_site_filter_alignment.md`, `logics/backlog/item_016_live_evaluation_set_and_quality_gate.md`, `logics/backlog/item_017_crawl_resilience_and_artifact_governance.md`, `logics/backlog/item_018_pre_v2_backlog_and_doc_cleanup.md`
+- Backlog items: `logics/backlog/item_014_v1_incremental_live_sync_and_resumable_export.md`, `logics/backlog/item_015_v1_live_explorer_site_filter_alignment.md`, `logics/backlog/item_016_v1_live_evaluation_set_and_quality_gate.md`, `logics/backlog/item_017_v1_crawl_resilience_and_artifact_governance.md`, `logics/backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md`
 
 # AI Context
 - Summary: V1 scope evolution — live sync hardening, explorer UX, live quality gate, and V1 closure. No Azure or Teams dependency.

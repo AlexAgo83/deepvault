@@ -49,6 +49,12 @@ stateDiagram-v2
 # AC Traceability
 - item_019_shell_rebrand_and_split_layout -> Wave 1 shell rebrand and split layout.
 - item_020_compact_live_state_and_sync_panels -> Wave 2 compact live state and sync panels.
+- AC10 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC5 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC6 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC7 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC8 -> TODO: map this acceptance criterion to scope. Proof: TODO.
+- AC9 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Not needed
@@ -77,11 +83,11 @@ stateDiagram-v2
 - `npm run export:live`
 
 # Definition of Done (DoD)
-- [ ] Both waves are complete and their backlog items are linked back to this task.
-- [ ] Each wave passed its relevant validation before the next wave started.
-- [ ] The request, backlog items, and task docs stayed synchronized during the delivery.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status is `Done` and progress is `100%`.
+- [x] Both waves are complete and their backlog items are linked back to this task.
+- [x] Each wave passed its relevant validation before the next wave started.
+- [x] The request, backlog items, and task docs stayed synchronized during the delivery.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status is `Done` and progress is `100%`.
 
 # Report
 - Wave 1 completed:

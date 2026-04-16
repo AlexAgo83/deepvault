@@ -240,4 +240,4 @@ If a user successfully extracts the system prompt or causes the model to follow 
 - `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`
 - `logics/specs/spec_004_deepvault_data_schema_and_storage_contracts.md`
 - `logics/specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md`
-- `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
+- `logics/tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md`

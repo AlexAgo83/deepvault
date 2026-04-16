@@ -2,7 +2,7 @@
 > Date: 2026-04-10
 > Status: Active
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
-> Related backlog: `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
+> Related backlog: `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
 > Related task: `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
 > Related architecture: `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, open questions, and DeepVault/Navy/Bishop naming when you edit this doc. Default local validation is explorer first, then chat, then sync. For any UX/UI or frontend work tied to this strategy, use `logics/skills/logics-ui-steering/SKILL.md`. Reviewed during the 2026-04-10 release/doc sync.
@@ -81,11 +81,11 @@ flowchart LR
 - It should stay lightweight and avoid production-operating detail.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-- `logics/backlog/item_008_local_explorer_shell_and_navigation.md`
-- `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`
-- `logics/backlog/item_010_local_sync_status_and_operational_view.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
+- `logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md`
+- `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`
+- `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
 - `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
 - `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`
 - `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`

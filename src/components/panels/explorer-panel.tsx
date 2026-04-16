@@ -137,14 +137,6 @@ export function ExplorerPanel({
           {explorerRows.length > 0 && displayExplorerRows.length === 0 ? (
             <div className="empty-state">No strong matches found.</div>
           ) : null}
-          {displayExplorerRows.length > 0 ? (
-            <div className="document-list-footer">
-              <span>
-                Showing {visibleExplorerRows.length} of {displayExplorerRows.length}
-              </span>
-              <span>{hasMoreExplorerRows ? 'Scroll to load 10 more' : 'All results loaded'}</span>
-            </div>
-          ) : null}
           {hasMoreExplorerRows ? <div ref={loadMoreSentinelRef} className="document-list-sentinel" aria-hidden="true" /> : null}
         </div>
       </article>

@@ -42,6 +42,7 @@ flowchart TD
 - AC4 -> Scope: stratégie cache. Proof: capture validation evidence in this doc.
 - AC5 -> Scope: SW désactivé en dev. Proof: capture validation evidence in this doc.
 - AC6 -> Scope: check passe. Proof: capture validation evidence in this doc.
+- AC7 -> TODO: map this acceptance criterion to scope. Proof: TODO.
 
 # Decision framing
 - Product framing: Not needed
@@ -51,7 +52,7 @@ flowchart TD
 
 # Links
 - Product brief(s): (none yet)
-- Architecture decision(s): (none yet)
+- Architecture decision(s): `logics/architecture/adr_027_pwa_cache_and_offline_fallback_strategy.md`
 - Request: `req_016_pwa_install_and_offline_first`
 - Primary task(s): `task_022_pwa_progressive_web_app_delivery`
 

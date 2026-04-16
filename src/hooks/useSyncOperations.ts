@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { createWorkerClient } from '../lib/worker-client'
+import { createWorkerClient, type WorkerEventStream } from '../lib/worker-client'
 import type { WorkerSettings } from './useWorkerSettings'
 import { WORKER_SETTINGS_DEFAULTS } from './useWorkerSettings'
 
@@ -210,7 +210,7 @@ export function useSyncOperations({
   const [jobHistory, setJobHistory] = useState<SyncOperationJob[]>(() => readPersistedJobHistory())
   const timersRef = useRef<number[]>([])
   const activeJobRef = useRef<SyncOperationJob | null>(null)
-  const eventSourceRef = useRef<EventSource | null>(null)
+  const eventSourceRef = useRef<WorkerEventStream | null>(null)
   const serverJobIdRef = useRef<string | null>(null)
 
   useEffect(() => {

@@ -3,8 +3,8 @@
 > Status: Proposed
 > Drivers: Prevent unauthorized SharePoint content from reaching the LLM context, keep chat answers aligned with Microsoft user rights, and preserve source trust.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
-> Related backlog: `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_004_teams_bot_chat_and_permissions.md`, `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-> Related task: `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`, `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
+> Related backlog: `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
+> Related task: `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`, `logics/tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md`
 > Reminder: Apply authorization before retrieval ranking so the LLM only sees permitted source material. Default to site-level allow lists first, then finer-grained scopes later. Reviewed during the 2026-04-10 release/doc sync.
 
 # Overview
@@ -80,13 +80,11 @@ Item-level filtering enters scope only after V1 is stable and the pilot shows th
 - Denial response: structured, never exposes restricted source names or IDs.
 
 # References
-- `logics/request/req_000_sharepoint_knowledge_graph_kickoff.md`
-- `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`
-- `logics/backlog/item_004_teams_bot_chat_and_permissions.md`
-- `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`
-- `logics/tasks/task_000_sharepoint_foundations_and_shared_contracts.md`
-- `logics/tasks/task_002_ingestion_sync_and_retrieval_hardening.md`
-- `logics/tasks/task_008_retrieval_evaluation_set_and_quality_gates.md`
+- `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+- `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
+- `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
+- `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
+- `logics/tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md`
 # Follow-up work
 - Implement the permission cache with the TTLs defined above
 - Add audit log entries for denied retrievals (exclusion count, not item IDs)

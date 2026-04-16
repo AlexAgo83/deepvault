@@ -242,15 +242,6 @@ p {
   overscroll-behavior: contain;
 }
 
-.document-list-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 2px 4px 0;
-  color: var(--muted);
-  font-size: 0.82rem;
-}
-
 .document-list-sentinel {
   height: 1px;
   width: 100%;

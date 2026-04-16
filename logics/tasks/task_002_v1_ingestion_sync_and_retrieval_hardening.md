@@ -18,7 +18,7 @@ The goal is to make the data layer reliable before any future expansion is layer
 %% logics-kind: task
 %% logics-signature: task|v1-ingestion-sync-and-retrieval-hardenin|item-000-graph-discovery-and-pilot-scope|implement-or-finalize-the-sharepoint-ing|python3-logics-skills-logics-doc-linter-
 stateDiagram-v2
-    state "item_000_graph_discovery_and_pilot_scope" as Backlog
+    state "item_000_v1_graph_discovery_and_pilot_scope" as Backlog
     state "Implement or finalize the SharePoint inges" as Scope
     state "Add or harden the incremental sync" as Build
     state "Persist source objects metadata and chunke" as Verify
@@ -47,10 +47,10 @@ stateDiagram-v2
 - Do not mark a wave or step complete until the relevant automated tests and quality checks have been run successfully.
 
 # AC Traceability
-- `item_000_graph_discovery_and_pilot_scope` -> discovery, pilot scope, configurable site list
-- `item_001_sharepoint_ingestion_and_sync_pipeline` -> ingestion, crawl order, sync, refresh
-- `item_002_hybrid_knowledge_store_and_retrieval` -> hybrid store and retrieval
-- `item_005_runtime_config_and_operations` -> operational config and telemetry
+- `item_000_v1_graph_discovery_and_pilot_scope` -> discovery, pilot scope, configurable site list
+- `item_001_v1_sharepoint_ingestion_and_sync_pipeline` -> ingestion, crawl order, sync, refresh
+- `item_002_v1_hybrid_knowledge_store_and_retrieval` -> hybrid store and retrieval
+- `item_005_v1_runtime_config_and_operations` -> operational config and telemetry
 
 # Decision framing
 - Product framing: Required
@@ -63,7 +63,7 @@ stateDiagram-v2
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_001_identity_and_access_model_for_sharepoint_knowledge_graph.md`, `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`
-- Backlog item(s): `logics/backlog/item_000_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_runtime_config_and_operations.md`
+- Backlog item(s): `logics/backlog/item_000_v1_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`
 - Request(s): `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # AI Context

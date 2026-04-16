@@ -47,10 +47,10 @@ stateDiagram-v2
 - Do not mark a wave or step complete until the relevant automated tests and quality checks have been run successfully.
 
 # AC Traceability
-- `item_006_local_companion_app_for_explorer_and_chat` -> local shell, shared layout, local runtime boundary
-- `item_008_local_explorer_shell_and_navigation` -> local exploration of sites, libraries, folders, and lists
-- `item_009_local_chat_surface_and_answer_flow` -> grounded chat answers and source citations
-- `item_010_local_sync_status_and_operational_view` -> crawl progress, refresh state, and answer provenance
+- `item_006_v1_local_companion_app_for_explorer_and_chat` -> local shell, shared layout, local runtime boundary
+- `item_008_v1_local_explorer_shell_and_navigation` -> local exploration of sites, libraries, folders, and lists
+- `item_009_v1_local_chat_surface_and_answer_flow` -> grounded chat answers and source citations
+- `item_010_v1_local_sync_status_and_operational_view` -> crawl progress, refresh state, and answer provenance
 
 # Decision framing
 - Product framing: Required
@@ -63,7 +63,7 @@ stateDiagram-v2
 # Links
 - Product brief(s): `logics/product/prod_000_sharepoint_knowledge_graph_product_vision.md`, `logics/product/prod_001_local_first_development_and_test_strategy.md`
 - Architecture decision(s): `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`, `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
-- Backlog item(s): `logics/backlog/item_006_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_local_sync_status_and_operational_view.md`
+- Backlog item(s): `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
 - Request(s): `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 
 # AI Context

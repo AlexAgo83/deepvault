@@ -59,7 +59,7 @@ flowchart TD
 
 # Links
 - Product brief(s): (none yet)
-- Architecture decision(s): (none yet)
+- Architecture decision(s): `logics/architecture/adr_005_explorer_ui_for_sharepoint_navigation.md`
 - Request: `req_006_explorer_card_hierarchy_and_visual_polish`
 - Primary task(s): `task_013_coverage_and_explorer_polish_orchestration`
 

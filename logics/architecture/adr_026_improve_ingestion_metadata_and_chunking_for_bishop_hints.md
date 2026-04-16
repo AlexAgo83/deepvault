@@ -2,9 +2,9 @@
 > Date: 2026-04-14
 > Status: Proposed
 > Drivers: Preserve richer source context during ingestion, improve retrieval relevance, reduce generic Bishop hints, and keep the pipeline local-first and permission-aware.
-> Related request: (none yet)
-> Related backlog: (none yet)
-> Related task: (none yet)
+> Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
+> Related backlog: `logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md`, `logics/backlog/item_067_lock_corpus_metadata_contract_and_required_fields.md`
+> Related task: `logics/tasks/task_030_improve_corpus_metadata_chunking_and_bishop_hints.md`, `logics/tasks/task_035_lock_corpus_metadata_contract_and_required_fields.md`
 > Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
 
 # Overview

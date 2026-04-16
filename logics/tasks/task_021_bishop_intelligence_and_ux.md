@@ -45,8 +45,8 @@ stateDiagram-v2
 - [x] 4. Décider le system prompt Bishop (ton, format de réponse, règles de citation sources) — le documenter dans le code ou un fichier dédié.
 - [x] 5. Wave 2 — persister l'historique Bishop dans `localStorage` (clé `deepvault_bishop_history`, max 50 messages) ; restaurer au chargement ; ajouter un bouton "Exporter" sur Bishop (JSON + MD) et sur Explorer (JSON) ; ajouter un bouton "Effacer l'historique".
 - [x] 6. Fermer la task en mettant à jour les backlog items et les requests liés.
-- [ ] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
-- [ ] GATE: ne pas fermer Wave 1 avant que le fallback local (sans clé API) passe `npm run check` ; ne pas fermer Wave 2 avant que `npm run check` passe.
+- [x] CHECKPOINT: laisser chaque wave commit-ready avant de continuer.
+- [x] GATE: ne pas fermer Wave 1 avant que le fallback local (sans clé API) passe `npm run check` ; ne pas fermer Wave 2 avant que `npm run check` passe.
 
 # Delivery checkpoints
 - Après Wave 1 : `npm run check` passe, Bishop retourne une vraie réponse Claude en mode remote, le fallback local s'active sans clé API.
@@ -65,7 +65,7 @@ stateDiagram-v2
 - Architecture follow-up: Créer un ADR pour le contrat d'appel Bishop → Claude (format prompt, gestion tokens, caching strategy) avant démarrer Wave 1.
 
 # Links
-- Product brief(s): (none yet)
+- Product brief(s): `logics/product/prod_004_nexus_v1_1_0_product_direction_and_release_pulse.md`
 - Architecture decision(s): `adr_017_bishop_llm_orchestration_after_local_grounding`
 - Derived from `item_052_bishop_claude_api_integration`, `item_053_bishop_session_persistence_and_export`
 - Request(s): `req_015_architecture_robustness_and_product_improvements`
@@ -84,12 +84,12 @@ stateDiagram-v2
 - Wave 2 : `npm run check` + vérification manuelle persistance après F5 + vérification du fichier exporté.
 
 # Definition of Done (DoD)
-- [ ] Scope implémenté et critères d'acceptance couverts.
-- [ ] Commandes de validation exécutées et résultats capturés.
-- [ ] Aucune wave fermée avant que les checks automatiques passent.
-- [ ] Docs Logics liés mis à jour pendant et à la fermeture.
-- [ ] Chaque wave a laissé un checkpoint commit-ready.
-- [ ] Status à `Done` et progress à `100%`.
+- [x] Scope implémenté et critères d'acceptance couverts.
+- [x] Commandes de validation exécutées et résultats capturés.
+- [x] Aucune wave fermée avant que les checks automatiques passent.
+- [x] Docs Logics liés mis à jour pendant et à la fermeture.
+- [x] Chaque wave a laissé un checkpoint commit-ready.
+- [x] Status à `Done` et progress à `100%`.
 # Report
 - Wave 0: prerequisite architecture contract confirmed and environment variables for Bishop remote integration documented.
 - Wave 1 started: Bishop remote mode now routes through OpenAI/Gemini first and keeps Claude available as a third provider with prompt caching when `ANTHROPIC_API_KEY` is available; the legacy endpoint path remains available for compatibility, and the local fallback stays in place when no key is present.

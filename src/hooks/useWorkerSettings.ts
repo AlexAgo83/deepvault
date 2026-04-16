@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 export const WORKER_SETTINGS_STORAGE_KEY = 'deepvault_worker_settings'
+export const WORKER_TOKEN_STORAGE_KEY = 'deepvault_worker_token'
 
 export type WorkerMode = 'local' | 'remote'
 export type WorkerFallbackMode = 'read_only' | 'block' | 'none'
@@ -25,10 +26,14 @@ function readWorkerSettings(): WorkerSettings {
   if (typeof window === 'undefined') return WORKER_SETTINGS_DEFAULTS
 
   const raw = window.localStorage.getItem(WORKER_SETTINGS_STORAGE_KEY)
+  const tokenRaw = window.sessionStorage.getItem(WORKER_TOKEN_STORAGE_KEY)
   if (!raw) return WORKER_SETTINGS_DEFAULTS
 
   try {
     const parsed = JSON.parse(raw) as Partial<WorkerSettings>
+    const tokenParsed = tokenRaw ? JSON.parse(tokenRaw) as Partial<Pick<WorkerSettings, 'workerToken'>> : {}
+    const legacyToken = parsed.workerToken?.trim() || ''
+    const workerToken = tokenParsed.workerToken?.trim() || legacyToken
     const mode = parsed.workerMode === 'remote' ? 'remote' : 'local'
     const fallback: WorkerFallbackMode =
       parsed.workerFallbackMode === 'block' || parsed.workerFallbackMode === 'none'
@@ -40,7 +45,7 @@ function readWorkerSettings(): WorkerSettings {
     return {
       workerMode: mode,
       workerUrl: parsed.workerUrl?.trim() || '',
-      workerToken: parsed.workerToken?.trim() || '',
+      workerToken,
       workerTimeoutSeconds: timeout,
       workerFallbackMode: fallback,
     }
@@ -54,7 +59,10 @@ export function useWorkerSettings() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    window.localStorage.setItem(WORKER_SETTINGS_STORAGE_KEY, JSON.stringify(workerSettings, null, 2))
+
+    const { workerToken, ...rest } = workerSettings
+    window.localStorage.setItem(WORKER_SETTINGS_STORAGE_KEY, JSON.stringify(rest, null, 2))
+    window.sessionStorage.setItem(WORKER_TOKEN_STORAGE_KEY, JSON.stringify({ workerToken }, null, 2))
   }, [workerSettings])
 
   const setWorkerSetting = <K extends keyof WorkerSettings>(key: K, value: WorkerSettings[K]) => {
