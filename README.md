@@ -175,7 +175,7 @@ npm run check
 
 That runs lint, typecheck, tests, build, and the mock evaluation.
 `npm run check` is implemented in Node and is intended to run the same way on macOS, Linux, and Windows.
-The helper launcher used by `evaluate`, `ingest`, `export:live`, and `e2e` resolves the Windows `node_modules/.bin/*.cmd` shims explicitly so those commands stay runnable on GitHub Actions Windows runners.
+The helper launcher used by `evaluate`, `ingest`, `export:live`, and `e2e` resolves the Windows `node_modules/.bin/*.cmd` shims explicitly and runs them through the Windows shell so those commands stay runnable on GitHub Actions Windows runners.
 
 If you want the coverage report and threshold check:
 
