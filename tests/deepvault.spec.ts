@@ -114,6 +114,16 @@ describe('deepvault helpers', () => {
     expect(result.sources).toHaveLength(0)
   })
 
+  it('returns no answer when an unrelated multi-term query only collides on a generic timeline heading', () => {
+    const result = answerQuestion(corpus, 'What is the cobalt orchard relocation timeline?', {
+      role: 'analyst',
+      provider: 'openai',
+    })
+
+    expect(result.status).toBe('no_answer')
+    expect(result.sources).toHaveLength(0)
+  })
+
   it('returns grounded answers when the query matches document content', () => {
     const result = answerQuestion(corpus, 'What is the budget for Q3 2025?', {
       role: 'analyst',

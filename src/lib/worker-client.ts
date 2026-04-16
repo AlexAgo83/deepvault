@@ -143,6 +143,30 @@ async function fetchWithTimeout(
   }
 }
 
+async function buildResponseError(response: Response, fallbackMessage: string): Promise<Error> {
+  let detail = ''
+
+  try {
+    const text = await response.text()
+    const trimmed = text.trim()
+    if (trimmed) {
+      try {
+        const payload = JSON.parse(trimmed) as { error?: unknown; message?: unknown; detail?: unknown; notes?: unknown }
+        const candidate = [payload.message, payload.error, payload.detail, payload.notes].find(
+          (value) => typeof value === 'string' && value.trim().length > 0,
+        )
+        detail = typeof candidate === 'string' ? candidate.trim() : trimmed
+      } catch {
+        detail = trimmed
+      }
+    }
+  } catch {
+    // Keep the fallback when the response body cannot be read.
+  }
+
+  return new Error(detail ? `${fallbackMessage}: ${detail}` : fallbackMessage)
+}
+
 async function streamRemoteEvents(
   url: string,
   headers: Record<string, string>,
@@ -210,13 +234,13 @@ export function createWorkerClient(config: WorkerClientConfig) {
 
   async function checkHealth(): Promise<WorkerHealth> {
     const res = await fetchWithTimeout(`${base}/api/worker/health`, { headers }, timeoutMs)
-    if (!res.ok) throw new Error(`Worker health check failed: ${res.status}`)
+    if (!res.ok) throw await buildResponseError(res, `Worker health check failed: ${res.status}`)
     return res.json() as Promise<WorkerHealth>
   }
 
   async function getEffectiveConfig(): Promise<WorkerEffectiveConfig> {
     const res = await fetchWithTimeout(`${base}/api/worker/config/effective`, { headers }, timeoutMs)
-    if (!res.ok) throw new Error(`Failed to fetch effective config: ${res.status}`)
+    if (!res.ok) throw await buildResponseError(res, `Failed to fetch effective config: ${res.status}`)
     return res.json() as Promise<WorkerEffectiveConfig>
   }
 
@@ -235,13 +259,13 @@ export function createWorkerClient(config: WorkerClientConfig) {
       },
       timeoutMs,
     )
-    if (!res.ok) throw new Error(`Failed to start job: ${res.status}`)
+    if (!res.ok) throw await buildResponseError(res, `Failed to start job: ${res.status}`)
     return res.json() as Promise<WorkerStartJobResponse>
   }
 
   async function getJob(jobId: string): Promise<WorkerJob> {
     const res = await fetchWithTimeout(`${base}/api/worker/jobs/${jobId}`, { headers }, timeoutMs)
-    if (!res.ok) throw new Error(`Failed to fetch job ${jobId}: ${res.status}`)
+    if (!res.ok) throw await buildResponseError(res, `Failed to fetch job ${jobId}: ${res.status}`)
     return res.json() as Promise<WorkerJob>
   }
 
@@ -255,7 +279,7 @@ export function createWorkerClient(config: WorkerClientConfig) {
 
   async function getManifest(jobId: string): Promise<WorkerJobManifest> {
     const res = await fetchWithTimeout(`${base}/api/worker/jobs/${jobId}/manifest`, { headers }, timeoutMs)
-    if (!res.ok) throw new Error(`Failed to fetch manifest for ${jobId}: ${res.status}`)
+    if (!res.ok) throw await buildResponseError(res, `Failed to fetch manifest for ${jobId}: ${res.status}`)
     return res.json() as Promise<WorkerJobManifest>
   }
 

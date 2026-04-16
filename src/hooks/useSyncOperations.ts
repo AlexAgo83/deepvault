@@ -106,6 +106,34 @@ function trimJobLines(lines: SyncConsoleLine[]): SyncConsoleLine[] {
   return lines.slice(-MAX_JOB_LINES)
 }
 
+function extractErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message.trim()
+  }
+  if (typeof error === 'string' && error.trim()) {
+    return error.trim()
+  }
+  return ''
+}
+
+function buildWorkerStartupFailureSummary(error: unknown, workerSettings: WorkerSettings): string {
+  const message = extractErrorMessage(error)
+
+  if (!message) {
+    return workerSettings.workerFallbackMode === 'read_only'
+      ? 'Could not reach the worker. Staying on the published corpus in read-only mode.'
+      : 'Could not reach the worker. Make sure you are running the Vite dev server.'
+  }
+
+  if (/aborterror|failed to fetch|networkerror|could not reach the worker|offline/i.test(message)) {
+    return workerSettings.workerFallbackMode === 'read_only'
+      ? 'Could not reach the worker. Staying on the published corpus in read-only mode.'
+      : 'Could not reach the worker. Make sure you are running the Vite dev server.'
+  }
+
+  return message
+}
+
 function formatCommandLine(
   command: string,
   context: Pick<
@@ -384,6 +412,33 @@ export function useSyncOperations({
   [],
   )
 
+  const finalizeLiveWorkerJob = useCallback(async (
+    jobId: string,
+    serverJobId: string,
+    def: typeof LIVE_OP_DEFS[LiveOpKind],
+    exitCode?: number,
+  ) => {
+    const success = exitCode === 0
+    if (success) {
+      clearPersistedJob()
+      finalizeJob(jobId, 'completed', def.summary)
+      return
+    }
+
+    let failureSummary = `${def.label} failed.`
+    try {
+      const state = await workerClient.getJob(serverJobId)
+      if (state.notes?.trim()) {
+        failureSummary = state.notes.trim()
+      }
+    } catch {
+      // Keep the generic fallback when the job state cannot be fetched.
+    }
+
+    clearPersistedJob()
+    finalizeJob(jobId, 'failed', failureSummary)
+  }, [finalizeJob, workerClient])
+
   const attachJobWatchdog = useCallback((
     jobId: string,
     serverJobId: string,
@@ -534,13 +589,11 @@ export function useSyncOperations({
           },
         })
         serverJobId = result.jobId
-      } catch {
+      } catch (error) {
         finalizeJob(
           jobId,
           'failed',
-          workerSettings.workerFallbackMode === 'read_only'
-            ? 'Could not reach the worker. Staying on the published corpus in read-only mode.'
-            : 'Could not reach the worker. Make sure you are running the Vite dev server.',
+          buildWorkerStartupFailureSummary(error, workerSettings),
         )
         return
       }
@@ -568,10 +621,10 @@ export function useSyncOperations({
             lines: trimJobLines([...current.lines, makeLine(data.text!, tone)]),
           }))
         } else if (data.type === 'done') {
-          const success = data.exitCode === 0
-          clearPersistedJob()
-          finalizeJob(jobId, success ? 'completed' : 'failed', success ? def.summary : `${def.label} failed.`)
-          closeStream()
+          void finalizeLiveWorkerJob(jobId, serverJobId, def, data.exitCode)
+            .finally(() => {
+              closeStream()
+            })
         }
       }
 
@@ -583,7 +636,7 @@ export function useSyncOperations({
     }
 
     void start()
-  }, [activeScopeLabel, attachJobWatchdog, clearTimers, closeActiveStream, extraEnv, finalizeJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, workerClient, workerSettings])
+  }, [activeScopeLabel, attachJobWatchdog, clearTimers, closeActiveStream, extraEnv, finalizeJob, finalizeLiveWorkerJob, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, workerClient, workerSettings])
 
   const cancelActiveJob = useCallback(() => {
     const current = activeJobRef.current

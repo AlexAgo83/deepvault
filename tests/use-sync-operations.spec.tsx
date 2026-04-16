@@ -217,6 +217,24 @@ describe('useSyncOperations', () => {
     expect(result.current.activeJob?.summary).toBe('Could not reach the worker. Make sure you are running the Vite dev server.')
   })
 
+  it('surfaces the worker startup error details when the worker returns them', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      text: () => Promise.resolve(JSON.stringify({ error: 'AADSTS7000215: Invalid client secret provided.' })),
+    }))
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    await act(async () => {
+      result.current.startExportLive()
+    })
+    await act(async () => {})
+
+    expect(result.current.activeJob?.status).toBe('failed')
+    expect(result.current.activeJob?.summary).toBe('Failed to start job: 400: AADSTS7000215: Invalid client secret provided.')
+  })
+
   it('passes only the env needed for each worker job kind', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
@@ -307,6 +325,59 @@ describe('useSyncOperations', () => {
     expect(result.current.activeJob?.status).toBe('failed')
     expect(result.current.activeJob?.summary).toBe('Could not reconnect to Ingest.')
     expect(sessionStorage.getItem('deepvault_active_job')).toBeNull()
+    expect(mockEs).not.toBeNull()
+    expect(mockEs!.close).toHaveBeenCalled()
+  })
+
+  it('uses worker job notes when a live job ends with a non-zero exit code', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: () => Promise.resolve({ jobId: 'job-export-live' }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({
+          id: 'job-export-live',
+          kind: 'export-live',
+          status: 'failed',
+          startedAt: '2026-04-16T10:00:00.000Z',
+          progress: 100,
+          notes: 'Auth request failed (401): invalid_client',
+        }),
+      })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    await act(async () => {
+      result.current.startExportLive()
+    })
+    await act(async () => {})
+
+    await act(async () => {
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'done', exitCode: 1 }) } as MessageEvent)
+    })
+    await act(async () => {})
+
+    expect(result.current.activeJob?.status).toBe('failed')
+    expect(result.current.activeJob?.summary).toBe('Auth request failed (401): invalid_client')
     expect(mockEs).not.toBeNull()
     expect(mockEs!.close).toHaveBeenCalled()
   })

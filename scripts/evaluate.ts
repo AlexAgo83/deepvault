@@ -20,8 +20,8 @@ function readFlag(name: string): boolean {
 
 const today = new Date().toISOString().slice(0, 10)
 const outputDir = resolve('data/eval')
-const mode = readArg('--mode') || process.env.DEEPVAULT_DATA_MODE
-const inputPath = readArg('--input') || process.env.DEEPVAULT_CORPUS_PATH
+const mode = readArg('--mode') || 'mock'
+const inputPath = readArg('--input') || (mode === 'live' ? process.env.DEEPVAULT_CORPUS_PATH : undefined)
 const outputPath = resolveSnapshotPath(resolve(outputDir, `v1_baseline_${today}.json`), mode === 'live' ? 'live' : 'mock')
 const strict = readFlag('--strict') || process.env.DEEPVAULT_EVAL_STRICT === '1'
 const minPassRateRaw = readArg('--min-pass-rate') || process.env.DEEPVAULT_EVAL_MIN_PASS_RATE
@@ -87,7 +87,12 @@ const results: Array<{
 }> = []
 
 for (const row of rows) {
-  const answer = await orchestrateBishopAnswer(corpus, row.query, { role: row.role, provider: 'openai', limit: 10 })
+  const answer = await orchestrateBishopAnswer(corpus, row.query, {
+    role: row.role,
+    provider: 'openai',
+    limit: 10,
+    allowEnvProviderKeys: false,
+  })
   const sourceIds = answer.sources.map((source) => source.id)
   const deniedSourceIds = answer.deniedSources.map((source) => source.id)
   const pass =

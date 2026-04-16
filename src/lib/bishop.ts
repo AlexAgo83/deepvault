@@ -28,6 +28,7 @@ export interface BishopOrchestrationOptions {
   limit?: number
   endpoint?: string | null
   fetchImpl?: typeof fetch
+  allowEnvProviderKeys?: boolean
   openaiApiKey?: string | null
   geminiApiKey?: string | null
   anthropicApiKey?: string | null
@@ -333,24 +334,25 @@ function getProviderRuntimeConfig(
   provider: ProviderId,
   options: BishopOrchestrationOptions,
 ): { apiKey: string; model: string } {
+  const allowEnvProviderKeys = options.allowEnvProviderKeys !== false
   const modelOverride = options.bishopModel?.trim() || readEnvValue('VITE_BISHOP_MODEL')
 
   if (provider === 'openai') {
     return {
-      apiKey: options.openaiApiKey?.trim() || readEnvValue('OPENAI_API_KEY'),
+      apiKey: options.openaiApiKey?.trim() || (allowEnvProviderKeys ? readEnvValue('OPENAI_API_KEY') : ''),
       model: modelOverride || DEFAULT_OPENAI_MODEL,
     }
   }
 
   if (provider === 'gemini') {
     return {
-      apiKey: options.geminiApiKey?.trim() || readEnvValue('GEMINI_API_KEY'),
+      apiKey: options.geminiApiKey?.trim() || (allowEnvProviderKeys ? readEnvValue('GEMINI_API_KEY') : ''),
       model: modelOverride || DEFAULT_GEMINI_MODEL,
     }
   }
 
   return {
-    apiKey: options.anthropicApiKey?.trim() || readEnvValue('ANTHROPIC_API_KEY'),
+    apiKey: options.anthropicApiKey?.trim() || (allowEnvProviderKeys ? readEnvValue('ANTHROPIC_API_KEY') : ''),
     model: modelOverride || DEFAULT_ANTHROPIC_MODEL,
   }
 }

@@ -242,7 +242,10 @@ export function searchDocuments(
       score: getDocumentScore(document, query),
       permitted: canAccessDocument(document, role),
     }))
-    .filter((entry) => entry.score > 0 && (includeDenied || entry.permitted))
+    .filter((entry) => {
+      const minimumScore = queryTokens.length > 1 ? 8 : 4
+      return entry.score >= minimumScore && (includeDenied || entry.permitted)
+    })
     .sort((left, right) => {
       if (right.score !== left.score) {
         return right.score - left.score
