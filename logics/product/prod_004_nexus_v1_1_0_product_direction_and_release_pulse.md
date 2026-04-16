@@ -44,6 +44,7 @@ The release needs to remove unnecessary mental overhead without changing the loc
 
 # Scope and guardrails
 - In: getting started modal, cleaner product copy, compact sync/status presentation, runtime controls in Settings, and a more guided local-first shell.
+- In: getting started cards that visibly map to the main product areas through matching icons and labels.
 - In: hover-based help, compact buttons, and conversation context that stays enabled by default.
 - Out: hosted backend packaging, Teams-first workflows, and broader platform changes.
 

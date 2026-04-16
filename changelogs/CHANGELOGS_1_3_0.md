@@ -11,6 +11,7 @@ DeepVault Nexus 1.3.0 tightens the operator workflow around `Settings` and `AI V
 - Added a top-level section switcher to `Settings` so runtime, SharePoint, AI provider, and worker controls can be changed from one screen without stacking every panel at once
 - Compacted the `Settings` layout by removing redundant summary cards and panel titles, and fixed action rows so controls keep their natural height
 - Refined `AI View` response cards with visible response identifiers, hidden unnecessary hover text, persisted reveal/hide state across rows, and a pinned `AI needs` donut above the scrollable detail list
+- Added per-panel icons to each `Getting started` card so the onboarding modal matches the main navigation language
 - Added `npm run ci:local` so lint, typecheck, coverage, build, mock evaluation, Playwright install, and e2e can be reproduced locally in one command
 - Removed an obsolete `BishopPanel` prop and aligned the workflow e2e selector with the current `Show` source toggle copy
 

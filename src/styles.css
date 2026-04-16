@@ -832,6 +832,30 @@ select:focus-visible {
   background: var(--surface-soft);
 }
 
+.getting-started-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.getting-started-item-icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  border-radius: 10px;
+  border: 1px solid rgba(185, 106, 67, 0.22);
+  background: rgba(185, 106, 67, 0.1);
+  color: var(--accent);
+}
+
+.getting-started-item-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
 .getting-started-item strong {
   font-size: 0.98rem;
 }
@@ -3287,6 +3311,10 @@ code {
 
   .getting-started-list {
     max-height: min(42vh, 320px);
+  }
+
+  .getting-started-item {
+    padding: 13px 14px;
   }
 
   .getting-started-actions {
