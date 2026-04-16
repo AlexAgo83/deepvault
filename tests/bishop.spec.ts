@@ -150,6 +150,8 @@ describe('bishop orchestration helpers', () => {
     expect(result.artifact?.mimeType).toBe('application/json')
     expect(result.artifact?.content).toContain('"query"')
     expect(result.artifactNotice).toContain('Artifact ready')
+    expect(result.prompt).toContain('assume the app will package it as a downloadable file')
+    expect(result.prompt).toContain('Do not say that you cannot create, generate, or download files from this interface.')
   })
 
   it('keeps normal answer-only behavior when no artifact was requested', async () => {
@@ -172,6 +174,8 @@ describe('bishop orchestration helpers', () => {
     expect(result.artifact).toBeUndefined()
     expect(result.artifactStatus).toBe('unsupported_format')
     expect(result.artifactNotice).toContain('.pdf')
+    expect(result.prompt).toContain('unsupported format .pdf')
+    expect(result.prompt).toContain('Do not claim that the interface cannot create files in general.')
   })
 
   it('treats malformed remote artifact payloads as generation failures', async () => {
@@ -217,7 +221,7 @@ describe('bishop orchestration helpers', () => {
     })
     vi.stubGlobal('fetch', fetchMock)
 
-    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+    const result = await orchestrateBishopAnswer(corpus, 'Create a JSON file for the Q3 2025 budget answer', {
       role: 'analyst',
       provider: 'openai',
       openaiApiKey: 'test-openai-key',
@@ -259,6 +263,8 @@ describe('bishop orchestration helpers', () => {
     })
     expect(body.messages[0].role).toBe('system')
     expect(body.messages[0].content).toContain('Use the conversation history to preserve follow-up context')
+    expect(body.messages[0].content).toContain('Assume the app can attach the downloadable file separately.')
+    expect(body.messages[0].content).toContain('Do not say that the interface cannot create, generate, or download files.')
     expect(body.messages[1].role).toBe('user')
     expect(body.messages[1].content).toContain('Use only the grounded context below.')
     expect(body.messages[1].content).toContain('Conversation history:')
@@ -301,7 +307,7 @@ describe('bishop orchestration helpers', () => {
     })
     vi.stubGlobal('fetch', fetchMock)
 
-    const result = await orchestrateBishopAnswer(corpus, 'What is the budget for Q3 2025?', {
+    const result = await orchestrateBishopAnswer(corpus, 'Export the Q3 2025 budget answer as csv', {
       role: 'analyst',
       provider: 'gemini',
       geminiApiKey: 'test-gemini-key',
@@ -334,6 +340,7 @@ describe('bishop orchestration helpers', () => {
       maxOutputTokens: 512,
     })
     expect(body.systemInstruction.parts[0].text).toContain('Use the conversation history to preserve follow-up context')
+    expect(body.systemInstruction.parts[0].text).toContain('Do not say that the interface cannot create, generate, or download files.')
     expect(body.contents[0].role).toBe('user')
     expect(body.contents[0].parts[0].text).toContain('Use only the grounded context below.')
   })
