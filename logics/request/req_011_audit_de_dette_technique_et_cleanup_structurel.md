@@ -1,9 +1,9 @@
 ## req_011_audit_de_dette_technique_et_cleanup_structurel - Technical debt and structural cleanup audit
-> From version: 1.0.1
+> From version: 1.2.0
 > Schema version: 1.0
 > Status: Done
-> Understanding: 99%
-> Confidence: 99%
+> Understanding: 100%
+> Confidence: 100%
 > Complexity: High
 > Theme: General
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -16,7 +16,7 @@
 - Clean up Logics workflow hygiene issues such as stale index entries, duplicate-scope docs, and mismatched reference labels.
 
 # Context
-- The current app passes lint, typecheck, unit tests, build, and e2e, so the problem is maintainability and clarity rather than a functional outage.
+- The current app should keep lint, typecheck, unit tests, build, and e2e aligned so the maintenance problem stays structural rather than hiding validation drift.
 - `src/App.tsx` is a large entrypoint that mixes app state, async orchestration, UI rendering, and live corpus loading.
 - `src/lib/deepvault.ts` combines text normalization, ranking, grounding, evaluation rows, and formatting in one module.
 - `src/lib/bishop.ts` currently collapses several orchestration outcomes into a single flow, which makes traceability harder to interpret.
@@ -68,3 +68,4 @@ flowchart TD
 
 # Outcome
 - Completed via `task_016_orchestrate_technical_debt_cleanup_waves` and its five bounded waves.
+- Maintenance follow-up applied in April 2026 to realign validation, docs, and secret-handling boundaries after a post-delivery audit.

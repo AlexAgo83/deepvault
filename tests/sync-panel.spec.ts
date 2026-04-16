@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDuration } from '../src/components/panels/sync-panel'
+import { formatDuration } from '../src/components/panels/sync-panel-utils'
 
 describe('formatDuration', () => {
   it('renders sub-second durations in milliseconds', () => {

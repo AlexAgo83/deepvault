@@ -239,11 +239,12 @@ describe('bishop orchestration helpers', () => {
     expect(result.tokenCount).toBe(122)
 
     const [url, init] = fetchMock.mock.calls[0]
-    expect(url).toBe('https://generativelanguage.googleapis.com/v1beta/models/gemini-test-model:generateContent?key=test-gemini-key')
+    expect(url).toBe('https://generativelanguage.googleapis.com/v1beta/models/gemini-test-model:generateContent')
     expect(init).toMatchObject({
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'x-goog-api-key': 'test-gemini-key',
       },
     })
 
