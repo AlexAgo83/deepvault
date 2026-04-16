@@ -18,7 +18,7 @@
     "evaluate": "node scripts/run-with-cleanup.mjs tsx scripts/evaluate.ts",
     "evaluate:live": "node scripts/run-with-cleanup.mjs tsx scripts/evaluate.ts --mode live",
     "export:live": "node scripts/run-with-cleanup.mjs tsx scripts/export-live.ts",
-    "check": "node scripts/run-with-cleanup.mjs sh -lc \"npm run lint && npm run typecheck && npm run test && npm run build && npm run e2e && npm run evaluate\""
+    "check": "node scripts/check.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",

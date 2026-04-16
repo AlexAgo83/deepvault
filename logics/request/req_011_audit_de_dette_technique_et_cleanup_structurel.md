@@ -71,3 +71,4 @@ flowchart TD
 - Maintenance follow-up applied in April 2026 to realign validation, docs, and secret-handling boundaries after a post-delivery audit.
 - Additional April 2026 hardening follow-up applied to keep empty live corpus payloads non-fatal, align provider readiness with current session credentials, and move Bishop conversation persistence to session scope.
 - Additional April 2026 CI hardening follow-up applied to keep `npm run evaluate` hermetic by ignoring ambient provider API keys and local data-mode/path overrides during the deterministic mock baseline, while filtering generic single-heading collisions for unrelated multi-term queries.
+- Additional April 2026 cross-platform follow-up applied to remove the shell-specific `sh -lc` validation path, document Windows setup/runtime commands, and extend CI coverage to both Ubuntu and Windows.

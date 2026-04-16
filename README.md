@@ -68,6 +68,18 @@ This repo is intentionally local-first:
    cp .env.exemple .env.local
    ```
 
+   Windows PowerShell:
+
+   ```powershell
+   Copy-Item .env.exemple .env.local
+   ```
+
+   Windows Command Prompt:
+
+   ```cmd
+   copy .env.exemple .env.local
+   ```
+
 3. Edit `.env.local` with your own values.
 
 Keep real credentials and tenant data local. Do not commit `.env.local`.
@@ -89,6 +101,18 @@ If you want to use the live corpus file in the browser:
 
 ```bash
 VITE_DEEPVAULT_DATA_MODE=live npm run dev
+```
+
+Windows PowerShell:
+
+```powershell
+$env:VITE_DEEPVAULT_DATA_MODE="live"; npm run dev
+```
+
+Windows Command Prompt:
+
+```cmd
+set VITE_DEEPVAULT_DATA_MODE=live && npm run dev
 ```
 
 That makes the app try to load `public/live-corpus.json`.
@@ -150,6 +174,7 @@ npm run check
 ```
 
 That runs lint, typecheck, tests, build, and the mock evaluation.
+`npm run check` is implemented in Node and is intended to run the same way on macOS, Linux, and Windows.
 
 If you want the coverage report and threshold check:
 
@@ -211,6 +236,18 @@ npm run export:live -- --resume
 VITE_DEEPVAULT_DATA_MODE=live npm run dev
 ```
 
+Windows PowerShell:
+
+```powershell
+$env:VITE_DEEPVAULT_DATA_MODE="live"; npm run dev
+```
+
+Windows Command Prompt:
+
+```cmd
+set VITE_DEEPVAULT_DATA_MODE=live && npm run dev
+```
+
 The app loads `public/live-corpus.json` at runtime and shows the live corpus in the same UI.
 
 ### 4. Validate the live snapshot locally
@@ -245,6 +282,18 @@ npm run export:live
 npm run ingest:live -- --input public/live-corpus.json
 npm run evaluate:live -- --input public/live-corpus.json
 VITE_DEEPVAULT_DATA_MODE=live npm run dev
+```
+
+Windows PowerShell:
+
+```powershell
+$env:VITE_DEEPVAULT_DATA_MODE="live"; npm run dev
+```
+
+Windows Command Prompt:
+
+```cmd
+set VITE_DEEPVAULT_DATA_MODE=live && npm run dev
 ```
 
 ## Data Files
