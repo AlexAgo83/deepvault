@@ -71,6 +71,15 @@ describe('useSyncOperations', () => {
     expect(result.current.lastCompletedJob).toBeNull()
   })
 
+  it('ignores invalid persisted history payloads on mount', () => {
+    localStorage.setItem('deepvault_sync_job_history', '{invalid-json')
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    expect(result.current.history).toEqual([])
+    expect(result.current.lastCompletedJob).toBeNull()
+  })
+
   it('persists completed history entries across remounts', async () => {
     vi.useFakeTimers()
 
@@ -217,6 +226,26 @@ describe('useSyncOperations', () => {
     expect(result.current.activeJob?.summary).toBe('Could not reach the worker. Make sure you are running the Vite dev server.')
   })
 
+  it('falls back to the read-only worker message when startup throws without a usable detail', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('')))
+
+    const { result } = renderHook(() => useSyncOperations({
+      ...DEFAULT_OPTIONS,
+      workerSettings: {
+        ...WORKER_SETTINGS_DEFAULTS,
+        workerFallbackMode: 'read_only',
+      },
+    }))
+
+    await act(async () => {
+      result.current.startExportLive()
+    })
+    await act(async () => {})
+
+    expect(result.current.activeJob?.status).toBe('failed')
+    expect(result.current.activeJob?.summary).toBe('Could not reach the worker. Staying on the published corpus in read-only mode.')
+  })
+
   it('surfaces the worker startup error details when the worker returns them', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: false,
@@ -327,6 +356,69 @@ describe('useSyncOperations', () => {
     expect(sessionStorage.getItem('deepvault_active_job')).toBeNull()
     expect(mockEs).not.toBeNull()
     expect(mockEs!.close).toHaveBeenCalled()
+  })
+
+  it('marks a live job as failed when its event stream errors', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve({ jobId: 'job-stream-error' }),
+    }))
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    await act(async () => {
+      result.current.startEvaluate()
+    })
+    await act(async () => {})
+
+    await act(async () => {
+      mockEs?.onerror?.()
+    })
+
+    expect(result.current.activeJob?.status).toBe('failed')
+    expect(result.current.activeJob?.summary).toBe('Evaluate failed.')
+    expect(sessionStorage.getItem('deepvault_active_job')).toBeNull()
+    expect(mockEs).not.toBeNull()
+    expect(mockEs!.close).toHaveBeenCalled()
+  })
+
+  it('cancels a refresh job even when no worker job id exists', async () => {
+    vi.useFakeTimers()
+    const onRefreshCorpus = vi.fn()
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { result } = renderHook(() => useSyncOperations({
+      ...DEFAULT_OPTIONS,
+      onRefreshCorpus,
+    }))
+
+    await act(async () => {
+      result.current.startRefresh()
+    })
+
+    expect(result.current.activeJob?.status).toBe('running')
+
+    act(() => {
+      result.current.cancelActiveJob()
+    })
+
+    expect(result.current.activeJob?.status).toBe('cancelled')
+    expect(result.current.activeJob?.summary).toBe('Refresh cancelled.')
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('uses worker job notes when a live job ends with a non-zero exit code', async () => {
