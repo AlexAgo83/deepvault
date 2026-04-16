@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useSyncOperations } from '../src/hooks/useSyncOperations'
+import { WORKER_SETTINGS_DEFAULTS } from '../src/hooks/useWorkerSettings'
 
 const DEFAULT_OPTIONS = {
   activeScopeLabel: 'All sites',
@@ -141,5 +142,112 @@ describe('useSyncOperations', () => {
     expect(persistedLines).toHaveLength(20)
     expect(persistedLines[0]?.text).toBe('Line 7')
     expect(persistedLines[persistedLines.length - 1]?.text).toBe('Wrote a new local sync snapshot.')
+  })
+
+  it('finalizes a stalled live job through watchdog polling', async () => {
+    vi.useFakeTimers()
+
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: () => Promise.resolve({ jobId: 'job-watchdog' }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({
+          id: 'job-watchdog',
+          kind: 'ingest',
+          status: 'completed',
+          startedAt: '2026-04-16T10:00:00.000Z',
+          progress: 100,
+        }),
+      })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    await act(async () => {
+      result.current.startIngest()
+    })
+    await act(async () => {})
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(WORKER_SETTINGS_DEFAULTS.workerTimeoutSeconds * 1000 + 10)
+    })
+
+    expect(result.current.activeJob?.status).toBe('completed')
+    expect(result.current.activeJob?.summary).toBe('Wrote a new local sync snapshot.')
+    expect(mockEs?.close).toHaveBeenCalled()
+  })
+
+  it('surfaces the block-mode worker startup error message', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')))
+
+    const { result } = renderHook(() => useSyncOperations({
+      ...DEFAULT_OPTIONS,
+      workerSettings: {
+        ...WORKER_SETTINGS_DEFAULTS,
+        workerFallbackMode: 'block',
+      },
+    }))
+
+    await act(async () => {
+      result.current.startIngest()
+    })
+    await act(async () => {})
+
+    expect(result.current.activeJob?.status).toBe('failed')
+    expect(result.current.activeJob?.summary).toBe('Could not reach the worker. Make sure you are running the Vite dev server.')
+  })
+
+  it('reconnects a persisted job and marks it failed when the stream errors', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+    sessionStorage.setItem('deepvault_active_job', JSON.stringify({
+      serverJobId: 'job-reconnect',
+      jobId: 'job-local',
+      kind: 'ingest',
+      startedAt: '2026-04-16T10:00:00.000Z',
+    }))
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+    vi.stubGlobal('fetch', vi.fn())
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    expect(result.current.activeJob?.status).toBe('running')
+
+    await act(async () => {
+      mockEs?.onerror?.()
+    })
+
+    expect(result.current.activeJob?.status).toBe('failed')
+    expect(result.current.activeJob?.summary).toBe('Could not reconnect to Ingest.')
+    expect(sessionStorage.getItem('deepvault_active_job')).toBeNull()
+    expect(mockEs?.close).toHaveBeenCalled()
   })
 })

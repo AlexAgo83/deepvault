@@ -175,6 +175,65 @@ describe('createWorkerClient — remote mode', () => {
       }),
     )
   })
+
+  it('parses buffered SSE chunks in remote mode and emits messages', async () => {
+    const reader = {
+      read: vi
+        .fn()
+        .mockResolvedValueOnce({
+          done: false,
+          value: new TextEncoder().encode('data: {"type":"line","text":"one"}\n\ndata: {"type":"line"'),
+        })
+        .mockResolvedValueOnce({
+          done: false,
+          value: new TextEncoder().encode(',"text":"two"}\n\n'),
+        })
+        .mockResolvedValueOnce({ done: true, value: undefined }),
+    }
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      body: { getReader: () => reader },
+    }))
+
+    const client = createWorkerClient(REMOTE_CONFIG)
+    const stream = client.openJobEvents('job-stream')
+    const messages: string[] = []
+
+    stream.onmessage = (event) => {
+      messages.push(event.data)
+    }
+
+    await Promise.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(messages).toEqual([
+      '{"type":"line","text":"one"}',
+      '{"type":"line","text":"two"}',
+    ])
+  })
+
+  it('calls onerror when the remote event stream cannot be opened', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 503,
+      body: null,
+    }))
+
+    const client = createWorkerClient(REMOTE_CONFIG)
+    const stream = client.openJobEvents('job-fail')
+    const onerror = vi.fn()
+    stream.onerror = onerror
+
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(onerror).toHaveBeenCalledTimes(1)
+    expect(consoleError).toHaveBeenCalledWith('Worker event stream failed', expect.any(Error))
+  })
 })
 
 describe('createWorkerClient — timeout', () => {
