@@ -145,7 +145,7 @@ describe('DeepVault app', () => {
     expect(screen.getByText('Responses')).toBeInTheDocument()
     expect(screen.getByText('Need hints')).toBeInTheDocument()
 
-    const responseCard = screen.getAllByRole('button', { name: /answered response/i })[0]
+    const responseCard = screen.getAllByRole('button', { name: /what is the budget for q3 2025\?/i })[0]
     act(() => {
       responseCard.focus()
     })

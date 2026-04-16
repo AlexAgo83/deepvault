@@ -103,3 +103,4 @@ stateDiagram-v2
 - Validation passed for wave 3: `rtk npm run test`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
 - Wave 4 completed: paths are now compact inline labels with full-path hover titles across the explorer, source cards, and Bishop trace.
 - Validation passed for wave 4: `rtk npm run test`, `rtk npm run lint`, `rtk npm run typecheck`, `rtk npm run build`.
+- April 2026 UI follow-up: the AI View `AI needs` donut now stays pinned at the top while only the legend rows scroll, `Answered response` cards no longer expose the previous-question hover tooltip, and answered cards now show a visible response identifier from the message id or a fallback incremental counter.

@@ -24,6 +24,15 @@ function formatConfidence(value?: number) {
   return typeof value === 'number' ? `${value}%` : 'n/a'
 }
 
+function getResponseDisplayId(messageId: string | undefined, index: number) {
+  const normalizedId = messageId?.trim()
+  if (!normalizedId?.length) {
+    return String(index + 1)
+  }
+
+  return normalizedId.replace(/-assistant$/i, '')
+}
+
 function getPromptForResponse(messages: AppModel['messages'], responseId: string) {
   const responseIndex = messages.findIndex((message) => message.id === responseId)
   if (responseIndex <= 0) {
@@ -81,35 +90,34 @@ function AIResponseCard({
   onCollapse,
   onExpand,
   messages,
+  responseDisplayId,
   resolveFileHref,
+  showSources,
+  showNeed,
+  onToggleSources,
+  onToggleNeed,
 }: {
   isExpanded: boolean
   message: AppModel['messages'][number]
   onCollapse: () => void
   onExpand: () => void
   messages: AppModel['messages']
+  responseDisplayId: string
   resolveFileHref: AppModel['resolveFileHref']
+  showSources: boolean
+  showNeed: boolean
+  onToggleSources: () => void
+  onToggleNeed: () => void
 }) {
-  const [showSources, setShowSources] = useState(false)
-  const [showNeed, setShowNeed] = useState(false)
   const prompt = getPromptForResponse(messages, message.id)
   const sourceCount = message.sources?.length || 0
-
-  useEffect(() => {
-    if (isExpanded) {
-      return
-    }
-
-    setShowSources(false)
-    setShowNeed(false)
-  }, [isExpanded, message.id])
 
   return (
     <div
       className={`sync-card ai-response-card ${isExpanded ? 'ai-response-card-expanded' : ''}`}
-      title={prompt || message.improvementHint || message.text}
       role="button"
       tabIndex={0}
+      aria-label={prompt || message.improvementHint || message.text}
       aria-expanded={isExpanded}
       onClick={() => onExpand()}
       onFocus={() => {
@@ -140,7 +148,16 @@ function AIResponseCard({
     >
       <div className="ai-response-head">
         <div className="ai-response-head-copy">
-          <strong>{message.status === 'answered' ? 'Answered response' : message.status}</strong>
+          <strong>
+            {message.status === 'answered' ? (
+              <>
+                <span className="ai-response-id-prefix" aria-hidden="true">#</span>
+                <span>{responseDisplayId}</span>
+              </>
+            ) : (
+              message.status
+            )}
+          </strong>
         </div>
         <div className="ai-response-badges">
           <Pill tone={getStatusTone(message.status)}>{message.status}</Pill>
@@ -178,7 +195,7 @@ function AIResponseCard({
                 if (!showSources && !isExpanded) {
                   onExpand()
                 }
-                setShowSources((value) => !value)
+                onToggleSources()
               }}
               aria-label={showSources ? 'Hide sources' : 'Show sources'}
               aria-expanded={showSources}
@@ -213,7 +230,7 @@ function AIResponseCard({
                 if (!showNeed && !isExpanded) {
                   onExpand()
                 }
-                setShowNeed((value) => !value)
+                onToggleNeed()
               }}
               aria-label={showNeed ? 'Hide what would help next' : 'Show what would help next'}
               aria-expanded={showNeed}
@@ -258,8 +275,11 @@ export function AIStatsPanel({
   const remainingNeedCount = sortedNeeds.slice(5).reduce((sum, need) => sum + need.count, 0)
   const chartNeeds = remainingNeedCount ? [...topNeeds, { hint: 'Other needs', count: remainingNeedCount }] : topNeeds
   const needChart = buildNeedChartSegments(chartNeeds)
+  const responseDisplayIds = new Map(responses.map((message, index) => [message.id, getResponseDisplayId(message.id, index)]))
   const recentResponses = [...responses].slice(-5).reverse()
   const [expandedResponseId, setExpandedResponseId] = useState<string | null>(null)
+  const [showSources, setShowSources] = useState(false)
+  const [showNeed, setShowNeed] = useState(false)
 
   useEffect(() => {
     if (!expandedResponseId) {
@@ -292,7 +312,12 @@ export function AIStatsPanel({
                   }
                   onExpand={() => setExpandedResponseId(message.id)}
                   messages={messages}
+                  responseDisplayId={responseDisplayIds.get(message.id) || getResponseDisplayId(message.id, 0)}
                   resolveFileHref={resolveFileHref}
+                  showSources={showSources}
+                  showNeed={showNeed}
+                  onToggleSources={() => setShowSources((value) => !value)}
+                  onToggleNeed={() => setShowNeed((value) => !value)}
                 />
               ))
             ) : (
@@ -308,25 +333,25 @@ export function AIStatsPanel({
             title="AI needs"
             subtitleTooltip="Recurring inputs that would have improved the last answers."
           />
-          <div className="ai-stats-scroll">
-            <div className="detail-stack">
-              {topNeeds.length ? (
-                <>
-                  <div className="ai-needs-chart-card">
-                    <div className="ai-needs-chart-shell">
-                      <div
-                        className="ai-needs-chart"
-                        role="img"
-                        aria-label={needChart.label}
-                        style={needChart.gradient ? { backgroundImage: needChart.gradient } : undefined}
-                      >
-                        <div className="ai-needs-chart-center">
-                          <strong>{needChart.total}</strong>
-                          <span>needs</span>
-                        </div>
-                      </div>
+          {topNeeds.length ? (
+            <>
+              <div className="ai-needs-chart-card">
+                <div className="ai-needs-chart-shell">
+                  <div
+                    className="ai-needs-chart"
+                    role="img"
+                    aria-label={needChart.label}
+                    style={needChart.gradient ? { backgroundImage: needChart.gradient } : undefined}
+                  >
+                    <div className="ai-needs-chart-center">
+                      <strong>{needChart.total}</strong>
+                      <span>needs</span>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div className="ai-stats-scroll">
+                <div className="detail-stack">
                   {topNeeds.map(({ hint, count }, index) => (
                     <div key={hint} className="ai-need-row">
                       <span className="ai-need-row-copy">
@@ -336,12 +361,16 @@ export function AIStatsPanel({
                       <strong>{count}</strong>
                     </div>
                   ))}
-                </>
-              ) : (
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="ai-stats-scroll">
+              <div className="detail-stack">
                 <div className="empty-state">No AI needs have been surfaced yet.</div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </aside>
       ) : null}
     </section>

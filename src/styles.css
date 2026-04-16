@@ -223,6 +223,15 @@ p {
   max-width: 22rem;
 }
 
+.ai-stats-needs-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .explorer-detail-scroll {
   display: grid;
   gap: 14px;
@@ -2407,6 +2416,11 @@ th {
   word-break: break-word;
 }
 
+.ai-response-id-prefix {
+  color: var(--accent);
+  margin-right: 1px;
+}
+
 .ai-response-meta {
   display: flex;
   align-items: center;
@@ -2542,10 +2556,13 @@ th {
 }
 
 .ai-needs-chart-card {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: transparent;
+  background: var(--surface);
 }
 
 .ai-needs-chart-shell {
@@ -3095,6 +3112,7 @@ code {
   .bishop-trace-panel .source-list,
   .ai-stats-panel .ai-response-list,
   .ai-stats-scroll,
+  .ai-stats-needs-panel,
   .settings-main-scroll,
   .settings-changelog-scroll {
     flex: none;
