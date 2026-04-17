@@ -29,6 +29,13 @@ export interface AIUsageSummary {
 export const AI_USAGE_STORAGE_KEY = 'deepvault_ai_usage_events'
 const MAX_EVENTS = 400
 
+function formatLocalDateKey(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 function readEvents(): AIUsageEvent[] {
   if (typeof window === 'undefined') {
     return []
@@ -119,7 +126,7 @@ export function summarizeAIUsageEvents(
 
   const recentEvents = events.filter((event) => new Date(event.timestamp).getTime() >= historyStart.getTime())
   const providerEvents = recentEvents.filter((event) => event.usageKind === 'provider' || event.usageKind === 'partial')
-  const todayKey = now.toLocaleDateString('en-CA')
+  const todayKey = formatLocalDateKey(now)
   const dayMap = new Map<string, { input: number; output: number; total: number; count: number }>()
   const hourMap = new Map<number, { input: number; output: number; total: number; count: number }>()
   const providerMap = new Map<string, { provider: string; total: number; input: number; output: number; count: number }>()
@@ -127,7 +134,7 @@ export function summarizeAIUsageEvents(
   for (let index = 0; index < historyDays; index += 1) {
     const day = new Date(historyStart)
     day.setDate(historyStart.getDate() + index)
-    dayMap.set(day.toLocaleDateString('en-CA'), { input: 0, output: 0, total: 0, count: 0 })
+    dayMap.set(formatLocalDateKey(day), { input: 0, output: 0, total: 0, count: 0 })
   }
 
   for (let hour = 0; hour < 24; hour += 1) {
@@ -136,7 +143,7 @@ export function summarizeAIUsageEvents(
 
   for (const event of providerEvents) {
     const date = new Date(event.timestamp)
-    const dayKey = date.toLocaleDateString('en-CA')
+    const dayKey = formatLocalDateKey(date)
     const input = event.inputTokenCount || 0
     const output = event.outputTokenCount || 0
     const total = event.totalTokenCount || input + output
