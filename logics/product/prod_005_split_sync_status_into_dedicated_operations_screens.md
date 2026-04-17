@@ -5,13 +5,13 @@
 > Related backlog: `logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md`
 > Related task: `logics/tasks/task_028_split_sync_status_into_dedicated_operations_screens.md`
 > Related architecture: `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_024_split_sync_status_into_dedicated_operations_screens.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Decisions resolved: routes first, Status -> Operations -> History -> Config -> Recovery ordering.
+> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Decisions resolved: routes first, with Recovery grouped under Config.
 
 # Overview
 Split the current Sync Status experience into a summary surface and dedicated operations screens.
 Keep the summary surface lightweight and readable.
-Move configuration, live operations, run history, and error recovery into focused screens that reduce panel overload and make the app easier to operate.
-Keep the wording and hierarchy consistent across the app so operators can move between summary, operations, history, config, and recovery without relearning the UI.
+Move configuration, live operations, run history, and error recovery into focused surfaces that reduce panel overload and make the app easier to operate.
+Keep the wording and hierarchy consistent across the app so operators can move between summary, operations, history, and config without relearning the UI.
 
 ```mermaid
 flowchart LR
@@ -24,7 +24,7 @@ flowchart LR
 # Product problem
 Sync Status is carrying too many responsibilities at once.
 It currently mixes live job state, telemetry, checkpoint status, fallback state, and operational controls in a way that makes the screen harder to scan and harder to extend.
-Operators need a clearer separation between system summary, live execution, history, config, and recovery.
+Operators need a clearer separation between system summary, live execution, history, and worker configuration, while still keeping recovery guidance easy to find.
 The current experience also makes it harder to tell which surface is the default place to look first when something changes in the worker or corpus.
 
 # Target users and situations
@@ -33,7 +33,7 @@ The current experience also makes it harder to tell which surface is the default
 
 # Goals
 - Keep Sync Status as a concise summary.
-- Add dedicated screens or views for operations, run history, configuration, and error recovery.
+- Add dedicated screens or views for operations, run history, and configuration, with recovery guidance grouped under configuration.
 - Reduce context switching while improving readability and trust in the current system state.
 - Make it easier to surface worker state, corpus state, and job state without overload.
 - Make the app feel like a cockpit with clear entry points rather than a single overloaded status page.
@@ -51,7 +51,7 @@ The current experience also makes it harder to tell which surface is the default
 
 # Key product decisions
 - Sync Status becomes the summary panel, not the place where every operational feature lives.
-- Live operations, history, config, and recovery deserve focused screens because they answer different operator questions.
+- Live operations, history, and config deserve focused screens because they answer different operator questions, and recovery belongs with worker configuration rather than as a separate top-level destination.
 - The new screens should use consistent state terminology so operators can move between them without relearning the system.
 - The screen split should make the default path obvious: summary first, then deeper inspection and control where needed.
 
@@ -68,4 +68,4 @@ The current experience also makes it harder to tell which surface is the default
 
 # Open questions
 - Decision note: use explicit routes for the first iteration so deep links, keyboard navigation, and summary-to-detail handoff stay predictable.
-- Keep the screen ordering as Status, Operations, History, Config, and Recovery unless a later implementation issue forces a re-sequence.
+- Decision note: keep the top-level screen ordering as Status, Operations, History, and Config, with Recovery grouped under Config.

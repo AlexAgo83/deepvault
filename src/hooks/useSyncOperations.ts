@@ -154,7 +154,7 @@ function formatCommandLine(
 
 const ACTIVE_JOB_SESSION_KEY = 'deepvault_active_job'
 const JOB_HISTORY_STORAGE_KEY = 'deepvault_sync_job_history'
-const MAX_JOB_LINES = 20
+const MAX_JOB_LINES = 50
 
 type LiveOpKind = 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
 
