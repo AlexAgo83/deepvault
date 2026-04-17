@@ -36,6 +36,12 @@ export interface AnalysisRunReport {
   actualInputTokens: number
   actualOutputTokens: number
   tokenCountMode: 'actual' | 'estimated'
+  providerAttempts: number
+  providerSuccesses: number
+  providerFallbacks: number
+  providerFailureReasons: Record<string, number>
+  elapsedMs: number
+  averageDocumentMs: number
 }
 
 const PROVIDER_COST_PER_1K_TOKENS: Record<string, { input: number; output: number }> = {
@@ -77,6 +83,19 @@ interface ProviderAnalysisOptions {
   apiKey: string
   contentHash: string
   version: string
+}
+
+interface AnalyzeProgressSnapshot {
+  scanned: number
+  analyzed: number
+  selected: number
+  excluded: number
+  reused: number
+  stale: number
+  providerAttempts: number
+  providerSuccesses: number
+  providerFallbacks: number
+  elapsedMs: number
 }
 
 function parseProviderAnalysisResponse(
@@ -133,6 +152,53 @@ interface ProviderCallResult {
   text: string | null
   inputTokens: number
   outputTokens: number
+  failureReason: string | null
+}
+
+function buildHttpFailureReason(status: number, details: string | null): string {
+  if (!details) {
+    return `http_${status}`
+  }
+  return `http_${status}:${details}`
+}
+
+async function readErrorDetail(response: Response): Promise<string | null> {
+  try {
+    const payload = (await response.json()) as {
+      error?: { message?: string | null; type?: string | null; code?: string | null }
+    }
+    const message = payload.error?.message?.trim()
+    const code = payload.error?.code?.trim()
+    const type = payload.error?.type?.trim()
+    return [code, type, message].filter(Boolean).join('|') || null
+  } catch {
+    try {
+      const text = (await response.text()).trim()
+      return text || null
+    } catch {
+      return null
+    }
+  }
+}
+
+function extractOpenAIResponsesText(payload: {
+  output_text?: string | null
+  output?: Array<{
+    type?: string
+    content?: Array<{ type?: string; text?: string | null }>
+  }>
+}): string | null {
+  if (payload.output_text?.trim()) {
+    return payload.output_text.trim()
+  }
+
+  const parts = (payload.output || [])
+    .flatMap((item) => item.content || [])
+    .filter((item) => item.type === 'output_text' && typeof item.text === 'string')
+    .map((item) => item.text?.trim() || '')
+    .filter(Boolean)
+
+  return parts.join('\n').trim() || null
 }
 
 async function callAnthropicProvider(prompt: string, model: string, apiKey: string): Promise<ProviderCallResult> {
@@ -151,29 +217,44 @@ async function callAnthropicProvider(prompt: string, model: string, apiKey: stri
     text: text.trim() || null,
     inputTokens: response.usage.input_tokens,
     outputTokens: response.usage.output_tokens,
+    failureReason: null,
   }
 }
 
 async function callOpenAIProvider(prompt: string, model: string, apiKey: string): Promise<ProviderCallResult> {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
     body: JSON.stringify({
       model,
-      max_tokens: ANALYSIS_MAX_OUTPUT_TOKENS,
-      temperature: 0,
-      messages: [{ role: 'user', content: prompt }],
+      reasoning: { effort: 'low' },
+      max_output_tokens: ANALYSIS_MAX_OUTPUT_TOKENS,
+      input: [{ role: 'user', content: prompt }],
     }),
   })
-  if (!response.ok) return { text: null, inputTokens: 0, outputTokens: 0 }
-  const payload = (await response.json()) as {
-    choices?: Array<{ message?: { content?: string | null } }>
-    usage?: { prompt_tokens?: number; completion_tokens?: number }
+  if (!response.ok) {
+    const details = await readErrorDetail(response)
+    return {
+      text: null,
+      inputTokens: 0,
+      outputTokens: 0,
+      failureReason: buildHttpFailureReason(response.status, details),
+    }
   }
+  const payload = (await response.json()) as {
+    output_text?: string | null
+    output?: Array<{
+      type?: string
+      content?: Array<{ type?: string; text?: string | null }>
+    }>
+    usage?: { input_tokens?: number; output_tokens?: number }
+  }
+  const text = extractOpenAIResponsesText(payload)
   return {
-    text: payload.choices?.[0]?.message?.content?.trim() || null,
-    inputTokens: payload.usage?.prompt_tokens || 0,
-    outputTokens: payload.usage?.completion_tokens || 0,
+    text,
+    inputTokens: payload.usage?.input_tokens || 0,
+    outputTokens: payload.usage?.output_tokens || 0,
+    failureReason: text ? null : 'empty_response',
   }
 }
 
@@ -189,7 +270,14 @@ async function callGeminiProvider(prompt: string, model: string, apiKey: string)
       }),
     },
   )
-  if (!response.ok) return { text: null, inputTokens: 0, outputTokens: 0 }
+  if (!response.ok) {
+    return {
+      text: null,
+      inputTokens: 0,
+      outputTokens: 0,
+      failureReason: `http_${response.status}`,
+    }
+  }
   const payload = (await response.json()) as {
     candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>
     usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number }
@@ -203,6 +291,7 @@ async function callGeminiProvider(prompt: string, model: string, apiKey: string)
     text,
     inputTokens: payload.usageMetadata?.promptTokenCount || 0,
     outputTokens: payload.usageMetadata?.candidatesTokenCount || 0,
+    failureReason: text ? null : 'empty_response',
   }
 }
 
@@ -210,6 +299,7 @@ interface ProviderAnalysisResult {
   analysis: DocumentAnalysis | null
   inputTokens: number
   outputTokens: number
+  failureReason: string | null
 }
 
 async function runProviderAnalysis(
@@ -217,7 +307,7 @@ async function runProviderAnalysis(
   options: ProviderAnalysisOptions,
 ): Promise<ProviderAnalysisResult> {
   const prompt = buildProviderPrompt(document)
-  let callResult: ProviderCallResult = { text: null, inputTokens: 0, outputTokens: 0 }
+  let callResult: ProviderCallResult = { text: null, inputTokens: 0, outputTokens: 0, failureReason: null }
 
   try {
     if (options.provider === 'anthropic') {
@@ -227,15 +317,39 @@ async function runProviderAnalysis(
     } else if (options.provider === 'gemini') {
       callResult = await callGeminiProvider(prompt, options.model, options.apiKey)
     }
-  } catch {
-    return { analysis: null, inputTokens: 0, outputTokens: 0 }
+  } catch (error) {
+    return {
+      analysis: null,
+      inputTokens: 0,
+      outputTokens: 0,
+      failureReason: error instanceof Error ? error.message : 'provider_request_failed',
+    }
   }
 
-  if (!callResult.text) return { analysis: null, inputTokens: callResult.inputTokens, outputTokens: callResult.outputTokens }
+  if (!callResult.text) {
+    return {
+      analysis: null,
+      inputTokens: callResult.inputTokens,
+      outputTokens: callResult.outputTokens,
+      failureReason: callResult.failureReason || 'empty_response',
+    }
+  }
+
+  const parsedAnalysis = parseProviderAnalysisResponse(callResult.text, document, options)
+  if (!parsedAnalysis) {
+    return {
+      analysis: null,
+      inputTokens: callResult.inputTokens,
+      outputTokens: callResult.outputTokens,
+      failureReason: 'invalid_json_response',
+    }
+  }
+
   return {
-    analysis: parseProviderAnalysisResponse(callResult.text, document, options),
+    analysis: parsedAnalysis,
     inputTokens: callResult.inputTokens,
     outputTokens: callResult.outputTokens,
+    failureReason: null,
   }
 }
 
@@ -327,7 +441,9 @@ function buildAnalysis(document: CorpusDocument, provider: string, model: string
     status: 'analyzed',
     version: ANALYSIS_VERSION,
     provider,
+    requestedProvider: provider,
     model,
+    requestedModel: model,
     analyzedAt: new Date().toISOString(),
     contentHash,
     summary,
@@ -335,6 +451,7 @@ function buildAnalysis(document: CorpusDocument, provider: string, model: string
     sections,
     documentType: inferDocumentType(document),
     confidence: Math.max(55, Math.min(92, 58 + sections.length * 8 + (document.tags.length > 0 ? 6 : 0))),
+    providerStatus: provider === 'local' ? 'local' : 'fallback',
   }
 }
 
@@ -353,8 +470,10 @@ export async function analyzeCorpusDocuments(
     model: string
     limit: number
     apiKey?: string
+    onProgress?: (snapshot: AnalyzeProgressSnapshot) => void
   },
 ) {
+  const startedAtMs = Date.now()
   let analyzed = 0
   let failed = 0
   let excluded = 0
@@ -363,9 +482,28 @@ export async function analyzeCorpusDocuments(
   let stale = 0
   let actualInputTokens = 0
   let actualOutputTokens = 0
+  let providerAttempts = 0
+  let providerSuccesses = 0
+  let providerFallbacks = 0
+  let providerFallbackLogCount = 0
   const exclusionReasons: Record<string, number> = {}
   const selectionReasons: Record<string, number> = {}
+  const providerFailureReasons: Record<string, number> = {}
   const useProvider = options.provider !== 'local' && Boolean(options.apiKey)
+  const reportProgress = () => {
+    options.onProgress?.({
+      scanned,
+      analyzed,
+      selected: analyzed + failed + stale,
+      excluded,
+      reused,
+      stale,
+      providerAttempts,
+      providerSuccesses,
+      providerFallbacks,
+      elapsedMs: Date.now() - startedAtMs,
+    })
+  }
 
   const documents: CorpusDocument[] = []
 
@@ -375,6 +513,7 @@ export async function analyzeCorpusDocuments(
     if (shouldReuseExistingAnalysis(document)) {
       reused += 1
       documents.push(document)
+      reportProgress()
       continue
     }
 
@@ -391,6 +530,7 @@ export async function analyzeCorpusDocuments(
           excludedReason: exclusionReason,
         },
       })
+      reportProgress()
       continue
     }
 
@@ -405,6 +545,7 @@ export async function analyzeCorpusDocuments(
           excludedReason: 'insufficient_expected_value',
         },
       })
+      reportProgress()
       continue
     }
 
@@ -419,6 +560,7 @@ export async function analyzeCorpusDocuments(
           failureReason: 'run_budget_reached',
         },
       })
+      reportProgress()
       continue
     }
 
@@ -434,6 +576,7 @@ export async function analyzeCorpusDocuments(
       let analysisOutput = buildAnalysis(document, options.provider, options.model)
 
       if (useProvider) {
+        providerAttempts += 1
         const providerResult = await runProviderAnalysis(document, {
           provider: options.provider,
           model: options.model,
@@ -445,10 +588,34 @@ export async function analyzeCorpusDocuments(
         actualOutputTokens += providerResult.outputTokens
         if (providerResult.analysis) {
           analysisOutput = providerResult.analysis
+          analysisOutput.providerStatus = 'provider'
+          analysisOutput.requestedProvider = options.provider
+          analysisOutput.requestedModel = options.model
+          providerSuccesses += 1
+        } else {
+          const fallbackReason = providerResult.failureReason || 'provider_analysis_unavailable'
+          analysisOutput = {
+            ...analysisOutput,
+            provider: 'local',
+            model: DEFAULT_PROVIDER_MODELS.local,
+            requestedProvider: options.provider,
+            requestedModel: options.model,
+            providerStatus: 'fallback',
+            fallbackReason,
+          }
+          providerFallbacks += 1
+          providerFailureReasons[fallbackReason] = (providerFailureReasons[fallbackReason] || 0) + 1
+          if (providerFallbackLogCount < 5) {
+            providerFallbackLogCount += 1
+            console.warn(
+              `Provider fallback for ${document.path}: requested ${options.provider}/${options.model}, using local heuristic (${fallbackReason}).`,
+            )
+          }
         }
       }
 
       documents.push({ ...document, analysis: analysisOutput })
+      reportProgress()
     } catch (error) {
       failed += 1
       analyzed -= 1
@@ -461,6 +628,7 @@ export async function analyzeCorpusDocuments(
           failureReason: error instanceof Error ? error.message : 'analysis_failed',
         },
       })
+      reportProgress()
     }
   }
 
@@ -478,6 +646,10 @@ export async function analyzeCorpusDocuments(
       selectionReasons,
       actualInputTokens,
       actualOutputTokens,
+      providerAttempts,
+      providerSuccesses,
+      providerFallbacks,
+      providerFailureReasons,
     },
   }
 }
@@ -491,6 +663,7 @@ export function buildAnalysisRunReport(options: {
   selectionMode: 'off' | 'necessary' | 'all'
   limit: number
   metrics: Awaited<ReturnType<typeof analyzeCorpusDocuments>>['metrics']
+  elapsedMs?: number
 }): AnalysisRunReport {
   const estimatedInputTokens = options.metrics.analyzed * 900
   const estimatedOutputTokens = options.metrics.analyzed * 220
@@ -499,6 +672,8 @@ export function buildAnalysisRunReport(options: {
   const hasActualTokens = actualInputTokens > 0 || actualOutputTokens > 0
   const tokenCountMode: 'actual' | 'estimated' = hasActualTokens ? 'actual' : 'estimated'
   const pricing = PROVIDER_COST_PER_1K_TOKENS[options.provider] || PROVIDER_COST_PER_1K_TOKENS.local
+  const elapsedMs = options.elapsedMs || 0
+  const averageDocumentMs = options.metrics.analyzed > 0 ? Math.round(elapsedMs / options.metrics.analyzed) : 0
   const estimatedCostUsd = Number(
     (((estimatedInputTokens / 1000) * pricing.input) + ((estimatedOutputTokens / 1000) * pricing.output)).toFixed(4),
   )
@@ -529,7 +704,20 @@ export function buildAnalysisRunReport(options: {
     actualInputTokens,
     actualOutputTokens,
     tokenCountMode,
+    providerAttempts: options.metrics.providerAttempts,
+    providerSuccesses: options.metrics.providerSuccesses,
+    providerFallbacks: options.metrics.providerFallbacks,
+    providerFailureReasons: options.metrics.providerFailureReasons,
+    elapsedMs,
+    averageDocumentMs,
   }
+}
+
+function formatDuration(ms: number): string {
+  const totalSeconds = Math.max(0, Math.round(ms / 1000))
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${minutes}m ${seconds}s`
 }
 
 async function main() {
@@ -572,13 +760,34 @@ async function main() {
   }
   console.log('Selecting and analyzing candidate documents...')
 
+  const startedAtMs = Date.now()
+  let lastLoggedAnalyzed = 0
+  let lastLoggedAtMs = Date.now()
   const analyzedCorpus = await analyzeCorpusDocuments(corpus, {
     mode,
     provider,
     model,
     limit,
     apiKey: apiKey || undefined,
+    onProgress: (snapshot) => {
+      if (snapshot.analyzed === 0) {
+        return
+      }
+      const shouldLogByCount = snapshot.analyzed >= lastLoggedAnalyzed + 10
+      const shouldLogByTime = Date.now() - lastLoggedAtMs >= 15_000
+      if (!shouldLogByCount && !shouldLogByTime && snapshot.analyzed !== limit) {
+        return
+      }
+      lastLoggedAnalyzed = snapshot.analyzed
+      lastLoggedAtMs = Date.now()
+      const averageMs = snapshot.analyzed > 0 ? Math.round(snapshot.elapsedMs / snapshot.analyzed) : 0
+      console.log(
+        `Progress: analyzed ${snapshot.analyzed}/${limit} documents in ${formatDuration(snapshot.elapsedMs)} ` +
+          `(avg ${averageMs} ms/doc, provider successes ${snapshot.providerSuccesses}, fallbacks ${snapshot.providerFallbacks}).`,
+      )
+    },
   })
+  const elapsedMs = Date.now() - startedAtMs
 
   const nextCorpus: Corpus = {
     ...corpus,
@@ -593,6 +802,7 @@ async function main() {
     selectionMode: mode,
     limit,
     metrics: analyzedCorpus.metrics,
+    elapsedMs,
   })
 
   console.log('Writing derived analysis artifacts...')
@@ -620,6 +830,18 @@ async function main() {
   } else {
     console.log(`Estimated input tokens: ${report.estimatedInputTokens}`)
     console.log(`Estimated output tokens: ${report.estimatedOutputTokens}`)
+  }
+  console.log(`Provider attempts: ${report.providerAttempts}`)
+  console.log(`Provider successes: ${report.providerSuccesses}`)
+  console.log(`Provider fallbacks: ${report.providerFallbacks}`)
+  console.log(`Elapsed: ${formatDuration(report.elapsedMs)}`)
+  console.log(`Average per analyzed document: ${report.averageDocumentMs} ms`)
+  if (report.providerFallbacks > 0) {
+    const providerFailureSummary = Object.entries(report.providerFailureReasons)
+      .sort((left, right) => right[1] - left[1])
+      .map(([reason, count]) => `${reason}=${count}`)
+      .join(', ')
+    console.log(`Provider fallback reasons: ${providerFailureSummary}`)
   }
   console.log(`Estimated cost (USD): ${report.estimatedCostUsd.toFixed(4)}`)
   console.log(`Token count mode: ${report.tokenCountMode}`)

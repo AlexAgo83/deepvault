@@ -1,13 +1,13 @@
 ## task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment - Orchestrate post-ingest AI analysis command for corpus enrichment
-> From version: 1.3.0
+> From version: 1.3.1
 > Schema version: 1.0
 > Status: Done
-> Understanding: 97%
-> Confidence: 93%
+> Understanding: 98%
+> Confidence: 95%
 > Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
-> Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references when you edit this doc.
+> Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references whenever analysis runtime observability or validation expectations change.
 
 # Context
 - Orchestrate the full delivery program for `prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment`.
@@ -31,7 +31,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-post-ingest-ai-analysis-com|prod-010-add-a-post-ingest-ai-analysis-c|1-lock-the-first-wave-analysis|run-rtk-npm-run-typecheck-and
+%% logics-signature: task|orchestrate-post-ingest-ai-analysis-comm|item-069-ship-bounded-post-ingest-analys|1-wave-1-lock-the-first-wave|run-rtk-npm-run-typecheck-for
 stateDiagram-v2
     state "prod_010_post_ingest_ai_analysis_command" as Product
     state "1. Lock the first-wave analysis contract" as Scope
@@ -114,10 +114,14 @@ stateDiagram-v2
 - `npm run analyze` now ships and writes additive `document.analysis` blocks to `data/runtime/analyzed-corpus.json`.
 - `npm run analyze` also emits `data/runtime/analyze-report.json` with bounded run metrics and heuristic token/cost estimates for routine operability checks.
 - Retrieval and source previews now prefer fresh analysis summaries/sections/keywords without removing baseline corpus fallback behavior.
-- `analyzeCorpusDocuments()` is now async and provider-backed: when `--provider anthropic|openai|gemini` is passed with a valid env API key, each candidate document gets a real provider call (structured JSON response: summary, keywords, sections, documentType, confidence). Falls back to the heuristic if the call fails or no key is present.
+- `analyzeCorpusDocuments()` is now async and provider-backed: when `--provider anthropic|openai|gemini` is passed with a valid env API key, each candidate document gets a real provider call (structured JSON response: summary, keywords, sections, documentType, confidence). If the call fails, returns a non-OK status, or the payload is unusable, the run now falls back explicitly to the heuristic path with visible fallback reasons.
 - Without an API key the heuristic path runs unchanged — tests and local runs stay fast and deterministic.
-- Provider calls now return real token counts (`inputTokens`, `outputTokens`) from each API response (Anthropic SDK `.usage`, OpenAI `usage.prompt_tokens`/`completion_tokens`, Gemini `usageMetadata.promptTokenCount`/`candidatesTokenCount`).
+- Provider calls now return real token counts (`inputTokens`, `outputTokens`) from each API response (Anthropic SDK `.usage`, OpenAI Responses API `usage.input_tokens`/`output_tokens`, Gemini `usageMetadata.promptTokenCount`/`candidatesTokenCount`).
+- The OpenAI analyze path now uses `v1/responses` with `max_output_tokens` and low reasoning effort instead of the older Chat Completions payload, and non-OK responses surface the provider error detail in `fallbackReason`.
 - These are accumulated per run and surfaced in `analyze-report.json` as `actualInputTokens`, `actualOutputTokens`, and `tokenCountMode: 'actual' | 'estimated'`.
 - When `tokenCountMode` is `'actual'`, the CLI output switches to actual counts; without a provider key it stays on estimates.
+- The additive `analysis` block now distinguishes requested vs effective execution: `requestedProvider` / `requestedModel` capture run intent, while `provider` / `model` capture what was actually used. Local fallback is marked with `providerStatus: 'fallback'` and `fallbackReason`.
+- `analyze-report.json` now includes `providerAttempts`, `providerSuccesses`, `providerFallbacks`, and grouped `providerFailureReasons`, and the CLI prints those counters at the end of the run.
+- The CLI now emits periodic progress lines during long runs (`analyzed N/limit`) with elapsed time, average milliseconds per analyzed document, and live provider success/fallback counts.
 - Wave 4 validation set added: 9 targeted tests covering binary exclusion, empty content, oversized files, weak extraction, priority file types, missing structure, budget cap, cross-run reuse, and estimated token mode. All 275 tests pass.
 - T37 is complete across all four waves.

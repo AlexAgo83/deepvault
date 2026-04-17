@@ -1,11 +1,11 @@
 ## prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment - Add a post-ingest AI analysis command for corpus enrichment
 > Date: 2026-04-17
 > Status: Active
-> Related request: (none yet)
+> Related request: operator trust in provider-backed analyze runs
 > Related backlog: `logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md`
 > Related task: `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`
-> Related architecture: `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the command separate from baseline ingestion unless a later decision explicitly merges them.
+> Related architecture: `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md`, `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`
+> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the command separate from baseline ingestion unless a later decision explicitly merges them, and keep provider observability truthful.
 
 # Overview
 Add a dedicated command that runs after ingest and enriches the corpus through bounded AI analysis only when it is needed.
@@ -49,6 +49,7 @@ The product needs a separate command that can enrich the corpus after ingest wit
 - In: provider-aware retries, bounded failure behavior, delta-friendly reprocessing, and observability about which files were analyzed and why.
 - In: explicit analysis modes such as `off`, `necessary`, and `all`, with `necessary` as the expected default for the new command.
 - In: enrichment outputs such as improved summary, structural sections, keywords, document type hints, confidence, provider trace, and analysis timestamp.
+- In: explicit runtime observability that distinguishes the requested provider from the provider actually used, including visible fallback reasons when remote analysis fails.
 - In: an explicit exclusion policy for oversized, unreadable, encrypted, binary, or known-unsupported files so the command can skip them deterministically before calling a provider.
 - In: a first-wave usage contract for retrieval and Bishop so the new analysis fields improve answer grounding rather than remaining passive metadata.
 - Out: collapsing ingest and analyze into one always-on command, broad UI work, tenant-wide automation assumptions, or unbounded provider spend.
@@ -77,7 +78,9 @@ The product needs a separate command that can enrich the corpus after ingest wit
   - `status`
   - `version`
   - `provider`
+  - `requestedProvider`
   - `model`
+  - `requestedModel`
   - `analyzedAt`
   - `contentHash`
   - `summary`
@@ -85,8 +88,10 @@ The product needs a separate command that can enrich the corpus after ingest wit
   - `sections`
   - `documentType`
   - `confidence`
+  - `providerStatus`
   - `excludedReason`
   - `failureReason`
+  - `fallbackReason`
 - Existing top-level corpus fields remain the baseline fallback contract in wave one. This avoids breaking current retrieval behavior while letting Bishop adopt the richer fields incrementally.
 
 # Reanalysis policy
@@ -134,6 +139,7 @@ The product needs a separate command that can enrich the corpus after ingest wit
 - The first wave should ship with a small but explicit validation set of difficult files, such as at least one PDF, one DOCX, one PPTX, one weak-text export, and one excluded file.
 - Validation should compare before-and-after retrieval usefulness or Bishop grounding quality on that set, not only whether analysis objects were written.
 - The command should expose bounded run metrics including selected documents, analyzed documents, excluded documents, failed documents, and estimated provider cost or token usage.
+- The command should expose provider attempts, provider successes, provider fallbacks, and grouped fallback reasons so operators can tell whether the remote provider actually produced usable analysis.
 - The first-wave default mode should stop selecting additional files once a bounded run budget is reached rather than expanding indefinitely.
 
 # Success signals
@@ -168,4 +174,8 @@ The product needs a separate command that can enrich the corpus after ingest wit
 # Delivery update
 - First-wave runtime delivery now exists through `npm run analyze`, which writes additive analysis blocks to `data/runtime/analyzed-corpus.json`.
 - The analyze sidecar now also writes `data/runtime/analyze-report.json` with bounded run metrics for `selected`, `analyzed`, `excluded`, `failed`, `reused`, `stale`, and heuristic token/cost estimates.
+- The analysis contract now distinguishes the requested provider/model from the provider/model actually used. Successful remote runs persist `providerStatus: provider`; local fallback persists `provider: local`, `providerStatus: fallback`, and a `fallbackReason`.
+- The analyze report now records `providerAttempts`, `providerSuccesses`, `providerFallbacks`, and grouped `providerFailureReasons`, so fast runs can be audited instead of inferred from provider labels alone.
+- The OpenAI provider path now targets the Responses API with response-shape-compatible parsing and records the upstream error detail on non-OK responses, improving operator trust when provider-backed runs degrade to local fallback.
+- Long analyze runs now emit periodic progress and timing telemetry so operators can tell the difference between a slow provider-backed run and a stalled command.
 - The current shipped implementation is intentionally bounded and deterministic; it establishes the contract, runtime output, and downstream retrieval usage before deeper provider-backed enrichment expands.

@@ -1,15 +1,24 @@
 ## item_069_ship_bounded_post_ingest_analysis_command - Ship bounded post-ingest analysis command
-> From version: 1.3.0
+> From version: 1.3.1
 > Schema version: 1.0
 > Status: Done
-> Understanding: 95%
-> Confidence: 90%
+> Understanding: 97%
+> Confidence: 93%
 > Progress: 100%
 > Complexity: Medium
 > Theme: Product / Architecture
-> Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Reminder: Update status, understanding, confidence, progress, and linked request/task references whenever delivery observability or validation evidence changes.
 
 # Problem
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|ship-bounded-post-ingest-analysis-comman|ship-bounded-post-ingest-analysis-comman|mermaid|ac1-a-standalone-analysis-command-reads
+flowchart LR
+    Gap[Thin post-ingest corpus entries] --> Command[Bounded analyze command]
+    Command --> Trace[Explicit provider observability]
+    Trace --> Trust[Operator trust in fallback vs provider usage]
+```
+
 - Ingest stayed deterministic, but difficult files still lacked an additive post-processing path that could enrich summaries, structure, and diagnostics without mutating the baseline contract.
 - Operators needed a separate command with explicit selection, exclusion, and output states so corpus enrichment could be run intentionally after ingest.
 
@@ -38,4 +47,8 @@
 - The run report includes bounded operability metrics for `selected`, `analyzed`, `excluded`, `failed`, `reused`, `stale`, plus heuristic token and cost estimates.
 - `analyzeCorpusDocuments()` is now async with a real provider-backed path: pass `--provider anthropic|openai|gemini` and the matching env API key to get structured AI analysis (summary, keywords, sections, documentType, confidence) per candidate document, with guaranteed heuristic fallback if the call fails or the key is absent.
 - `analyze-report.json` now includes `actualInputTokens`, `actualOutputTokens`, and `tokenCountMode: 'actual' | 'estimated'` — operators can see whether the token figures come from real API responses or per-document estimates.
+- The OpenAI analyze integration now calls `v1/responses` and records detailed provider error messages inside `fallbackReason`, so `http_400` runs can be diagnosed without guessing at the payload mismatch.
+- The analysis output now separates requested provider intent from actual execution: remote success keeps the real provider, while fallback writes `provider: local`, preserves `requestedProvider`, and stores a concrete `fallbackReason`.
+- The run report now also exposes `providerAttempts`, `providerSuccesses`, `providerFallbacks`, and grouped `providerFailureReasons` so provider usage is observable instead of inferred.
+- The CLI now logs periodic progress and elapsed-time checkpoints during analyze runs, reducing ambiguity when a 200-document provider-backed batch is still legitimately working.
 - Wave 4 validation set: 9 behavioral tests covering all exclusion types, selection reasons, budget cap, cross-run reuse, and token reporting mode. All ACs covered.
