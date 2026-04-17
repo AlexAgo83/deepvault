@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fetchLiveCorpus, getMockCorpusBundle, normalizeRequestedCorpusMode } from '../src/data/corpus'
+import { fetchLiveCorpus, getMockCorpusBundle, isCorpusLike, normalizeRequestedCorpusMode } from '../src/data/corpus'
 
 describe('corpus helpers', () => {
   afterEach(() => {
@@ -149,5 +149,118 @@ describe('corpus helpers', () => {
       status: 'error',
       detail: 'Live corpus error: response payload was not a valid corpus',
     })
+  })
+
+  it('accepts a valid corpus shape with optional analysis metadata', () => {
+    const { corpus } = getMockCorpusBundle()
+    const candidate = {
+      ...corpus,
+      documents: [
+        {
+          ...corpus.documents[0],
+          sections: [
+            { heading: 'Summary', content: 'Ready' },
+            { heading: 'Details', content: 'Covered' },
+          ],
+          analysis: {
+            status: 'analyzed',
+            version: '1',
+            provider: 'openai',
+            model: 'gpt-5.4',
+            analyzedAt: '2026-04-17T10:00:00.000Z',
+            contentHash: 'abc',
+            summary: 'ok',
+            documentType: 'note',
+            confidence: 0.9,
+            keywords: ['alpha', 'beta'],
+            sections: [{ heading: 'Summary', content: 'Ready' }],
+          },
+        },
+      ],
+    }
+
+    expect(isCorpusLike(candidate)).toBe(true)
+  })
+
+  it('rejects malformed top-level corpus metadata', () => {
+    const { corpus } = getMockCorpusBundle()
+
+    expect(isCorpusLike(null)).toBe(false)
+    expect(isCorpusLike({ ...corpus, schemaVersion: '   ' })).toBe(false)
+    expect(isCorpusLike({ ...corpus, defaultUserRole: 'owner' })).toBe(false)
+    expect(isCorpusLike({ ...corpus, providers: 'nope' })).toBe(false)
+  })
+
+  it('rejects unsupported site and sync statuses', () => {
+    const { corpus } = getMockCorpusBundle()
+
+    expect(
+      isCorpusLike({
+        ...corpus,
+        sites: [{ ...corpus.sites[0], status: 'archived' }],
+      }),
+    ).toBe(false)
+
+    expect(
+      isCorpusLike({
+        ...corpus,
+        syncRuns: [{ ...corpus.syncRuns[0], status: 'archived' }],
+      }),
+    ).toBe(false)
+  })
+
+  it('rejects malformed document analysis and section fields', () => {
+    const { corpus } = getMockCorpusBundle()
+    const baseDocument = corpus.documents[0]
+
+    expect(
+      isCorpusLike({
+        ...corpus,
+        documents: [{ ...baseDocument, tags: ['ok'], access: ['team'], sections: [{ heading: 42, content: 'bad' }] }],
+      }),
+    ).toBe(false)
+
+    expect(
+      isCorpusLike({
+        ...corpus,
+        documents: [
+          {
+            ...baseDocument,
+            analysis: 42,
+          },
+        ],
+      }),
+    ).toBe(false)
+
+    expect(
+      isCorpusLike({
+        ...corpus,
+        documents: [
+          {
+            ...baseDocument,
+            analysis: {
+              status: 'analyzed',
+              version: '1',
+              keywords: ['ok', 42],
+            },
+          },
+        ],
+      }),
+    ).toBe(false)
+
+    expect(
+      isCorpusLike({
+        ...corpus,
+        documents: [
+          {
+            ...baseDocument,
+            analysis: {
+              status: 'unknown',
+              version: '1',
+            },
+          },
+        ],
+      }),
+    ).toBe(false)
   })
 })
