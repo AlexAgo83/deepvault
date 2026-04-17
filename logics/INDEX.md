@@ -42,6 +42,7 @@
 | [prod_009_enable_bishop_generated_document_artifacts](product/prod_009_enable_bishop_generated_document_artifacts.md) | Enable Bishop generated document artifacts | Active |  | product/prod_009_enable_bishop_generated_document_artifacts.md |
 | [prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment](product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Add a post-ingest AI analysis command for corpus enrichment | Proposed |  | product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
 | [prod_011_add_an_artifacts_visualization_surface_for_generated_outputs](product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md) | Add an Artifacts visualization surface for generated outputs | Proposed |  | product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md |
+| [prod_012_add_ai_consumption_observability_and_sectioned_ai_view](product/prod_012_add_ai_consumption_observability_and_sectioned_ai_view.md) | Add AI consumption observability and a sectioned AI View | Proposed |  | product/prod_012_add_ai_consumption_observability_and_sectioned_ai_view.md |
 
 ## Requests
 
