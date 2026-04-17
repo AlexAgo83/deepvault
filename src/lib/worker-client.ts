@@ -23,6 +23,7 @@ export interface WorkerEffectiveConfig {
   workerFallbackMode: WorkerFallbackMode
   workerTimeoutSeconds: number
   analyzeLimit: number
+  provider?: string
   dataMode: string
 }
 

@@ -1206,6 +1206,7 @@ select:focus-visible {
 .ai-stats-kpi-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
+  margin-top: 1px;
 }
 
 .ai-stats-kpi-grid .stat-card {
@@ -2915,20 +2916,14 @@ th {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
-  gap: 18px;
 }
 
-.ai-tokens-main > .detail-stack {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-  padding-right: 4px;
-  overscroll-behavior: contain;
+.ai-tokens-main > .ai-stats-scroll {
   align-content: start;
   align-items: stretch;
 }
 
-.ai-tokens-main > .detail-stack > .artifacts-detail-block {
+.ai-tokens-main .detail-stack > .artifacts-detail-block {
   width: 100%;
   align-self: stretch;
 }
@@ -3235,7 +3230,7 @@ th {
   }
 
   .artifacts-list,
-  .ai-tokens-main > .detail-stack {
+  .ai-tokens-main > .ai-stats-scroll {
     flex: 0 0 auto;
     min-height: unset;
     overflow: visible;

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { appendAIUsageEvent } from '../lib/ai-usage'
 import { createWorkerClient, type WorkerEventStream } from '../lib/worker-client'
 import type { WorkerSettings } from './useWorkerSettings'
 import { WORKER_SETTINGS_DEFAULTS } from './useWorkerSettings'
@@ -34,6 +35,7 @@ export interface SyncOperationJob {
     workerFallbackMode: string
     workerTimeoutSeconds: number
     analyzeLimit: number
+    provider?: string
     dataMode: string
   }
 }
@@ -282,6 +284,44 @@ function detectLineTone(text: string, isError: boolean): SyncConsoleTone {
   return 'normal'
 }
 
+function extractMetricValue(lines: SyncConsoleLine[], label: string): number | null {
+  const pattern = new RegExp(`^${label}:\\s*(\\d+)\\b`)
+  for (let index = lines.length - 1; index >= 0; index -= 1) {
+    const match = lines[index]?.text.match(pattern)
+    if (match?.[1]) {
+      return Number(match[1])
+    }
+  }
+  return null
+}
+
+function ingestAnalyzeUsage(job: SyncOperationJob) {
+  if (job.kind !== 'analyze' || job.status !== 'completed') {
+    return
+  }
+
+  const inputTokenCount = extractMetricValue(job.lines, 'Actual input tokens')
+  const outputTokenCount = extractMetricValue(job.lines, 'Actual output tokens')
+  const totalTokenCount = (inputTokenCount || 0) + (outputTokenCount || 0)
+
+  if (totalTokenCount <= 0) {
+    return
+  }
+
+  appendAIUsageEvent({
+    source: 'analyze',
+    sourceEventId: `analyze-job-${job.id}`,
+    provider: job.effectiveConfig?.provider || job.lines[0]?.text.match(/Provider:\s+([^\n]+)/)?.[1]?.trim() || 'unknown',
+    model: job.lines.find((line) => line.text.startsWith('Model: '))?.text.replace(/^Model:\s*/, '').trim(),
+    status: 'analyze_completed',
+    usageKind: 'provider',
+    timestamp: job.finishedAt || job.startedAt,
+    inputTokenCount: inputTokenCount || 0,
+    outputTokenCount: outputTokenCount || 0,
+    totalTokenCount,
+  })
+}
+
 export function useSyncOperations({
   activeScopeLabel,
   extraEnv,
@@ -361,6 +401,7 @@ export function useSyncOperations({
         workerFallbackMode: workerSettings.workerFallbackMode,
         workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
         analyzeLimit: workerSettings.analyzeLimit,
+        provider,
         dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
       },
     }
@@ -435,6 +476,10 @@ export function useSyncOperations({
         summary,
         lines: trimJobLines(appendFinalStatusLine(current.lines, status, summary)),
       }
+
+    if (status === 'completed') {
+      ingestAnalyzeUsage(finalized)
+    }
 
     setActiveJob(finalized)
     setJobHistory((currentHistory) => {
@@ -541,6 +586,7 @@ export function useSyncOperations({
         workerFallbackMode: workerSettings.workerFallbackMode,
         workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
         analyzeLimit: workerSettings.analyzeLimit,
+        provider,
         dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
       },
     }
@@ -622,6 +668,7 @@ export function useSyncOperations({
             workerFallbackMode: workerSettings.workerFallbackMode,
             workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
             analyzeLimit: workerSettings.analyzeLimit,
+            provider,
             dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
           },
         })

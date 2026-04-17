@@ -1,11 +1,11 @@
 ## prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment - Add a post-ingest AI analysis command for corpus enrichment
 > Date: 2026-04-17
 > Status: Active
-> Related request: operator trust in provider-backed analyze runs
+> Related request: operator trust in provider-backed analyze runs and token visibility in AI View
 > Related backlog: `logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md`
 > Related task: `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`
-> Related architecture: `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md`, `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the command separate from baseline ingestion unless a later decision explicitly merges them, and keep provider observability truthful.
+> Related architecture: `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md`, `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`, `logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md`
+> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the command separate from baseline ingestion unless a later decision explicitly merges them, keep provider observability truthful, and keep AI View token usage aligned with real analyze runs.
 
 # Overview
 Add a dedicated command that runs after ingest and enriches the corpus through bounded AI analysis only when it is needed.
@@ -178,4 +178,5 @@ The product needs a separate command that can enrich the corpus after ingest wit
 - The analyze report now records `providerAttempts`, `providerSuccesses`, `providerFallbacks`, and grouped `providerFailureReasons`, so fast runs can be audited instead of inferred from provider labels alone.
 - The OpenAI provider path now targets the Responses API with response-shape-compatible parsing and records the upstream error detail on non-OK responses, improving operator trust when provider-backed runs degrade to local fallback.
 - Long analyze runs now emit periodic progress and timing telemetry so operators can tell the difference between a slow provider-backed run and a stalled command.
+- Provider-backed analyze runs with actual token counts now contribute to the local AI View usage rollups, making post-ingest analysis cost visible in the same product surface as Bishop provider usage.
 - The current shipped implementation is intentionally bounded and deterministic; it establishes the contract, runtime output, and downstream retrieval usage before deeper provider-backed enrichment expands.

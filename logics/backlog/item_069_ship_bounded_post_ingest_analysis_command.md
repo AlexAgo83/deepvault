@@ -1,9 +1,9 @@
 ## item_069_ship_bounded_post_ingest_analysis_command - Ship bounded post-ingest analysis command
-> From version: 1.3.1
+> From version: 1.3.2
 > Schema version: 1.0
 > Status: Done
-> Understanding: 97%
-> Confidence: 93%
+> Understanding: 98%
+> Confidence: 95%
 > Progress: 100%
 > Complexity: Medium
 > Theme: Product / Architecture
@@ -51,4 +51,5 @@ flowchart LR
 - The analysis output now separates requested provider intent from actual execution: remote success keeps the real provider, while fallback writes `provider: local`, preserves `requestedProvider`, and stores a concrete `fallbackReason`.
 - The run report now also exposes `providerAttempts`, `providerSuccesses`, `providerFallbacks`, and grouped `providerFailureReasons` so provider usage is observable instead of inferred.
 - The CLI now logs periodic progress and elapsed-time checkpoints during analyze runs, reducing ambiguity when a 200-document provider-backed batch is still legitimately working.
+- Successful analyze runs with actual provider tokens now append a deduplicated local AI usage event, so the AI stats panel reflects analysis token consumption too.
 - Wave 4 validation set: 9 behavioral tests covering all exclusion types, selection reasons, budget cap, cross-run reuse, and token reporting mode. All ACs covered.

@@ -167,7 +167,7 @@ describe('DeepVault app', () => {
 
     expect(screen.getByRole('heading', { name: 'AI View' })).toBeInTheDocument()
     expect(screen.getByText('Responses')).toBeInTheDocument()
-    expect(screen.getByText('Need hints')).toBeInTheDocument()
+    expect(screen.getByText('What would help next')).toBeInTheDocument()
 
     const responseCard = screen.getAllByRole('button', { name: /what is the budget for q3 2025\?/i })[0]
     act(() => {
