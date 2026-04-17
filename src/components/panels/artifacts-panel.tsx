@@ -34,6 +34,227 @@ function getTone(status: string) {
   return 'neutral'
 }
 
+function flattenDiagnosticLines(lines: string[]): string[] {
+  return lines.flatMap((item) =>
+    item
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean),
+  )
+}
+
+function buildFailurePresentation(fallback: string, diagnostics: string[]): { summary: string; diagnostics: string[] } {
+  const flattened = flattenDiagnosticLines(diagnostics)
+  const commandBlocks = diagnostics.filter((item) => item.trim().startsWith('$ '))
+
+  if (flattened.some((line) => /invalid_client|AADSTS7000215/i.test(line))) {
+    return {
+      summary: 'Microsoft Entra authentication failed: invalid client secret.',
+      diagnostics: [
+        ...commandBlocks,
+        'Action required\nUse the client secret value, not the secret ID, in DEEPVAULT_ENTRA_SECRET_VALUE.',
+        'Provider response\nAADSTS7000215: Invalid client secret provided.',
+      ],
+    }
+  }
+
+  const explicitError = flattened.find((line) => /^Error:\s+/i.test(line))
+  if (explicitError) {
+    return {
+      summary: explicitError.replace(/^Error:\s*/i, '').trim() || fallback,
+      diagnostics: [
+        ...commandBlocks,
+        `Error\n${explicitError.replace(/^Error:\s*/i, '').trim() || fallback}`,
+      ],
+    }
+  }
+
+  const authFailure = flattened.find((line) => /auth request failed/i.test(line))
+  if (authFailure) {
+    return {
+      summary: authFailure,
+      diagnostics: [
+        ...commandBlocks,
+        `Error\n${authFailure}`,
+      ],
+    }
+  }
+
+  const genericFailure = flattened.find((line) => /failed to start job/i.test(line))
+    || flattened.find((line) => /failed|error/i.test(line) && line !== 'Operation failed.')
+
+  return {
+    summary: genericFailure || fallback,
+    diagnostics: commandBlocks,
+  }
+}
+
+function normalizeDiagnostics(diagnostics: string[], summary?: string): string[] {
+  const informativeEntries = diagnostics.filter((item) => {
+    const flattened = flattenDiagnosticLines([item])
+    return flattened.some((line) => line !== 'Operation failed.')
+  })
+
+  if (informativeEntries.length === 0) {
+    return []
+  }
+
+  const source = informativeEntries
+  const seen = new Set<string>()
+
+  return source.filter((item) => {
+    const key = item.trim()
+    if (!key || seen.has(key)) {
+      return false
+    }
+    seen.add(key)
+    return true
+  }).map((item) => {
+    if (!summary || !item.trim().startsWith('$ ')) {
+      return item
+    }
+
+    const lines = item.split('\n')
+    const command = lines[0]
+    const rest = lines.slice(1)
+    const metadataLines = rest.filter(isMetadataLine)
+    const trailingLines = rest.filter((line) => !isMetadataLine(line))
+    const normalizedSummary = summary.trim().toLowerCase()
+    const filteredTrailingLines = trailingLines.filter((line) => line.trim().toLowerCase() !== normalizedSummary)
+
+    return [command, ...metadataLines, ...filteredTrailingLines].join('\n')
+  })
+}
+
+function splitDetailBlocks(text: string): string[] {
+  return text
+    .split(/\n{2,}/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+function isMetadataLine(line: string): boolean {
+  return /^[A-Za-z][A-Za-z0-9 /_-]*:\s+.+$/.test(line)
+}
+
+function isTimestampValue(value: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(value) && !Number.isNaN(Date.parse(value))
+}
+
+function renderMetadataList(lines: string[], key: string) {
+  return (
+    <dl key={key} className="artifacts-detail-meta-list">
+      {lines.map((line) => {
+        const separatorIndex = line.indexOf(':')
+        const label = line.slice(0, separatorIndex).trim()
+        const value = line.slice(separatorIndex + 1).trim()
+
+        return (
+          <div key={`${key}-${label}-${value}`} className="artifacts-detail-meta-row">
+            <dt>{label}</dt>
+            <dd>{isTimestampValue(value) ? <CompactDateTime value={value} /> : value}</dd>
+          </div>
+        )
+      })}
+    </dl>
+  )
+}
+
+function shouldRenderTerminalProgressList(lines: string[]): boolean {
+  return lines.length > 0
+    && lines.every((line) => line.length <= 160)
+    && lines.every((line) => !line.startsWith('at '))
+    && lines.every((line) => !line.startsWith('/'))
+    && lines.every((line) => !/^Error:\s+/i.test(line))
+}
+
+function renderTerminalTrailingContent(lines: string[], key: string) {
+  if (shouldRenderTerminalProgressList(lines)) {
+    return (
+      <ul key={key} className="artifacts-detail-progress-list">
+        {lines.map((line, index) => {
+          const toneClass = /completed successfully|wrote|ready|generated/i.test(line)
+            ? 'artifacts-detail-progress-item-success'
+            : /failed|error/i.test(line)
+              ? 'artifacts-detail-progress-item-danger'
+              : ''
+
+          return (
+            <li key={`${key}-${index}`} className={`artifacts-detail-progress-item ${toneClass}`.trim()}>
+              <span className="artifacts-detail-progress-marker" aria-hidden="true" />
+              <span>{line}</span>
+            </li>
+          )
+        })}
+      </ul>
+    )
+  }
+
+  return (
+    <pre key={key} className="artifacts-detail-preformatted">
+      <code>{lines.join('\n')}</code>
+    </pre>
+  )
+}
+
+function renderDetailText(text: string, keyPrefix: string) {
+  return splitDetailBlocks(text).map((block, blockIndex) => {
+    const key = `${keyPrefix}-${blockIndex}`
+    const lines = block
+      .split('\n')
+      .map((line) => line.trimEnd())
+      .filter(Boolean)
+
+    if (lines.length === 0) {
+      return null
+    }
+
+    if (lines[0]?.startsWith('$ ')) {
+      const command = lines[0]
+      const metadataLines = lines.slice(1).filter(isMetadataLine)
+      const trailingLines = lines.slice(1).filter((line) => !isMetadataLine(line))
+
+      return (
+        <div key={key} className="artifacts-detail-rich-block artifacts-detail-rich-block-terminal">
+          <code>{command}</code>
+          {metadataLines.length ? renderMetadataList(metadataLines, `${key}-meta`) : null}
+          {trailingLines.length ? renderTerminalTrailingContent(trailingLines, `${key}-trailing`) : null}
+        </div>
+      )
+    }
+
+    if (lines.every(isMetadataLine)) {
+      return renderMetadataList(lines, key)
+    }
+
+    if (lines.length === 1 && /failed|error/i.test(lines[0])) {
+      return (
+        <p key={key} className="artifacts-detail-notice artifacts-detail-notice-danger">
+          {lines[0]}
+        </p>
+      )
+    }
+
+    if (lines.length === 1 && /completed|generated|wrote|resumed|ready|available/i.test(lines[0])) {
+      return (
+        <p key={key} className="artifacts-detail-notice artifacts-detail-notice-success">
+          {lines[0]}
+        </p>
+      )
+    }
+
+    if (lines.length > 1) {
+      return (
+        <pre key={key} className="artifacts-detail-preformatted">
+          <code>{lines.join('\n')}</code>
+        </pre>
+      )
+    }
+
+    return <p key={key}>{lines[0]}</p>
+  })
+}
+
 function buildArtifactRecords(
   corpus: AppModel['scopedCorpus'],
   messages: AppModel['messages'],
@@ -68,17 +289,24 @@ function buildArtifactRecords(
     ].filter(Boolean),
   }))
 
-  const syncRuns = history.map((job) => ({
-    id: `job-${job.id}`,
-    type: 'sync-run' as const,
-    title: job.label,
-    status: job.status,
-    timestamp: job.finishedAt || job.startedAt,
-    sourceLabel: job.kind,
-    location: job.command,
-    summary: job.summary,
-    diagnostics: job.lines.slice(-3).map((line) => line.text),
-  }))
+  const syncRuns = history.map((job) => {
+    const normalizedDiagnostics = normalizeDiagnostics(job.lines.map((line) => line.text), job.summary)
+    const failurePresentation = job.status === 'failed'
+      ? buildFailurePresentation(job.summary, normalizedDiagnostics)
+      : null
+
+    return {
+      id: `job-${job.id}`,
+      type: 'sync-run' as const,
+      title: job.label,
+      status: job.status,
+      timestamp: job.finishedAt || job.startedAt,
+      sourceLabel: job.kind,
+      location: job.command,
+      summary: failurePresentation?.summary || job.summary,
+      diagnostics: failurePresentation?.diagnostics || [],
+    }
+  })
 
   const generatedAnswers = messages
     .filter((message) => message.role === 'assistant' && message.artifact)
@@ -347,7 +575,7 @@ export function ArtifactsPanel({
                 {selectedArtifact.summary ? (
                   <div className="artifacts-detail-block">
                     <strong>Derived outputs</strong>
-                    <p>{selectedArtifact.summary}</p>
+                    <div className="detail-stack">{renderDetailText(selectedArtifact.summary, `${selectedArtifact.id}-summary`)}</div>
                     {selectedArtifact.derivedOutputs?.length ? (
                       <div className="artifacts-tag-row">
                         {selectedArtifact.derivedOutputs.map((item) => (
@@ -357,14 +585,18 @@ export function ArtifactsPanel({
                     ) : null}
                   </div>
                 ) : null}
-                <div className="artifacts-detail-block">
-                  <strong>Diagnostics</strong>
-                  <div className="detail-stack">
-                    {(selectedArtifact.diagnostics || ['No diagnostics available.']).map((item) => (
-                      <p key={item}>{item}</p>
-                    ))}
+                {selectedArtifact.diagnostics?.length ? (
+                  <div className="artifacts-detail-block">
+                    <strong>Diagnostics</strong>
+                    <div className="detail-stack">
+                      {selectedArtifact.diagnostics.map((item) => (
+                        <div key={item} className="artifacts-detail-entry">
+                          {renderDetailText(item, `${selectedArtifact.id}-${item}`)}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ) : null}
               </div>
             ) : (
               <div className="empty-state">Select an artifact to inspect its processed record.</div>
