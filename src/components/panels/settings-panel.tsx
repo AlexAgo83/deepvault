@@ -13,8 +13,8 @@ const SETTINGS_VIEWS: Array<{ id: SettingsView; label: string; detail: string }>
   { id: 'worker', label: 'Worker', detail: 'Worker mode, endpoint, timeout, and fallback' },
   { id: 'runtime', label: 'Runtime', detail: 'Role, site scope, provider, and data mode' },
   { id: 'sharepoint', label: 'SharePoint', detail: 'Entra app, tenant, secret, and target sites' },
-  { id: 'assistant-context', label: 'Agent', detail: 'Grounded source count, candidate pool, and reused history' },
-  { id: 'ai-providers', label: 'Providers', detail: 'Browser-scoped model keys and provider readiness' },
+  { id: 'assistant-context', label: 'Assistant context', detail: 'Grounded source count, candidate pool, and reused history' },
+  { id: 'ai-providers', label: 'AI providers', detail: 'Browser-scoped model keys and provider readiness' },
 ]
 
 function RuntimeSettingsIcon() {

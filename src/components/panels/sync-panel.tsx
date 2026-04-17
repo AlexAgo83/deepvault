@@ -57,7 +57,7 @@ const SYNC_VIEWS: { id: SyncView; label: string; detail: string }[] = [
   { id: 'status', label: 'Status', detail: 'Coverage, freshness, and scope signals' },
   { id: 'operations', label: 'Operations', detail: 'Launch ingest, evaluate, refresh, or sync' },
   { id: 'history', label: 'History', detail: 'Recent runs and evaluation prep' },
-  { id: 'config', label: 'Worker', detail: 'Worker mode, fallback, and timeout' },
+  { id: 'config', label: 'Config', detail: 'Worker mode, fallback, and timeout' },
 ]
 
 function parseSyncView(hash: string): SyncView {
@@ -268,7 +268,6 @@ export function SyncPanel({
   const pending = pendingOp ? OPS_CONFIG[pendingOp] : null
 
   const failedJobs = syncOperations.history.filter((j) => j.status === 'failed')
-  const currentViewMeta = SYNC_VIEWS.find((view) => view.id === syncView) || SYNC_VIEWS[0]
 
   return (
     <section className="sync-stack">

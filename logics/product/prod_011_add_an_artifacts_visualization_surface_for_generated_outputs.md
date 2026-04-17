@@ -3,7 +3,7 @@
 > Status: Proposed
 > Related request: (none yet)
 > Related backlog: (none yet)
-> Related task: (none yet)
+> Related task: `logics/tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md`
 > Related architecture: `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep this surface focused on visualization and inspection of generated outputs before expanding it into a broader operations area.
 

@@ -149,6 +149,9 @@
 | [task_022_pwa_progressive_web_app_delivery](tasks/task_022_pwa_progressive_web_app_delivery.md) | PWA progressive web app delivery | Done | 100% | tasks/task_022_pwa_progressive_web_app_delivery.md |
 | [task_025_non_v2_delivery_orchestration_and_validation_hardening](tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md) | Wave map | Done | 100% | tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md |
 | [task_036_orchestrate_bishop_generated_document_artifacts](tasks/task_036_orchestrate_bishop_generated_document_artifacts.md) | Orchestrate Bishop generated document artifacts | Done | 100% | tasks/task_036_orchestrate_bishop_generated_document_artifacts.md |
+| [task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment](tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Orchestrate post-ingest AI analysis command for corpus enrichment | Proposed | 0% | tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
+| [task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs](tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md) | Orchestrate Artifacts visualization surface for generated outputs | Proposed | 0% | tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md |
+| [task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view](tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md) | Orchestrate AI consumption observability and a sectioned AI View | Proposed | 0% | tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md |
 
 ## Specs
 
