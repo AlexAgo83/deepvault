@@ -47,6 +47,12 @@ const PROVIDER_COST_PER_1K_TOKENS: Record<string, { input: number; output: numbe
 
 const ANALYSIS_PROMPT_CONTENT_LIMIT = 600
 const ANALYSIS_MAX_OUTPUT_TOKENS = 350
+const DEFAULT_PROVIDER_MODELS: Record<string, string> = {
+  local: 'heuristic-v1',
+  openai: 'gpt-5.4-mini',
+  gemini: 'gemini-2.0-flash',
+  anthropic: 'claude-3-5-sonnet-latest',
+}
 
 function buildProviderPrompt(document: CorpusDocument): string {
   const contentSnippet = document.content.slice(0, ANALYSIS_PROMPT_CONTENT_LIMIT).trim()
@@ -533,9 +539,9 @@ async function main() {
     return
   }
 
-  const provider = readCliArg(process.argv, '--provider') || 'local'
-  const model = readCliArg(process.argv, '--model') || 'heuristic-v1'
-  const limit = Math.max(1, Number(readCliArg(process.argv, '--limit') || '12'))
+  const provider = readCliArg(process.argv, '--provider') || process.env.DEEPVAULT_ANALYZE_PROVIDER || 'local'
+  const model = readCliArg(process.argv, '--model') || DEFAULT_PROVIDER_MODELS[provider] || DEFAULT_PROVIDER_MODELS.local
+  const limit = Math.max(1, Number(readCliArg(process.argv, '--limit') || process.env.DEEPVAULT_ANALYZE_LIMIT || '12'))
   const outputPath = resolve(readCliArg(process.argv, '--output') || DEFAULT_OUTPUT_PATH)
   const reportPath = resolve(readCliArg(process.argv, '--report') || DEFAULT_REPORT_PATH)
   const { corpus, mode: corpusMode, corpusPath } = await loadCorpus({
@@ -549,6 +555,22 @@ async function main() {
       : provider === 'gemini'
         ? (process.env.GEMINI_API_KEY || '').trim()
         : (process.env.OPENAI_API_KEY || '').trim()
+
+  const usingProviderAnalysis = provider !== 'local' && Boolean(apiKey)
+
+  console.log('Starting post-ingest analysis run...')
+  console.log(`Requested provider: ${provider}`)
+  console.log(`Effective analysis path: ${usingProviderAnalysis ? 'provider-backed' : 'local heuristic'}`)
+  console.log(`Model: ${model}`)
+  console.log(`Selection mode: ${mode}`)
+  console.log(`Run budget: ${limit}`)
+  console.log(`Loaded corpus: ${corpusPath}`)
+  console.log(`Corpus mode: ${corpusMode}`)
+  console.log(`Documents in corpus: ${corpus.documents.length}`)
+  if (provider !== 'local' && !apiKey) {
+    console.log(`Provider API key for ${provider} not found. Falling back to local heuristic analysis.`)
+  }
+  console.log('Selecting and analyzing candidate documents...')
 
   const analyzedCorpus = await analyzeCorpusDocuments(corpus, {
     mode,
@@ -573,11 +595,14 @@ async function main() {
     metrics: analyzedCorpus.metrics,
   })
 
+  console.log('Writing derived analysis artifacts...')
+
   await mkdir(dirname(outputPath), { recursive: true })
   await writeFile(outputPath, JSON.stringify(nextCorpus, null, 2))
   await mkdir(dirname(reportPath), { recursive: true })
   await writeFile(reportPath, JSON.stringify(report, null, 2))
 
+  console.log('Analysis run completed.')
   console.log(`Analyzed corpus written to ${outputPath}`)
   console.log(`Analysis report written to ${reportPath}`)
   console.log(`Input corpus: ${corpusPath}`)
