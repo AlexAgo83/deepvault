@@ -473,4 +473,60 @@ describe('useSyncOperations', () => {
     expect(mockEs).not.toBeNull()
     expect(mockEs!.close).toHaveBeenCalled()
   })
+
+  it('does not append duplicate generic failure lines when a failed job is finalized repeatedly', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: () => Promise.resolve({ jobId: 'job-repeat-failure' }),
+      })
+      .mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({
+          id: 'job-repeat-failure',
+          kind: 'export-live',
+          status: 'failed',
+          startedAt: '2026-04-16T10:00:00.000Z',
+          progress: 100,
+          notes: 'Auth request failed (401): invalid_client',
+        }),
+      })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    await act(async () => {
+      result.current.startExportLive()
+    })
+    await act(async () => {})
+
+    await act(async () => {
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'done', exitCode: 1 }) } as MessageEvent)
+    })
+    await act(async () => {})
+
+    await act(async () => {
+      mockEs?.onerror?.()
+    })
+
+    const failureLines = (result.current.activeJob?.lines || []).filter((line) => line.text === 'Operation failed.')
+    expect(failureLines).toHaveLength(1)
+    expect(result.current.activeJob?.summary).toBe('Auth request failed (401): invalid_client')
+  })
 })

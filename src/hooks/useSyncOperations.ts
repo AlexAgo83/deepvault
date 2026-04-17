@@ -112,6 +112,22 @@ function trimJobLines(lines: SyncConsoleLine[]): SyncConsoleLine[] {
   return lines.slice(-MAX_JOB_LINES)
 }
 
+function appendFinalStatusLine(lines: SyncConsoleLine[], status: SyncOperationStatus, summary: string): SyncConsoleLine[] {
+  const finalText = status === 'completed'
+    ? summary
+    : status === 'cancelled'
+      ? 'Operation cancelled.'
+      : 'Operation failed.'
+  const finalTone: SyncConsoleTone = status === 'completed' ? 'success' : 'danger'
+  const lastLine = lines[lines.length - 1]
+
+  if (lastLine?.text === finalText) {
+    return lines
+  }
+
+  return [...lines, makeLine(finalText, finalTone)]
+}
+
 function extractErrorMessage(error: unknown): string {
   if (error instanceof Error && error.message.trim()) {
     return error.message.trim()
@@ -387,6 +403,9 @@ export function useSyncOperations({
       if (!current || current.id !== jobId) {
         return
       }
+      if (current.status !== 'running') {
+        return
+      }
 
       const finalized = {
         ...current,
@@ -395,17 +414,7 @@ export function useSyncOperations({
         finishedAt: new Date().toISOString(),
         durationMs: Date.now() - new Date(current.startedAt).getTime(),
         summary,
-        lines: trimJobLines([
-          ...current.lines,
-          makeLine(
-            status === 'completed'
-              ? summary
-              : status === 'cancelled'
-                ? 'Operation cancelled.'
-                : 'Operation failed.',
-            status === 'completed' ? 'success' : 'danger',
-          ),
-        ]),
+        lines: trimJobLines(appendFinalStatusLine(current.lines, status, summary)),
       }
 
     setActiveJob(finalized)
