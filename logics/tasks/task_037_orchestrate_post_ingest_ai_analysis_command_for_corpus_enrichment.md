@@ -1,9 +1,9 @@
 ## task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment - Orchestrate post-ingest AI analysis command for corpus enrichment
-> From version: 1.3.1
+> From version: 1.3.2
 > Schema version: 1.0
 > Status: Done
-> Understanding: 98%
-> Confidence: 95%
+> Understanding: 99%
+> Confidence: 96%
 > Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
@@ -123,5 +123,6 @@ stateDiagram-v2
 - The additive `analysis` block now distinguishes requested vs effective execution: `requestedProvider` / `requestedModel` capture run intent, while `provider` / `model` capture what was actually used. Local fallback is marked with `providerStatus: 'fallback'` and `fallbackReason`.
 - `analyze-report.json` now includes `providerAttempts`, `providerSuccesses`, `providerFallbacks`, and grouped `providerFailureReasons`, and the CLI prints those counters at the end of the run.
 - The CLI now emits periodic progress lines during long runs (`analyzed N/limit`) with elapsed time, average milliseconds per analyzed document, and live provider success/fallback counts.
+- Completed `analyze` runs with real provider token counts now flow into the shared local AI usage store, so the AI View token charts and provider split include post-ingest analysis consumption alongside Bishop usage.
 - Wave 4 validation set added: 9 targeted tests covering binary exclusion, empty content, oversized files, weak extraction, priority file types, missing structure, budget cap, cross-run reuse, and estimated token mode. All 275 tests pass.
 - T37 is complete across all four waves.

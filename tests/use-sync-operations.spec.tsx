@@ -2,6 +2,7 @@ import { renderHook, act } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useSyncOperations } from '../src/hooks/useSyncOperations'
 import { WORKER_SETTINGS_DEFAULTS } from '../src/hooks/useWorkerSettings'
+import { listAIUsageEvents } from '../src/lib/ai-usage'
 
 const DEFAULT_OPTIONS = {
   activeScopeLabel: 'All sites',
@@ -367,6 +368,62 @@ describe('useSyncOperations', () => {
     await act(async () => {})
 
     expect(result.current.activeJob?.lines[0]?.text).toContain('Analyze budget: 50 documents')
+  })
+
+  it('records analyze token usage in the shared AI usage store when the run completes with actual tokens', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve({ jobId: 'job-analyze-usage' }),
+    }))
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    await act(async () => {
+      result.current.startAnalyze()
+    })
+    await act(async () => {})
+
+    await act(async () => {
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'line', text: 'Model: gpt-5.4-mini' }) } as MessageEvent)
+    })
+    await act(async () => {
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'line', text: 'Actual input tokens: 120' }) } as MessageEvent)
+    })
+    await act(async () => {
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'line', text: 'Actual output tokens: 45' }) } as MessageEvent)
+    })
+    await act(async () => {
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'done', exitCode: 0 }) } as MessageEvent)
+    })
+    await act(async () => {})
+
+    const events = listAIUsageEvents()
+    expect(events).toHaveLength(1)
+    expect(events[0]).toMatchObject({
+      source: 'analyze',
+      sourceEventId: expect.stringContaining('analyze-job-analyze-'),
+      provider: 'openai',
+      model: 'gpt-5.4-mini',
+      status: 'analyze_completed',
+      usageKind: 'provider',
+      inputTokenCount: 120,
+      outputTokenCount: 45,
+      totalTokenCount: 165,
+    })
   })
 
   it('reconnects a persisted job and marks it failed when the stream errors', async () => {

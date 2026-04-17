@@ -2,6 +2,8 @@ export type AIUsageKind = 'provider' | 'partial' | 'local'
 
 export interface AIUsageEvent {
   id: string
+  source?: 'bishop' | 'analyze'
+  sourceEventId?: string
   provider: string
   model?: string
   status: string
@@ -51,6 +53,7 @@ function readEvents(): AIUsageEvent[] {
         typeof (event as AIUsageEvent).status === 'string' &&
         typeof (event as AIUsageEvent).timestamp === 'string' &&
         typeof (event as AIUsageEvent).totalTokenCount === 'number' &&
+        (((event as AIUsageEvent).source ?? 'bishop') === 'bishop' || (event as AIUsageEvent).source === 'analyze') &&
         ((event as AIUsageEvent).usageKind === 'provider' ||
           (event as AIUsageEvent).usageKind === 'partial' ||
           (event as AIUsageEvent).usageKind === 'local'),
@@ -73,11 +76,30 @@ export function listAIUsageEvents(): AIUsageEvent[] {
 }
 
 export function appendAIUsageEvent(event: Omit<AIUsageEvent, 'id'>): AIUsageEvent[] {
+  const currentEvents = readEvents()
+  if (event.sourceEventId) {
+    const existingIndex = currentEvents.findIndex((item) => item.sourceEventId === event.sourceEventId)
+    if (existingIndex !== -1) {
+      const existing = currentEvents[existingIndex]
+      const nextEvent: AIUsageEvent = {
+        ...existing,
+        ...event,
+        id: existing.id,
+      }
+      const nextEvents = currentEvents.map((item, index) => (index === existingIndex ? nextEvent : item)).slice(-MAX_EVENTS)
+      persistEvents(nextEvents)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('deepvault-ai-usage-updated'))
+      }
+      return nextEvents
+    }
+  }
+
   const nextEvent: AIUsageEvent = {
     ...event,
     id: `${event.timestamp}-${Math.random().toString(36).slice(2, 8)}`,
   }
-  const nextEvents = [...readEvents(), nextEvent].slice(-MAX_EVENTS)
+  const nextEvents = [...currentEvents, nextEvent].slice(-MAX_EVENTS)
   persistEvents(nextEvents)
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new Event('deepvault-ai-usage-updated'))

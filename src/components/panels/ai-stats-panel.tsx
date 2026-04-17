@@ -407,106 +407,108 @@ function TokensSection({
 
   return (
     <div className="ai-tokens-main">
-      <div className="kpi-grid compact ai-stats-kpi-grid">
-        <StatCard label="Today input" value={aiUsageSummary.todayInput} note="Provider-backed input tokens logged today." />
-        <StatCard label="Today output" value={aiUsageSummary.todayOutput} note="Provider-backed output tokens logged today." />
-        <StatCard label="Today total" value={aiUsageSummary.todayTotal} note="Combined provider-backed token usage for today." />
-        <StatCard label="Answered count" value={aiUsageSummary.answeredCount} note="Completed answered outcomes in the retained history window." />
-      </div>
-
-      <div className="detail-stack">
-        <div className="artifacts-detail-block tokens-chart-block">
-          <div className="tokens-trend-header">
-            <strong>Daily trend</strong>
-            <button
-              type="button"
-              className={`tokens-view-toggle ${tokensView === 'trend' ? 'tokens-view-toggle-active' : ''}`}
-              title="Bar chart view"
-              aria-label="Show bar chart"
-              aria-pressed={tokensView === 'trend'}
-              onClick={() => { if (tokensView !== 'trend') onToggleTokensView() }}
-            >
-              <TrendViewIcon />
-            </button>
-            <button
-              type="button"
-              className={`tokens-view-toggle ${tokensView === 'timeline' ? 'tokens-view-toggle-active' : ''}`}
-              title="Timeline view"
-              aria-label="Show timeline graph"
-              aria-pressed={tokensView === 'timeline'}
-              onClick={() => { if (tokensView !== 'timeline') onToggleTokensView() }}
-            >
-              <TimelineViewIcon />
-            </button>
-          </div>
-          {hasDaily ? (
-            tokensView === 'timeline' ? (
-              <div className="tokens-chart-surface">
-                <TokensTimelineGraph items={dailyTimelineItems} gradientId="tl-fill-daily" ariaLabel="Daily token usage timeline" />
-              </div>
-            ) : (
-              <div className="tokens-chart-surface">
-                <div className="usage-bars">
-                {aiUsageSummary.daily.map((item) => (
-                  <div key={item.day} className="usage-bar-row">
-                    <span>{item.day.slice(5)}</span>
-                    <div className="usage-bar-track"><span style={{ width: `${Math.max(6, (item.total / maxDailyTotal) * 100)}%` }} /></div>
-                    <strong>{item.total}</strong>
-                  </div>
-                ))}
-                </div>
-              </div>
-            )
-          ) : (
-            <div className="empty-state">No provider-backed token events in the last 7 days.</div>
-          )}
+      <div className="ai-stats-scroll">
+        <div className="kpi-grid compact ai-stats-kpi-grid">
+          <StatCard label="Today input" value={aiUsageSummary.todayInput} note="Provider-backed input tokens logged today." />
+          <StatCard label="Today output" value={aiUsageSummary.todayOutput} note="Provider-backed output tokens logged today." />
+          <StatCard label="Today total" value={aiUsageSummary.todayTotal} note="Combined provider-backed token usage for today." />
+          <StatCard label="Answered count" value={aiUsageSummary.answeredCount} note="Completed answered outcomes in the retained history window." />
         </div>
 
-        <div className="artifacts-detail-block tokens-chart-block">
-          <div className="tokens-trend-header">
-            <strong>Hourly distribution</strong>
-            <button
-              type="button"
-              className={`tokens-view-toggle ${hourlyView === 'trend' ? 'tokens-view-toggle-active' : ''}`}
-              title="Bar chart view"
-              aria-label="Show bar chart"
-              aria-pressed={hourlyView === 'trend'}
-              onClick={() => setHourlyView('trend')}
-            >
-              <TrendViewIcon />
-            </button>
-            <button
-              type="button"
-              className={`tokens-view-toggle ${hourlyView === 'timeline' ? 'tokens-view-toggle-active' : ''}`}
-              title="Timeline view"
-              aria-label="Show timeline graph"
-              aria-pressed={hourlyView === 'timeline'}
-              onClick={() => setHourlyView('timeline')}
-            >
-              <TimelineViewIcon />
-            </button>
-          </div>
-          {activeHourly.length > 0 ? (
-            hourlyView === 'timeline' ? (
-              <div className="tokens-chart-surface">
-                <TokensTimelineGraph items={hourlyTimelineItems} gradientId="tl-fill-hourly" ariaLabel="Hourly token usage timeline" />
-              </div>
-            ) : (
-              <div className="tokens-chart-surface">
-                <div className="usage-bars">
-                {activeHourly.map((item) => (
-                  <div key={item.hour} className="usage-bar-row">
-                    <span>{`${String(item.hour).padStart(2, '0')}:00`}</span>
-                    <div className="usage-bar-track"><span style={{ width: `${Math.max(6, (item.total / maxHourlyTotal) * 100)}%` }} /></div>
-                    <strong>{item.total}</strong>
-                  </div>
-                ))}
+        <div className="detail-stack">
+          <div className="artifacts-detail-block tokens-chart-block">
+            <div className="tokens-trend-header">
+              <strong>Daily trend</strong>
+              <button
+                type="button"
+                className={`tokens-view-toggle ${tokensView === 'trend' ? 'tokens-view-toggle-active' : ''}`}
+                title="Bar chart view"
+                aria-label="Show bar chart"
+                aria-pressed={tokensView === 'trend'}
+                onClick={() => { if (tokensView !== 'trend') onToggleTokensView() }}
+              >
+                <TrendViewIcon />
+              </button>
+              <button
+                type="button"
+                className={`tokens-view-toggle ${tokensView === 'timeline' ? 'tokens-view-toggle-active' : ''}`}
+                title="Timeline view"
+                aria-label="Show timeline graph"
+                aria-pressed={tokensView === 'timeline'}
+                onClick={() => { if (tokensView !== 'timeline') onToggleTokensView() }}
+              >
+                <TimelineViewIcon />
+              </button>
+            </div>
+            {hasDaily ? (
+              tokensView === 'timeline' ? (
+                <div className="tokens-chart-surface">
+                  <TokensTimelineGraph items={dailyTimelineItems} gradientId="tl-fill-daily" ariaLabel="Daily token usage timeline" />
                 </div>
-              </div>
-            )
-          ) : (
-            <div className="empty-state">No token usage recorded today.</div>
-          )}
+              ) : (
+                <div className="tokens-chart-surface">
+                  <div className="usage-bars">
+                  {aiUsageSummary.daily.map((item) => (
+                    <div key={item.day} className="usage-bar-row">
+                      <span>{item.day.slice(5)}</span>
+                      <div className="usage-bar-track"><span style={{ width: `${Math.max(6, (item.total / maxDailyTotal) * 100)}%` }} /></div>
+                      <strong>{item.total}</strong>
+                    </div>
+                  ))}
+                  </div>
+                </div>
+              )
+            ) : (
+              <div className="empty-state">No provider-backed token events in the last 7 days.</div>
+            )}
+          </div>
+
+          <div className="artifacts-detail-block tokens-chart-block">
+            <div className="tokens-trend-header">
+              <strong>Hourly distribution</strong>
+              <button
+                type="button"
+                className={`tokens-view-toggle ${hourlyView === 'trend' ? 'tokens-view-toggle-active' : ''}`}
+                title="Bar chart view"
+                aria-label="Show bar chart"
+                aria-pressed={hourlyView === 'trend'}
+                onClick={() => setHourlyView('trend')}
+              >
+                <TrendViewIcon />
+              </button>
+              <button
+                type="button"
+                className={`tokens-view-toggle ${hourlyView === 'timeline' ? 'tokens-view-toggle-active' : ''}`}
+                title="Timeline view"
+                aria-label="Show timeline graph"
+                aria-pressed={hourlyView === 'timeline'}
+                onClick={() => setHourlyView('timeline')}
+              >
+                <TimelineViewIcon />
+              </button>
+            </div>
+            {activeHourly.length > 0 ? (
+              hourlyView === 'timeline' ? (
+                <div className="tokens-chart-surface">
+                  <TokensTimelineGraph items={hourlyTimelineItems} gradientId="tl-fill-hourly" ariaLabel="Hourly token usage timeline" />
+                </div>
+              ) : (
+                <div className="tokens-chart-surface">
+                  <div className="usage-bars">
+                  {activeHourly.map((item) => (
+                    <div key={item.hour} className="usage-bar-row">
+                      <span>{`${String(item.hour).padStart(2, '0')}:00`}</span>
+                      <div className="usage-bar-track"><span style={{ width: `${Math.max(6, (item.total / maxHourlyTotal) * 100)}%` }} /></div>
+                      <strong>{item.total}</strong>
+                    </div>
+                  ))}
+                  </div>
+                </div>
+              )
+            ) : (
+              <div className="empty-state">No token usage recorded today.</div>
+            )}
+          </div>
         </div>
       </div>
     </div>
