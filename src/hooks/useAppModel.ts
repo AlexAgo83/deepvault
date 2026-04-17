@@ -11,6 +11,7 @@ import {
   type UserRole,
 } from '../lib/deepvault'
 import { useBishopConversation } from './useBishopConversation'
+import { useAIUsage } from './useAIUsage'
 import { useLiveCorpus } from './useLiveCorpus'
 import { useEntraSettings } from './useEntraSettings'
 import { useBishopSettings } from './useBishopSettings'
@@ -24,7 +25,7 @@ import type { WorkerSettings } from './useWorkerSettings'
 import type { BishopSettings } from './useBishopSettings'
 import { resolveCorpusMode } from '../lib/corpus-mode'
 
-export type AppTab = 'explorer' | 'bishop' | 'sync' | 'ai-stats' | 'settings'
+export type AppTab = 'explorer' | 'bishop' | 'sync' | 'artifacts' | 'ai-stats' | 'settings'
 
 export type ExplorerRow = CorpusDocument & { score: number; siteName: string; siteUrl: string }
 
@@ -40,6 +41,8 @@ export interface AppModel {
   activeTab: AppTab
   setActiveTab: Dispatch<SetStateAction<AppTab>>
   activeScopeLabel: string
+  corpus: Corpus
+  scopedCorpus: Corpus
   corpusProviders: Corpus['providers']
   liveState: LiveState
   provider: ProviderId
@@ -85,8 +88,11 @@ export interface AppModel {
     startExportLive: () => void
     startExportLiveResume: () => void
     startIngest: () => void
+    startAnalyze: () => void
     startRefresh: () => void
   }
+  aiUsageEvents: ReturnType<typeof useAIUsage>['events']
+  aiUsageSummary: ReturnType<typeof useAIUsage>['summary']
   messages: ReturnType<typeof useBishopConversation>['messages']
   selectedMessage: ReturnType<typeof useBishopConversation>['selectedMessage']
   handleAsk: ReturnType<typeof useBishopConversation>['handleAsk']
@@ -99,7 +105,7 @@ export interface AppModel {
 function parseActiveTab(hash: string): AppTab {
   const search = hash.startsWith('#') ? hash.slice(1) : hash
   const value = new URLSearchParams(search).get('tab')
-  if (value === 'explorer' || value === 'bishop' || value === 'sync' || value === 'ai-stats' || value === 'settings') {
+  if (value === 'explorer' || value === 'bishop' || value === 'sync' || value === 'artifacts' || value === 'ai-stats' || value === 'settings') {
     return value
   }
   if (new URLSearchParams(search).has('sync')) {
@@ -154,6 +160,7 @@ export function useAppModel(): AppModel {
   const deferredSearch = useDeferredValue(search)
   const [selectedDocId, setSelectedDocId] = useState<string>(() => corpus.documents[0]?.id || '')
   const { providerSecrets, setApiKey: setProviderSecret, clearProviderSecrets } = useProviderSecrets()
+  const { events: aiUsageEvents, summary: aiUsageSummary } = useAIUsage()
 
   const corpusProviders = useMemo<Corpus['providers']>(() => {
     const providerNames = new Map(DEFAULT_PROVIDER_OPTIONS.map((item) => [item.id, item.name]))
@@ -303,6 +310,8 @@ export function useAppModel(): AppModel {
     activeTab,
     setActiveTab,
     activeScopeLabel,
+    corpus,
+    scopedCorpus,
     corpusProviders,
     liveState,
     provider,
@@ -339,6 +348,8 @@ export function useAppModel(): AppModel {
     conversationContextEnabled,
     setConversationContextEnabled,
     syncOperations,
+    aiUsageEvents,
+    aiUsageSummary,
     messages,
     selectedMessage,
     handleAsk,

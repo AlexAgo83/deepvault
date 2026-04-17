@@ -48,6 +48,7 @@ export interface BishopOrchestrationResult extends AnswerResult {
   confidenceScore: number
   providerTracePreview: string
   improvementHint: string
+  model?: string
 }
 
 interface AnthropicUsageLike {
@@ -86,6 +87,7 @@ interface OpenAIResponseLike {
   usage?: {
     prompt_tokens?: number
     completion_tokens?: number
+    total_tokens?: number
   }
 }
 
@@ -104,7 +106,15 @@ interface GeminiResponseLike {
   usageMetadata?: {
     promptTokenCount?: number
     candidatesTokenCount?: number
+    totalTokenCount?: number
   }
+}
+
+interface UsageSnapshot {
+  inputTokenCount?: number
+  outputTokenCount?: number
+  totalTokenCount?: number
+  usageKind: AnswerResult['usageKind']
 }
 
 const DEFAULT_OPENAI_MODEL = 'gpt-4.1-mini'
@@ -609,6 +619,37 @@ function buildImprovementHint(result: Pick<AnswerResult, 'status' | 'sources' | 
   return 'A more specific document title or site name would improve the response.'
 }
 
+function buildUsageSnapshot(
+  inputTokenCount: number | undefined,
+  outputTokenCount: number | undefined,
+  fallbackTokenCount: number,
+): UsageSnapshot {
+  const hasInput = typeof inputTokenCount === 'number' && inputTokenCount > 0
+  const hasOutput = typeof outputTokenCount === 'number' && outputTokenCount > 0
+  const totalTokenCount = (inputTokenCount || 0) + (outputTokenCount || 0)
+
+  if (hasInput && hasOutput) {
+    return {
+      inputTokenCount,
+      outputTokenCount,
+      totalTokenCount,
+      usageKind: 'provider',
+    }
+  }
+
+  if (typeof fallbackTokenCount === 'number' && fallbackTokenCount > 0) {
+    return {
+      totalTokenCount: fallbackTokenCount,
+      usageKind: 'partial',
+    }
+  }
+
+  return {
+    totalTokenCount: 0,
+    usageKind: 'local',
+  }
+}
+
 export function buildNeedRefinementTerms(
   source?: Pick<SourceRecord, 'title' | 'siteName' | 'path' | 'summary' | 'tags' | 'sectionHint' | 'author' | 'fileType'>,
 ): string {
@@ -843,24 +884,30 @@ async function runOpenAIRemoteAnswer(
     const payload = (await response.json()) as OpenAIResponseLike
     const answer = payload.choices?.[0]?.message?.content?.trim() || fallback.answer
     const usage = payload.usage
-    const tokenCount = (usage?.prompt_tokens || 0) + (usage?.completion_tokens || 0)
+    const usageSnapshot = buildUsageSnapshot(usage?.prompt_tokens, usage?.completion_tokens, usage?.total_tokens || fallback.tokenCount)
 
     return {
-      result: augmentResultWithTrace(
+      result: {
+        ...augmentResultWithTrace(
         {
-      status: fallback.status,
-      provider: fallback.provider,
-      query: fallback.query,
-      answer,
-      sources: fallback.sources,
-      deniedSources: fallback.deniedSources,
-      chunkCount: _grounding.chunkCount,
-      tokenCount: tokenCount > 0 ? tokenCount : fallback.tokenCount,
-      latencyMs: Date.now() - startedAt,
-    },
+          status: fallback.status,
+          provider: fallback.provider,
+          query: fallback.query,
+          answer,
+          sources: fallback.sources,
+          deniedSources: fallback.deniedSources,
+          chunkCount: _grounding.chunkCount,
+          tokenCount: usageSnapshot.totalTokenCount || fallback.tokenCount,
+          inputTokenCount: usageSnapshot.inputTokenCount,
+          outputTokenCount: usageSnapshot.outputTokenCount,
+          usageKind: usageSnapshot.usageKind,
+          latencyMs: Date.now() - startedAt,
+        },
         'remote',
         prompt,
       ),
+        model,
+      },
     }
   } catch {
     return { result: null, errorPreview: 'OpenAI request failed' }
@@ -924,24 +971,34 @@ async function runGeminiRemoteAnswer(
         .join('\n')
         .trim() || fallback.answer
     const usage = payload.usageMetadata
-    const tokenCount = (usage?.promptTokenCount || 0) + (usage?.candidatesTokenCount || 0)
+    const usageSnapshot = buildUsageSnapshot(
+      usage?.promptTokenCount,
+      usage?.candidatesTokenCount,
+      usage?.totalTokenCount || fallback.tokenCount,
+    )
 
     return {
-      result: augmentResultWithTrace(
+      result: {
+        ...augmentResultWithTrace(
         {
-      status: fallback.status,
-      provider: fallback.provider,
-      query: fallback.query,
-      answer,
-      sources: fallback.sources,
-      deniedSources: fallback.deniedSources,
-      chunkCount: grounding.chunkCount,
-      tokenCount: tokenCount > 0 ? tokenCount : fallback.tokenCount,
-      latencyMs: Date.now() - startedAt,
-    },
+          status: fallback.status,
+          provider: fallback.provider,
+          query: fallback.query,
+          answer,
+          sources: fallback.sources,
+          deniedSources: fallback.deniedSources,
+          chunkCount: grounding.chunkCount,
+          tokenCount: usageSnapshot.totalTokenCount || fallback.tokenCount,
+          inputTokenCount: usageSnapshot.inputTokenCount,
+          outputTokenCount: usageSnapshot.outputTokenCount,
+          usageKind: usageSnapshot.usageKind,
+          latencyMs: Date.now() - startedAt,
+        },
         'remote',
         prompt,
       ),
+        model,
+      },
     }
   } catch {
     return { result: null, errorPreview: 'Gemini request failed' }
@@ -998,24 +1055,30 @@ async function runAnthropicRemoteAnswer(
 
     const answer = extractAnthropicText(response) || fallback.answer
     const usage = response.usage
-    const tokenCount = (usage?.input_tokens || 0) + (usage?.output_tokens || 0)
+    const usageSnapshot = buildUsageSnapshot(usage?.input_tokens, usage?.output_tokens, fallback.tokenCount)
 
     return {
-      result: augmentResultWithTrace(
+      result: {
+        ...augmentResultWithTrace(
         {
-      status: fallback.status,
-      provider: fallback.provider,
-      query: fallback.query,
-      answer,
-      sources: fallback.sources,
-      deniedSources: fallback.deniedSources,
-      chunkCount: grounding.chunkCount,
-      tokenCount: tokenCount > 0 ? tokenCount : fallback.tokenCount,
-      latencyMs: Date.now() - startedAt,
-    },
+          status: fallback.status,
+          provider: fallback.provider,
+          query: fallback.query,
+          answer,
+          sources: fallback.sources,
+          deniedSources: fallback.deniedSources,
+          chunkCount: grounding.chunkCount,
+          tokenCount: usageSnapshot.totalTokenCount || fallback.tokenCount,
+          inputTokenCount: usageSnapshot.inputTokenCount,
+          outputTokenCount: usageSnapshot.outputTokenCount,
+          usageKind: usageSnapshot.usageKind,
+          latencyMs: Date.now() - startedAt,
+        },
         'remote',
         prompt,
       ),
+        model,
+      },
     }
   } catch {
     return { result: null, errorPreview: 'Anthropic request failed' }
@@ -1061,6 +1124,7 @@ export async function orchestrateBishopAnswer(
       confidenceScore: buildConfidenceScore(fallback, 'grounded-only'),
       providerTracePreview: buildProviderTracePreview('grounded-only', fallback.provider, fallback.answer),
       improvementHint: buildImprovementHint(fallback),
+      usageKind: 'local',
     })
   }
 
@@ -1087,11 +1151,15 @@ export async function orchestrateBishopAnswer(
 
       const payload = (await response.json()) as Partial<AnswerResult> & {
         answer?: string
+        model?: string
+        inputTokenCount?: number
+        outputTokenCount?: number
         artifact?: unknown
         artifactStatus?: BishopArtifactStatus
         artifactNotice?: string
       }
       const answer = typeof payload.answer === 'string' && payload.answer.trim() ? payload.answer.trim() : fallback.answer
+      const usageSnapshot = buildUsageSnapshot(payload.inputTokenCount, payload.outputTokenCount, payload.tokenCount ?? fallback.tokenCount)
 
       const result = augmentResultWithTrace(
         {
@@ -1102,14 +1170,16 @@ export async function orchestrateBishopAnswer(
           sources: fallback.sources,
           deniedSources: fallback.deniedSources,
           chunkCount: payload.chunkCount ?? fallback.chunkCount,
-          tokenCount: payload.tokenCount ?? fallback.tokenCount,
+          tokenCount: usageSnapshot.totalTokenCount || payload.tokenCount || fallback.tokenCount,
+          inputTokenCount: usageSnapshot.inputTokenCount,
+          outputTokenCount: usageSnapshot.outputTokenCount,
+          usageKind: usageSnapshot.usageKind,
           latencyMs: payload.latencyMs ?? fallback.latencyMs,
         },
         'remote',
         prompt,
       )
-
-      return withArtifactOutcome(query, result, payload)
+      return withArtifactOutcome(query, { ...result, model: payload.model }, payload)
     } catch (error) {
       const errorPreview = error instanceof Error ? error.message : 'Remote orchestration endpoint failed'
       return withArtifactOutcome(query, {
@@ -1119,6 +1189,7 @@ export async function orchestrateBishopAnswer(
         confidenceScore: buildConfidenceScore(fallback, 'fallback'),
         providerTracePreview: buildProviderTracePreview('fallback', fallback.provider, fallback.answer, errorPreview),
         improvementHint: buildImprovementHint(fallback),
+        usageKind: 'local',
       })
     }
   }
@@ -1140,5 +1211,6 @@ export async function orchestrateBishopAnswer(
     confidenceScore: buildConfidenceScore(fallback, 'fallback'),
     providerTracePreview: buildProviderTracePreview('fallback', fallback.provider, fallback.answer, remoteAnswer.errorPreview),
     improvementHint: buildImprovementHint(fallback),
+    usageKind: 'local',
   })
 }

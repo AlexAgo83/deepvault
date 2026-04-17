@@ -5,7 +5,7 @@ import { GettingStartedModal } from './getting-started-modal'
 import { useInstallPrompt, useTheme } from '../hooks'
 import type { Theme } from '../hooks/useTheme'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
-import { AIStatsPanel, BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
+import { AIStatsPanel, ArtifactsPanel, BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
 import { version } from '../../package.json'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
@@ -18,7 +18,7 @@ type NavSection = {
 type RightPanelState = Record<Exclude<AppTab, 'sync'>, boolean>
 type TopbarScrollTarget = 'sync-status'
 type SettingsShortcutTarget = 'runtime' | 'ai-providers' | null
-type StatsHeaderState = Record<Extract<AppTab, 'settings' | 'sync' | 'ai-stats'>, boolean>
+type StatsHeaderState = Record<Extract<AppTab, 'settings' | 'sync' | 'ai-stats' | 'artifacts'>, boolean>
 
 const RIGHT_PANEL_STORAGE_KEY = 'deepvault_right_panel_visibility'
 const STATS_HEADER_STORAGE_KEY = 'deepvault_stats_headers_visibility'
@@ -35,6 +35,7 @@ function readRightPanelState(): RightPanelState {
   const defaultState: RightPanelState = {
     explorer: true,
     bishop: false,
+    artifacts: true,
     'ai-stats': true,
     settings: true,
   }
@@ -46,6 +47,7 @@ function readRightPanelState(): RightPanelState {
     return {
       explorer: typeof parsed.explorer === 'boolean' ? parsed.explorer : defaultState.explorer,
       bishop: typeof parsed.bishop === 'boolean' ? parsed.bishop : defaultState.bishop,
+      artifacts: typeof parsed.artifacts === 'boolean' ? parsed.artifacts : defaultState.artifacts,
       'ai-stats': typeof parsed['ai-stats'] === 'boolean' ? parsed['ai-stats'] : defaultState['ai-stats'],
       settings: typeof parsed.settings === 'boolean' ? parsed.settings : defaultState.settings,
     }
@@ -59,6 +61,7 @@ function readStatsHeaderState(): StatsHeaderState {
     settings: true,
     sync: true,
     'ai-stats': true,
+    artifacts: true,
   }
 
   try {
@@ -69,6 +72,7 @@ function readStatsHeaderState(): StatsHeaderState {
       settings: typeof parsed.settings === 'boolean' ? parsed.settings : defaultState.settings,
       sync: typeof parsed.sync === 'boolean' ? parsed.sync : defaultState.sync,
       'ai-stats': typeof parsed['ai-stats'] === 'boolean' ? parsed['ai-stats'] : defaultState['ai-stats'],
+      artifacts: typeof parsed.artifacts === 'boolean' ? parsed.artifacts : defaultState.artifacts,
     }
   } catch {
     return defaultState
@@ -99,6 +103,7 @@ const NAV_SECTIONS: ReadonlyArray<NavSection> = [
     ariaLabel: 'Application panels',
     items: [
       { id: 'sync', label: 'Knowledge', icon: SyncIcon },
+      { id: 'artifacts', label: 'Artifacts', icon: ArtifactsIcon },
       { id: 'ai-stats', label: 'AI View', icon: StatsIcon },
       { id: 'settings', label: 'Settings', icon: SettingsIcon },
     ],
@@ -218,6 +223,16 @@ function StatsToggleIcon() {
       <path d="M9.5 14.75V6.75" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
       <path d="M13.75 14.75V11" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
       <path d="M4.5 14.75h11" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function ArtifactsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <rect x="3" y="8.5" width="14" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <rect x="2" y="5.5" width="16" height="3.5" rx="1" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M8 5.5V4.5a2 2 0 0 1 4 0v1" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
     </svg>
   )
 }
@@ -704,8 +719,8 @@ export function AppShell(model: AppModel) {
     : null
   const answeredCount = responses.filter((message) => message.status === 'answered').length
   const needHints = responses.filter((message) => Boolean(message.improvementHint))
-  const showKpiGrid = (activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats') ? statsHeaderState[activeTab] : false
-  const showStatsToggle = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats'
+  const showKpiGrid = (activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' || activeTab === 'artifacts') ? statsHeaderState[activeTab] : false
+  const showStatsToggle = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' || activeTab === 'artifacts'
   const isKnowledgeTab = activeTab === 'sync'
   const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
   const toggleMobileMenu = () => {
@@ -716,7 +731,7 @@ export function AppShell(model: AppModel) {
     setIsSidebarCollapsed((value) => !value)
   }
   const closeMobileMenu = () => setIsMobileMenuOpen(false)
-  const hasRightPanel = activeTab === 'explorer' || activeTab === 'bishop' || activeTab === 'ai-stats' || activeTab === 'settings'
+  const hasRightPanel = activeTab === 'explorer' || activeTab === 'bishop' || activeTab === 'artifacts' || activeTab === 'ai-stats' || activeTab === 'settings'
   const showRightPanel = hasRightPanel ? rightPanelState[activeTab] : false
   const toggleRightPanel = () => {
     if (!hasRightPanel) return
@@ -735,12 +750,13 @@ export function AppShell(model: AppModel) {
     window.location.hash = `#${params.toString()}`
   }
   const toggleStatsHeader = () => {
-    if (activeTab !== 'settings' && activeTab !== 'sync' && activeTab !== 'ai-stats') {
+    if (activeTab !== 'settings' && activeTab !== 'sync' && activeTab !== 'ai-stats' && activeTab !== 'artifacts') {
       return
     }
     setStatsHeaderState((current) => ({ ...current, [activeTab]: !current[activeTab] }))
   }
-  const currentStatsHeadersVisible = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' ? statsHeaderState[activeTab] : false
+  const currentStatsHeadersVisible = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' || activeTab === 'artifacts' ? statsHeaderState[activeTab] : false
+  const analyzedDocCount = model.scopedCorpus.documents.filter((d) => d.analysis?.status === 'analyzed').length
   const kpiGridSection = showKpiGrid ? (
     <section className="kpi-grid">
       {activeTab === 'ai-stats' ? (
@@ -753,6 +769,13 @@ export function AppShell(model: AppModel) {
             note="Average confidence across completed responses with a numeric score."
           />
           <StatCard label="Need hints" value={needHints.length} note="Responses that surfaced a brief hint about better input." />
+        </>
+      ) : activeTab === 'artifacts' ? (
+        <>
+          <StatCard label="Documents" value={model.scopedCorpus.documents.length} note="Corpus documents available in the current site scope." />
+          <StatCard label="Analyzed" value={analyzedDocCount} note="Documents with additive AI analysis blocks from npm run analyze." />
+          <StatCard label="Sync runs" value={syncOperations.history.length} note="Recent sync and analyze run records in the retained history window." />
+          <StatCard label="Generated" value={responses.filter((m) => Boolean(m.artifact)).length} note="Bishop responses that produced artifact outputs." />
         </>
       ) : (
         <>
@@ -938,7 +961,19 @@ export function AppShell(model: AppModel) {
 
         {activeTab === 'ai-stats' ? (
           <ErrorBoundary fallback={<div className="empty-state">AI View panel failed to render.</div>}>
-            <AIStatsPanel messages={messages} resolveFileHref={resolveFileHref} showRightPanel={showRightPanel} />
+            <AIStatsPanel aiUsageSummary={model.aiUsageSummary} messages={messages} resolveFileHref={resolveFileHref} showRightPanel={showRightPanel} />
+          </ErrorBoundary>
+        ) : null}
+
+        {activeTab === 'artifacts' ? (
+          <ErrorBoundary fallback={<div className="empty-state">Artifacts panel failed to render.</div>}>
+            <ArtifactsPanel
+              corpus={model.scopedCorpus}
+              messages={messages}
+              resolveFileHref={resolveFileHref}
+              showRightPanel={showRightPanel}
+              syncOperations={syncOperations}
+            />
           </ErrorBoundary>
         ) : null}
 

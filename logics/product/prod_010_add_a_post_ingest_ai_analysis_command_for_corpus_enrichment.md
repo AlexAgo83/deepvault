@@ -1,10 +1,10 @@
 ## prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment - Add a post-ingest AI analysis command for corpus enrichment
 > Date: 2026-04-17
-> Status: Proposed
+> Status: Active
 > Related request: (none yet)
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md`
 > Related task: `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`
-> Related architecture: `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`
+> Related architecture: `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the command separate from baseline ingestion unless a later decision explicitly merges them.
 
 # Overview
@@ -164,3 +164,8 @@ The product needs a separate command that can enrich the corpus after ingest wit
 - Decision note: the default threshold for "analysis needed" should bias toward clear value, not broad coverage. Metadata-only, weak-summary, unreadable, and priority file-type cases should be selected first.
 - Open question: what should be the first-wave hard size ceiling, and should larger files be permanently excluded or deferred to a separate elevated mode?
 - Decision note: the first artifact should be a rewritten corpus file that includes the additive `analysis` block, with a sidecar format optional only if later operability work needs it.
+
+# Delivery update
+- First-wave runtime delivery now exists through `npm run analyze`, which writes additive analysis blocks to `data/runtime/analyzed-corpus.json`.
+- The analyze sidecar now also writes `data/runtime/analyze-report.json` with bounded run metrics for `selected`, `analyzed`, `excluded`, `failed`, `reused`, `stale`, and heuristic token/cost estimates.
+- The current shipped implementation is intentionally bounded and deterministic; it establishes the contract, runtime output, and downstream retrieval usage before deeper provider-backed enrichment expands.

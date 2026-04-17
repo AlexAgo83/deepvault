@@ -6,7 +6,7 @@ import type { AppModel } from '../../hooks/useAppModel'
 import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 import { formatDuration } from './sync-panel-utils'
 
-type OpsKey = 'ingest' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
+type OpsKey = 'ingest' | 'analyze' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
 export type SyncView = 'status' | 'operations' | 'history' | 'config'
 
 const SYNC_VIEW_PARAM = 'sync'
@@ -23,6 +23,13 @@ const OPS_CONFIG: Record<OpsKey, {
     tooltip: 'Write sync snapshot from current corpus',
     description: 'Reads the current corpus and writes a new sync state snapshot to data/runtime/sync-state.json. Fast, local operation — no network calls.',
     confirmLabel: 'Ingest',
+  },
+  analyze: {
+    label: 'Analyze',
+    tooltip: 'Post-ingest corpus enrichment with additive analysis blocks',
+    description: 'Scans the current corpus, selects bounded candidates, and writes additive analysis metadata to a derived runtime artifact.',
+    warning: 'This uses the bounded analysis path. Provider-backed enrichment is optional, but current local settings still affect the run.',
+    confirmLabel: 'Analyze',
   },
   evaluate: {
     label: 'Evaluate',
@@ -57,7 +64,7 @@ const SYNC_VIEWS: { id: SyncView; label: string; detail: string }[] = [
   { id: 'status', label: 'Status', detail: 'Coverage, freshness, and scope signals' },
   { id: 'operations', label: 'Operations', detail: 'Launch ingest, evaluate, refresh, or sync' },
   { id: 'history', label: 'History', detail: 'Recent runs and evaluation prep' },
-  { id: 'config', label: 'Config', detail: 'Worker mode, fallback, and timeout' },
+  { id: 'config', label: 'Worker', detail: 'Worker mode, fallback, and timeout' },
 ]
 
 function parseSyncView(hash: string): SyncView {
@@ -136,6 +143,15 @@ function IngestIcon() {
       <path d="M5.25 6.25h9.5v7.5h-9.5z" fill="none" stroke="currentColor" strokeWidth="1.4" />
       <path d="M10 4.5v6.2M7.75 8.1 10 10.35l2.25-2.25" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M6.5 15.25h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function AnalyzeIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.5 5.75h9v8.5h-9z" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M7.25 8.25h5.5M7.25 10.5h5.5M7.25 12.75h3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   )
 }
@@ -259,6 +275,7 @@ export function SyncPanel({
   function confirm(op: OpsKey) {
     setPendingOp(null)
     if (op === 'ingest') syncOperations.startIngest()
+    else if (op === 'analyze') syncOperations.startAnalyze()
     else if (op === 'evaluate') syncOperations.startEvaluate()
     else if (op === 'refresh') syncOperations.startRefresh()
     else if (op === 'exportLive') syncOperations.startExportLive()
@@ -440,7 +457,7 @@ export function SyncPanel({
               <div className="sync-controls-group">
                 <span className="sync-controls-label">Local pipeline</span>
                 <div className="sync-controls-actions">
-                  {(['ingest', 'evaluate'] as OpsKey[]).map((op) => (
+                  {(['ingest', 'analyze', 'evaluate'] as OpsKey[]).map((op) => (
                     <button
                       key={op}
                       type="button"
@@ -451,6 +468,7 @@ export function SyncPanel({
                     >
                       <span className="sync-action-icon" aria-hidden="true">
                         {op === 'ingest' ? <IngestIcon /> : null}
+                        {op === 'analyze' ? <AnalyzeIcon /> : null}
                         {op === 'evaluate' ? <EvaluateIcon /> : null}
                       </span>
                       {OPS_CONFIG[op].label}
@@ -613,71 +631,77 @@ export function SyncPanel({
         </article>
       ) : null}
 
-      {/* Config view — worker connection read-only + recovery guidance */}
+      {/* Config view — worker connection read-only */}
       {syncView === 'config' ? (
-        <article className="panel sync-view-panel" aria-label="Worker configuration">
-          <SectionHeading title="Worker config" subtitleTooltip="Active worker connection and fallback settings. Edit in Settings → Worker." />
+        <>
+          <article className="panel sync-view-panel" aria-label="Worker configuration">
+            <SectionHeading title="Config" subtitleTooltip="Active worker connection and fallback settings. Edit in Settings → Worker." />
 
-          <div className="kpi-grid compact">
-            <StatCard label="Worker mode" value={workerSettings.workerMode} note="local uses the embedded Vite ops server." />
-            <StatCard label="Fallback mode" value={workerSettings.workerFallbackMode} note="Behavior when the worker is unreachable." />
-            <StatCard label="Timeout" value={`${workerSettings.workerTimeoutSeconds}s`} note="Request timeout for worker API calls." />
-          </div>
+            <div className="kpi-grid compact">
+              <StatCard label="Worker mode" value={workerSettings.workerMode} note="local uses the embedded Vite ops server." />
+              <StatCard label="Fallback mode" value={workerSettings.workerFallbackMode} note="Behavior when the worker is unreachable." />
+              <StatCard label="Timeout" value={`${workerSettings.workerTimeoutSeconds}s`} note="Request timeout for worker API calls." />
+            </div>
 
-          {workerSettings.workerMode === 'remote' && workerSettings.workerUrl ? (
-            <div className="sync-details-grid">
-              <div className="detail-row">
-                <span>Worker URL</span>
-                <strong className="detail-value-compact">{workerSettings.workerUrl}</strong>
+            {workerSettings.workerMode === 'remote' && workerSettings.workerUrl ? (
+              <div className="sync-details-grid">
+                <div className="detail-row">
+                  <span>Worker URL</span>
+                  <strong className="detail-value-compact">{workerSettings.workerUrl}</strong>
+                </div>
+                <div className="detail-row">
+                  <span>Token</span>
+                  <strong>{workerSettings.workerToken ? '●●●●●●●●' : 'Not set'}</strong>
+                </div>
               </div>
-              <div className="detail-row">
-                <span>Token</span>
-                <strong>{workerSettings.workerToken ? '●●●●●●●●' : 'Not set'}</strong>
+            ) : null}
+
+            {workerSettings.workerMode === 'local' ? (
+              <div className="sync-callout">
+                <p>Running in local mode. Jobs are executed by the embedded Vite ops server at the same origin.</p>
+                <p>Switch to remote mode in <strong>Settings → Worker</strong> to point at a dedicated worker endpoint.</p>
               </div>
-            </div>
-          ) : null}
+            ) : (
+              <div className="sync-callout">
+                <p>Running in remote mode. Jobs are dispatched to <strong>{workerSettings.workerUrl || 'the configured worker URL'}</strong>.</p>
+                <p>Update connection settings in <strong>Settings → Worker</strong>.</p>
+              </div>
+            )}
+          </article>
 
-          {workerSettings.workerMode === 'local' ? (
-            <div className="sync-callout">
-              <p>Running in local mode. Jobs are executed by the embedded Vite ops server at the same origin.</p>
-              <p>Switch to remote mode in <strong>Settings → Worker</strong> to point at a dedicated worker endpoint.</p>
-            </div>
-          ) : (
-            <div className="sync-callout">
-              <p>Running in remote mode. Jobs are dispatched to <strong>{workerSettings.workerUrl || 'the configured worker URL'}</strong>.</p>
-              <p>Update connection settings in <strong>Settings → Worker</strong>.</p>
-            </div>
-          )}
-          <SectionHeading title="Recovery" subtitleTooltip="Guidance for failed operations and unreachable workers." />
+          {/* Recovery panel */}
+          <article className="panel sync-view-panel" aria-label="Recovery">
+            <SectionHeading title="Recovery" subtitleTooltip="Guidance for failed operations and unreachable workers." />
 
-          {failedJobs.length > 0 ? (
-            <div className="sync-list">
-              {failedJobs.map((job) => (
-                <article key={job.id} className="sync-card" title={job.summary}>
-                  <div className="source-card-top">
-                    <strong>{job.label}</strong>
-                    <Pill tone="danger">failed</Pill>
-                  </div>
-                  <div className="source-meta">
-                    <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
-                    <span>{job.command}</span>
-                  </div>
-                  <p>{job.summary}</p>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="sync-callout">
-              <p>No failed jobs in recent history. Recovery guidance will appear here when a job fails.</p>
-            </div>
-          )}
+            {failedJobs.length > 0 ? (
+              <div className="sync-list">
+                {failedJobs.map((job) => (
+                  <article key={job.id} className="sync-card" title={job.summary}>
+                    <div className="source-card-top">
+                      <strong>{job.label}</strong>
+                      <Pill tone="danger">failed</Pill>
+                    </div>
+                    <div className="source-meta">
+                      <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
+                      <span>{job.command}</span>
+                    </div>
+                    <p>{job.summary}</p>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="sync-callout">
+                <p>No failed jobs in recent history. Recovery guidance will appear here when a job fails.</p>
+              </div>
+            )}
 
-          <div className="sync-callout">
-            <p>If a sync fails, use <strong>Resume Sync</strong> in Operations to restart from the last checkpoint.</p>
-            <p>If the worker is unreachable, check the Worker URL and token in Settings, or switch to local mode.</p>
-            <p>If the worker remains unavailable and the fallback mode is <strong>read_only</strong>, continue in the published corpus until the endpoint is restored.</p>
-          </div>
-        </article>
+            <div className="sync-callout">
+              <p>If a sync fails, use <strong>Resume Sync</strong> in Operations to restart from the last checkpoint.</p>
+              <p>If the worker is unreachable, check the Worker URL and token in Settings, or switch to local mode.</p>
+              <p>If the worker remains unavailable and the fallback mode is <strong>read_only</strong>, continue in the published corpus until the endpoint is restored.</p>
+            </div>
+          </article>
+        </>
       ) : null}
     </section>
   )

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { orchestrateBishopAnswer } from '../lib/bishop'
+import { appendAIUsageEvent } from '../lib/ai-usage'
 import { type ChatMessage, type Corpus, type ProviderId, type SourceRecord, type UserRole } from '../lib/deepvault'
 import type { BishopSettings } from './useBishopSettings'
 
@@ -304,9 +305,13 @@ export function useBishopConversation({
                 status: result.status,
                 sources: result.sources,
                 provider: result.provider,
+                model: result.model,
                 orchestrationMode: result.mode,
                 chunkCount: result.chunkCount,
                 tokenCount: result.tokenCount,
+                inputTokenCount: result.inputTokenCount,
+                outputTokenCount: result.outputTokenCount,
+                usageKind: result.usageKind,
                 latencyMs: result.latencyMs,
                 confidenceScore: result.confidenceScore,
                 providerTracePreview: result.providerTracePreview,
@@ -318,6 +323,16 @@ export function useBishopConversation({
             : message,
         ),
       )
+      appendAIUsageEvent({
+        provider: result.provider || 'local',
+        model: result.model,
+        status: result.status,
+        usageKind: result.usageKind || (result.mode === 'remote' ? 'partial' : 'local'),
+        timestamp: new Date().toISOString(),
+        inputTokenCount: result.inputTokenCount,
+        outputTokenCount: result.outputTokenCount,
+        totalTokenCount: result.tokenCount || 0,
+      })
     } finally {
       setIsAsking(false)
       answerTimers.current = answerTimers.current.filter((timer) => timer !== answerDelay)

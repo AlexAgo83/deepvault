@@ -26,6 +26,9 @@
 | [adr_020_clarify_bishop_orchestration_states_and_response_contract](architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md) | Clarify Bishop orchestration states and response contract | Proposed |  | architecture/adr_020_clarify_bishop_orchestration_states_and_response_contract.md |
 | [adr_021_harden_live_export_and_checkpoint_boundaries](architecture/adr_021_harden_live_export_and_checkpoint_boundaries.md) | Harden live export and checkpoint boundaries | Proposed |  | architecture/adr_021_harden_live_export_and_checkpoint_boundaries.md |
 | [adr_028_bound_bishop_generated_artifact_response_and_download_contract](architecture/adr_028_bound_bishop_generated_artifact_response_and_download_contract.md) | Bound Bishop generated artifact response and download contract | Accepted |  | architecture/adr_028_bound_bishop_generated_artifact_response_and_download_contract.md |
+| [adr_029_bound_post_ingest_analysis_contract_and_runtime_output](architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md) | Bound post-ingest analysis contract and runtime output | Accepted |  | architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md |
+| [adr_030_artifacts_surface_information_model_and_processed_record](architecture/adr_030_artifacts_surface_information_model_and_processed_record.md) | Artifacts surface information model and processed record | Accepted |  | architecture/adr_030_artifacts_surface_information_model_and_processed_record.md |
+| [adr_031_local_ai_usage_event_store_and_sectioned_ai_view](architecture/adr_031_local_ai_usage_event_store_and_sectioned_ai_view.md) | Local AI usage event store and sectioned AI View | Accepted |  | architecture/adr_031_local_ai_usage_event_store_and_sectioned_ai_view.md |
 
 ## Product briefs
 
@@ -125,6 +128,9 @@
 | [item_057_pwa_update_banner](backlog/item_057_pwa_update_banner.md) | PWA: update banner | Done | 100% | backlog/item_057_pwa_update_banner.md |
 | [item_058_pwa_offline_cache_and_mock_fallback](backlog/item_058_pwa_offline_cache_and_mock_fallback.md) | PWA: offline cache and mock corpus fallback | Done | 100% | backlog/item_058_pwa_offline_cache_and_mock_fallback.md |
 | [item_068_deliver_bishop_first_wave_generated_artifact_contract](backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md) | Deliver Bishop first-wave generated artifact contract | Done | 100% | backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md |
+| [item_069_ship_bounded_post_ingest_analysis_command](backlog/item_069_ship_bounded_post_ingest_analysis_command.md) | Ship bounded post-ingest analysis command | In Progress | 82% | backlog/item_069_ship_bounded_post_ingest_analysis_command.md |
+| [item_070_ship_artifacts_inspection_surface](backlog/item_070_ship_artifacts_inspection_surface.md) | Ship Artifacts inspection surface | Done | 100% | backlog/item_070_ship_artifacts_inspection_surface.md |
+| [item_071_ship_ai_usage_store_and_sectioned_ai_view](backlog/item_071_ship_ai_usage_store_and_sectioned_ai_view.md) | Ship AI usage store and sectioned AI View | Done | 100% | backlog/item_071_ship_ai_usage_store_and_sectioned_ai_view.md |
 
 ## Tasks
 
@@ -149,9 +155,9 @@
 | [task_022_pwa_progressive_web_app_delivery](tasks/task_022_pwa_progressive_web_app_delivery.md) | PWA progressive web app delivery | Done | 100% | tasks/task_022_pwa_progressive_web_app_delivery.md |
 | [task_025_non_v2_delivery_orchestration_and_validation_hardening](tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md) | Wave map | Done | 100% | tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md |
 | [task_036_orchestrate_bishop_generated_document_artifacts](tasks/task_036_orchestrate_bishop_generated_document_artifacts.md) | Orchestrate Bishop generated document artifacts | Done | 100% | tasks/task_036_orchestrate_bishop_generated_document_artifacts.md |
-| [task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment](tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Orchestrate post-ingest AI analysis command for corpus enrichment | Proposed | 0% | tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
-| [task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs](tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md) | Orchestrate Artifacts visualization surface for generated outputs | Proposed | 0% | tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md |
-| [task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view](tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md) | Orchestrate AI consumption observability and a sectioned AI View | Proposed | 0% | tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md |
+| [task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment](tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Orchestrate post-ingest AI analysis command for corpus enrichment | In Progress | 82% | tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
+| [task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs](tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md) | Orchestrate Artifacts visualization surface for generated outputs | Done | 100% | tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md |
+| [task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view](tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md) | Orchestrate AI consumption observability and a sectioned AI View | Done | 100% | tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md |
 
 ## Specs
 

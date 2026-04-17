@@ -1,10 +1,10 @@
 ## prod_011_add_an_artifacts_visualization_surface_for_generated_outputs - Add an Artifacts visualization surface for generated outputs
 > Date: 2026-04-17
-> Status: Proposed
+> Status: Validated
 > Related request: (none yet)
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_070_ship_artifacts_inspection_surface.md`
 > Related task: `logics/tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md`
-> Related architecture: `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`
+> Related architecture: `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_030_artifacts_surface_information_model_and_processed_record.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep this surface focused on visualization and inspection of generated outputs before expanding it into a broader operations area.
 
 # Overview
@@ -143,3 +143,7 @@ The absence of a unified generated-output view creates unnecessary dependence on
 - Should the default grouping be by artifact type or by producing run?
 - How much raw artifact content should be previewable inline before the UI becomes too heavy?
 - Should the processed SharePoint file record live as a side panel, a full detail view, or both?
+
+# Delivery update
+- The first-wave `Artifacts` tab now ships as a top-level read-only inspection surface with filtering, grouping, and processed-record detail blocks.
+- The current artifact families are processed files, analysis artifacts, sync runs, and generated answer artifacts.

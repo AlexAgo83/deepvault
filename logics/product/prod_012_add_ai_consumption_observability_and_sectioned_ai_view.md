@@ -1,10 +1,10 @@
 ## prod_012_add_ai_consumption_observability_and_sectioned_ai_view - Add AI consumption observability and a sectioned AI View
 > Date: 2026-04-17
-> Status: Proposed
+> Status: Validated
 > Related request: (none yet)
-> Related backlog: (none yet)
+> Related backlog: `logics/backlog/item_071_ship_ai_usage_store_and_sectioned_ai_view.md`
 > Related task: `logics/tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md`
-> Related architecture: `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`, `logics/architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md`
+> Related architecture: `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`, `logics/architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md`, `logics/architecture/adr_031_local_ai_usage_event_store_and_sectioned_ai_view.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the first wave focused on bounded usage visibility rather than building a full analytics suite.
 
 # Overview
@@ -136,3 +136,7 @@ The product needs a dedicated AI consumption view that makes usage inspectable i
 - How much history should the local dedicated usage store retain before compaction or rollover is needed?
 - Should the first visible `Tokens` section include per-provider comparison cards only, or also a lightweight per-provider trend line in wave one?
 - When estimated cost is introduced later, should it live inside `Tokens` or become a separate section or summary mode?
+
+# Delivery update
+- `AI View` now ships with `Answered` and `Tokens` sections backed by a bounded local usage-event store.
+- The first-wave `Tokens` section exposes today KPIs, a 7-day trend, a same-day hourly view, and provider totals while keeping local/no-provider outcomes distinct.

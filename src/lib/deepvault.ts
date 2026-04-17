@@ -40,6 +40,24 @@ export interface CorpusSection {
   content: string
 }
 
+export type AnalysisStatus = 'not_analyzed' | 'analyzed' | 'excluded' | 'failed' | 'stale'
+
+export interface DocumentAnalysis {
+  status: AnalysisStatus
+  version: string
+  provider?: string
+  model?: string
+  analyzedAt?: string
+  contentHash?: string
+  summary?: string
+  keywords?: string[]
+  sections?: CorpusSection[]
+  documentType?: string
+  confidence?: number
+  excludedReason?: string
+  failureReason?: string
+}
+
 export interface CorpusDocument {
   id: string
   siteId: string
@@ -61,6 +79,8 @@ export interface CorpusDocument {
   sections?: CorpusSection[]
   /** Explicit file type derived from the source path extension (e.g. "document", "spreadsheet", "markdown"). */
   fileType?: string
+  /** Additive analysis block produced by the post-ingest enrichment path. */
+  analysis?: DocumentAnalysis
 }
 
 export interface Corpus {
@@ -114,9 +134,13 @@ export interface ChatMessage {
   sources: SourceRecord[]
   createdAt?: string
   provider?: ProviderId
+  model?: string
   orchestrationMode?: 'remote' | 'fallback' | 'grounded-only'
   chunkCount?: number
   tokenCount?: number
+  inputTokenCount?: number
+  outputTokenCount?: number
+  usageKind?: 'provider' | 'partial' | 'local'
   latencyMs?: number
   confidenceScore?: number
   providerTracePreview?: string
@@ -162,6 +186,9 @@ export interface AnswerResult {
   deniedSources: SourceRecord[]
   chunkCount: number
   tokenCount: number
+  inputTokenCount?: number
+  outputTokenCount?: number
+  usageKind?: 'provider' | 'partial' | 'local'
   latencyMs: number
   artifact?: BishopArtifact
   artifactStatus?: BishopArtifactStatus
@@ -183,6 +210,30 @@ export interface GroundingResult {
 
 export function canAccessDocument(document: Pick<CorpusDocument, 'access'>, role: UserRole): boolean {
   return document.access.includes(role) || document.access.includes('all')
+}
+
+function getPreferredSummary(document: CorpusDocument): string {
+  if (document.analysis?.status === 'analyzed' && document.analysis.summary?.trim()) {
+    return document.analysis.summary.trim()
+  }
+
+  return document.summary
+}
+
+function getPreferredSections(document: CorpusDocument): CorpusSection[] {
+  if (document.analysis?.status === 'analyzed' && document.analysis.sections?.length) {
+    return document.analysis.sections
+  }
+
+  return document.sections || []
+}
+
+function getPreferredKeywords(document: CorpusDocument): string[] {
+  if (document.analysis?.status === 'analyzed' && document.analysis.keywords?.length) {
+    return document.analysis.keywords
+  }
+
+  return []
 }
 
 export function getSiteById(corpusData: Corpus, siteId: string): SiteRecord | undefined {
@@ -256,7 +307,15 @@ export function searchDocuments(
     .filter((document) => siteId === 'all' || document.siteId === siteId)
     .map((document) => ({
       document,
-      score: getDocumentScore(document, query),
+      score: getDocumentScore(
+        {
+          ...document,
+          summary: getPreferredSummary(document),
+          tags: [...document.tags, ...getPreferredKeywords(document)],
+          sections: getPreferredSections(document),
+        },
+        query,
+      ),
       permitted: canAccessDocument(document, role),
     }))
     .filter((entry) => {
@@ -279,8 +338,9 @@ function summarizeSentence(document: CorpusDocument, query: string): string {
   }
   const tokens = tokenize(query)
   // Prefer section-level match when sections are available
-  if (document.sections && document.sections.length > 0) {
-    const matched = document.sections.find((section) =>
+  const sections = getPreferredSections(document)
+  if (sections.length > 0) {
+    const matched = sections.find((section) =>
       tokens.some(
         (token) =>
           normalizeText(section.heading).includes(token) ||
@@ -294,13 +354,14 @@ function summarizeSentence(document: CorpusDocument, query: string): string {
   // Fall back to sentence-level search in flat content
   const sentences = document.content.split(/(?<=[.!?])\s+/)
   const matched = sentences.find((sentence) => tokens.some((token) => normalizeText(sentence).includes(token)))
-  return matched || document.summary || document.content.split('.')[0]
+  return matched || getPreferredSummary(document) || document.content.split('.')[0]
 }
 
 function findSectionHint(document: CorpusDocument, query: string): string | undefined {
-  if (!document.sections || document.sections.length === 0) return undefined
+  const sections = getPreferredSections(document)
+  if (sections.length === 0) return undefined
   const tokens = tokenize(query)
-  const matched = document.sections.find((section) =>
+  const matched = sections.find((section) =>
     tokens.some(
       (token) =>
         normalizeText(section.heading).includes(token) ||
@@ -423,8 +484,8 @@ function buildSource(document: CorpusDocument, score: number, corpusData: Corpus
     updatedAt: document.updatedAt,
     author: document.author,
     score,
-    summary: document.summary,
-    tags: document.tags,
+    summary: getPreferredSummary(document),
+    tags: [...document.tags, ...getPreferredKeywords(document)],
     access: document.access,
     snippet: document.directAnswer || document.summary,
     source: document.source,
@@ -482,6 +543,7 @@ export function answerQuestion(
     deniedSources: grounding.deniedSources,
     chunkCount: grounding.chunkCount,
     tokenCount: grounding.tokenCount,
+    usageKind: 'local',
     latencyMs: grounding.latencyMs,
   }
 }
