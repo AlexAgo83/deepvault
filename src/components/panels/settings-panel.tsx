@@ -10,12 +10,67 @@ import { SettingsChangelogPanel } from './settings-changelog-panel'
 type SettingsView = 'runtime' | 'assistant-context' | 'sharepoint' | 'ai-providers' | 'worker'
 
 const SETTINGS_VIEWS: Array<{ id: SettingsView; label: string; detail: string }> = [
-  { id: 'runtime', label: 'Runtime', detail: 'Role, site scope, provider, and data mode' },
-  { id: 'assistant-context', label: 'Assistant context', detail: 'Grounded source count, candidate pool, and reused history' },
-  { id: 'sharepoint', label: 'SharePoint', detail: 'Entra app, tenant, secret, and target sites' },
-  { id: 'ai-providers', label: 'AI providers', detail: 'Browser-scoped model keys and provider readiness' },
   { id: 'worker', label: 'Worker', detail: 'Worker mode, endpoint, timeout, and fallback' },
+  { id: 'runtime', label: 'Runtime', detail: 'Role, site scope, provider, and data mode' },
+  { id: 'sharepoint', label: 'SharePoint', detail: 'Entra app, tenant, secret, and target sites' },
+  { id: 'assistant-context', label: 'Agent', detail: 'Grounded source count, candidate pool, and reused history' },
+  { id: 'ai-providers', label: 'Providers', detail: 'Browser-scoped model keys and provider readiness' },
 ]
+
+function RuntimeSettingsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <circle cx="10" cy="10" r="5.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M10 4v2.2M10 13.8V16M4 10h2.2M13.8 10H16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function AgentSettingsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <rect x="5.25" y="4.5" width="9.5" height="11" rx="2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M8 8.25h4M8 11.25h4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function SharePointSettingsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M4.75 5.5h10.5v9h-10.5z" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M7 8.25h6M7 11.25h4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function AIProvidersSettingsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <circle cx="7" cy="10" r="2.25" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="13" cy="7" r="1.75" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="13.5" cy="13" r="1.75" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M8.9 8.9 11.2 7.8M8.95 11.05l2.5 1.2" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function WorkerSettingsIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <rect x="4.5" y="5.25" width="11" height="9.5" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M7.5 8.5h5M7.5 11.5h3.25" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function getSettingsViewIcon(view: SettingsView) {
+  if (view === 'runtime') return <RuntimeSettingsIcon />
+  if (view === 'assistant-context') return <AgentSettingsIcon />
+  if (view === 'sharepoint') return <SharePointSettingsIcon />
+  if (view === 'ai-providers') return <AIProvidersSettingsIcon />
+  return <WorkerSettingsIcon />
+}
 
 export function SettingsPanel({
   bishopSettings,
@@ -100,7 +155,10 @@ export function SettingsPanel({
                 title={detail}
                 onClick={() => setSettingsView(id)}
               >
-                <span className="sync-subnav-label">{label}</span>
+                <span className="settings-subnav-title-row">
+                  <span className="settings-subnav-icon" aria-hidden="true">{getSettingsViewIcon(id)}</span>
+                  <span className="sync-subnav-label">{label}</span>
+                </span>
                 <span className="sync-subnav-detail">{detail}</span>
               </button>
             ))}

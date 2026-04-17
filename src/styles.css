@@ -1352,6 +1352,29 @@ select:focus-visible {
   box-shadow: none;
 }
 
+.settings-subnav-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.settings-subnav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(185, 106, 67, 0.08);
+  color: var(--accent);
+}
+
+.settings-subnav-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
 .settings-changelog-panel {
   display: flex;
   flex-direction: column;
