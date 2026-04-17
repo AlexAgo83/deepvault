@@ -60,6 +60,7 @@ export default defineConfig({
 
         const scripts: Record<string, string[]> = {
           ingest: [tsx, 'scripts/ingest.ts'],
+          analyze: [tsx, 'scripts/analyze-corpus.ts'],
           evaluate: [tsx, 'scripts/evaluate.ts'],
           'export-live': [tsx, 'scripts/export-live.ts'],
           'export-live-resume': [tsx, 'scripts/export-live.ts', '--resume'],
@@ -198,7 +199,11 @@ export default defineConfig({
             req.on('end', () => {
               const { kind, env: extraEnv } = JSON.parse(body) as { kind: string; env?: Record<string, string> }
               const result = spawnJob(kind, extraEnv)
-              if (!result) { res.writeHead(400); res.end(); return }
+              if (!result) {
+                res.writeHead(400, { 'Content-Type': 'application/json' })
+                res.end(JSON.stringify({ error: `Unknown worker job kind: ${kind}` }))
+                return
+              }
               res.writeHead(200, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ jobId: result.jobId }))
             })
@@ -245,7 +250,11 @@ export default defineConfig({
             req.on('end', () => {
               const { kind, env: extraEnv } = JSON.parse(body) as { kind: string; env?: Record<string, string> }
               const result = spawnJob(kind, extraEnv)
-              if (!result) { res.writeHead(400); res.end(); return }
+              if (!result) {
+                res.writeHead(400, { 'Content-Type': 'application/json' })
+                res.end(JSON.stringify({ error: `Unknown worker job kind: ${kind}` }))
+                return
+              }
               res.writeHead(201, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ jobId: result.jobId }))
             })
