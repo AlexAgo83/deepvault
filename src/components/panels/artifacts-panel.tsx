@@ -26,6 +26,35 @@ type ArtifactRecord = {
 
 const ARTIFACT_BATCH_SIZE = 24
 const ARTIFACT_MAX_VISIBLE = 240
+const ARTIFACT_FILTER_STORAGE_KEY = 'deepvault_artifacts_filter'
+const ARTIFACT_GROUP_STORAGE_KEY = 'deepvault_artifacts_group'
+
+function readStoredArtifactFilter(): ArtifactFilter {
+  if (typeof window === 'undefined') {
+    return 'processed-file'
+  }
+
+  const stored = window.localStorage.getItem(ARTIFACT_FILTER_STORAGE_KEY)
+  return stored === 'all'
+    || stored === 'processed-file'
+    || stored === 'sync-run'
+    || stored === 'generated-answer'
+    || stored === 'analysis'
+    || stored === 'analysis-report'
+    ? stored
+    : 'processed-file'
+}
+
+function readStoredArtifactGroup(): ArtifactGroup {
+  if (typeof window === 'undefined') {
+    return 'all'
+  }
+
+  const stored = window.localStorage.getItem(ARTIFACT_GROUP_STORAGE_KEY)
+  return stored === 'all' || stored === 'type' || stored === 'source'
+    ? stored
+    : 'all'
+}
 
 function getTone(status: string) {
   if (status === 'analyzed' || status === 'completed' || status === 'ready') return 'success'
@@ -401,8 +430,8 @@ export function ArtifactsPanel({
   syncOperations: AppModel['syncOperations']
 }) {
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<ArtifactFilter>('all')
-  const [group, setGroup] = useState<ArtifactGroup>('all')
+  const [filter, setFilter] = useState<ArtifactFilter>(() => readStoredArtifactFilter())
+  const [group, setGroup] = useState<ArtifactGroup>(() => readStoredArtifactGroup())
   const [visibleCount, setVisibleCount] = useState(ARTIFACT_BATCH_SIZE)
   const loadMoreSentinelRef = useRef<HTMLDivElement | null>(null)
   const artifactsListRef = useRef<HTMLDivElement | null>(null)
@@ -432,6 +461,14 @@ export function ArtifactsPanel({
   useEffect(() => {
     setVisibleCount(ARTIFACT_BATCH_SIZE)
   }, [search, filter, group, artifactRecords.length])
+
+  useEffect(() => {
+    window.localStorage.setItem(ARTIFACT_FILTER_STORAGE_KEY, filter)
+  }, [filter])
+
+  useEffect(() => {
+    window.localStorage.setItem(ARTIFACT_GROUP_STORAGE_KEY, group)
+  }, [group])
 
   useEffect(() => {
     const sentinel = loadMoreSentinelRef.current

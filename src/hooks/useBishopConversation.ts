@@ -79,8 +79,8 @@ function loadBishopMessages(): ChatMessage[] | null {
     return null
   }
 
-  const raw = window.sessionStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)
-  const legacyRaw = raw ? null : window.localStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)
+  const raw = window.localStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)
+  const legacyRaw = raw ? null : window.sessionStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)
   const payload = raw || legacyRaw
   if (!payload) {
     return null
@@ -100,11 +100,11 @@ function loadBishopMessages(): ChatMessage[] | null {
     }
 
     if (messages && legacyRaw) {
-      window.sessionStorage.setItem(
+      window.localStorage.setItem(
         BISHOP_HISTORY_STORAGE_KEY,
         JSON.stringify({ exportedAt: new Date().toISOString(), messages }, null, 2),
       )
-      window.localStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
+      window.sessionStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
     }
 
     return messages
@@ -135,8 +135,8 @@ function persistBishopMessages(messages: ChatMessage[]): void {
     exportedAt: new Date().toISOString(),
     messages: normalizeBishopMessages(messages),
   }
-  window.sessionStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, JSON.stringify(payload, null, 2))
-  window.localStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
+  window.localStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, JSON.stringify(payload, null, 2))
+  window.sessionStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
 }
 
 function persistBishopConversationContextEnabled(enabled: boolean): void {

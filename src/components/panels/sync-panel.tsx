@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Pill, SectionHeading, StatCard } from '../app-ui'
+import { Pill, SectionHeading } from '../app-ui'
 import { ConfirmModal } from '../confirm-modal'
 import { formatUpdatedAt } from '../../lib/deepvault'
 import type { AppModel } from '../../hooks/useAppModel'
@@ -344,27 +344,23 @@ export function SyncPanel({
       {syncView === 'status' ? (
         <article id="sync-status-panel" className="panel sync-view-panel" aria-label="Knowledge summary">
           <SectionHeading title="Knowledge" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
-          <div className="kpi-grid compact">
-            <StatCard
-              label="Synced sites"
-              value={scopedSyncOverview.syncedSites}
-              note="Sites currently in a synced state within the active scope."
-            />
-            <StatCard
-              label="Restricted sites"
-              value={scopedSyncOverview.restrictedSites}
-              note="Sites visible only to privileged roles within the active scope."
-            />
-            <StatCard
-              label="Visible sources"
-              value={scopedCorpusSummary.visibleSources}
-              note="Sources accessible to the selected role and scope."
-            />
-            <StatCard
-              label="Denied sources"
-              value={scopedCorpusSummary.deniedSources}
-              note="Sources excluded by permission-aware retrieval in scope."
-            />
+          <div className="sync-config-pills" aria-label="Knowledge summary statistics">
+            <div className="sync-config-pill" title="Sites currently in a synced state within the active scope.">
+              <span className="sync-config-pill-label">Synced sites</span>
+              <strong className="sync-config-pill-value">{scopedSyncOverview.syncedSites}</strong>
+            </div>
+            <div className="sync-config-pill" title="Sites visible only to privileged roles within the active scope.">
+              <span className="sync-config-pill-label">Restricted sites</span>
+              <strong className="sync-config-pill-value">{scopedSyncOverview.restrictedSites}</strong>
+            </div>
+            <div className="sync-config-pill" title="Sources accessible to the selected role and scope.">
+              <span className="sync-config-pill-label">Visible sources</span>
+              <strong className="sync-config-pill-value">{scopedCorpusSummary.visibleSources}</strong>
+            </div>
+            <div className="sync-config-pill" title="Sources excluded by permission-aware retrieval in scope.">
+              <span className="sync-config-pill-label">Denied sources</span>
+              <strong className="sync-config-pill-value">{scopedCorpusSummary.deniedSources}</strong>
+            </div>
           </div>
 
           <div className="table-wrap">
@@ -637,10 +633,19 @@ export function SyncPanel({
           <article className="panel sync-view-panel" aria-label="Worker configuration">
             <SectionHeading title="Config" subtitleTooltip="Active worker connection and fallback settings. Edit in Settings → Worker." />
 
-            <div className="kpi-grid compact">
-              <StatCard label="Worker mode" value={workerSettings.workerMode} note="local uses the embedded Vite ops server." />
-              <StatCard label="Fallback mode" value={workerSettings.workerFallbackMode} note="Behavior when the worker is unreachable." />
-              <StatCard label="Timeout" value={`${workerSettings.workerTimeoutSeconds}s`} note="Request timeout for worker API calls." />
+            <div className="sync-config-pills" aria-label="Worker configuration summary">
+              <div className="sync-config-pill" title="local uses the embedded Vite ops server.">
+                <span className="sync-config-pill-label">Worker mode</span>
+                <strong className="sync-config-pill-value">{workerSettings.workerMode}</strong>
+              </div>
+              <div className="sync-config-pill" title="Behavior when the worker is unreachable.">
+                <span className="sync-config-pill-label">Fallback mode</span>
+                <strong className="sync-config-pill-value">{workerSettings.workerFallbackMode}</strong>
+              </div>
+              <div className="sync-config-pill" title="Request timeout for worker API calls.">
+                <span className="sync-config-pill-label">Timeout</span>
+                <strong className="sync-config-pill-value">{workerSettings.workerTimeoutSeconds}s</strong>
+              </div>
             </div>
 
             {workerSettings.workerMode === 'remote' && workerSettings.workerUrl ? (

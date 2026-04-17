@@ -1,10 +1,83 @@
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { afterEach } from 'vitest'
 import { describe, expect, it, vi } from 'vitest'
 import { ArtifactsPanel } from '../src/components/panels/artifacts-panel'
 import { getMockCorpusBundle } from '../src/data/corpus'
 
+afterEach(() => {
+  window.localStorage.clear()
+})
+
 describe('ArtifactsPanel', () => {
+  it('defaults the artifact filter to processed files', () => {
+    const corpus = getMockCorpusBundle().corpus
+
+    render(
+      <ArtifactsPanel
+        corpus={corpus}
+        messages={[] as never}
+        resolveFileHref={() => null}
+        showRightPanel={false}
+        syncOperations={{
+          activeJob: null,
+          cancelActiveJob: () => undefined,
+          history: [],
+          isRunning: false,
+          lastCompletedJob: null,
+          startAnalyze: () => undefined,
+          startEvaluate: () => undefined,
+          startExportLive: () => undefined,
+          startExportLiveResume: () => undefined,
+          startIngest: () => undefined,
+          startRefresh: () => undefined,
+        }}
+      />,
+    )
+
+    expect(screen.getByLabelText('Artifact filter')).toHaveValue('processed-file')
+  })
+
+  it('persists artifact filter and grouping selections', async () => {
+    const user = userEvent.setup()
+    const corpus = getMockCorpusBundle().corpus
+
+    const props = {
+      corpus,
+      messages: [] as never,
+      resolveFileHref: () => null,
+      showRightPanel: false,
+      syncOperations: {
+        activeJob: null,
+        cancelActiveJob: () => undefined,
+        history: [],
+        isRunning: false,
+        lastCompletedJob: null,
+        startAnalyze: () => undefined,
+        startEvaluate: () => undefined,
+        startExportLive: () => undefined,
+        startExportLiveResume: () => undefined,
+        startIngest: () => undefined,
+        startRefresh: () => undefined,
+      },
+    }
+
+    const { unmount } = render(<ArtifactsPanel {...props} />)
+
+    await user.selectOptions(screen.getByLabelText('Artifact filter'), 'analysis')
+    await user.selectOptions(screen.getByLabelText('Artifact grouping'), 'source')
+
+    expect(window.localStorage.getItem('deepvault_artifacts_filter')).toBe('analysis')
+    expect(window.localStorage.getItem('deepvault_artifacts_group')).toBe('source')
+
+    unmount()
+
+    render(<ArtifactsPanel {...props} />)
+
+    expect(screen.getByLabelText('Artifact filter')).toHaveValue('analysis')
+    expect(screen.getByLabelText('Artifact grouping')).toHaveValue('source')
+  })
+
   it('renders processed files and shows a detail record', async () => {
     const user = userEvent.setup()
     const corpus = getMockCorpusBundle().corpus
@@ -115,6 +188,7 @@ describe('ArtifactsPanel', () => {
 
   it('shows the analysis report artifact when analysis data exists', () => {
     const corpus = getMockCorpusBundle().corpus
+    window.localStorage.setItem('deepvault_artifacts_filter', 'all')
 
     render(
       <ArtifactsPanel
@@ -157,6 +231,7 @@ describe('ArtifactsPanel', () => {
   it('keeps successful ingest records focused on the outcome instead of showing raw execution text', async () => {
     const user = userEvent.setup()
     const corpus = getMockCorpusBundle().corpus
+    window.localStorage.setItem('deepvault_artifacts_filter', 'all')
 
     render(
       <ArtifactsPanel
@@ -219,6 +294,7 @@ describe('ArtifactsPanel', () => {
 
   it('keeps successful refresh records focused on the outcome instead of showing raw execution text', () => {
     const corpus = getMockCorpusBundle().corpus
+    window.localStorage.setItem('deepvault_artifacts_filter', 'all')
 
     render(
       <ArtifactsPanel
@@ -273,6 +349,7 @@ describe('ArtifactsPanel', () => {
 
   it('uses the real worker error as the failed run summary and removes duplicate generic failures', () => {
     const corpus = getMockCorpusBundle().corpus
+    window.localStorage.setItem('deepvault_artifacts_filter', 'all')
 
     render(
       <ArtifactsPanel
@@ -335,6 +412,7 @@ describe('ArtifactsPanel', () => {
 
   it('hides diagnostics when a failed run only contains generic failure spam', () => {
     const corpus = getMockCorpusBundle().corpus
+    window.localStorage.setItem('deepvault_artifacts_filter', 'all')
 
     render(
       <ArtifactsPanel

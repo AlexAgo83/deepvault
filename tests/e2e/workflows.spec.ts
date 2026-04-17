@@ -45,7 +45,10 @@ test.describe('DeepVault workflows', () => {
     await openApp(page)
     await page.getByRole('button', { name: 'Settings', exact: true }).click()
 
-    const visibleSources = page.locator('.stat-card').filter({ hasText: 'Visible sources' }).locator('.stat-value')
+    const visibleSources = page
+      .locator('.sync-config-pill')
+      .filter({ has: page.locator('.sync-config-pill-label', { hasText: 'Visible sources' }) })
+      .locator('.sync-config-pill-value')
 
     await runtimeSelect(page, 'Role').selectOption('guest')
     await page.getByRole('button', { name: 'Knowledge', exact: true }).click()

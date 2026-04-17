@@ -67,8 +67,8 @@ describe('useBishopConversation', () => {
     window.sessionStorage.clear()
   })
 
-  it('loads an array payload from session storage and restores the seeded history', async () => {
-    window.sessionStorage.setItem(
+  it('loads an array payload from local storage and restores the seeded history', async () => {
+    window.localStorage.setItem(
       BISHOP_HISTORY_STORAGE_KEY,
       JSON.stringify([
         {
@@ -111,7 +111,7 @@ describe('useBishopConversation', () => {
       sources: [],
     }))
 
-    window.sessionStorage.setItem(
+    window.localStorage.setItem(
       BISHOP_HISTORY_STORAGE_KEY,
       JSON.stringify({
         messages,
@@ -126,7 +126,7 @@ describe('useBishopConversation', () => {
   })
 
   it('falls back to the seeded history when storage JSON is invalid', async () => {
-    window.sessionStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, '{"invalid":')
+    window.localStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, '{"invalid":')
 
     render(<BishopProbe />)
 
@@ -134,8 +134,8 @@ describe('useBishopConversation', () => {
     expect(screen.getByTestId('first')).toHaveTextContent('seed')
   })
 
-  it('migrates legacy bishop history from localStorage into sessionStorage', async () => {
-    window.localStorage.setItem(
+  it('migrates legacy bishop history from sessionStorage into localStorage', async () => {
+    window.sessionStorage.setItem(
       BISHOP_HISTORY_STORAGE_KEY,
       JSON.stringify([
         {
@@ -151,8 +151,8 @@ describe('useBishopConversation', () => {
     render(<BishopProbe />)
 
     await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('2'))
-    expect(window.localStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)).toBeNull()
-    expect(window.sessionStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)).toContain('Legacy answer')
+    expect(window.sessionStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)).toBeNull()
+    expect(window.localStorage.getItem(BISHOP_HISTORY_STORAGE_KEY)).toContain('Legacy answer')
   })
 
   it('keeps conversation context enabled by default and persists the toggle', async () => {
