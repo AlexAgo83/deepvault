@@ -1,10 +1,10 @@
 ## task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view - Orchestrate AI consumption observability and a sectioned AI View
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Proposed
+> Status: Done
 > Understanding: 98%
 > Confidence: 94%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references when you edit this doc.
@@ -85,10 +85,10 @@ stateDiagram-v2
 
 # Links
 - Product brief(s): `logics/product/prod_012_add_ai_consumption_observability_and_sectioned_ai_view.md`
-- Architecture decision(s): `adr_008_llm_provider_abstraction_for_openai_and_gemini`, `adr_011_observability_audit_and_answer_traceability`, `adr_014_deepvault_retrieval_ranking_quality_and_cost_policy`, `adr_015_deepvault_security_audit_logging_and_retention_boundaries`, `adr_017_bishop_llm_orchestration_after_local_grounding`
+- Architecture decision(s): `adr_008_llm_provider_abstraction_for_openai_and_gemini`, `adr_011_observability_audit_and_answer_traceability`, `adr_014_deepvault_retrieval_ranking_quality_and_cost_policy`, `adr_015_deepvault_security_audit_logging_and_retention_boundaries`, `adr_017_bishop_llm_orchestration_after_local_grounding`, `adr_031_local_ai_usage_event_store_and_sectioned_ai_view`
 - Derived from: `prod_012_add_ai_consumption_observability_and_sectioned_ai_view`
 - Request(s): (none yet)
-- Backlog item(s): (none yet)
+- Backlog item(s): `item_071_ship_ai_usage_store_and_sectioned_ai_view`
 - Task(s): (this orchestration task)
 
 # AI Context
@@ -111,4 +111,5 @@ stateDiagram-v2
 - [ ] Status moved to `Done` only when the first-wave usage contract, rollups, and sectioned AI View are complete, validated, and clearly bounded.
 
 # Report
-- Pending.
+- The app now persists bounded local usage events with explicit `provider`, `partial`, and `local` usage kinds.
+- `AI View` now ships the `Answered` and `Tokens` split with daily/hourly rollups and provider summaries.

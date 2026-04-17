@@ -29,9 +29,10 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('button', { name: 'Explorer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Bishop' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Knowledge' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Artifacts' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'AI View' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
-    expect(document.querySelectorAll('.nav-item-icon svg')).toHaveLength(5)
+    expect(document.querySelectorAll('.nav-item-icon svg')).toHaveLength(6)
     expect(screen.queryByRole('button', { name: 'Ask Bishop' })).not.toBeInTheDocument()
     expect(screen.queryByText(/Version 1\.0\.0/)).not.toBeInTheDocument()
     expect(screen.queryByText('State')).not.toBeInTheDocument()
@@ -850,7 +851,7 @@ describe('DeepVault app', () => {
     expect(sidebar).not.toBeNull()
 
     const navItems = sidebar!.querySelectorAll('.nav-item')
-    expect(navItems).toHaveLength(5)
+    expect(navItems).toHaveLength(6)
 
     for (const item of navItems) {
       const icon = item.querySelector('.nav-item-icon svg')
@@ -1063,6 +1064,9 @@ describe('DeepVault app', () => {
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Knowledge' }))
 
     await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Artifacts' }))
+
+    await user.tab()
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'AI View' }))
 
     await user.tab()
@@ -1074,8 +1078,8 @@ describe('DeepVault app', () => {
 
     render(<App />)
 
-    await screen.findByRole('button', { name: 'Config' })
-    expect(screen.getByRole('button', { name: 'Config' })).toHaveAttribute('aria-current', 'page')
+    await screen.findByRole('button', { name: 'Worker' })
+    expect(screen.getByRole('button', { name: 'Worker' })).toHaveAttribute('aria-current', 'page')
     expect(screen.getAllByRole('heading', { name: 'Recovery' }).length).toBeGreaterThan(0)
     expect(window.location.hash).toBe('#tab=sync&sync=config')
   })

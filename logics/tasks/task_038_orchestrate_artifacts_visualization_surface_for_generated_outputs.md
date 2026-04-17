@@ -1,10 +1,10 @@
 ## task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs - Orchestrate Artifacts visualization surface for generated outputs
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Proposed
+> Status: Done
 > Understanding: 96%
 > Confidence: 92%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references when you edit this doc.
@@ -84,10 +84,10 @@ stateDiagram-v2
 
 # Links
 - Product brief(s): `logics/product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md`
-- Architecture decision(s): `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_016_deepvault_persistence_and_storage_layout`, `adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts`
+- Architecture decision(s): `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_016_deepvault_persistence_and_storage_layout`, `adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts`, `adr_030_artifacts_surface_information_model_and_processed_record`
 - Derived from: `prod_011_add_an_artifacts_visualization_surface_for_generated_outputs`
 - Request(s): (none yet)
-- Backlog item(s): (none yet)
+- Backlog item(s): `item_070_ship_artifacts_inspection_surface`
 - Task(s): (this orchestration task)
 
 # AI Context
@@ -110,4 +110,5 @@ stateDiagram-v2
 - [ ] Status moved to `Done` only when the first-wave Artifacts surface and processed-file record are complete, validated, and clearly bounded.
 
 # Report
-- Pending.
+- The app now ships a top-level `Artifacts` surface with filtering, grouping, and list-plus-detail inspection.
+- Processed-file records expose identity, analysis state, derived outputs, and diagnostics blocks for debugging weak corpus behavior.

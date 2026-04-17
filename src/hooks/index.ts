@@ -1,4 +1,5 @@
 export * from './useAppModel'
+export * from './useAIUsage'
 export * from './useBishopConversation'
 export * from './useBishopSettings'
 export * from './useInstallPrompt'

@@ -25,6 +25,42 @@ function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((entry) => typeof entry === 'string')
 }
 
+function isSectionArray(value: unknown): boolean {
+  return Array.isArray(value)
+    && value.every(
+      (section) =>
+        isRecord(section) &&
+        typeof section.heading === 'string' &&
+        typeof section.content === 'string',
+    )
+}
+
+function isAnalysisLike(value: unknown): boolean {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  return (
+    (value.status === 'not_analyzed' ||
+      value.status === 'analyzed' ||
+      value.status === 'excluded' ||
+      value.status === 'failed' ||
+      value.status === 'stale') &&
+    typeof value.version === 'string' &&
+    (typeof value.provider === 'string' || typeof value.provider === 'undefined') &&
+    (typeof value.model === 'string' || typeof value.model === 'undefined') &&
+    (typeof value.analyzedAt === 'string' || typeof value.analyzedAt === 'undefined') &&
+    (typeof value.contentHash === 'string' || typeof value.contentHash === 'undefined') &&
+    (typeof value.summary === 'string' || typeof value.summary === 'undefined') &&
+    (typeof value.documentType === 'string' || typeof value.documentType === 'undefined') &&
+    (typeof value.confidence === 'number' || typeof value.confidence === 'undefined') &&
+    (typeof value.excludedReason === 'string' || typeof value.excludedReason === 'undefined') &&
+    (typeof value.failureReason === 'string' || typeof value.failureReason === 'undefined') &&
+    (typeof value.keywords === 'undefined' || isStringArray(value.keywords)) &&
+    (typeof value.sections === 'undefined' || isSectionArray(value.sections))
+  )
+}
+
 export function isCorpusLike(value: unknown): value is Corpus {
   if (!isRecord(value)) {
     return false
@@ -86,7 +122,9 @@ export function isCorpusLike(value: unknown): value is Corpus {
         isStringArray(document.tags) &&
         isStringArray(document.access) &&
         typeof document.source === 'string' &&
-        (typeof document.webUrl === 'string' || typeof document.webUrl === 'undefined'),
+        (typeof document.webUrl === 'string' || typeof document.webUrl === 'undefined') &&
+        (typeof document.sections === 'undefined' || isSectionArray(document.sections)) &&
+        (typeof document.analysis === 'undefined' || isAnalysisLike(document.analysis)),
     )
 }
 

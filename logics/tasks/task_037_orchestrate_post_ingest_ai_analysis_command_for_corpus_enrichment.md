@@ -1,10 +1,10 @@
 ## task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment - Orchestrate post-ingest AI analysis command for corpus enrichment
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Proposed
+> Status: Done
 > Understanding: 97%
 > Confidence: 93%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references when you edit this doc.
@@ -85,10 +85,10 @@ stateDiagram-v2
 
 # Links
 - Product brief(s): `logics/product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md`
-- Architecture decision(s): `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_014_deepvault_retrieval_ranking_quality_and_cost_policy`, `adr_016_deepvault_persistence_and_storage_layout`, `adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts`
+- Architecture decision(s): `adr_002_sharepoint_ingestion_and_sync_pipeline`, `adr_003_hybrid_knowledge_store_and_retrieval_model`, `adr_014_deepvault_retrieval_ranking_quality_and_cost_policy`, `adr_016_deepvault_persistence_and_storage_layout`, `adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts`, `adr_029_bound_post_ingest_analysis_contract_and_runtime_output`
 - Derived from: `prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment`
 - Request(s): (none yet)
-- Backlog item(s): (none yet)
+- Backlog item(s): `item_069_ship_bounded_post_ingest_analysis_command`
 - Task(s): (this orchestration task)
 
 # AI Context
@@ -111,4 +111,13 @@ stateDiagram-v2
 - [ ] Status moved to `Done` only when the bounded analysis command is complete, validated, and explicitly integrated into downstream usage.
 
 # Report
-- Pending.
+- `npm run analyze` now ships and writes additive `document.analysis` blocks to `data/runtime/analyzed-corpus.json`.
+- `npm run analyze` also emits `data/runtime/analyze-report.json` with bounded run metrics and heuristic token/cost estimates for routine operability checks.
+- Retrieval and source previews now prefer fresh analysis summaries/sections/keywords without removing baseline corpus fallback behavior.
+- `analyzeCorpusDocuments()` is now async and provider-backed: when `--provider anthropic|openai|gemini` is passed with a valid env API key, each candidate document gets a real provider call (structured JSON response: summary, keywords, sections, documentType, confidence). Falls back to the heuristic if the call fails or no key is present.
+- Without an API key the heuristic path runs unchanged — tests and local runs stay fast and deterministic.
+- Provider calls now return real token counts (`inputTokens`, `outputTokens`) from each API response (Anthropic SDK `.usage`, OpenAI `usage.prompt_tokens`/`completion_tokens`, Gemini `usageMetadata.promptTokenCount`/`candidatesTokenCount`).
+- These are accumulated per run and surfaced in `analyze-report.json` as `actualInputTokens`, `actualOutputTokens`, and `tokenCountMode: 'actual' | 'estimated'`.
+- When `tokenCountMode` is `'actual'`, the CLI output switches to actual counts; without a provider key it stays on estimates.
+- Wave 4 validation set added: 9 targeted tests covering binary exclusion, empty content, oversized files, weak extraction, priority file types, missing structure, budget cap, cross-run reuse, and estimated token mode. All 275 tests pass.
+- T37 is complete across all four waves.

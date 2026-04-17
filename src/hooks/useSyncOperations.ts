@@ -3,7 +3,7 @@ import { createWorkerClient, type WorkerEventStream } from '../lib/worker-client
 import type { WorkerSettings } from './useWorkerSettings'
 import { WORKER_SETTINGS_DEFAULTS } from './useWorkerSettings'
 
-export type SyncOperationKind = 'refresh' | 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
+export type SyncOperationKind = 'refresh' | 'ingest' | 'analyze' | 'evaluate' | 'export-live' | 'export-live-resume'
 export type SyncOperationStatus = 'running' | 'completed' | 'failed' | 'cancelled'
 export type SyncConsoleTone = 'muted' | 'normal' | 'success' | 'danger'
 
@@ -72,6 +72,12 @@ const LIVE_OP_DEFS = {
     label: 'Ingest',
     summary: 'Wrote a new local sync snapshot.',
     estimatedLines: 5,
+  },
+  analyze: {
+    command: 'npm run analyze',
+    label: 'Analyze',
+    summary: 'Wrote additive analysis blocks to the derived corpus artifact.',
+    estimatedLines: 25,
   },
   evaluate: {
     command: 'npm run evaluate',
@@ -156,7 +162,7 @@ const ACTIVE_JOB_SESSION_KEY = 'deepvault_active_job'
 const JOB_HISTORY_STORAGE_KEY = 'deepvault_sync_job_history'
 const MAX_JOB_LINES = 20
 
-type LiveOpKind = 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume'
+type LiveOpKind = 'ingest' | 'analyze' | 'evaluate' | 'export-live' | 'export-live-resume'
 
 interface PersistedActiveJob {
   serverJobId: string
@@ -172,7 +178,7 @@ function buildOperationEnv(kind: LiveOpKind, extraEnv: Record<string, string>): 
     env.DEEPVAULT_DATA_MODE = extraEnv.DEEPVAULT_DATA_MODE
   }
 
-  if (kind === 'evaluate') {
+  if (kind === 'evaluate' || kind === 'analyze') {
     if (extraEnv.OPENAI_API_KEY) env.OPENAI_API_KEY = extraEnv.OPENAI_API_KEY
     if (extraEnv.GEMINI_API_KEY) env.GEMINI_API_KEY = extraEnv.GEMINI_API_KEY
     if (extraEnv.ANTHROPIC_API_KEY) env.ANTHROPIC_API_KEY = extraEnv.ANTHROPIC_API_KEY
@@ -527,8 +533,8 @@ export function useSyncOperations({
     pushTimer(() => finalizeJob(jobId, 'completed', REFRESH_DEF.summary), totalDelay + 90)
   }, [activeScopeLabel, clearTimers, extraEnv.DEEPVAULT_DATA_MODE, finalizeJob, onRefreshCorpus, patchActiveJob, provider, refreshPolicy, restrictedSites, role, syncedSites, visibleDocs, pushTimer, workerSettings])
 
-  // Live operation — ingest, evaluate, export-live, and export-live-resume via the worker client.
-  const runLiveOperation = useCallback((kind: 'ingest' | 'evaluate' | 'export-live' | 'export-live-resume') => {
+  // Live operation — ingest, analyze, evaluate, export-live, and export-live-resume via the worker client.
+  const runLiveOperation = useCallback((kind: LiveOpKind) => {
     if (activeJobRef.current?.status === 'running') {
       return
     }
@@ -658,6 +664,7 @@ export function useSyncOperations({
 
   const startRefresh = useCallback(() => runRefresh(), [runRefresh])
   const startIngest = useCallback(() => runLiveOperation('ingest'), [runLiveOperation])
+  const startAnalyze = useCallback(() => runLiveOperation('analyze'), [runLiveOperation])
   const startEvaluate = useCallback(() => runLiveOperation('evaluate'), [runLiveOperation])
   const startExportLive = useCallback(() => runLiveOperation('export-live'), [runLiveOperation])
   const startExportLiveResume = useCallback(() => runLiveOperation('export-live-resume'), [runLiveOperation])
@@ -675,6 +682,7 @@ export function useSyncOperations({
     history: jobHistory,
     isRunning: activeJob?.status === 'running',
     lastCompletedJob,
+    startAnalyze,
     startEvaluate,
     startExportLive,
     startExportLiveResume,

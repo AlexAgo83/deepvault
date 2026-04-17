@@ -1,6 +1,7 @@
 export { BishopPanel } from './bishop-panel'
 export { createBishopExportHandlers } from './bishop-export'
 export { AIStatsPanel } from './ai-stats-panel'
+export { ArtifactsPanel } from './artifacts-panel'
 export { ExplorerPanel } from './explorer-panel'
 export { createExplorerExportHandlers } from './explorer-export'
 export { SettingsPanel } from './settings-panel'
