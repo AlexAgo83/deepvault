@@ -2656,6 +2656,36 @@ th {
   flex-shrink: 0;
 }
 
+.sync-config-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sync-config-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--text);
+  line-height: 1;
+}
+
+.sync-config-pill-label {
+  font-size: 0.76rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.sync-config-pill-value {
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
 .sync-ops-panel {
   display: grid;
   gap: 16px;
