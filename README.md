@@ -9,14 +9,46 @@
   <img src="https://img.shields.io/badge/live%20corpus-graph%20export-F97316" alt="Live corpus" />
 </p>
 
-DeepVault Nexus is the local command center for the DeepVault product family.
-It is designed to help you validate the experience end to end before a hosted backend exists.
+DeepVault is the RAG solution: it connects governed knowledge sources, builds retrieval-ready artifacts, and powers knowledge-grounded experiences across the product set.
+
+DeepVault Nexus is the web platform used to administer and validate that solution end to end before a hosted backend exists.
+It is the control surface for the DeepVault products, including `Navy`, `Bishop`, and the shared `Knowledge` / `Artifacts` / runtime administration flows that support them.
+
+```mermaid
+flowchart LR
+    A[Microsoft / SharePoint] --> B[Sélection sécurisée des emplacements]
+    B --> C[Indexation des fichiers en vecteurs]
+    C --> D[Ingestion heuristique]
+    D --> D1[Scoring]
+    D --> D2[Extraction de métadonnées]
+    D1 --> E[Knowledge]
+    D2 --> E[Knowledge]
+
+    E --> F[Navy<br/>Explorateur / moteur de recherche vectoriel]
+    E --> G[Bishop<br/>Assistant LLM connecté à la base de connaissance]
+
+    F --> H[Recherche / exploration des contenus]
+    G --> I[Réponses assistées par la base de connaissance]
+
+    E --> J[Audit qualité continu]
+    J --> J1[Pertinence des vecteurs]
+    J --> J2[Réglage des paramètres / température]
+
+    G --> K[Bishop suggère des améliorations]
+    F --> K[Navy suggère des améliorations]
+    K --> D
+
+    D --> L[Enrichissement progressif de la base]
+    L --> E
+    E --> M[De plus en plus d’informations disponibles pour Bishop & Navy]
+```
 
 It gives you:
 
 - `Explorer` for browsing sources and inspecting documents
 - `DeepVault - Bishop` for permission-aware grounded Q&A
-- `Sync status` for ingestion state, refresh timing, provenance, and the streamed operations console
+- `Knowledge` for coverage, visibility, refresh timing, provenance, and the streamed operations console
+- `Artifacts` for generated-output inspection, processed-file drill-down, and debugging generated records
 - `AI View` for response confidence, recent answers, and the inputs that would have helped
 - `Settings` for runtime scope, assistant-context tuning, persisted role selection, provider selection, and local API keys
 - a mock corpus for fast local work
@@ -33,7 +65,7 @@ This repo is intentionally local-first:
 - Provider API keys entered in `Settings` are browser-scoped local values persisted on the current device, not server-side secrets.
 - Bishop remote calls are made from the app runtime, so treat those keys as local development credentials only.
 - Worker jobs receive only the environment variables required for the selected operation instead of the full in-browser secret set.
-- Bishop conversation history is session-scoped and is cleared when the browser session ends unless you export it explicitly.
+- Bishop conversation history is persisted in `localStorage` on the current device and survives reloads and browser restarts until you clear it.
 - Prefer `.env.local` and CLI workflows for higher-trust live export and evaluation runs.
 
 ## What You Can Test
@@ -41,9 +73,12 @@ This repo is intentionally local-first:
 - document discovery and source inspection
 - grounded retrieval with source traces
 - role-based visibility
+- generated-output inspection through `Artifacts`
+- persisted `Artifacts` filter/grouping choices across reloads
 - local ingestion snapshots
 - live SharePoint export generation
 - live corpus loading in the browser
+- installable offline-capable PWA behavior and browser-driven refresh validation
 
 ## Requirements
 
@@ -91,7 +126,7 @@ npm run dev
 Open the Vite URL shown in the terminal.
 
 When the app opens, it shows a `Getting started` modal with the project vision and the main navigation areas.
-That modal now introduces `Explorer`, `Bishop`, `Sync status`, `AI View`, and `Settings`.
+That modal now introduces `Explorer`, `Bishop`, `Knowledge`, `Artifacts`, `AI View`, and `Settings`.
 
 If you want to use the live corpus file in the browser:
 
@@ -141,21 +176,29 @@ Use this when you want to work with the bundled mock corpus.
 - press `Enter` to send, or `Shift + Enter` to add a new line
 - optionally keep conversation context enabled so Bishop reuses previous turns
 - tune grounded source count, retrieval candidate pool, and reused history turns from `Settings -> Runtime -> Assistant context`
+- Bishop keeps answered history in local browser storage until you clear it
 - check the answer trace for sources, chunk count, token count, and latency
 
-### 4. Check sync status
+### 4. Check Knowledge
 
-- switch to `Sync status`
+- switch to `Knowledge`
 - verify site counts, visible docs, and refresh metadata
 - use the operations console to run refresh, ingest, or evaluation jobs and follow the streamed log
 
-### 5. Review AI View
+### 5. Inspect Artifacts
+
+- switch to `Artifacts`
+- the default filter opens on `Processed files`
+- filter and grouping selections persist across reloads on the same device
+- inspect processed-file records, derived outputs, provenance, and diagnostics for debugging
+
+### 6. Review AI View
 
 - switch to `AI View`
 - inspect recent Bishop responses with their confidence and status
 - review the recurring hints about what input would have improved the answer
 
-### 6. Run the local snapshot generators
+### 7. Run the local snapshot generators
 
 ```bash
 npm run ingest
@@ -165,7 +208,7 @@ npm run evaluate
 These commands validate the local mock corpus pipeline and the deterministic baseline.
 `npm run evaluate` explicitly ignores ambient provider API keys plus local `DEEPVAULT_DATA_MODE` / `DEEPVAULT_CORPUS_PATH` overrides so the mock baseline stays hermetic across developer machines and CI runners.
 
-### 7. Run the full local check
+### 8. Run the full local check
 
 ```bash
 npm run check
@@ -175,7 +218,7 @@ That runs lint, typecheck, tests, build, and the mock evaluation.
 `npm run check` is implemented in Node and is intended to run the same way on macOS, Linux, and Windows.
 The helper launcher used by `evaluate`, `ingest`, `export:live`, and `e2e` resolves the Windows `node_modules/.bin/*.cmd` shims explicitly and runs them through the Windows shell so those commands stay runnable on GitHub Actions Windows runners.
 
-### 8. Reproduce the CI lane locally
+### 9. Reproduce the CI lane locally
 
 ```bash
 npm run ci:local
@@ -368,4 +411,5 @@ These files can contain exported business content and should remain local.
 - If the browser still shows the mock corpus in live mode, confirm that `public/live-corpus.json` exists.
 - If the app does not switch to live data, make sure you started it with `VITE_DEEPVAULT_DATA_MODE=live`.
 - If `npm run export:live` keeps reusing old content, check whether you passed `--resume`; without it, the export should start fresh from the live sources.
+- If the browser keeps showing an older front-end build after a normal reload, validate with `npm run e2e -- tests/e2e/pwa-refresh.spec.ts` before assuming the issue is fixed.
 - If you want to reset the browser-side Playwright artifacts, delete `.playwright-cli/` locally. It is ignored by Git.
