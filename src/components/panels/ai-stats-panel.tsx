@@ -603,7 +603,7 @@ export function AIStatsPanel({
           </div>
         </article>
 
-        <article className="panel ai-stats-panel" aria-label="AI View section">
+        <article className={`panel ai-stats-panel ${section === 'tokens' ? 'ai-stats-panel-tokens' : ''}`} aria-label="AI View section">
           <SectionHeading
             title={section === 'answered' ? 'Answered' : 'Tokens'}
             subtitle={section === 'answered' ? 'Recent grounded response review and recurring quality gaps.' : 'Bounded usage KPIs, trends, and provider splits.'}

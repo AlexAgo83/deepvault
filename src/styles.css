@@ -2710,6 +2710,10 @@ th {
   overflow: hidden;
 }
 
+.ai-stats-panel-tokens {
+  gap: 8px;
+}
+
 .ai-stats-grid {
   flex: 1 1 auto;
   min-height: 0;
