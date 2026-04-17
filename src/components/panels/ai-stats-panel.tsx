@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CompactDateTime, PathLabel, Pill, SectionHeading, StatCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 
@@ -47,12 +47,35 @@ function TimelineViewIcon() {
 }
 
 function TokensTimelineGraph({ items, gradientId, ariaLabel }: { items: Array<{ label: string; total: number }>; gradientId: string; ariaLabel: string }) {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [width, setWidth] = useState(0)
+
+  useEffect(() => {
+    const node = containerRef.current
+    if (!node || typeof ResizeObserver === 'undefined') {
+      return
+    }
+
+    const updateWidth = () => {
+      setWidth((current) => {
+        const next = Math.round(node.getBoundingClientRect().width)
+        return current === next ? current : next
+      })
+    }
+
+    updateWidth()
+
+    const observer = new ResizeObserver(() => updateWidth())
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+
   const max = Math.max(...items.map((d) => d.total), 1)
-  const W = 280
-  const H = 130
+  const W = Math.max(width, 280)
+  const H = 160
   const padTop = 12
   const padBottom = 28
-  const padH = 6
+  const padH = 10
   const innerW = W - padH * 2
   const innerH = H - padTop - padBottom
   const pts = items.map((d, i) => ({
@@ -64,22 +87,24 @@ function TokensTimelineGraph({ items, gradientId, ariaLabel }: { items: Array<{ 
   const area = `${pts[0]?.x ?? padH},${padTop + innerH} ${line} ${pts[pts.length - 1]?.x ?? W - padH},${padTop + innerH}`
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="tokens-timeline-graph" aria-label={ariaLabel} preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.28" />
-          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.03" />
-        </linearGradient>
-      </defs>
-      <polygon points={area} fill={`url(#${gradientId})`} />
-      <polyline points={line} fill="none" stroke="var(--accent)" strokeWidth="1.75" strokeLinejoin="round" strokeLinecap="round" />
-      {pts.map((p) => (
-        <g key={p.label}>
-          <circle cx={p.x} cy={p.y} r="2.5" fill="var(--accent)" />
-          <text x={p.x} y={H - 8} textAnchor="middle" fontSize="9" fill="var(--muted)">{p.label}</text>
-        </g>
-      ))}
-    </svg>
+    <div ref={containerRef} className="tokens-timeline-shell">
+      <svg viewBox={`0 0 ${W} ${H}`} className="tokens-timeline-graph" aria-label={ariaLabel} preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.03" />
+          </linearGradient>
+        </defs>
+        <polygon points={area} fill={`url(#${gradientId})`} />
+        <polyline points={line} fill="none" stroke="var(--accent)" strokeWidth="1.75" strokeLinejoin="round" strokeLinecap="round" />
+        {pts.map((p) => (
+          <g key={p.label}>
+            <circle cx={p.x} cy={p.y} r="2.5" fill="var(--accent)" />
+            <text x={p.x} y={H - 8} textAnchor="middle" fontSize="9" fill="var(--muted)">{p.label}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
   )
 }
 
@@ -382,7 +407,7 @@ function TokensSection({
 
   return (
     <div className="ai-tokens-main">
-      <div className="kpi-grid compact">
+      <div className="kpi-grid compact ai-stats-kpi-grid">
         <StatCard label="Today input" value={aiUsageSummary.todayInput} note="Provider-backed input tokens logged today." />
         <StatCard label="Today output" value={aiUsageSummary.todayOutput} note="Provider-backed output tokens logged today." />
         <StatCard label="Today total" value={aiUsageSummary.todayTotal} note="Combined provider-backed token usage for today." />
@@ -390,7 +415,7 @@ function TokensSection({
       </div>
 
       <div className="detail-stack">
-        <div className="artifacts-detail-block">
+        <div className="artifacts-detail-block tokens-chart-block">
           <div className="tokens-trend-header">
             <strong>Daily trend</strong>
             <button
@@ -416,9 +441,12 @@ function TokensSection({
           </div>
           {hasDaily ? (
             tokensView === 'timeline' ? (
-              <TokensTimelineGraph items={dailyTimelineItems} gradientId="tl-fill-daily" ariaLabel="Daily token usage timeline" />
+              <div className="tokens-chart-surface">
+                <TokensTimelineGraph items={dailyTimelineItems} gradientId="tl-fill-daily" ariaLabel="Daily token usage timeline" />
+              </div>
             ) : (
-              <div className="usage-bars">
+              <div className="tokens-chart-surface">
+                <div className="usage-bars">
                 {aiUsageSummary.daily.map((item) => (
                   <div key={item.day} className="usage-bar-row">
                     <span>{item.day.slice(5)}</span>
@@ -426,6 +454,7 @@ function TokensSection({
                     <strong>{item.total}</strong>
                   </div>
                 ))}
+                </div>
               </div>
             )
           ) : (
@@ -433,7 +462,7 @@ function TokensSection({
           )}
         </div>
 
-        <div className="artifacts-detail-block">
+        <div className="artifacts-detail-block tokens-chart-block">
           <div className="tokens-trend-header">
             <strong>Hourly distribution</strong>
             <button
@@ -459,9 +488,12 @@ function TokensSection({
           </div>
           {activeHourly.length > 0 ? (
             hourlyView === 'timeline' ? (
-              <TokensTimelineGraph items={hourlyTimelineItems} gradientId="tl-fill-hourly" ariaLabel="Hourly token usage timeline" />
+              <div className="tokens-chart-surface">
+                <TokensTimelineGraph items={hourlyTimelineItems} gradientId="tl-fill-hourly" ariaLabel="Hourly token usage timeline" />
+              </div>
             ) : (
-              <div className="usage-bars">
+              <div className="tokens-chart-surface">
+                <div className="usage-bars">
                 {activeHourly.map((item) => (
                   <div key={item.hour} className="usage-bar-row">
                     <span>{`${String(item.hour).padStart(2, '0')}:00`}</span>
@@ -469,6 +501,7 @@ function TokensSection({
                     <strong>{item.total}</strong>
                   </div>
                 ))}
+                </div>
               </div>
             )
           ) : (
