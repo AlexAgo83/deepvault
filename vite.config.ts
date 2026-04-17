@@ -5,10 +5,12 @@ import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import packageJson from './package.json' with { type: 'json' }
 
 const WORKER_API_VERSION = '1.0.0'
 const MAX_OPS_JOB_LINES = 200
 const MAX_OPS_JOBS = 20
+const APP_BUILD_ID = new Date().toISOString()
 
 function isLoopbackAddress(address?: string | null): boolean {
   if (!address) {
@@ -20,7 +22,24 @@ function isLoopbackAddress(address?: string | null): boolean {
 }
 
 export default defineConfig({
+  define: {
+    __APP_BUILD_ID__: JSON.stringify(APP_BUILD_ID),
+    __APP_VERSION__: JSON.stringify(packageJson.version),
+  },
   plugins: [
+    {
+      name: 'app-build-info',
+      generateBundle() {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'build-info.json',
+          source: JSON.stringify({
+            buildId: APP_BUILD_ID,
+            version: packageJson.version,
+          }, null, 2),
+        })
+      },
+    },
     {
       name: 'ops-server',
       configureServer(server) {
@@ -306,8 +325,8 @@ export default defineConfig({
     },
     react(),
     VitePWA({
-      registerType: 'prompt',
-      injectRegister: 'auto',
+      registerType: 'autoUpdate',
+      injectRegister: 'inline',
       devOptions: {
         enabled: false,
       },
@@ -315,7 +334,9 @@ export default defineConfig({
       manifest: false,
       workbox: {
         clientsClaim: true,
-        globPatterns: ['**/*.{js,css,html,svg,webmanifest}'],
+        cleanupOutdatedCaches: true,
+        globPatterns: ['**/*.{js,css,svg,webmanifest}'],
+        navigateFallback: null,
         skipWaiting: true,
         runtimeCaching: [
           {
@@ -348,6 +369,16 @@ export default defineConfig({
   ],
   envPrefix: ['VITE_'],
   server: {
+    headers: {
+      'Cache-Control': 'no-store',
+    },
+    host: '0.0.0.0',
+    port: 4173,
+  },
+  preview: {
+    headers: {
+      'Cache-Control': 'no-store',
+    },
     host: '0.0.0.0',
     port: 4173,
   },

@@ -120,36 +120,13 @@ describe('PWA install prompt', () => {
   })
 })
 
-describe('PWA update banner', () => {
-  it('shows the update banner when a refresh is pending and hides it after update', async () => {
-    const user = userEvent.setup()
+describe('PWA auto update', () => {
+  it('does not expose a manual update banner or button when a refresh is pending', async () => {
     const mock = setPwaRegisterState(true)
     render(<App />)
 
-    expect(await screen.findByText('Une nouvelle version est disponible')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Mettre à jour' })).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: 'Mettre à jour' }))
-
-    expect(mock.updateServiceWorker).toHaveBeenCalledWith(true)
-    await waitFor(() => expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument())
-  })
-
-  it('keeps the update banner informational instead of exposing a dismiss action', async () => {
-    const user = userEvent.setup()
-    setPwaRegisterState(true)
-    render(<App />)
-
-    await screen.findByText('Une nouvelle version est disponible')
-    expect(screen.queryByRole('button', { name: 'Ignorer' })).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Mettre à jour' }))
-    await waitFor(() => expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument())
-  })
-
-  it('keeps the banner hidden when no refresh is pending', () => {
-    setPwaRegisterState(false)
-    render(<App />)
-
     expect(screen.queryByText('Une nouvelle version est disponible')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Mettre à jour' })).not.toBeInTheDocument()
+    await waitFor(() => expect(mock.updateServiceWorker).toHaveBeenCalledWith(true))
   })
 })

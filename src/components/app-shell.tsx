@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactElement } from 'react'
+import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { ErrorBoundary } from './error-boundary'
 import { CompactDateTime, Pill, StatCard } from './app-ui'
 import { GettingStartedModal } from './getting-started-modal'
@@ -6,7 +6,6 @@ import { useInstallPrompt, useTheme } from '../hooks'
 import type { Theme } from '../hooks/useTheme'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
 import { AIStatsPanel, ArtifactsPanel, BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
-import { version } from '../../package.json'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 type NavSection = {
@@ -187,17 +186,6 @@ function PwaInstallIcon() {
   )
 }
 
-function PwaUpdateIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M5.5 7.75A6 6 0 0 1 10 5.75c2.05 0 3.88 1 5 2.55" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M14.5 5.75v2.7h-2.7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M14.5 12.25A6 6 0 0 1 10 14.25c-2.05 0-3.88-1-5-2.55" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M5.5 14.25v-2.7h2.7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
 function InfoIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
@@ -250,14 +238,12 @@ function MenuIcon() {
 function AppSidebar({
   activeTab,
   canInstall,
-  hasPendingUpdate,
   install,
   isStandalone,
   isCollapsed,
   isMobileViewport,
   isMobileMenuOpen,
   theme,
-  update,
   onToggleSidebar,
   onTabChange,
   onToggleTheme,
@@ -265,7 +251,6 @@ function AppSidebar({
 }: {
   activeTab: AppTab
   canInstall: boolean
-  hasPendingUpdate: boolean
   install: () => Promise<void>
   isStandalone: boolean
   isCollapsed: boolean
@@ -276,8 +261,9 @@ function AppSidebar({
   onTabChange: (_tab: AppTab) => void
   onToggleTheme: () => void
   onRequestCloseMobileMenu: () => void
-  update: () => Promise<void>
 }) {
+  const appBuildLabel = __APP_BUILD_ID__.slice(0, 16).replace('T', ' ')
+
   return (
     <aside
       id="app-sidebar"
@@ -323,7 +309,7 @@ function AppSidebar({
         </div>
       ))}
 
-      {!isStandalone && (canInstall || hasPendingUpdate) ? (
+      {!isStandalone && canInstall ? (
         <div className="sidebar-section">
           <nav className="nav-list" aria-label="App actions">
             {!isStandalone && canInstall ? (
@@ -337,19 +323,6 @@ function AppSidebar({
                   <PwaInstallIcon />
                 </span>
                 <span className="nav-item-label">Installer l'app</span>
-              </button>
-            ) : null}
-            {hasPendingUpdate ? (
-              <button
-                type="button"
-                className="nav-item nav-item-action pwa-action-button"
-                title="Apply the latest app update"
-                onClick={() => void update()}
-              >
-                <span className="pwa-action-icon" aria-hidden="true">
-                  <PwaUpdateIcon />
-                </span>
-                <span className="nav-item-label">Mettre à jour</span>
               </button>
             ) : null}
           </nav>
@@ -372,7 +345,8 @@ function AppSidebar({
 
       <div className="sidebar-version" aria-label="App version">
         <span>Nexus</span>
-        <span>v{version}</span>
+        <span>v{__APP_VERSION__}</span>
+        <span>{appBuildLabel}</span>
         <span>© {new Date().getFullYear()}</span>
       </div>
     </aside>
@@ -614,7 +588,7 @@ export function AppShell(model: AppModel) {
   const { theme, toggleTheme } = useTheme()
   const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true })
   const hasPendingUpdate = needRefresh[0]
-  const [updateBannerDismissed, setUpdateBannerDismissed] = useState(false)
+  const isApplyingPwaUpdateRef = useRef(false)
   const [gettingStartedOpen, setGettingStartedOpen] = useState(true)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => localStorage.getItem('deepvault_sidebar_collapsed') === 'true')
   const [isMobileViewport, setIsMobileViewport] = useState<boolean>(() => readIsMobileViewport())
@@ -623,12 +597,6 @@ export function AppShell(model: AppModel) {
   const [pendingScrollTarget, setPendingScrollTarget] = useState<TopbarScrollTarget | null>(null)
   const [requestedSettingsView, setRequestedSettingsView] = useState<SettingsShortcutTarget>(null)
   const [statsHeaderState, setStatsHeaderState] = useState<StatsHeaderState>(() => readStatsHeaderState())
-
-  useEffect(() => {
-    if (!hasPendingUpdate) {
-      setUpdateBannerDismissed(false)
-    }
-  }, [hasPendingUpdate])
 
   useEffect(() => {
     localStorage.setItem('deepvault_sidebar_collapsed', String(isSidebarCollapsed))
@@ -669,6 +637,17 @@ export function AppShell(model: AppModel) {
   }, [statsHeaderState])
 
   useEffect(() => {
+    if (!hasPendingUpdate || isApplyingPwaUpdateRef.current) {
+      return
+    }
+
+    isApplyingPwaUpdateRef.current = true
+    void Promise.resolve(updateServiceWorker(true)).finally(() => {
+      isApplyingPwaUpdateRef.current = false
+    })
+  }, [hasPendingUpdate, updateServiceWorker])
+
+  useEffect(() => {
     if (!pendingScrollTarget) {
       return
     }
@@ -687,11 +666,6 @@ export function AppShell(model: AppModel) {
     }
     setPendingScrollTarget(null)
   }, [pendingScrollTarget, activeTab])
-
-  const updateApp = async () => {
-    await updateServiceWorker(true)
-    setUpdateBannerDismissed(true)
-  }
 
   const closeGettingStarted = () => {
     setGettingStartedOpen(false)
@@ -819,7 +793,6 @@ export function AppShell(model: AppModel) {
       <AppSidebar
         activeTab={activeTab}
         canInstall={installPrompt.canInstall}
-        hasPendingUpdate={hasPendingUpdate}
         install={installPrompt.install}
         isStandalone={installPrompt.isStandalone}
         isCollapsed={isSidebarCollapsed}
@@ -833,7 +806,6 @@ export function AppShell(model: AppModel) {
         }}
         onRequestCloseMobileMenu={closeMobileMenu}
         onToggleTheme={toggleTheme}
-        update={updateApp}
       />
 
       <main className={`main-content ${isKnowledgeTab ? 'main-content-knowledge' : ''}`}>
@@ -857,15 +829,6 @@ export function AppShell(model: AppModel) {
           showStatsHeaders={currentStatsHeadersVisible}
           showStatsToggle={showStatsToggle}
         />
-
-        {hasPendingUpdate && !updateBannerDismissed ? (
-          <section className="update-banner" aria-live="polite">
-            <div className="update-banner-copy">
-              <strong>Une nouvelle version est disponible</strong>
-              <span>Le bouton de mise à jour se trouve dans le menu.</span>
-            </div>
-          </section>
-        ) : null}
 
         {isKnowledgeTab ? (
           <div className="knowledge-body">

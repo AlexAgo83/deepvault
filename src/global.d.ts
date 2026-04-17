@@ -1,5 +1,8 @@
 /// <reference types="vite/client" />
 
+declare const __APP_BUILD_ID__: string
+declare const __APP_VERSION__: string
+
 interface ImportMetaEnv {
   readonly VITE_BISHOP_LLM_ENDPOINT?: string
   readonly VITE_BISHOP_MODEL?: string
