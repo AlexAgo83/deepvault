@@ -7,7 +7,7 @@ import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 import { formatDuration } from './sync-panel-utils'
 
 type OpsKey = 'ingest' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
-export type SyncView = 'status' | 'operations' | 'history' | 'config' | 'recovery'
+export type SyncView = 'status' | 'operations' | 'history' | 'config'
 
 const SYNC_VIEW_PARAM = 'sync'
 
@@ -57,14 +57,16 @@ const SYNC_VIEWS: { id: SyncView; label: string; detail: string }[] = [
   { id: 'status', label: 'Status', detail: 'Coverage, freshness, and scope signals' },
   { id: 'operations', label: 'Operations', detail: 'Launch ingest, evaluate, refresh, or sync' },
   { id: 'history', label: 'History', detail: 'Recent runs and evaluation prep' },
-  { id: 'config', label: 'Config', detail: 'Worker mode, fallback, and timeout' },
-  { id: 'recovery', label: 'Recovery', detail: 'Failed runs and recovery guidance' },
+  { id: 'config', label: 'Worker', detail: 'Worker mode, fallback, and timeout' },
 ]
 
 function parseSyncView(hash: string): SyncView {
   const search = hash.startsWith('#') ? hash.slice(1) : hash
   const value = new URLSearchParams(search).get(SYNC_VIEW_PARAM)
-  if (value === 'operations' || value === 'history' || value === 'config' || value === 'recovery') {
+  if (value === 'recovery') {
+    return 'config'
+  }
+  if (value === 'operations' || value === 'history' || value === 'config') {
     return value
   }
   return 'status'
@@ -80,6 +82,21 @@ function getJobTone(status: string) {
   if (status === 'completed') return 'success'
   if (status === 'failed' || status === 'cancelled') return 'danger'
   return 'accent'
+}
+
+function formatHistoryLog(
+  lines: AppModel['syncOperations']['history'][number]['lines'],
+  fallbackCommand: string,
+  maxLines: number,
+): string {
+  if (!lines.length) {
+    return `$ ${fallbackCommand}`
+  }
+
+  return lines
+    .slice(-maxLines)
+    .map((line) => `${formatUpdatedAt(line.timestamp)}  ${line.text}`)
+    .join('\n')
 }
 
 function RefreshIcon() {
@@ -133,6 +150,50 @@ function EvaluateIcon() {
   )
 }
 
+function StatusViewIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.25 10.5 8 13.25l6.75-6.75" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  )
+}
+
+function OperationsViewIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5 6.75h10M5 10h10M5 13.25h6.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="14.5" cy="13.25" r="1.25" fill="currentColor" />
+    </svg>
+  )
+}
+
+function HistoryViewIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M10 5.25v4.75l3 1.75" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5.75 6.25H3.75v-2" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4.1 9.25A6 6 0 1 1 6 13.8" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function WorkerViewIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <rect x="4.5" y="5.25" width="11" height="9.5" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M7.5 8.5h5M7.5 11.5h3.25" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function getSyncViewIcon(view: SyncView) {
+  if (view === 'status') return <StatusViewIcon />
+  if (view === 'operations') return <OperationsViewIcon />
+  if (view === 'history') return <HistoryViewIcon />
+  return <WorkerViewIcon />
+}
+
 export function SyncPanel({
   scopedCorpusSummary,
   scopedSiteSummaries,
@@ -152,6 +213,7 @@ export function SyncPanel({
   const [pendingOp, setPendingOp] = useState<OpsKey | null>(null)
   const [elapsed, setElapsed] = useState<number>(0)
   const [syncView, setSyncView] = useState<SyncView>(() => parseSyncView(window.location.hash))
+  const [historyLogLineLimit, setHistoryLogLineLimit] = useState<10 | 20 | 50>(20)
 
   useEffect(() => {
     if (currentJob?.status !== 'running') {
@@ -225,13 +287,9 @@ export function SyncPanel({
         <div className="sync-view-switcher-head">
           <div>
             <h2>Knowledge View</h2>
-            <p>Switch between coverage, execution, history, worker settings, and recovery from one view.</p>
+            <p>Switch between coverage, execution, history, and worker settings from one view.</p>
           </div>
           <div className="sync-view-switcher-meta" aria-label="Current sync view summary">
-            <div className="sync-view-switcher-meta-card">
-              <span>Active view</span>
-              <strong>{currentViewMeta.label}</strong>
-            </div>
             <div className="sync-view-switcher-meta-card">
               <span>Last job</span>
               <strong>{currentJob ? currentJob.status : 'idle'}</strong>
@@ -250,14 +308,16 @@ export function SyncPanel({
               title={detail}
               onClick={() => setSyncView(id)}
             >
-              <span className="sync-subnav-label">{label}</span>
+              <span className="sync-subnav-title-row">
+                <span className="sync-subnav-icon" aria-hidden="true">{getSyncViewIcon(id)}</span>
+                <span className="sync-subnav-label">{label}</span>
+              </span>
               <span className="sync-subnav-detail">{detail}</span>
               <span className="sync-subnav-status">
                 {id === 'operations' && syncOperations.isRunning ? 'Running' : null}
                 {id === 'history' && syncOperations.history.length > 0 ? `${syncOperations.history.length} runs` : null}
                 {id === 'status' && currentJob ? currentJob.status : null}
                 {id === 'config' ? workerSettings.workerMode : null}
-                {id === 'recovery' && failedJobs.length > 0 ? `${failedJobs.length} failed` : null}
               </span>
             </button>
           ))}
@@ -474,7 +534,25 @@ export function SyncPanel({
       {/* History view — run list */}
       {syncView === 'history' ? (
         <article className="panel sync-view-panel" aria-label="Sync run history">
-          <SectionHeading title="Run history" subtitleTooltip="Recent sync jobs and their results. Hover each run for the full note." />
+          <SectionHeading
+            title="Run history"
+            subtitleTooltip="Recent sync jobs and their results. Hover each run for the full note."
+            actions={(
+              <div className="sync-history-limit-picker" aria-label="Terminal log line limit">
+                {[10, 20, 50].map((limit) => (
+                  <button
+                    key={limit}
+                    type="button"
+                    className={`sync-history-limit-button ${historyLogLineLimit === limit ? 'sync-history-limit-button-active' : ''}`}
+                    aria-pressed={historyLogLineLimit === limit}
+                    onClick={() => setHistoryLogLineLimit(limit as 10 | 20 | 50)}
+                  >
+                    {limit}
+                  </button>
+                ))}
+              </div>
+            )}
+          />
 
           <div className="sync-list">
             {syncOperations.history.length ? (
@@ -485,11 +563,34 @@ export function SyncPanel({
                     <Pill tone={getJobTone(job.status)}>{job.status}</Pill>
                   </div>
                   <div className="sync-history-meta">
-                    <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
-                    <span>{job.progress}%</span>
-                    {job.durationMs != null ? <span>{formatDuration(job.durationMs)}</span> : null}
+                    <span className="sync-history-meta-time">
+                      {job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}
+                    </span>
+                    <div className="sync-history-meta-stats">
+                      <span className="sync-history-stat">
+                        <span className="sync-history-stat-label">Progress</span>
+                        <strong>{job.progress}%</strong>
+                      </span>
+                      {job.durationMs != null ? (
+                        <span className="sync-history-stat">
+                          <span className="sync-history-stat-label">Duration</span>
+                          <strong>{formatDuration(job.durationMs)}</strong>
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
-                  <code className="sync-history-command">{job.command}</code>
+                  <details className="sync-history-details">
+                    <summary className="sync-history-details-summary">
+                      <span>Terminal log</span>
+                      <span className="sync-history-details-toggle">
+                        <span className="sync-history-details-toggle-show">Show</span>
+                        <span className="sync-history-details-toggle-hide">Hide</span>
+                      </span>
+                    </summary>
+                    <pre className="sync-history-log">
+                      <code>{formatHistoryLog(job.lines || [], job.command, historyLogLineLimit)}</code>
+                    </pre>
+                  </details>
                   <p>{job.summary}</p>
                 </article>
               ))
@@ -513,7 +614,7 @@ export function SyncPanel({
         </article>
       ) : null}
 
-      {/* Config view — worker connection read-only + effective config */}
+      {/* Config view — worker connection read-only + recovery guidance */}
       {syncView === 'config' ? (
         <article className="panel sync-view-panel" aria-label="Worker configuration">
           <SectionHeading title="Worker config" subtitleTooltip="Active worker connection and fallback settings. Edit in Settings → Worker." />
@@ -548,13 +649,6 @@ export function SyncPanel({
               <p>Update connection settings in <strong>Settings → Worker</strong>.</p>
             </div>
           )}
-
-        </article>
-      ) : null}
-
-      {/* Recovery view — failure guidance and last failed operations */}
-      {syncView === 'recovery' ? (
-        <article className="panel sync-view-panel" aria-label="Recovery guidance">
           <SectionHeading title="Recovery" subtitleTooltip="Guidance for failed operations and unreachable workers." />
 
           {failedJobs.length > 0 ? (

@@ -530,7 +530,7 @@ describe('DeepVault app', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'History' }))
     expect(screen.getByText('Run history')).toBeInTheDocument()
-    expect(screen.getAllByText('npm run ingest').length).toBeGreaterThan(0)
+    expect(screen.getAllByText((_, element) => element?.textContent?.includes('Starting local ingestion pipeline...') === true).length).toBeGreaterThan(0)
   })
 
   it('marks job as failed when SSE connection errors', async () => {
@@ -1070,16 +1070,13 @@ describe('DeepVault app', () => {
   })
 
   it('restores the sync recovery view from the location hash and keeps it shareable', async () => {
-    const user = userEvent.setup()
     window.location.hash = '#tab=sync&sync=recovery'
 
     render(<App />)
 
-    await screen.findByRole('button', { name: 'Recovery' })
-    expect(screen.getByRole('button', { name: 'Recovery' })).toHaveAttribute('aria-current', 'page')
-    expect(screen.getByRole('heading', { name: 'Recovery' })).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: 'Config' }))
+    await screen.findByRole('button', { name: 'Config' })
+    expect(screen.getByRole('button', { name: 'Config' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getAllByRole('heading', { name: 'Recovery' }).length).toBeGreaterThan(0)
     expect(window.location.hash).toBe('#tab=sync&sync=config')
   })
 

@@ -40,6 +40,8 @@
 | [prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar](product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md) | Add a discrete light and dark theme switch in the sidebar | Proposed |  | product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md |
 | [prod_008_make_ingestion_and_live_export_operable_across_app_and_cli](product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md) | Make ingestion and live export operable across app and CLI | Proposed |  | product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md |
 | [prod_009_enable_bishop_generated_document_artifacts](product/prod_009_enable_bishop_generated_document_artifacts.md) | Enable Bishop generated document artifacts | Active |  | product/prod_009_enable_bishop_generated_document_artifacts.md |
+| [prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment](product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Add a post-ingest AI analysis command for corpus enrichment | Proposed |  | product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
+| [prod_011_add_an_artifacts_visualization_surface_for_generated_outputs](product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md) | Add an Artifacts visualization surface for generated outputs | Proposed |  | product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md |
 
 ## Requests
 

@@ -102,13 +102,6 @@ export function SettingsPanel({
               >
                 <span className="sync-subnav-label">{label}</span>
                 <span className="sync-subnav-detail">{detail}</span>
-                <span className="sync-subnav-status">
-                  {id === 'runtime' ? role : null}
-                  {id === 'assistant-context' ? `${bishopSettings.sourceLimit} src` : null}
-                  {id === 'sharepoint' ? (entraSettings.appId && entraSettings.tenantId ? 'Configured' : 'Missing fields') : null}
-                  {id === 'ai-providers' ? 'Local keys' : null}
-                  {id === 'worker' ? workerSettings.workerMode : null}
-                </span>
               </button>
             ))}
           </nav>

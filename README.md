@@ -267,6 +267,48 @@ npm run evaluate:live -- --input public/live-corpus.json
 Those commands validate the generated live JSON as an input artifact.
 Use `--strict` with `npm run evaluate:live` when you want the quality gate to fail the command if the pass rate falls below the configured threshold.
 
+### Live sync operational flow
+
+After `Start Sync` finishes, the app has produced the live corpus and checkpoint, but the follow-up steps remain explicit operations:
+
+```mermaid
+flowchart TD
+    A[Start Sync] --> B[Connect to Microsoft Graph]
+    B --> C[Export SharePoint documents and metadata]
+    C --> D[Write public/live-corpus.json]
+    C --> E[Write data/runtime/live-export-checkpoint.json]
+
+    D --> F{What do you want next?}
+    E --> J[Resume Sync later if you want a delta export]
+
+    F --> G[Refresh]
+    G --> G1[Reload live corpus in the app]
+    G1 --> G2[Update Explorer, Bishop, Knowledge, and AI View with the latest live data]
+
+    F --> H[Ingest]
+    H --> H1[Read public/live-corpus.json]
+    H1 --> H2[Build sync overview and corpus summary]
+    H2 --> H3[Write data/runtime/sync-state.live.json]
+
+    F --> I[Evaluate]
+    I --> I1[Read public/live-corpus.json]
+    I1 --> I2[Run evaluation queries through Bishop orchestration]
+    I2 --> I3[Compute pass rate and quality gate]
+    I3 --> I4[Write data/eval/v1_baseline_DATE.live.json]
+
+    G2 --> K[Continue using the app on the fresh live corpus]
+    H3 --> K
+    I4 --> L[Review evaluation results and decide whether the live corpus quality is acceptable]
+    J --> A
+```
+
+Recommended manual sequence after a full live sync:
+
+- `Start Sync` to generate the latest live corpus
+- `Refresh` to load that corpus into the current UI session
+- `Ingest` to write the derived live sync snapshot
+- `Evaluate` to validate retrieval quality on the exported live corpus
+
 ## Validation
 
 Recommended validation sequence:
