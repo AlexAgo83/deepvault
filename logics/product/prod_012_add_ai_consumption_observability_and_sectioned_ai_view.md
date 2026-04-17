@@ -3,7 +3,7 @@
 > Status: Proposed
 > Related request: (none yet)
 > Related backlog: (none yet)
-> Related task: (none yet)
+> Related task: `logics/tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md`
 > Related architecture: `logics/architecture/adr_008_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/architecture/adr_011_observability_audit_and_answer_traceability.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`, `logics/architecture/adr_017_bishop_llm_orchestration_after_local_grounding.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the first wave focused on bounded usage visibility rather than building a full analytics suite.
 
