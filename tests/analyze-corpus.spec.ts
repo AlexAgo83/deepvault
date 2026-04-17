@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getMockCorpusBundle } from '../src/data/corpus'
 import type { Corpus, CorpusDocument } from '../src/lib/deepvault'
 import { analyzeCorpusDocuments, buildAnalysisRunReport } from '../scripts/analyze-corpus'
@@ -74,6 +74,10 @@ describe('analyze corpus script helpers', () => {
         selectionReasons: { priority_file_type: 4 },
         actualInputTokens: 0,
         actualOutputTokens: 0,
+        providerAttempts: 0,
+        providerSuccesses: 0,
+        providerFallbacks: 0,
+        providerFailureReasons: {},
       },
     })
 
@@ -90,6 +94,10 @@ describe('analyze corpus script helpers', () => {
     expect(report.actualOutputTokens).toBe(0)
     expect(report.tokenCountMode).toBe('estimated')
   })
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
 })
 
 describe('analyze corpus Wave 4 — difficult-file validation', () => {
@@ -217,5 +225,135 @@ describe('analyze corpus Wave 4 — difficult-file validation', () => {
     expect(report.actualOutputTokens).toBe(0)
     expect(report.tokenCountMode).toBe('estimated')
     expect(report.estimatedInputTokens).toBeGreaterThan(0)
+  })
+
+  it('emits progress snapshots while analyzing documents', async () => {
+    const snapshots: Array<{ analyzed: number; elapsedMs: number; selected: number }> = []
+    const corpus = makeCorpus([
+      makeDoc({ id: 'prog-1', path: 'a.pdf', fileType: 'pdf' }),
+      makeDoc({ id: 'prog-2', path: 'b.pdf', fileType: 'pdf' }),
+    ])
+
+    const result = await analyzeCorpusDocuments(corpus, {
+      mode: 'all',
+      provider: 'local',
+      model: 'heuristic-v1',
+      limit: 5,
+      onProgress: (snapshot) => {
+        snapshots.push({
+          analyzed: snapshot.analyzed,
+          elapsedMs: snapshot.elapsedMs,
+          selected: snapshot.selected,
+        })
+      },
+    })
+
+    expect(result.metrics.analyzed).toBe(2)
+    expect(snapshots.length).toBeGreaterThan(0)
+    expect(snapshots.at(-1)).toEqual(expect.objectContaining({ analyzed: 2, selected: 2 }))
+    expect(snapshots.every((snapshot) => snapshot.elapsedMs >= 0)).toBe(true)
+  })
+
+  it('marks provider-backed analysis as a real provider success and records actual tokens', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        output_text: JSON.stringify({
+          summary: 'Provider summary',
+          keywords: ['provider', 'analysis'],
+          sections: [{ heading: 'Overview', content: 'Provider generated section.' }],
+          documentType: 'report',
+          confidence: 88,
+        }),
+        usage: {
+          input_tokens: 123,
+          output_tokens: 45,
+        },
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const corpus = makeCorpus([makeDoc({ id: 'prov-1', path: 'provider.pdf', fileType: 'pdf' })])
+    const result = await analyzeCorpusDocuments(corpus, {
+      mode: 'all',
+      provider: 'openai',
+      model: 'gpt-5.4-mini',
+      limit: 5,
+      apiKey: 'sk-test',
+    })
+    const analysis = result.documents[0]?.analysis
+
+    expect(analysis?.provider).toBe('openai')
+    expect(analysis?.requestedProvider).toBe('openai')
+    expect(analysis?.providerStatus).toBe('provider')
+    expect(analysis?.model).toBe('gpt-5.4-mini')
+    expect(analysis?.requestedModel).toBe('gpt-5.4-mini')
+    expect(analysis?.fallbackReason).toBeUndefined()
+    expect(result.metrics.actualInputTokens).toBe(123)
+    expect(result.metrics.actualOutputTokens).toBe(45)
+    expect(result.metrics.providerAttempts).toBe(1)
+    expect(result.metrics.providerSuccesses).toBe(1)
+    expect(result.metrics.providerFallbacks).toBe(0)
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.openai.com/v1/responses',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ authorization: 'Bearer sk-test' }),
+      }),
+    )
+  })
+
+  it('falls back to local analysis with an explicit reason when the provider response is unusable', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 429,
+      json: async () => ({
+        error: {
+          code: 'rate_limit_exceeded',
+          type: 'request_error',
+          message: 'Too many requests',
+        },
+      }),
+    }))
+
+    const corpus = makeCorpus([makeDoc({ id: 'fb-1', path: 'fallback.pdf', fileType: 'pdf' })])
+    const result = await analyzeCorpusDocuments(corpus, {
+      mode: 'all',
+      provider: 'openai',
+      model: 'gpt-5.4-mini',
+      limit: 5,
+      apiKey: 'sk-test',
+    })
+    const analysis = result.documents[0]?.analysis
+    const report = buildAnalysisRunReport({
+      corpusMode: 'test',
+      corpusPath: '/tmp/in.json',
+      outputPath: '/tmp/out.json',
+      provider: 'openai',
+      model: 'gpt-5.4-mini',
+      selectionMode: 'all',
+      limit: 5,
+      metrics: result.metrics,
+    })
+
+    expect(analysis?.provider).toBe('local')
+    expect(analysis?.requestedProvider).toBe('openai')
+    expect(analysis?.model).toBe('heuristic-v1')
+    expect(analysis?.requestedModel).toBe('gpt-5.4-mini')
+    expect(analysis?.providerStatus).toBe('fallback')
+    expect(analysis?.fallbackReason).toBe('http_429:rate_limit_exceeded|request_error|Too many requests')
+    expect(result.metrics.actualInputTokens).toBe(0)
+    expect(result.metrics.actualOutputTokens).toBe(0)
+    expect(result.metrics.providerAttempts).toBe(1)
+    expect(result.metrics.providerSuccesses).toBe(0)
+    expect(result.metrics.providerFallbacks).toBe(1)
+    expect(result.metrics.providerFailureReasons['http_429:rate_limit_exceeded|request_error|Too many requests']).toBe(1)
+    expect(report.providerFallbacks).toBe(1)
+    expect(report.providerFailureReasons['http_429:rate_limit_exceeded|request_error|Too many requests']).toBe(1)
+    expect(report.tokenCountMode).toBe('estimated')
+    expect(warn).toHaveBeenCalledWith(
+      'Provider fallback for fallback.pdf: requested openai/gpt-5.4-mini, using local heuristic (http_429:rate_limit_exceeded|request_error|Too many requests).',
+    )
   })
 })

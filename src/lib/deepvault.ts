@@ -46,7 +46,9 @@ export interface DocumentAnalysis {
   status: AnalysisStatus
   version: string
   provider?: string
+  requestedProvider?: string
   model?: string
+  requestedModel?: string
   analyzedAt?: string
   contentHash?: string
   summary?: string
@@ -54,8 +56,10 @@ export interface DocumentAnalysis {
   sections?: CorpusSection[]
   documentType?: string
   confidence?: number
+  providerStatus?: 'local' | 'provider' | 'fallback'
   excludedReason?: string
   failureReason?: string
+  fallbackReason?: string
 }
 
 export interface CorpusDocument {
