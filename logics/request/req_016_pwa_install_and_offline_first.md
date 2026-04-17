@@ -10,7 +10,7 @@
 
 # Needs
 - Rendre DeepVault Nexus installable comme application native sur desktop et mobile via le bouton "Installer l'app" affiché en haut de l'interface.
-- Afficher un bandeau de mise à jour discret lorsqu'une nouvelle version du service worker est disponible, avec un bouton "Mettre à jour" qui recharge immédiatement.
+- Appliquer automatiquement une nouvelle version du service worker dès qu'elle est détectée, sans forcer un hard refresh manuel pour sortir d'un build périmé.
 - Faire fonctionner l'app en mode hors-ligne pour le corpus mock : les assets, le corpus bundlé et l'UI doivent rester disponibles sans réseau.
 - Utiliser `vite-plugin-pwa` (Workbox) pour générer le service worker et le manifeste automatiquement à chaque build.
 - Ajouter un fichier `public/manifest.webmanifest` avec icônes, thème et couleurs alignés sur la charte DeepVault.
@@ -22,7 +22,7 @@
 - Le mode live (Graph API) reste réseau-dépendant par nature ; le fallback offline doit gracieusement revenir au corpus mock si le live n'est pas disponible.
 - `vite-plugin-pwa` est le standard de facto pour Vite/React PWA — il intègre Workbox, génère le manifeste et expose un hook `useRegisterSW` pour gérer les mises à jour.
 - Le bouton "Installer" doit capter l'événement `beforeinstallprompt` du navigateur et le déclencher sur clic.
-- Le bandeau de mise à jour doit apparaître dès que `needRefresh` est `true` (nouveau service worker en attente) et disparaître après acceptation ou rejet.
+- Si une nouvelle version du service worker est détectée, l'app doit l'activer automatiquement pour éviter de rester bloqué sur un shell HTML obsolète.
 - L'UX doit rester discrète : pas de modale bloquante, pas de notification intrusive.
 
 ```mermaid
@@ -36,7 +36,7 @@ flowchart TD
 
 # Acceptance criteria
 - AC1: L'app affiche un bouton "Installer" dans le header lorsque le navigateur expose `beforeinstallprompt` ; cliquer dessus déclenche l'invite d'installation native. Le bouton est masqué si l'app est déjà installée ou si le navigateur ne supporte pas l'API.
-- AC2: Lorsqu'une nouvelle version du service worker est disponible, un bandeau non-bloquant apparaît avec un bouton "Mettre à jour" ; cliquer recharge la page et active la nouvelle version. Le bandeau peut être fermé sans mettre à jour.
+- AC2: Lorsqu'une nouvelle version du service worker est disponible, l'app l'active automatiquement et recharge sans exiger un hard refresh manuel.
 - AC3: En mode hors-ligne (réseau coupé), l'app se charge complètement depuis le cache service worker et le corpus mock reste interrogeable via Explorer et Bishop.
 - AC4: Si le corpus live est sélectionné mais que le réseau est absent, l'app bascule silencieusement vers le corpus mock avec un indicateur visuel "Offline — corpus mock actif".
 - AC5: Le manifeste définit `name`, `short_name`, `theme_color`, `background_color`, `display: standalone`, et au moins deux tailles d'icônes (192×192 et 512×512) cohérentes avec la charte DeepVault.
@@ -56,7 +56,7 @@ flowchart TD
 - Manifeste (`public/manifest.webmanifest`) avec icônes
 - Composant `<InstallButton>` dans le header (capter `beforeinstallprompt`)
 - Composant `<UpdateBanner>` via `useRegisterSW` (hook `vite-plugin-pwa`)
-- Stratégie de cache : assets statiques + corpus mock en CacheFirst, Graph en NetworkFirst
+- Stratégie de cache : assets fingerprintés en CacheFirst, navigations HTML en NetworkFirst, Graph/live corpus en NetworkFirst
 - Fallback offline vers corpus mock avec indicateur visuel
 - Tests E2E Playwright : vérification que l'app charge hors-ligne
 
@@ -89,5 +89,8 @@ flowchart TD
 - Skip when: Skip when the work targets Bishop orchestration, corpus data models, or Graph export logic.
 
 # Report
-- The PWA request is fully delivered: install button, update banner, offline mock fallback, Workbox cache strategy, and offline Playwright coverage are implemented and validated.
+- The PWA request is fully delivered: install button, automatic service-worker activation, offline mock fallback, Workbox cache strategy, and offline Playwright coverage are implemented and validated.
+- Post-delivery hardening removed the cached HTML shell fallback from the service worker and serves navigations with `NetworkFirst` so a standard refresh no longer sticks to an obsolete build.
+- Additional hardening now emits `build-info.json` on each build and makes the app compare the embedded build id against the latest server build on startup; if they differ, the app forces a cache-busted navigation to the newer build instead of staying on a stale document until a hard refresh.
+- Local development now clears existing service-worker registrations and Cache Storage before boot so an old PWA registration on the same localhost origin cannot keep serving stale content until a hard refresh.
 - The request is now closed after Wave 4 completed and the linked backlog items and task were marked `Done`.

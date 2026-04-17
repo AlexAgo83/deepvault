@@ -11,7 +11,7 @@
 
 # Context
 - Orchestrate les quatre waves PWA issues de `req_016_pwa_install_and_offline_first`.
-- Ces waves rendent DeepVault Nexus installable en tant qu'application native, maintenable via un bandeau de mise à jour, et fonctionnelle hors-ligne en mode mock.
+- Ces waves rendent DeepVault Nexus installable en tant qu'application native, maintenable via activation automatique des mises à jour du service worker, et fonctionnelle hors-ligne en mode mock.
 - Recommended wave order :
   1. `item_055_pwa_vite_plugin_and_workbox_setup` — fondation PWA bloquante (plugin, manifeste, SW, stratégie cache)
   2. `item_056_pwa_install_button_in_header` — bouton Install dans le header
@@ -106,7 +106,10 @@ stateDiagram-v2
 - Wave 1 validated: `rtk npm run build` generated `dist/sw.js` and `rtk npm run check` passed.
 - Wave 2 completed: the header now captures `beforeinstallprompt`, shows an install button when the app is installable, and hides it in standalone mode or when the API is unavailable.
 - Wave 2 validated: `rtk npm run test -- tests/pwa.spec.tsx tests/app.spec.tsx`, `rtk npm run typecheck`, and `rtk npm run lint` passed.
-- Wave 3 completed: the shell now shows a non-blocking update banner when a refresh is pending, with update and dismiss actions.
+- Wave 3 completed, then was hardened further: the shell now auto-applies a pending service-worker update instead of waiting for a manual banner action.
+- Post-delivery hardening also removed the generated cached `index.html` navigation fallback and serves navigations with `NetworkFirst`, which prevents normal refreshes from sticking to an obsolete build.
+- A later follow-up added a build-manifest guard (`build-info.json` + embedded build id) so a stale document can detect that a newer build exists and force a cache-busted navigation without requiring a hard refresh.
+- Local dev now unregisters lingering service workers and clears Cache Storage before mounting the app, preventing old localhost PWA state from surviving across dev reloads.
 - Wave 3 validated: `rtk npm run test -- tests/pwa.spec.tsx tests/app.spec.tsx`, `rtk npm run typecheck`, and `rtk npm run lint` passed.
 - Wave 4 completed: the app now falls back to the bundled mock corpus when live mode is unavailable offline, shows the `Offline — corpus mock` indicator, and passes the offline Playwright check.
 - Wave 4 validated: `rtk npm run test -- tests/corpus.spec.ts tests/live-corpus-hook.spec.tsx tests/app.spec.tsx`, `rtk npm run e2e`, and `VITE_DEEPVAULT_DATA_MODE=live rtk npm run e2e -- tests/e2e/live-mode.spec.ts` passed.
