@@ -646,6 +646,10 @@ export function SyncPanel({
                 <span className="sync-config-pill-label">Timeout</span>
                 <strong className="sync-config-pill-value">{workerSettings.workerTimeoutSeconds}s</strong>
               </div>
+              <div className="sync-config-pill" title="Maximum number of documents Analyze enriches per run.">
+                <span className="sync-config-pill-label">Analyze budget</span>
+                <strong className="sync-config-pill-value">{workerSettings.analyzeLimit}</strong>
+              </div>
             </div>
 
             {workerSettings.workerMode === 'remote' && workerSettings.workerUrl ? (

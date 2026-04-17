@@ -33,6 +33,7 @@ export interface SyncOperationJob {
     workerUrl: string
     workerFallbackMode: string
     workerTimeoutSeconds: number
+    analyzeLimit: number
     dataMode: string
   }
 }
@@ -157,6 +158,7 @@ function buildWorkerStartupFailureSummary(error: unknown, workerSettings: Worker
 }
 
 function formatCommandLine(
+  kind: SyncOperationKind,
   command: string,
   context: Pick<
     UseSyncOperationsOptions,
@@ -164,14 +166,20 @@ function formatCommandLine(
   >,
   workerSettings: WorkerSettings,
 ): string {
-  return [
+  const lines = [
     `$ ${command}`,
     `Scope: ${context.activeScopeLabel}`,
     `Role: ${context.role} | Provider: ${context.provider}`,
     `Visible docs: ${context.visibleDocs} | Synced sites: ${context.syncedSites} | Restricted sites: ${context.restrictedSites}`,
     `Refresh policy: ${context.refreshPolicy}`,
     `Worker mode: ${workerSettings.workerMode} | Fallback: ${workerSettings.workerFallbackMode}`,
-  ].join('\n')
+  ]
+
+  if (kind === 'analyze') {
+    lines.push(`Analyze budget: ${workerSettings.analyzeLimit} documents`)
+  }
+
+  return lines.join('\n')
 }
 
 const ACTIVE_JOB_SESSION_KEY = 'deepvault_active_job'
@@ -187,7 +195,12 @@ interface PersistedActiveJob {
   startedAt: string
 }
 
-function buildOperationEnv(kind: LiveOpKind, extraEnv: Record<string, string>): Record<string, string> {
+function buildOperationEnv(
+  kind: LiveOpKind,
+  extraEnv: Record<string, string>,
+  provider: string,
+  workerSettings: WorkerSettings,
+): Record<string, string> {
   const env: Record<string, string> = {}
 
   if (extraEnv.DEEPVAULT_DATA_MODE) {
@@ -198,6 +211,11 @@ function buildOperationEnv(kind: LiveOpKind, extraEnv: Record<string, string>): 
     if (extraEnv.OPENAI_API_KEY) env.OPENAI_API_KEY = extraEnv.OPENAI_API_KEY
     if (extraEnv.GEMINI_API_KEY) env.GEMINI_API_KEY = extraEnv.GEMINI_API_KEY
     if (extraEnv.ANTHROPIC_API_KEY) env.ANTHROPIC_API_KEY = extraEnv.ANTHROPIC_API_KEY
+  }
+
+  if (kind === 'analyze') {
+    env.DEEPVAULT_ANALYZE_PROVIDER = provider
+    env.DEEPVAULT_ANALYZE_LIMIT = String(workerSettings.analyzeLimit)
   }
 
   if (kind === 'export-live' || kind === 'export-live-resume') {
@@ -342,6 +360,7 @@ export function useSyncOperations({
         workerUrl: workerSettings.workerUrl,
         workerFallbackMode: workerSettings.workerFallbackMode,
         workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
+        analyzeLimit: workerSettings.analyzeLimit,
         dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
       },
     }
@@ -505,7 +524,7 @@ export function useSyncOperations({
       progress: 0,
       startedAt,
       summary: 'Refresh started.',
-      lines: [makeLine(formatCommandLine(REFRESH_DEF.command, {
+      lines: [makeLine(formatCommandLine('refresh', REFRESH_DEF.command, {
         activeScopeLabel,
         provider,
         role,
@@ -521,6 +540,7 @@ export function useSyncOperations({
         workerUrl: workerSettings.workerUrl,
         workerFallbackMode: workerSettings.workerFallbackMode,
         workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
+        analyzeLimit: workerSettings.analyzeLimit,
         dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
       },
     }
@@ -552,7 +572,7 @@ export function useSyncOperations({
     closeActiveStream()
 
     const def = LIVE_OP_DEFS[kind]
-    const operationEnv = buildOperationEnv(kind, extraEnv)
+    const operationEnv = buildOperationEnv(kind, extraEnv, provider, workerSettings)
     const jobId = `${kind}-${Date.now()}`
     const startedAt = new Date().toISOString()
 
@@ -565,7 +585,7 @@ export function useSyncOperations({
       progress: 0,
       startedAt,
       summary: `${def.label} started.`,
-      lines: [makeLine(formatCommandLine(def.command, {
+      lines: [makeLine(formatCommandLine(kind, def.command, {
         activeScopeLabel,
         provider,
         role,
@@ -581,6 +601,7 @@ export function useSyncOperations({
         workerUrl: workerSettings.workerUrl,
         workerFallbackMode: workerSettings.workerFallbackMode,
         workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
+        analyzeLimit: workerSettings.analyzeLimit,
         dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
       },
     }
@@ -600,6 +621,7 @@ export function useSyncOperations({
             workerUrl: workerSettings.workerUrl,
             workerFallbackMode: workerSettings.workerFallbackMode,
             workerTimeoutSeconds: workerSettings.workerTimeoutSeconds,
+            analyzeLimit: workerSettings.analyzeLimit,
             dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
           },
         })

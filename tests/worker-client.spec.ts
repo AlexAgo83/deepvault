@@ -41,10 +41,11 @@ describe('createWorkerClient — local mode', () => {
   })
 
   it('getEffectiveConfig hits /api/worker/config/effective', async () => {
-    mockFetch({ workerMode: 'local', workerUrl: '', workerFallbackMode: 'read_only', workerTimeoutSeconds: 30, dataMode: 'mock' })
+    mockFetch({ workerMode: 'local', workerUrl: '', workerFallbackMode: 'read_only', workerTimeoutSeconds: 30, analyzeLimit: 12, dataMode: 'mock' })
     const client = createWorkerClient(LOCAL_CONFIG)
     const config = await client.getEffectiveConfig()
     expect(config.workerMode).toBe('local')
+    expect(config.analyzeLimit).toBe(12)
   })
 
   it('startJob posts to /api/worker/jobs', async () => {

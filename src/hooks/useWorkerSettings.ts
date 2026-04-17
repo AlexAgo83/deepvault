@@ -12,6 +12,7 @@ export interface WorkerSettings {
   workerToken: string
   workerTimeoutSeconds: number
   workerFallbackMode: WorkerFallbackMode
+  analyzeLimit: number
 }
 
 export const WORKER_SETTINGS_DEFAULTS: WorkerSettings = {
@@ -20,6 +21,7 @@ export const WORKER_SETTINGS_DEFAULTS: WorkerSettings = {
   workerToken: '',
   workerTimeoutSeconds: 30,
   workerFallbackMode: 'read_only',
+  analyzeLimit: 12,
 }
 
 function readWorkerSettings(): WorkerSettings {
@@ -42,12 +44,16 @@ function readWorkerSettings(): WorkerSettings {
     const timeout = typeof parsed.workerTimeoutSeconds === 'number' && parsed.workerTimeoutSeconds > 0
       ? parsed.workerTimeoutSeconds
       : WORKER_SETTINGS_DEFAULTS.workerTimeoutSeconds
+    const analyzeLimit = typeof parsed.analyzeLimit === 'number' && parsed.analyzeLimit > 0
+      ? Math.round(parsed.analyzeLimit)
+      : WORKER_SETTINGS_DEFAULTS.analyzeLimit
     return {
       workerMode: mode,
       workerUrl: parsed.workerUrl?.trim() || '',
       workerToken,
       workerTimeoutSeconds: timeout,
       workerFallbackMode: fallback,
+      analyzeLimit,
     }
   } catch {
     return WORKER_SETTINGS_DEFAULTS

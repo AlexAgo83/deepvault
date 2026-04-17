@@ -20,17 +20,19 @@ describe('useWorkerSettings', () => {
     expect(result.current.workerSettings.workerToken).toBe('')
     expect(result.current.workerSettings.workerTimeoutSeconds).toBe(30)
     expect(result.current.workerSettings.workerFallbackMode).toBe('read_only')
+    expect(result.current.workerSettings.analyzeLimit).toBe(12)
   })
 
   it('reads non-secret values from localStorage', () => {
     localStorage.setItem(
       WORKER_SETTINGS_STORAGE_KEY,
-      JSON.stringify({ workerMode: 'remote', workerUrl: 'https://worker.example.com', workerTimeoutSeconds: 60 }),
+      JSON.stringify({ workerMode: 'remote', workerUrl: 'https://worker.example.com', workerTimeoutSeconds: 60, analyzeLimit: 75 }),
     )
     const { result } = renderHook(() => useWorkerSettings())
     expect(result.current.workerSettings.workerMode).toBe('remote')
     expect(result.current.workerSettings.workerUrl).toBe('https://worker.example.com')
     expect(result.current.workerSettings.workerTimeoutSeconds).toBe(60)
+    expect(result.current.workerSettings.analyzeLimit).toBe(75)
   })
 
   it('reads the worker token from sessionStorage', () => {
@@ -72,6 +74,12 @@ describe('useWorkerSettings', () => {
     expect(result.current.workerSettings.workerTimeoutSeconds).toBe(WORKER_SETTINGS_DEFAULTS.workerTimeoutSeconds)
   })
 
+  it('rejects non-positive analyzeLimit and falls back to default', () => {
+    localStorage.setItem(WORKER_SETTINGS_STORAGE_KEY, JSON.stringify({ analyzeLimit: 0 }))
+    const { result } = renderHook(() => useWorkerSettings())
+    expect(result.current.workerSettings.analyzeLimit).toBe(WORKER_SETTINGS_DEFAULTS.analyzeLimit)
+  })
+
   it('returns defaults when stored JSON is invalid', () => {
     localStorage.setItem(WORKER_SETTINGS_STORAGE_KEY, 'not-valid-json')
     const { result } = renderHook(() => useWorkerSettings())
@@ -93,22 +101,25 @@ describe('useWorkerSettings', () => {
   it('clears all settings via clearWorkerSettings', () => {
     localStorage.setItem(
       WORKER_SETTINGS_STORAGE_KEY,
-      JSON.stringify({ workerMode: 'remote', workerUrl: 'https://w.example.com', workerTimeoutSeconds: 90 }),
+      JSON.stringify({ workerMode: 'remote', workerUrl: 'https://w.example.com', workerTimeoutSeconds: 90, analyzeLimit: 44 }),
     )
     const { result } = renderHook(() => useWorkerSettings())
     act(() => { result.current.clearWorkerSettings() })
     expect(result.current.workerSettings.workerMode).toBe('local')
     expect(result.current.workerSettings.workerUrl).toBe('')
     expect(result.current.workerSettings.workerTimeoutSeconds).toBe(30)
+    expect(result.current.workerSettings.analyzeLimit).toBe(12)
   })
 
   it('persists non-secret settings to localStorage and the token to sessionStorage', () => {
     const { result } = renderHook(() => useWorkerSettings())
     act(() => { result.current.setWorkerSetting('workerUrl', 'https://worker.example.com') })
     act(() => { result.current.setWorkerSetting('workerToken', 'secret-token') })
+    act(() => { result.current.setWorkerSetting('analyzeLimit', 128) })
     const stored = JSON.parse(localStorage.getItem(WORKER_SETTINGS_STORAGE_KEY) ?? '{}') as Record<string, unknown>
     const storedToken = JSON.parse(sessionStorage.getItem(WORKER_TOKEN_STORAGE_KEY) ?? '{}') as Record<string, unknown>
     expect(stored.workerUrl).toBe('https://worker.example.com')
+    expect(stored.analyzeLimit).toBe(128)
     expect(stored.workerToken).toBeUndefined()
     expect(storedToken.workerToken).toBe('secret-token')
   })

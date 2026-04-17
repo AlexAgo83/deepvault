@@ -239,6 +239,7 @@ export default defineConfig({
               workerUrl: '',
               workerFallbackMode: 'read_only',
               workerTimeoutSeconds: 30,
+              analyzeLimit: 12,
               dataMode: process.env.DEEPVAULT_DATA_MODE || 'mock',
             }))
             return

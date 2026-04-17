@@ -320,6 +320,53 @@ describe('useSyncOperations', () => {
       GEMINI_API_KEY: 'gemini-key',
       ANTHROPIC_API_KEY: 'anthropic-key',
     })
+
+    await act(async () => {
+      result.current.cancelActiveJob()
+    })
+
+    fetchMock.mockClear()
+
+    await act(async () => {
+      result.current.startAnalyze()
+    })
+    await act(async () => {})
+
+    const analyzeBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
+      env: Record<string, string>
+    }
+    expect(analyzeBody.env).toEqual({
+      DEEPVAULT_DATA_MODE: 'live',
+      OPENAI_API_KEY: 'openai-key',
+      GEMINI_API_KEY: 'gemini-key',
+      ANTHROPIC_API_KEY: 'anthropic-key',
+      DEEPVAULT_ANALYZE_PROVIDER: 'openai',
+      DEEPVAULT_ANALYZE_LIMIT: '12',
+    })
+  })
+
+  it('shows the analyze budget in the analyze command header', async () => {
+    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve({ jobId: 'job-analyze-budget' }),
+    }))
+
+    const { result } = renderHook(() => useSyncOperations({
+      ...DEFAULT_OPTIONS,
+      workerSettings: {
+        ...WORKER_SETTINGS_DEFAULTS,
+        analyzeLimit: 50,
+      },
+    }))
+
+    await act(async () => {
+      result.current.startAnalyze()
+    })
+    await act(async () => {})
+
+    expect(result.current.activeJob?.lines[0]?.text).toContain('Analyze budget: 50 documents')
   })
 
   it('reconnects a persisted job and marks it failed when the stream errors', async () => {

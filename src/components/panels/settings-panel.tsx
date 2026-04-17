@@ -484,6 +484,18 @@ export function SettingsPanel({
                       <option value="none">none</option>
                     </select>
                   </label>
+
+                  <label className="settings-field">
+                    <span>Analyze budget</span>
+                    <input
+                      type="number"
+                      value={workerSettings.analyzeLimit}
+                      min={1}
+                      max={5000}
+                      onChange={(event) => onWorkerChange('analyzeLimit', Math.max(1, Number(event.target.value) || 1))}
+                    />
+                    <small>Maximum number of documents `Analyze` will enrich in a single run before remaining candidates are marked stale.</small>
+                  </label>
                 </div>
 
                 <div className="settings-actions">

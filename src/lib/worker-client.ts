@@ -6,6 +6,7 @@ export interface WorkerClientConfig {
   workerToken: string
   workerTimeoutSeconds: number
   workerFallbackMode: WorkerFallbackMode
+  analyzeLimit: number
   dataMode?: string
 }
 
@@ -21,6 +22,7 @@ export interface WorkerEffectiveConfig {
   workerUrl: string
   workerFallbackMode: WorkerFallbackMode
   workerTimeoutSeconds: number
+  analyzeLimit: number
   dataMode: string
 }
 
@@ -226,6 +228,7 @@ export function createWorkerClient(config: WorkerClientConfig) {
       workerUrl: config.workerUrl,
       workerFallbackMode: config.workerFallbackMode,
       workerTimeoutSeconds: config.workerTimeoutSeconds,
+      analyzeLimit: config.analyzeLimit,
       dataMode: config.dataMode || 'mock',
     },
   }
