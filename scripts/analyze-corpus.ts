@@ -470,7 +470,7 @@ export async function analyzeCorpusDocuments(
     model: string
     limit: number
     apiKey?: string
-    onProgress?: (snapshot: AnalyzeProgressSnapshot) => void
+    onProgress?: (_snapshot: AnalyzeProgressSnapshot) => void
   },
 ) {
   const startedAtMs = Date.now()
