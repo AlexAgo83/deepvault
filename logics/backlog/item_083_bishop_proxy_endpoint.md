@@ -2,10 +2,10 @@
 
 > From version: 1.4.0
 > Schema version: 1.0
-> Status: In Progress
-> Understanding: 99%
-> Confidence: 98%
-> Progress: 95%
+> Status: Done
+> Understanding: 100%
+> Confidence: 99%
+> Progress: 100%
 > Complexity: High
 > Theme: Architecture / Product
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -55,7 +55,7 @@ flowchart LR
 - `rtk python3 -m worker.cli.main bishop query --question "..."`
 - Browser devtools: no API key in network requests
 - `npm run build` → no `bishop.ts` reference in dist/
-- `python -m pytest worker/tests/test_bishop.py -v`
+- `rtk python3 -m pytest worker/tests/test_bishop.py -v`
 
 ## Progress notes
 
@@ -66,4 +66,4 @@ flowchart LR
 - The last browser-side local fallback no longer imports `src/lib/deepvault.ts`; it now uses `src/lib/corpus-grounding.ts` so the Bishop client no longer depends on the legacy aggregate module at runtime.
 - The shared `src/lib` barrel no longer re-exports Bishop orchestration helpers, which reduces the accidental public/runtime surface of the legacy `src/lib/bishop.ts` module to explicit test and script imports only.
 - Explicit test/script imports now point to `src/lib/bishop-orchestration.ts`, and the legacy `src/lib/bishop.ts` compatibility facade has been removed.
-- Remaining work in this item is final runtime verification and closure evidence for the worker-backed Bishop path.
+- Worker and CLI validation now both exercise the shared Bishop service: `rtk python3 -m pytest worker/tests/test_bishop.py -v` passes, and `rtk python3 -m worker.cli.main bishop query --question "What is the budget for Q3 2025?"` returns the expected structured response contract.
