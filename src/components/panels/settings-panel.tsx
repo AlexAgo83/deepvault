@@ -3,6 +3,7 @@ import type { EntraSettings } from '../../hooks/useEntraSettings'
 import type { BishopSettings } from '../../hooks/useBishopSettings'
 import type { ProviderSecrets } from '../../hooks/useProviderSecrets'
 import type { WorkerSettings } from '../../hooks/useWorkerSettings'
+import type { WorkerHealthState } from '../../hooks/useWorkerHealth'
 import type { AppModel } from '../../hooks/useAppModel'
 import { type ProviderId, type UserRole } from '../../lib/deepvault'
 import { downloadTextFile } from '../../lib/file-download'
@@ -11,6 +12,7 @@ import {
   parseSettingsTransferPayload,
   type SettingsTransferPayload,
 } from '../../lib/settings-transfer'
+import { Pill } from '../app-ui'
 import { ConfirmModal } from '../confirm-modal'
 import { SettingsChangelogPanel } from './settings-changelog-panel'
 
@@ -79,12 +81,24 @@ function getSettingsViewIcon(view: SettingsView) {
   return <WorkerSettingsIcon />
 }
 
+const DEFAULT_WORKER_HEALTH: WorkerHealthState = {
+  status: 'local',
+  label: 'Local worker',
+  detail: 'Startup health checks are only required when a remote worker is configured.',
+  tone: 'neutral',
+}
+
 export function SettingsPanel({
   bishopSettings,
+  canSignOutHostedSession,
   conversationContextEnabled,
   corpusProviders,
   entraSettings,
+  hostedIdentityLabel,
+  hostedMode,
+  isOperator,
   providerSecrets,
+  workerHealth = DEFAULT_WORKER_HEALTH,
   workerSettings,
   onClear,
   onClearBishop,
@@ -96,6 +110,7 @@ export function SettingsPanel({
   onConversationContextEnabledChange,
   onProviderChange,
   onRoleChange,
+  onSignOutHostedSession,
   onSiteFilterChange,
   onWorkerChange,
   showRightPanel,
@@ -106,10 +121,15 @@ export function SettingsPanel({
   siteSummaries,
 }: {
   bishopSettings: BishopSettings
+  canSignOutHostedSession: boolean
   conversationContextEnabled: boolean
   corpusProviders: AppModel['corpusProviders']
   entraSettings: EntraSettings
+  hostedIdentityLabel: string | null
+  hostedMode: boolean
+  isOperator: boolean
   providerSecrets: ProviderSecrets
+  workerHealth?: WorkerHealthState
   workerSettings: WorkerSettings
   onClear: () => void
   onClearBishop: () => void
@@ -121,6 +141,7 @@ export function SettingsPanel({
   onConversationContextEnabledChange: (_value: boolean) => void
   onProviderChange: (_value: ProviderId) => void
   onRoleChange: (_value: UserRole) => void
+  onSignOutHostedSession: () => Promise<void>
   onSiteFilterChange: (_value: string) => void
   onWorkerChange: <K extends keyof WorkerSettings>(_key: K, _value: WorkerSettings[K]) => void
   showRightPanel: boolean
@@ -134,14 +155,26 @@ export function SettingsPanel({
   const [importError, setImportError] = useState<string | null>(null)
   const [pendingImport, setPendingImport] = useState<SettingsTransferPayload | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const availableSettingsViews = SETTINGS_VIEWS.filter(({ id }) => (hostedMode ? id !== 'ai-providers' : true))
 
   useEffect(() => {
     if (!requestedView) {
       return
     }
 
+    if (hostedMode && requestedView === 'ai-providers') {
+      setSettingsView('runtime')
+      return
+    }
+
     setSettingsView(requestedView)
-  }, [requestedView])
+  }, [hostedMode, requestedView])
+
+  useEffect(() => {
+    if (hostedMode && settingsView === 'ai-providers') {
+      setSettingsView('runtime')
+    }
+  }, [hostedMode, settingsView])
 
   const handleExportConfiguration = () => {
     const payload = buildSettingsTransferPayload({
@@ -222,7 +255,7 @@ export function SettingsPanel({
           </div>
 
           <nav className="settings-subnav" aria-label="Settings View">
-            {SETTINGS_VIEWS.map(({ id, label, detail }) => (
+            {availableSettingsViews.map(({ id, label, detail }) => (
               <button
                 key={id}
                 type="button"
@@ -247,6 +280,24 @@ export function SettingsPanel({
             {settingsView === 'runtime' ? (
               <section id="settings-runtime-panel" className="settings-section settings-runtime-panel">
                 <h3 className="sr-only">Runtime</h3>
+
+                {hostedMode ? (
+                  <div className="settings-hosted-banner" aria-label="Hosted session">
+                    <div className="settings-hosted-copy">
+                      <div className="settings-hosted-title-row">
+                        <strong>Hosted session</strong>
+                        <Pill tone="accent">Shared</Pill>
+                      </div>
+                      <p>{hostedIdentityLabel ? `Signed in as ${hostedIdentityLabel}.` : 'Signed in to the shared Nexus instance.'}</p>
+                      <p>{isOperator ? 'Operator access is active for this session.' : 'Read-only team-member access is active for this session.'}</p>
+                    </div>
+                    {canSignOutHostedSession ? (
+                      <button type="button" className="secondary-button secondary-button-sm" onClick={() => void onSignOutHostedSession()}>
+                        Sign out
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
 
                 <div className="settings-form-grid settings-runtime-form">
                   <label className="settings-field">
@@ -444,7 +495,7 @@ export function SettingsPanel({
               </section>
             ) : null}
 
-            {settingsView === 'ai-providers' ? (
+            {settingsView === 'ai-providers' && !hostedMode ? (
               <section id="settings-ai-providers-panel" className="settings-section settings-ai-providers-panel">
                 <h3 className="sr-only">AI providers</h3>
 
@@ -452,6 +503,7 @@ export function SettingsPanel({
                   <label className="settings-field">
                     <span>OpenAI API key</span>
                     <input
+                      aria-label="OpenAI API key"
                       type="password"
                       value={providerSecrets.openaiApiKey}
                       onChange={(event) => onKeyChange('openai', event.target.value)}
@@ -459,11 +511,13 @@ export function SettingsPanel({
                       autoComplete="off"
                       spellCheck={false}
                     />
+                    <small className="settings-warning-text">Stored in plaintext in localStorage on this browser. Local/dev use only.</small>
                   </label>
 
                   <label className="settings-field">
                     <span>Gemini API key</span>
                     <input
+                      aria-label="Gemini API key"
                       type="password"
                       value={providerSecrets.geminiApiKey}
                       onChange={(event) => onKeyChange('gemini', event.target.value)}
@@ -471,11 +525,13 @@ export function SettingsPanel({
                       autoComplete="off"
                       spellCheck={false}
                     />
+                    <small className="settings-warning-text">Stored in plaintext in localStorage on this browser. Local/dev use only.</small>
                   </label>
 
                   <label className="settings-field">
                     <span>Anthropic API key</span>
                     <input
+                      aria-label="Anthropic API key"
                       type="password"
                       value={providerSecrets.anthropicApiKey}
                       onChange={(event) => onKeyChange('anthropic', event.target.value)}
@@ -483,6 +539,7 @@ export function SettingsPanel({
                       autoComplete="off"
                       spellCheck={false}
                     />
+                    <small className="settings-warning-text">Stored in plaintext in localStorage on this browser. Local/dev use only.</small>
                   </label>
                 </div>
 
@@ -498,6 +555,14 @@ export function SettingsPanel({
             {settingsView === 'worker' ? (
               <section className="settings-section">
                 <h3 className="sr-only">Worker</h3>
+
+                <div className="settings-worker-health" role="status" aria-live="polite">
+                  <div className="settings-worker-health-head">
+                    <span>Startup health</span>
+                    <Pill tone={workerHealth.tone}>{workerHealth.label}</Pill>
+                  </div>
+                  <p>{workerHealth.detail}</p>
+                </div>
 
                 <div className="settings-form-grid">
                   <label className="settings-field">

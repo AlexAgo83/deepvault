@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { isRecord, parseStoredJsonOrNull } from '../lib/storage-schema'
 
 export const ENTRA_SETTINGS_STORAGE_KEY = 'deepvault_entra_settings'
 export const ENTRA_SETTINGS_SECRET_STORAGE_KEY = 'deepvault_entra_settings_secret'
@@ -29,35 +30,55 @@ function readEntraSettings(): EntraSettings {
   const legacySecretRaw = window.sessionStorage.getItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)
   const legacyInlineSecretRaw = raw ? raw : null
 
-  try {
-    const parsed = raw ? JSON.parse(raw) as Partial<EntraSettings> : {}
-    const secretParsed = secretRaw ? JSON.parse(secretRaw) as Partial<Pick<EntraSettings, 'secretValue'>> : {}
-    const legacySecretParsed = legacySecretRaw ? JSON.parse(legacySecretRaw) as Partial<Pick<EntraSettings, 'secretValue'>> : {}
-    const legacyInlineParsed = legacyInlineSecretRaw ? JSON.parse(legacyInlineSecretRaw) as Partial<EntraSettings> : {}
-    const secretValue = secretParsed.secretValue?.trim() || legacySecretParsed.secretValue?.trim() || legacyInlineParsed.secretValue?.trim() || ''
+  const parseEntraObject = (
+    storageKey: string,
+    storageName: 'localStorage' | 'sessionStorage',
+    value: string | null,
+  ): Partial<EntraSettings> =>
+    parseStoredJsonOrNull(value, {
+      storageKey,
+      storageName,
+      validate: (parsed) => {
+        if (!isRecord(parsed)) {
+          return null
+        }
 
-    if (secretValue && !secretRaw) {
-      window.localStorage.setItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY, JSON.stringify({ secretValue }, null, 2))
-    }
-    if (legacySecretRaw) {
-      window.sessionStorage.removeItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)
-    }
-    if (legacyInlineParsed.secretValue) {
-      const sanitized = { ...legacyInlineParsed }
-      delete sanitized.secretValue
-      window.localStorage.setItem(ENTRA_SETTINGS_STORAGE_KEY, JSON.stringify(sanitized, null, 2))
-    }
+        return {
+          appId: typeof parsed.appId === 'string' ? parsed.appId : undefined,
+          tenantId: typeof parsed.tenantId === 'string' ? parsed.tenantId : undefined,
+          secretValue: typeof parsed.secretValue === 'string' ? parsed.secretValue : undefined,
+          sites: typeof parsed.sites === 'string' ? parsed.sites : undefined,
+          siteNames: typeof parsed.siteNames === 'string' ? parsed.siteNames : undefined,
+          dataMode: parsed.dataMode === 'mock' || parsed.dataMode === 'live' ? parsed.dataMode : undefined,
+        }
+      },
+    }) ?? {}
 
-    return {
-      appId: parsed.appId?.trim() || '',
-      tenantId: parsed.tenantId?.trim() || '',
-      secretValue,
-      sites: parsed.sites?.trim() || '',
-      siteNames: parsed.siteNames?.trim() || '',
-      dataMode: parsed.dataMode === 'mock' || parsed.dataMode === 'live' ? parsed.dataMode : '',
-    }
-  } catch {
-    return EMPTY
+  const parsed = parseEntraObject(ENTRA_SETTINGS_STORAGE_KEY, 'localStorage', raw)
+  const secretParsed = parseEntraObject(ENTRA_SETTINGS_SECRET_STORAGE_KEY, 'localStorage', secretRaw)
+  const legacySecretParsed = parseEntraObject(ENTRA_SETTINGS_SECRET_STORAGE_KEY, 'sessionStorage', legacySecretRaw)
+  const legacyInlineParsed = parseEntraObject(ENTRA_SETTINGS_STORAGE_KEY, 'localStorage', legacyInlineSecretRaw)
+  const secretValue = secretParsed.secretValue?.trim() || legacySecretParsed.secretValue?.trim() || legacyInlineParsed.secretValue?.trim() || ''
+
+  if (secretValue && !secretRaw) {
+    window.localStorage.setItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY, JSON.stringify({ secretValue }, null, 2))
+  }
+  if (legacySecretRaw) {
+    window.sessionStorage.removeItem(ENTRA_SETTINGS_SECRET_STORAGE_KEY)
+  }
+  if (legacyInlineParsed.secretValue) {
+    const sanitized = { ...legacyInlineParsed }
+    delete sanitized.secretValue
+    window.localStorage.setItem(ENTRA_SETTINGS_STORAGE_KEY, JSON.stringify(sanitized, null, 2))
+  }
+
+  return {
+    appId: parsed.appId?.trim() || '',
+    tenantId: parsed.tenantId?.trim() || '',
+    secretValue,
+    sites: parsed.sites?.trim() || '',
+    siteNames: parsed.siteNames?.trim() || '',
+    dataMode: parsed.dataMode === 'mock' || parsed.dataMode === 'live' ? parsed.dataMode : '',
   }
 }
 

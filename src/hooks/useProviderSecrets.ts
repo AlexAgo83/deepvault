@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { ProviderId } from '../lib/runtime-types'
+import { isRecord, parseStoredJsonOrNull } from '../lib/storage-schema'
 
 export const PROVIDER_SECRETS_STORAGE_KEY = 'deepvault_provider_secrets'
 
@@ -27,11 +28,21 @@ function readStorage(storage: Storage | undefined): Partial<ProviderSecrets> | n
     return null
   }
 
-  try {
-    return JSON.parse(raw) as Partial<ProviderSecrets>
-  } catch {
-    return null
-  }
+  return parseStoredJsonOrNull(raw, {
+    storageKey: PROVIDER_SECRETS_STORAGE_KEY,
+    storageName: storage === window.sessionStorage ? 'sessionStorage' : 'localStorage',
+    validate: (value) => {
+      if (!isRecord(value)) {
+        return null
+      }
+
+      return {
+        openaiApiKey: typeof value.openaiApiKey === 'string' ? value.openaiApiKey : undefined,
+        geminiApiKey: typeof value.geminiApiKey === 'string' ? value.geminiApiKey : undefined,
+        anthropicApiKey: typeof value.anthropicApiKey === 'string' ? value.anthropicApiKey : undefined,
+      }
+    },
+  })
 }
 
 function readProviderSecrets(): ProviderSecrets {

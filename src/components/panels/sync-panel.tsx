@@ -227,12 +227,14 @@ function getSyncViewIcon(view: SyncView) {
 }
 
 export function SyncPanel({
+  canManageJobs,
   scopedCorpusSummary,
   scopedSiteSummaries,
   scopedSyncOverview,
   syncOperations,
   workerSettings,
 }: {
+  canManageJobs: boolean
   scopedCorpusSummary: AppModel['scopedCorpusSummary']
   scopedSiteSummaries: AppModel['scopedSiteSummaries']
   scopedSyncOverview: AppModel['scopedSyncOverview']
@@ -445,23 +447,27 @@ export function SyncPanel({
               <div className="sync-controls-group">
                 <span className="sync-controls-label">Knowledge</span>
                 <div className="sync-controls-actions">
-                  {(['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
-                    <button
-                      key={op}
-                      type="button"
-                      className="secondary-button secondary-button-sm"
-                      data-tooltip={OPS_CONFIG[op].tooltip}
-                      onClick={() => setPendingOp(op)}
-                      disabled={syncOperations.isRunning}
-                    >
-                      <span className="sync-action-icon" aria-hidden="true">
-                        {op === 'refresh' ? <RefreshIcon /> : null}
-                        {op === 'exportLive' ? <StartSyncIcon /> : null}
-                        {op === 'exportLiveResume' ? <ResumeSyncIcon /> : null}
-                      </span>
-                      {OPS_CONFIG[op].label}
-                    </button>
-                  ))}
+                  {canManageJobs ? (
+                    (['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
+                      <button
+                        key={op}
+                        type="button"
+                        className="secondary-button secondary-button-sm"
+                        data-tooltip={OPS_CONFIG[op].tooltip}
+                        onClick={() => setPendingOp(op)}
+                        disabled={syncOperations.isRunning}
+                      >
+                        <span className="sync-action-icon" aria-hidden="true">
+                          {op === 'refresh' ? <RefreshIcon /> : null}
+                          {op === 'exportLive' ? <StartSyncIcon /> : null}
+                          {op === 'exportLiveResume' ? <ResumeSyncIcon /> : null}
+                        </span>
+                        {OPS_CONFIG[op].label}
+                      </button>
+                    ))
+                  ) : (
+                    <p className="empty-state">Hosted team members can review status and history here, but only operators can launch knowledge jobs.</p>
+                  )}
                 </div>
               </div>
 
@@ -470,24 +476,26 @@ export function SyncPanel({
               <div className="sync-controls-group">
                 <span className="sync-controls-label">Local pipeline</span>
                 <div className="sync-controls-actions">
-                  {(['ingest', 'analyze', 'publishAnalysis', 'evaluate'] as OpsKey[]).map((op) => (
-                    <button
-                      key={op}
-                      type="button"
-                      className="secondary-button secondary-button-sm"
-                      data-tooltip={OPS_CONFIG[op].tooltip}
-                      onClick={() => setPendingOp(op)}
-                      disabled={syncOperations.isRunning}
-                    >
-                      <span className="sync-action-icon" aria-hidden="true">
-                        {op === 'ingest' ? <IngestIcon /> : null}
-                        {op === 'analyze' ? <AnalyzeIcon /> : null}
-                        {op === 'publishAnalysis' ? <PublishAnalysisIcon /> : null}
-                        {op === 'evaluate' ? <EvaluateIcon /> : null}
-                      </span>
-                      {OPS_CONFIG[op].label}
-                    </button>
-                  ))}
+                  {canManageJobs
+                    ? (['ingest', 'analyze', 'publishAnalysis', 'evaluate'] as OpsKey[]).map((op) => (
+                        <button
+                          key={op}
+                          type="button"
+                          className="secondary-button secondary-button-sm"
+                          data-tooltip={OPS_CONFIG[op].tooltip}
+                          onClick={() => setPendingOp(op)}
+                          disabled={syncOperations.isRunning}
+                        >
+                          <span className="sync-action-icon" aria-hidden="true">
+                            {op === 'ingest' ? <IngestIcon /> : null}
+                            {op === 'analyze' ? <AnalyzeIcon /> : null}
+                            {op === 'publishAnalysis' ? <PublishAnalysisIcon /> : null}
+                            {op === 'evaluate' ? <EvaluateIcon /> : null}
+                          </span>
+                          {OPS_CONFIG[op].label}
+                        </button>
+                      ))
+                    : null}
                 </div>
               </div>
             </div>
@@ -498,7 +506,7 @@ export function SyncPanel({
               title="Operations console"
               subtitleTooltip="Follow the streamed execution log for the active operation."
               actions={
-                syncOperations.isRunning ? (
+                syncOperations.isRunning && canManageJobs ? (
                   <button
                     type="button"
                     className="secondary-button secondary-button-sm danger-button"

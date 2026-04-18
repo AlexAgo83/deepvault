@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 97%
-> Confidence: 96%
-> Progress: 0%
+> Status: Done
+> Understanding: 99%
+> Confidence: 98%
+> Progress: 100%
 > Complexity: High
 > Theme: Quality / Security / Maintainability
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -53,18 +53,18 @@ stateDiagram-v2
 # Plan
 
 - [x] ~~Wave 1 (item_072)~~ — Cancelled by `adr_035`. Bishop moves to Python.
-- [ ] 1. Wave 2 — extract navigation and panel coordination logic from `app-shell.tsx` into dedicated units; confirm the file drops below 800 lines.
-- [ ] 2. Wave 2 — confirm all E2E smoke tests and unit tests pass after the extraction.
-- [ ] CHECKPOINT: leave Wave 2 commit-ready and run `rtk npm run e2e` and `rtk npm run check` before continuing.
-- [ ] 3. Wave 3 — add an explicit inline warning in the Settings panel next to each API key input field (shown in local dev mode only; hidden in hosted mode).
-- [ ] 4. Wave 3 — introduce schema validation on all critical `localStorage` reads; produce a clean empty-state fallback with a diagnostic log on failure; add unit tests covering the failure path.
-- [ ] CHECKPOINT: leave Wave 3 commit-ready and run `rtk npm run test -- tests/settings-panel.spec.tsx tests/use-provider-secrets.spec.tsx` before continuing.
-- [ ] 5. Wave 4 — add a silent startup health check against the Python worker (`GET /api/health`); surface a worker availability indicator without blocking the UI.
-- [ ] 6. Wave 4 — wrap each of the 6 panels in a granular `<ErrorBoundary>`; add a test confirming a simulated exception is contained without crashing other panels.
-- [ ] CHECKPOINT: leave Wave 4 commit-ready and run `rtk npm run test -- tests/error-boundary.spec.tsx` and `rtk npm run check` before continuing.
+- [x] 1. Wave 2 — extract navigation and panel coordination logic from `app-shell.tsx` into dedicated units; confirm the file drops below 800 lines.
+- [x] 2. Wave 2 — confirm all E2E smoke tests and unit tests pass after the extraction.
+- [x] CHECKPOINT: leave Wave 2 commit-ready and run `rtk npm run e2e` and `rtk npm run check` before continuing.
+- [x] 3. Wave 3 — add an explicit inline warning in the Settings panel next to each API key input field (shown in local dev mode only; hidden in hosted mode).
+- [x] 4. Wave 3 — introduce schema validation on all critical `localStorage` reads; produce a clean empty-state fallback with a diagnostic log on failure; add unit tests covering the failure path.
+- [x] CHECKPOINT: leave Wave 3 commit-ready and run `rtk npm run test -- tests/settings-panel.spec.tsx tests/use-provider-secrets.spec.tsx` before continuing.
+- [x] 5. Wave 4 — add a silent startup health check against the Python worker (`GET /api/health`); surface a worker availability indicator without blocking the UI.
+- [x] 6. Wave 4 — wrap each of the 6 panels in a granular `<ErrorBoundary>`; add a test confirming a simulated exception is contained without crashing other panels.
+- [x] CHECKPOINT: leave Wave 4 commit-ready and run `rtk npm run test -- tests/error-boundary.spec.tsx` and `rtk npm run check` before continuing.
 - [x] ~~Wave 5 (item_076)~~ — Cancelled by `adr_035`. No bundled corpus in the browser.
-- [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
-- [ ] FINAL: update request, backlog, and task docs once all waves are closed.
+- [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
+- [x] FINAL: update request, backlog, and task docs once all waves are closed.
 
 # Delivery checkpoints
 
@@ -117,9 +117,21 @@ stateDiagram-v2
 
 # Definition of Done (DoD)
 
-- [ ] All five backlog items implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured per wave.
-- [ ] No wave closed before the relevant automated tests passed.
-- [ ] Linked request, backlog, and task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status moved to `Done` and progress to `100%`.
+- [x] All five backlog items implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured per wave.
+- [x] No wave closed before the relevant automated tests passed.
+- [x] Linked request, backlog, and task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status moved to `Done` and progress to `100%`.
+
+## Progress notes
+
+- Wave 2 is now complete: `src/components/app-shell.tsx` was reduced from 948 lines to 478 lines by extracting the shell chrome into `src/components/app-shell-chrome.tsx`, leaving the main shell focused on application state and panel orchestration.
+- The extracted shell chrome preserved existing behavior while making navigation, topbar controls, and toolbar rendering independently maintainable.
+- Wave 2 validation passed with `rtk npm run typecheck`, `rtk npm run test -- tests/app.spec.tsx`, `rtk npm run e2e`, and the full `rtk npm run check` gate.
+- Wave 3 is now complete: API key inputs in `settings-panel.tsx` now include an explicit plaintext `localStorage` warning, and critical browser persistence reads were hardened through the shared parsing helpers in `src/lib/storage-schema.ts`.
+- The Wave 3 fallback path now logs a diagnostic warning and resets to safe empty defaults for invalid provider secrets, Entra settings, worker settings, Bishop persisted state, and artifact panel persistence values.
+- Wave 3 validation passed with `rtk npm run test -- tests/app.spec.tsx tests/settings-panel.spec.tsx tests/use-provider-secrets.spec.tsx tests/use-worker-settings.spec.ts tests/use-entra-settings.spec.ts tests/use-bishop-conversation.spec.tsx`, `rtk npm run typecheck`, and the full `rtk npm run check` gate.
+- Wave 4 is now complete: `useWorkerHealth` adds the non-blocking startup `/api/health` probe for configured remote workers, and the Settings worker screen now surfaces the resulting availability state directly to the operator.
+- Wave 4 validation also proves panel-level isolation at the app shell boundary through `tests/app-shell-error-boundary.spec.tsx`, in addition to the direct `ErrorBoundary` unit test coverage.
+- Final validation for the completed task passed with `rtk npm run check`, including lint, typecheck, the full unit/integration suite, build, E2E, and evaluation.

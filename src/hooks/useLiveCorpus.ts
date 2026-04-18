@@ -21,7 +21,10 @@ function buildIdleState(mode: CorpusMode): LiveState {
     : { label: 'Mock data', detail: 'Mock corpus selected', tone: 'neutral' }
 }
 
-export function useLiveCorpus(requestedModeValue: string | undefined | null): LiveCorpusState {
+export function useLiveCorpus(
+  requestedModeValue: string | undefined | null,
+  options: { accessToken?: string | null; authRequired?: boolean; authReady?: boolean } = {},
+): LiveCorpusState {
   const requestedCorpusMode = normalizeCorpusMode(requestedModeValue)
   const [refreshToken, setRefreshToken] = useState(0)
   const [corpusBundle, setCorpusBundle] = useState<CorpusBundle>(() =>
@@ -39,7 +42,21 @@ export function useLiveCorpus(requestedModeValue: string | undefined | null): Li
       }
     }
 
-    void fetchLiveCorpus().then((result) => {
+    if (options.authRequired && !options.accessToken?.trim()) {
+      setCorpusBundle(getEmptyLiveCorpusBundle())
+      setLiveState({
+        label: options.authReady ? 'Sign-in required' : 'Authenticating',
+        detail: options.authReady
+          ? 'Complete Microsoft sign-in to load the live corpus.'
+          : 'Authenticating with Microsoft Entra before loading the live corpus.',
+        tone: options.authReady ? 'accent' : 'neutral',
+      })
+      return () => {
+        active = false
+      }
+    }
+
+    void fetchLiveCorpus(options.accessToken).then((result) => {
       if (!active) {
         return
       }
@@ -64,7 +81,7 @@ export function useLiveCorpus(requestedModeValue: string | undefined | null): Li
     return () => {
       active = false
     }
-  }, [refreshToken, requestedCorpusMode])
+  }, [options.accessToken, options.authReady, options.authRequired, refreshToken, requestedCorpusMode])
 
   const refreshCorpus = useCallback(() => {
     setRefreshToken((value) => value + 1)

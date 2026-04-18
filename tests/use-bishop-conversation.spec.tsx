@@ -126,12 +126,14 @@ describe('useBishopConversation', () => {
   })
 
   it('falls back to the seeded history when storage JSON is invalid', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     window.localStorage.setItem(BISHOP_HISTORY_STORAGE_KEY, '{"invalid":')
 
     render(<BishopProbe />)
 
     await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('1'))
     expect(screen.getByTestId('first')).toHaveTextContent('seed')
+    expect(warnSpy).toHaveBeenCalled()
   })
 
   it('migrates legacy bishop history from sessionStorage into localStorage', async () => {

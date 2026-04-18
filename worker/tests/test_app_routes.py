@@ -29,6 +29,7 @@ def test_config_mode_route_returns_runtime_projection() -> None:
     assert payload["corpusVersion"] is None
     assert payload["isOperator"] is False
     assert payload["features"] == {"authEnabled": False}
+    assert payload["auth"] == {"enabled": False, "tenantId": None, "clientId": None, "scope": None}
     assert payload["timestamp"].endswith("Z")
 
 

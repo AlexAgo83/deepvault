@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   useWorkerSettings,
   WORKER_SETTINGS_STORAGE_KEY,
@@ -9,6 +9,7 @@ import {
 
 describe('useWorkerSettings', () => {
   afterEach(() => {
+    vi.restoreAllMocks()
     localStorage.clear()
     sessionStorage.clear()
   })
@@ -81,9 +82,11 @@ describe('useWorkerSettings', () => {
   })
 
   it('returns defaults when stored JSON is invalid', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     localStorage.setItem(WORKER_SETTINGS_STORAGE_KEY, 'not-valid-json')
     const { result } = renderHook(() => useWorkerSettings())
     expect(result.current.workerSettings.workerMode).toBe('local')
+    expect(warnSpy).toHaveBeenCalled()
   })
 
   it('updates a field via setWorkerSetting', () => {

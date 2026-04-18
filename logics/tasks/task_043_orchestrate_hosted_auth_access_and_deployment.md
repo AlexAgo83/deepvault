@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 95%
-> Progress: 0%
+> Status: In Progress
+> Understanding: 99%
+> Confidence: 98%
+> Progress: 75%
 > Complexity: High
 > Theme: Security / Product / Operations
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -53,16 +53,16 @@ stateDiagram-v2
 
 # Plan
 
-- [ ] 1. Wave 1 — integrate `@azure/msal-browser` in the React app with silent SSO first and redirect fallback.
-- [ ] 2. Wave 1 — attach Entra access tokens to worker API requests and implement JWKS-based token validation in `worker/auth.py`, with `WORKER_AUTH_ENABLED=false` preserving local dev behavior.
-- [ ] 2a. Wave 1 — keep the hosted auth config minimal (`ENTRA_TENANT_ID`, `ENTRA_CLIENT_ID`, `WORKER_AUTH_ENABLED`, `OPERATOR_ALLOWLIST`) and assume HTTPS via the shared Caddy origin for non-localhost hosted URLs.
-- [ ] CHECKPOINT: leave Wave 1 commit-ready and verify hosted `401` behavior plus local-mode bypass.
-- [ ] 3. Wave 2 — implement `OPERATOR_ALLOWLIST` enforcement for job-control and artifacts endpoints.
-- [ ] 4. Wave 2 — add structured JSON access logging with daily rotation and 30-day retention under `data/logs/`.
-- [ ] CHECKPOINT: leave Wave 2 commit-ready and verify `403` behavior for non-operators plus log emission.
-- [ ] 5. Wave 3 — read `/api/config/mode` in the browser, render hosted-mode identity affordances, and hide API key inputs in hosted mode.
-- [ ] 6. Wave 3 — gate Artifacts and Sync job-control UI by a worker-returned operator flag, and prefer not rendering restricted UI at all for non-operators while preserving unchanged local-dev behavior.
-- [ ] CHECKPOINT: leave Wave 3 commit-ready and verify hosted-vs-local UI parity in focused tests or E2E coverage.
+- [x] 1. Wave 1 — integrate `@azure/msal-browser` in the React app with silent SSO first and redirect fallback.
+- [x] 2. Wave 1 — attach Entra access tokens to worker API requests and implement JWKS-based token validation in `worker/auth.py`, with `WORKER_AUTH_ENABLED=false` preserving local dev behavior.
+- [x] 2a. Wave 1 — keep the hosted auth config minimal (`ENTRA_TENANT_ID`, `ENTRA_CLIENT_ID`, `WORKER_AUTH_ENABLED`, `OPERATOR_ALLOWLIST`) and assume HTTPS via the shared Caddy origin for non-localhost hosted URLs.
+- [x] CHECKPOINT: leave Wave 1 commit-ready and verify hosted `401` behavior plus local-mode bypass.
+- [x] 3. Wave 2 — implement `OPERATOR_ALLOWLIST` enforcement for job-control and artifacts endpoints.
+- [x] 4. Wave 2 — add structured JSON access logging with daily rotation and 30-day retention under `data/logs/`.
+- [x] CHECKPOINT: leave Wave 2 commit-ready and verify `403` behavior for non-operators plus log emission.
+- [x] 5. Wave 3 — read `/api/config/mode` in the browser, render hosted-mode identity affordances, and hide API key inputs in hosted mode.
+- [x] 6. Wave 3 — gate Artifacts and Sync job-control UI by a worker-returned operator flag, and prefer not rendering restricted UI at all for non-operators while preserving unchanged local-dev behavior.
+- [x] CHECKPOINT: leave Wave 3 commit-ready and verify hosted-vs-local UI parity in focused tests or E2E coverage.
 - [ ] 7. Wave 4 — package the stack with `docker-compose.yml`, `Caddyfile`, `.env.example`, and an operator runbook covering install, update, health checks, and operator provisioning.
 - [ ] 7a. Wave 4 — standardize the first-wave Windows runtime path on `C:\\deepvault-nexus\\data\\runtime` and keep Caddy as the only documented reverse-proxy path for the hosted package.
 - [ ] 8. Wave 4 — smoke-test the Windows Docker Desktop flow: startup, worker restart, persistent runtime data, hosted browser access.
@@ -75,6 +75,16 @@ stateDiagram-v2
 - After Wave 2: operator-only endpoints are enforced and validated requests are logged with bounded retention.
 - After Wave 3: the browser clearly distinguishes hosted vs local mode and hides local-only secret inputs in hosted mode.
 - After Wave 4: operators have a deployable Docker Compose package and runbook for the hosted stack.
+
+## Progress notes
+
+- Wave 1 is complete. The browser now initializes hosted auth from `/api/config/mode`, performs silent SSO first with MSAL redirect fallback, and forwards bearer tokens to the worker for corpus, bishop, and sync flows.
+- The worker now preloads tenant JWKS at startup, validates Entra access tokens locally on protected `/api/*` routes, preserves the `WORKER_AUTH_ENABLED=false` local-dev bypass, and exposes validated identity claims for the next operator-gating wave.
+- Validation completed for the auth wave with `rtk python3 -m pytest worker/tests -q` and `rtk npm run check`.
+- Wave 2 is complete. Job-control routes now enforce `OPERATOR_ALLOWLIST`, `/api/config/mode` can project `isOperator` from an optional authenticated request, and validated requests emit structured access-log lines under `data/logs/` with 30-day retention cleanup.
+- Validation completed for the operator/access-log wave with `rtk python3 -m pytest worker/tests -q` and focused browser regression coverage for hosted auth and sync flows.
+- Wave 3 is complete. Hosted mode now shows the authenticated identity in the shell, exposes a sign-out action, renders a subtle `Shared` session card in Settings, hides AI provider key inputs, and removes operator-only navigation and job-control surfaces for non-operators.
+- Validation completed for the hosted-mode UI wave with focused Vitest coverage plus a full `rtk npm run check`.
 
 # AC Traceability
 

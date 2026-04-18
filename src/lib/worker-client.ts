@@ -4,6 +4,7 @@ export interface WorkerClientConfig {
   workerMode: WorkerMode
   workerUrl: string
   workerToken: string
+  authToken?: string
   workerTimeoutSeconds: number
   workerFallbackMode: WorkerFallbackMode
   analyzeLimit: number
@@ -88,7 +89,7 @@ function buildHeaders(config: WorkerClientConfig, audit?: WorkerAuditContext): R
     headers['X-DeepVault-Effective-Config'] = JSON.stringify(audit.effectiveConfig)
   }
 
-  const token = config.workerToken.trim()
+  const token = (config.authToken || config.workerToken).trim()
   if (token) headers['Authorization'] = `Bearer ${token}`
   return headers
 }

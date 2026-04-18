@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   useEntraSettings,
   ENTRA_SETTINGS_STORAGE_KEY,
@@ -8,6 +8,7 @@ import {
 
 describe('useEntraSettings', () => {
   afterEach(() => {
+    vi.restoreAllMocks()
     localStorage.clear()
     sessionStorage.clear()
   })
@@ -60,9 +61,11 @@ describe('useEntraSettings', () => {
   })
 
   it('returns empty defaults when stored JSON is invalid', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     localStorage.setItem(ENTRA_SETTINGS_STORAGE_KEY, 'not-valid-json')
     const { result } = renderHook(() => useEntraSettings())
     expect(result.current.entraSettings.appId).toBe('')
+    expect(warnSpy).toHaveBeenCalled()
   })
 
   it('updates a specific field via setEntraSetting', () => {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { appendAIUsageEvent } from '../lib/ai-usage'
 import { askBishop } from '../lib/bishop-client'
 import { type ChatMessage, type Corpus, type ProviderId, type SourceRecord, type UserRole } from '../lib/runtime-types'
+import { isRecord, parseStoredJsonOrNull, warnInvalidStoredValue } from '../lib/storage-schema'
 import type { BishopSettings } from './useBishopSettings'
 
 export const BISHOP_HISTORY_STORAGE_KEY = 'deepvault_bishop_history'
@@ -20,6 +21,7 @@ export interface UseBishopConversationOptions {
   provider: ProviderId
   bishopSettings?: BishopSettings
   endpoint?: string | null
+  accessToken?: string | null
   onActivateTab?: () => void
 }
 
@@ -83,31 +85,46 @@ function loadBishopMessages(): ChatMessage[] | null {
     return null
   }
 
-  try {
-    const parsed: unknown = JSON.parse(payload)
-    let messages: ChatMessage[] | null = null
-
-    if (Array.isArray(parsed)) {
-      const parsedMessages = parsed.filter(isChatMessageLike)
-      messages = parsedMessages.length ? normalizeBishopMessages(parsedMessages) : null
-    }
-    if (!messages && typeof parsed === 'object' && parsed !== null && Array.isArray((parsed as { messages?: unknown }).messages)) {
-      const parsedMessages = ((parsed as { messages: unknown[] }).messages).filter(isChatMessageLike)
-      messages = parsedMessages.length ? normalizeBishopMessages(parsedMessages) : null
-    }
-
-    if (messages && legacyRaw) {
-      window.localStorage.setItem(
-        BISHOP_HISTORY_STORAGE_KEY,
-        JSON.stringify({ exportedAt: new Date().toISOString(), messages }, null, 2),
-      )
-      window.sessionStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
-    }
-
-    return messages
-  } catch {
+  const parsed = parseStoredJsonOrNull(payload, {
+    storageKey: BISHOP_HISTORY_STORAGE_KEY,
+    storageName: raw ? 'localStorage' : 'sessionStorage',
+    validate: (value) => value,
+  })
+  if (!parsed) {
     return null
   }
+
+  let messages: ChatMessage[] | null = null
+
+  if (Array.isArray(parsed)) {
+    const parsedMessages = parsed.filter(isChatMessageLike)
+    messages = parsedMessages.length ? normalizeBishopMessages(parsedMessages) : null
+  }
+  if (!messages && isRecord(parsed) && Array.isArray(parsed.messages)) {
+    const parsedMessages = parsed.messages.filter(isChatMessageLike)
+    messages = parsedMessages.length ? normalizeBishopMessages(parsedMessages) : null
+  }
+  if (!messages) {
+    warnInvalidStoredValue(
+      {
+        storageKey: BISHOP_HISTORY_STORAGE_KEY,
+        storageName: raw ? 'localStorage' : 'sessionStorage',
+      },
+      'Schema validation failed; falling back to an empty state.',
+      parsed,
+    )
+    return null
+  }
+
+  if (legacyRaw) {
+    window.localStorage.setItem(
+      BISHOP_HISTORY_STORAGE_KEY,
+      JSON.stringify({ exportedAt: new Date().toISOString(), messages }, null, 2),
+    )
+    window.sessionStorage.removeItem(BISHOP_HISTORY_STORAGE_KEY)
+  }
+
+  return messages
 }
 
 function loadBishopConversationContextEnabled(): boolean {
@@ -191,6 +208,7 @@ export function useBishopConversation({
   provider,
   bishopSettings,
   endpoint,
+  accessToken,
   onActivateTab,
 }: UseBishopConversationOptions) {
   const answerTimers = useRef<number[]>([])
@@ -273,6 +291,7 @@ export function useBishopConversation({
         limit: bishopSettings?.sourceLimit ?? 3,
         candidateLimit: bishopSettings?.candidateLimit ?? 10,
         endpoint,
+        accessToken,
         conversationHistory,
       })
 

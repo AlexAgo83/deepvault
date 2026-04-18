@@ -42,6 +42,7 @@ export interface SyncOperationJob {
 
 export interface UseSyncOperationsOptions {
   activeScopeLabel: string
+  authToken?: string | null
   extraEnv: Record<string, string>
   provider: string
   role: string
@@ -335,6 +336,7 @@ function ingestAnalyzeUsage(job: SyncOperationJob) {
 
 export function useSyncOperations({
   activeScopeLabel,
+  authToken,
   extraEnv,
   provider,
   role,
@@ -347,8 +349,9 @@ export function useSyncOperations({
 }: UseSyncOperationsOptions) {
   const workerClient = useMemo(() => createWorkerClient({
     ...workerSettings,
+    authToken: authToken || undefined,
     dataMode: extraEnv.DEEPVAULT_DATA_MODE || 'mock',
-  }), [workerSettings, extraEnv.DEEPVAULT_DATA_MODE])
+  }), [authToken, workerSettings, extraEnv.DEEPVAULT_DATA_MODE])
   const [activeJob, setActiveJob] = useState<SyncOperationJob | null>(null)
   const [jobHistory, setJobHistory] = useState<SyncOperationJob[]>(() => readPersistedJobHistory())
   const timersRef = useRef<number[]>([])

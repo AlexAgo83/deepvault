@@ -16,6 +16,7 @@ export interface BishopConversationTurn {
 export interface BishopClientOptions {
   endpoint?: string | null
   fetchImpl?: typeof fetch
+  accessToken?: string | null
   corpus?: Corpus
   role?: UserRole
   provider?: ProviderId
@@ -147,6 +148,7 @@ export async function askBishop(
   {
     endpoint,
     fetchImpl,
+    accessToken,
     corpus,
     role = 'analyst',
     provider = 'openai',
@@ -163,6 +165,7 @@ export async function askBishop(
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        ...(accessToken?.trim() ? { Authorization: `Bearer ${accessToken.trim()}` } : {}),
       },
       body: JSON.stringify({
         query,

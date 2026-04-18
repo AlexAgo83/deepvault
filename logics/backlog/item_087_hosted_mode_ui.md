@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 94%
-> Progress: 0%
+> Status: Done
+> Understanding: 99%
+> Confidence: 98%
+> Progress: 100%
 > Complexity: Low
 > Theme: Product / UX
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -20,6 +20,14 @@
 
 - In: read `GET /api/config/mode` at app startup and store the mode in React context; in hosted mode: display the authenticated user's display name or email in the shell top bar or Settings panel; add a sign-out option that clears the MSAL cache and posts a logout to the Microsoft logout endpoint; show a subtle `Shared` label inside the Settings panel; hide API key input fields in Settings (they remain visible in local dev mode); hide Artifacts panel and Sync job control buttons for non-operators; derive operator state from a worker-returned runtime flag rather than inferring it client-side from token contents; in local dev mode: no identity info shown, no sign-out option, no `Shared` label, API key inputs visible as today.
 - Out: MSAL token acquisition (item_085); operator allowlist enforcement (item_086); full RBAC UI.
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|hosted-mode-ui-identity-display-shared-l|req-020-host-nexus-as-a-shared-multi-use|in-hosted-mode-the-app-must|ac1-in-hosted-mode-the-authenticated
+flowchart LR
+    Problem[Hosted users still see a local-first shell] --> Adapt[Render identity, Shared mode, and operator-aware UI]
+    Adapt --> Outcome[Hosted UI reflects session and hides restricted controls]
+```
 
 # Acceptance criteria
 
@@ -45,3 +53,13 @@
 - Hosted mode (operator): Artifacts panel visible; Sync job controls visible
 - Local dev mode: no identity info; no sign-out; no `Shared` label; API key inputs visible
 - `rtk npm run e2e -- tests/e2e/hosted-mode-ui.spec.ts`
+- `rtk npm run test -- tests/use-hosted-auth.spec.tsx tests/settings-panel.spec.tsx tests/hosted-mode-ui.spec.tsx`
+- `rtk npm run test -- tests/app.spec.tsx tests/use-sync-operations.spec.tsx tests/worker-client.spec.ts tests/use-hosted-auth.spec.tsx tests/settings-panel.spec.tsx tests/hosted-mode-ui.spec.tsx`
+- `rtk npm run check`
+
+# Outcome
+
+- Hosted mode now surfaces the authenticated session in the UI: the signed-in display name or email is visible in the top bar, and the Settings runtime view includes a `Shared` session card with a sign-out action.
+- Sign-out now clears the MSAL browser session via logout redirect while leaving local mode unchanged.
+- Hosted non-operators no longer see operator-only surfaces: the Artifacts tab is removed from navigation, direct navigation is redirected away, and Sync job-control buttons are hidden in favor of a read-only explanation.
+- Hosted mode hides the AI provider key inputs entirely, while local mode preserves the existing API-key workflow and panel layout.

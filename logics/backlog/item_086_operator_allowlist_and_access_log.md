@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 95%
-> Progress: 0%
+> Status: Done
+> Understanding: 99%
+> Confidence: 98%
+> Progress: 100%
 > Complexity: Low
 > Theme: Security / Operations
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -20,6 +20,15 @@
 
 - In: implement operator gating in `worker/auth.py` — extract the `oid` claim from the validated Entra token; check it against `OPERATOR_ALLOWLIST` (comma-separated Entra object IDs from env var or config file); return `403 Forbidden` if the `oid` is not in the list when the request targets a job control or artifacts endpoint (`POST /api/jobs`, `POST /api/jobs/:id/cancel`, `GET /api/artifacts`); implement a structured JSON access log middleware in `worker/access_log.py` — write one log line per validated request (`{ ts, oid, endpoint, status }`); daily log file rotation; 30-day retention; retain logs in `data/logs/`.
 - Out: Entra token validation (item_085); fine-grained per-endpoint permission tables; log viewer UI.
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|operator-allowlist-and-structured-access|req-020-host-nexus-as-a-shared-multi-use|in-the-hosted-model-not-all|ac1-a-request-to-post-api
+flowchart LR
+    Problem[Authenticated users still share the same privileges] --> Gate[Apply OPERATOR_ALLOWLIST to job control]
+    Gate --> Audit[Write structured access logs for validated requests]
+    Audit --> Outcome[Operator actions are gated and traceable]
+```
 
 # Acceptance criteria
 
@@ -44,3 +53,12 @@
 - Add oid to `OPERATOR_ALLOWLIST`, restart worker → previously denied user now gets 202
 - `tail data/logs/access-$(date +%Y-%m-%d).json` → log lines visible after requests
 - `python -m pytest worker/tests/test_operator_gate.py worker/tests/test_access_log.py -v`
+- `rtk python3 -m pytest worker/tests -q`
+- `rtk npm run test -- tests/app.spec.tsx tests/use-sync-operations.spec.tsx tests/worker-client.spec.ts tests/use-hosted-auth.spec.tsx`
+
+# Outcome
+
+- The worker now derives operator access from `OPERATOR_ALLOWLIST` and returns `403 Forbidden` for authenticated non-operators who attempt job-control actions.
+- `GET /api/config/mode` accepts an optional bearer token and reports `isOperator` from the validated `oid`, so the browser can adapt hosted UI without inspecting claims itself.
+- Validated requests now emit structured JSON access-log lines under `data/logs/access-YYYY-MM-DD.json` with daily file rollover by filename and automatic 30-day retention cleanup.
+- Local development remains unchanged when `WORKER_AUTH_ENABLED=false`: operator gating is bypassed and no bearer token is required.

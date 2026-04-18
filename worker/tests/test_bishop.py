@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Dict, Optional
+
 import httpx
 from fastapi.testclient import TestClient
 
@@ -13,7 +15,7 @@ client = TestClient(app)
 
 
 class FakeResponse:
-    def __init__(self, *, status_code: int, payload: dict | None = None, text: str = "") -> None:
+    def __init__(self, *, status_code: int, payload: Optional[dict] = None, text: str = "") -> None:
         self.status_code = status_code
         self._payload = payload or {}
         self.text = text
@@ -53,7 +55,7 @@ def test_bishop_query_handles_no_answer() -> None:
 def test_bishop_service_uses_openai_provider_when_configured(monkeypatch) -> None:
     service = build_service(OPENAI_API_KEY="test-openai-key", BISHOP_MODEL="gpt-test-model")
 
-    captured: dict[str, object] = {}
+    captured: Dict[str, object] = {}
 
     def fake_post(url: str, *, headers: dict[str, str], json: dict, timeout: float) -> FakeResponse:
         captured["url"] = url
@@ -110,7 +112,7 @@ def test_bishop_service_uses_openai_provider_when_configured(monkeypatch) -> Non
 def test_bishop_service_uses_gemini_provider_when_configured(monkeypatch) -> None:
     service = build_service(GEMINI_API_KEY="test-gemini-key", BISHOP_MODEL="gemini-test-model")
 
-    captured: dict[str, object] = {}
+    captured: Dict[str, object] = {}
 
     def fake_post(url: str, *, headers: dict[str, str], json: dict, timeout: float) -> FakeResponse:
         captured["url"] = url
@@ -148,7 +150,7 @@ def test_bishop_service_uses_gemini_provider_when_configured(monkeypatch) -> Non
 def test_bishop_service_uses_anthropic_provider_when_configured(monkeypatch) -> None:
     service = build_service(ANTHROPIC_API_KEY="test-anthropic-key", BISHOP_MODEL="claude-test-model")
 
-    captured: dict[str, object] = {}
+    captured: Dict[str, object] = {}
 
     def fake_post(url: str, *, headers: dict[str, str], json: dict, timeout: float) -> FakeResponse:
         captured["url"] = url
