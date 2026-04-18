@@ -1,0 +1,41 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./dist:/srv/nexus:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      worker:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      WORKER_MODE: hosted
+      WORKER_HOST: 0.0.0.0
+      WORKER_PORT: "8000"
+      WORKER_RUNTIME_DATA_DIR: /data/runtime
+    volumes:
+      - ${NEXUS_RUNTIME_PATH:-C:\deepvault-nexus\data\runtime}:/data/runtime
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  caddy_data:
+  caddy_config:

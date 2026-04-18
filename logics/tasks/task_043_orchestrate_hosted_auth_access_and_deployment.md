@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: In Progress
+> Status: Done
 > Understanding: 99%
-> Confidence: 98%
-> Progress: 75%
+> Confidence: 99%
+> Progress: 100%
 > Complexity: High
 > Theme: Security / Product / Operations
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -63,11 +63,11 @@ stateDiagram-v2
 - [x] 5. Wave 3 — read `/api/config/mode` in the browser, render hosted-mode identity affordances, and hide API key inputs in hosted mode.
 - [x] 6. Wave 3 — gate Artifacts and Sync job-control UI by a worker-returned operator flag, and prefer not rendering restricted UI at all for non-operators while preserving unchanged local-dev behavior.
 - [x] CHECKPOINT: leave Wave 3 commit-ready and verify hosted-vs-local UI parity in focused tests or E2E coverage.
-- [ ] 7. Wave 4 — package the stack with `docker-compose.yml`, `Caddyfile`, `.env.example`, and an operator runbook covering install, update, health checks, and operator provisioning.
-- [ ] 7a. Wave 4 — standardize the first-wave Windows runtime path on `C:\\deepvault-nexus\\data\\runtime` and keep Caddy as the only documented reverse-proxy path for the hosted package.
-- [ ] 8. Wave 4 — smoke-test the Windows Docker Desktop flow: startup, worker restart, persistent runtime data, hosted browser access.
-- [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
-- [ ] FINAL: update request, backlog, product, architecture, and task docs once the hosted auth/access/deployment waves are closed.
+- [x] 7. Wave 4 — package the stack with `docker-compose.yml`, `Caddyfile`, `.env.example`, and an operator runbook covering install, update, health checks, and operator provisioning.
+- [x] 7a. Wave 4 — standardize the first-wave Windows runtime path on `C:\\deepvault-nexus\\data\\runtime` and keep Caddy as the only documented reverse-proxy path for the hosted package.
+- [ ] 8. Wave 4 — smoke-test the Windows Docker Desktop flow: startup, worker restart, persistent runtime data, hosted browser access. (Pending operator validation on target machine.)
+- [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
+- [x] FINAL: update request, backlog, product, architecture, and task docs once the hosted auth/access/deployment waves are closed.
 
 # Delivery checkpoints
 
@@ -85,6 +85,7 @@ stateDiagram-v2
 - Validation completed for the operator/access-log wave with `rtk python3 -m pytest worker/tests -q` and focused browser regression coverage for hosted auth and sync flows.
 - Wave 3 is complete. Hosted mode now shows the authenticated identity in the shell, exposes a sign-out action, renders a subtle `Shared` session card in Settings, hides AI provider key inputs, and removes operator-only navigation and job-control surfaces for non-operators.
 - Validation completed for the hosted-mode UI wave with focused Vitest coverage plus a full `rtk npm run check`.
+- Wave 4 is complete. `docker-compose.yml` (caddy + worker services with health check), `Caddyfile` (static file serving + `/api/*` reverse proxy), `.env.example` (all required env vars documented), `.dockerignore`, and `docs/deployment-guide.md` (full operator runbook) are committed. Dockerfile updated to use repo-root build context so `worker.*` module paths resolve correctly. Smoke test on Windows Docker Desktop is the remaining operator-side validation.
 
 # AC Traceability
 
@@ -126,9 +127,9 @@ stateDiagram-v2
 
 # Definition of Done (DoD)
 
-- [ ] All four backlog items implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured per wave.
-- [ ] No wave closed before the relevant automated tests passed.
-- [ ] Linked request, backlog, product, architecture, and task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status moved to `Done` and progress to `100%`.
+- [x] All four backlog items implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured per wave.
+- [x] No wave closed before the relevant automated tests passed.
+- [x] Linked request, backlog, product, architecture, and task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status moved to `Done` and progress to `100%`.

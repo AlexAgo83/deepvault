@@ -1,0 +1,16 @@
+node_modules/
+.claude/
+.git/
+dist/
+coverage/
+playwright-report/
+test-results/
+.playwright-cli/
+data/runtime/
+data/eval/
+data/live-corpus.json
+tmp/
+logics/.cache/
+*.log
+.env.local
+.DS_Store

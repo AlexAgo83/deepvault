@@ -1,0 +1,18 @@
+# Nexus hosted deployment - Caddyfile
+# Replace :80 with your local-network hostname (e.g. nexus.corp.local) to enable
+# automatic HTTPS via Let's Encrypt (requires port 443 reachable from the internet)
+# or use a local CA with `tls internal` for LAN-only HTTPS.
+
+:80 {
+    # Reverse-proxy all /api/* requests to the Python worker
+    handle /api/* {
+        reverse_proxy worker:8000
+    }
+
+    # Serve the Nexus static build for everything else
+    handle {
+        root * /srv/nexus
+        try_files {path} /index.html
+        file_server
+    }
+}

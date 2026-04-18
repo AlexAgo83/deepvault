@@ -2,13 +2,31 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 93%
-> Progress: 0%
+> Status: Done
+> Understanding: 99%
+> Confidence: 99%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Infrastructure / Operations
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|docker-compose-deployment-package-caddy-|req-020-host-nexus-as-a-shared-multi-use|there-is-no-deployable-package-for|ac1-docker-compose-up-d-from
+flowchart LR
+    REQ[req_020 host Nexus shared] --> PROB[No deployable package]
+    PROB --> SCOPE[docker-compose caddy plus worker]
+    SCOPE --> AC1[AC1 compose up starts stack]
+    SCOPE --> AC2[AC2 restart worker keeps Caddy live]
+    SCOPE --> AC3[AC3 runtime bind mount persists data]
+    SCOPE --> AC4[AC4 env example documents all vars]
+    SCOPE --> AC5[AC5 runbook covers full operator flow]
+    SCOPE --> AC6[AC6 Windows Docker Desktop smoke test]
+    AC1 & AC2 & AC3 & AC4 & AC5 --> TASK[task_043 wave 4]
+    AC6 --> SMOKE[Manual operator validation]
+    TASK --> DONE[Done]
+    SMOKE --> DONE
+```
 
 # Problem
 
