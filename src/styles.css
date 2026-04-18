@@ -2563,20 +2563,69 @@ th {
   flex-wrap: wrap;
 }
 
-.chat-context-toggle {
+.ui-toggle {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--muted);
-  font-size: 0.86rem;
   white-space: nowrap;
   cursor: pointer;
+  user-select: none;
 }
 
-.chat-context-toggle input {
+.ui-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ui-toggle-switch {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.ui-toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
   width: 14px;
   height: 14px;
-  accent-color: var(--accent);
+  border-radius: 50%;
+  background: var(--text);
+  opacity: 0.72;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease,
+    background-color 160ms ease;
+}
+
+.ui-toggle input:checked + .ui-toggle-switch {
+  background: rgba(185, 106, 67, 0.14);
+  border-color: rgba(185, 106, 67, 0.3);
+}
+
+.ui-toggle input:checked + .ui-toggle-switch::after {
+  transform: translateX(14px);
+  background: var(--accent);
+  opacity: 1;
+}
+
+.ui-toggle input:focus-visible + .ui-toggle-switch {
+  outline: 2px solid rgba(185, 106, 67, 0.18);
+  outline-offset: 2px;
+}
+
+.chat-context-toggle {
+  color: var(--muted);
+  font-size: 0.86rem;
 }
 
 .chat-form-actions {
@@ -2892,9 +2941,26 @@ th {
 
 .artifacts-toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 160px 160px;
+  grid-template-columns: minmax(0, 1fr) 144px 132px auto;
   gap: 0.75rem;
   margin-bottom: 1rem;
+}
+
+.artifacts-toolbar select {
+  min-height: 36px;
+  padding: 8px 34px 8px 10px;
+  border-radius: 9px;
+  font-size: 0.88rem;
+  background-position:
+    calc(100% - 16px) calc(50% - 3px),
+    calc(100% - 10px) calc(50% - 3px);
+}
+
+.artifacts-toolbar-toggle {
+  gap: 0.55rem;
+  min-height: 40px;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .ai-view-grid {
@@ -3051,10 +3117,11 @@ th {
   min-width: 0;
 }
 
+
 .artifacts-detail-rich-block-terminal {
   padding: 0.8rem 0.9rem;
   border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--surface-2) 78%, white 22%);
+  background: color-mix(in srgb, var(--surface-2) 82%, var(--surface) 18%);
   border: 1px solid color-mix(in srgb, var(--border) 82%, var(--accent) 18%);
 }
 
@@ -3101,7 +3168,7 @@ th {
   margin: 0;
   padding: 0.8rem 0.9rem;
   border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--surface-2) 84%, white 16%);
+  background: color-mix(in srgb, var(--surface-2) 88%, var(--surface) 12%);
   border: 1px solid var(--border);
   min-width: 0;
   overflow-x: auto;
@@ -3115,15 +3182,15 @@ th {
 }
 
 .artifacts-detail-notice-danger {
-  background: color-mix(in srgb, var(--danger) 10%, white 90%);
-  color: color-mix(in srgb, var(--danger) 82%, black 18%);
-  border: 1px solid color-mix(in srgb, var(--danger) 18%, white 82%);
+  background: color-mix(in srgb, #b03030 14%, var(--surface) 86%);
+  color: color-mix(in srgb, #b03030 82%, var(--text) 18%);
+  border: 1px solid color-mix(in srgb, #b03030 22%, var(--surface) 78%);
 }
 
 .artifacts-detail-notice-success {
-  background: color-mix(in srgb, var(--success) 12%, white 88%);
-  color: color-mix(in srgb, var(--success) 82%, black 18%);
-  border: 1px solid color-mix(in srgb, var(--success) 18%, white 82%);
+  background: color-mix(in srgb, var(--success) 14%, var(--surface) 86%);
+  color: color-mix(in srgb, var(--success) 82%, var(--text) 18%);
+  border: 1px solid color-mix(in srgb, var(--success) 22%, var(--surface) 78%);
 }
 
 .artifacts-detail-progress-list {

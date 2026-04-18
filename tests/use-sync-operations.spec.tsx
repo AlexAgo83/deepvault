@@ -344,6 +344,46 @@ describe('useSyncOperations', () => {
       DEEPVAULT_ANALYZE_PROVIDER: 'openai',
       DEEPVAULT_ANALYZE_LIMIT: '12',
     })
+
+    await act(async () => {
+      result.current.cancelActiveJob()
+    })
+
+    fetchMock.mockClear()
+
+    await act(async () => {
+      result.current.startPublishAnalysis()
+    })
+    await act(async () => {})
+
+    const publishBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
+      kind: string
+      env: Record<string, string>
+    }
+    expect(publishBody.kind).toBe('publish-analysis')
+    expect(publishBody.env).toEqual({
+      DEEPVAULT_DATA_MODE: 'live',
+    })
+  })
+
+  it('starts publish analysis with the dedicated command header', async () => {
+    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve({ jobId: 'job-publish-analysis' }),
+    }))
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    await act(async () => {
+      result.current.startPublishAnalysis()
+    })
+    await act(async () => {})
+
+    expect(result.current.activeJob?.command).toBe('npm run analyze:publish')
+    expect(result.current.activeJob?.label).toBe('Publish analysis')
+    expect(result.current.activeJob?.lines[0]?.text).toContain('$ npm run analyze:publish')
   })
 
   it('shows the analyze budget in the analyze command header', async () => {

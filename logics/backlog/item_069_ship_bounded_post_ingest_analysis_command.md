@@ -1,9 +1,9 @@
 ## item_069_ship_bounded_post_ingest_analysis_command - Ship bounded post-ingest analysis command
-> From version: 1.3.2
+> From version: 1.3.3
 > Schema version: 1.0
 > Status: Done
-> Understanding: 98%
-> Confidence: 95%
+> Understanding: 99%
+> Confidence: 96%
 > Progress: 100%
 > Complexity: Medium
 > Theme: Product / Architecture
@@ -44,6 +44,7 @@ flowchart LR
 
 # Delivery update
 - `npm run analyze` now emits both `data/runtime/analyzed-corpus.json` and `data/runtime/analyze-report.json`.
+- `npm run analyze:publish` now promotes `data/runtime/analyzed-corpus.json` into `public/live-corpus.json`, keeping the app on one explicit published corpus instead of a hidden sidecar override.
 - The run report includes bounded operability metrics for `selected`, `analyzed`, `excluded`, `failed`, `reused`, `stale`, plus heuristic token and cost estimates.
 - `analyzeCorpusDocuments()` is now async with a real provider-backed path: pass `--provider anthropic|openai|gemini` and the matching env API key to get structured AI analysis (summary, keywords, sections, documentType, confidence) per candidate document, with guaranteed heuristic fallback if the call fails or the key is absent.
 - `analyze-report.json` now includes `actualInputTokens`, `actualOutputTokens`, and `tokenCountMode: 'actual' | 'estimated'` — operators can see whether the token figures come from real API responses or per-document estimates.

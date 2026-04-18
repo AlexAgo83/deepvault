@@ -1,9 +1,9 @@
 ## task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment - Orchestrate post-ingest AI analysis command for corpus enrichment
-> From version: 1.3.2
+> From version: 1.3.3
 > Schema version: 1.0
 > Status: Done
-> Understanding: 99%
-> Confidence: 96%
+> Understanding: 100%
+> Confidence: 97%
 > Progress: 100%
 > Complexity: High
 > Theme: Product / Architecture
@@ -112,6 +112,7 @@ stateDiagram-v2
 
 # Report
 - `npm run analyze` now ships and writes additive `document.analysis` blocks to `data/runtime/analyzed-corpus.json`.
+- `npm run analyze:publish` now explicitly publishes that analyzed snapshot into `public/live-corpus.json`, so app surfaces like Artifacts and Explorer continue to read one promoted corpus instead of bypassing the published runtime boundary.
 - `npm run analyze` also emits `data/runtime/analyze-report.json` with bounded run metrics and heuristic token/cost estimates for routine operability checks.
 - Retrieval and source previews now prefer fresh analysis summaries/sections/keywords without removing baseline corpus fallback behavior.
 - `analyzeCorpusDocuments()` is now async and provider-backed: when `--provider anthropic|openai|gemini` is passed with a valid env API key, each candidate document gets a real provider call (structured JSON response: summary, keywords, sections, documentType, confidence). If the call fails, returns a non-OK status, or the payload is unusable, the run now falls back explicitly to the heuristic path with visible fallback reasons.

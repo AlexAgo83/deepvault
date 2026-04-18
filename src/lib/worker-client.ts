@@ -33,7 +33,7 @@ export interface WorkerAuditContext {
   effectiveConfig: WorkerEffectiveConfig
 }
 
-export type WorkerJobKind = 'ingest' | 'analyze' | 'evaluate' | 'export-live' | 'export-live-resume'
+export type WorkerJobKind = 'ingest' | 'analyze' | 'publish-analysis' | 'evaluate' | 'export-live' | 'export-live-resume'
 export type WorkerJobStatus = 'queued' | 'running' | 'completed' | 'failed' | 'cancelled' | 'rejected'
 
 export interface WorkerJob {

@@ -61,6 +61,7 @@ export default defineConfig({
         const scripts: Record<string, string[]> = {
           ingest: [tsx, 'scripts/ingest.ts'],
           analyze: [tsx, 'scripts/analyze-corpus.ts'],
+          'publish-analysis': [tsx, 'scripts/publish-analyzed-corpus.ts'],
           evaluate: [tsx, 'scripts/evaluate.ts'],
           'export-live': [tsx, 'scripts/export-live.ts'],
           'export-live-resume': [tsx, 'scripts/export-live.ts', '--resume'],
