@@ -56,6 +56,9 @@ jobs:
       - name: E2E tests
         run: npm run e2e
 
+      - name: E2E PWA refresh test
+        run: npm run e2e:pwa-refresh
+
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v4
