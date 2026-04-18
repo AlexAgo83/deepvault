@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: In Progress
+> Status: Done
 > Understanding: 99%
 > Confidence: 97%
-> Progress: 91%
+> Progress: 100%
 > Complexity: High
 > Theme: Quality / Operational / Product
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -57,15 +57,15 @@ stateDiagram-v2
 - [x] 5. Wave 2 — create `.github/workflows/ci.yml` with a `frontend` job (`rtk npm run typecheck`, `rtk npm run check`, build), a `worker` job (`pip install -r worker/requirements.txt`, `rtk python3 -m pytest worker/tests -q`), and a `contracts` smoke job that starts the worker and validates `/api/health` plus `/api/config/mode`.
 - [x] 6. Wave 2 — keep CI hermetic: evaluate runs in mock mode with no ambient provider keys and no live corpus files; cache the Playwright browser download to keep CI run times reasonable; keep E2E as optional/separate if runner capacity supports it.
 - [x] 7. Wave 2 — add an anti-zombie migration guard so CI can fail when runtime-active code still references legacy modules that a closed migration wave should have removed.
-- [ ] 8. Wave 2 — confirm the workflow passes on a clean branch with no local environment variables set.
-- [ ] CHECKPOINT: leave Wave 2 commit-ready; verify the Actions run passes on GitHub before continuing.
+- [x] 8. Wave 2 — confirm the workflow passes on a clean branch with no local environment variables set.
+- [x] CHECKPOINT: leave Wave 2 commit-ready; verify the Actions run passes on GitHub before continuing.
 - [x] 9. Wave 3 — implement the "Export configuration" button in the Settings panel; confirm the downloaded JSON contains all persisted parameters and is generated entirely client-side.
 - [x] 10. Wave 3 — implement the "Import configuration" button with schema validation, explicit user confirmation dialog, and full overwrite only on confirmed valid import.
 - [x] 11. Wave 3 — add a visible plaintext warning on the export UI.
 - [x] 12. Wave 3 — add unit tests covering the export shape and the import validation failure path (malformed file → clear error, no partial write).
 - [x] CHECKPOINT: leave Wave 3 commit-ready and run `rtk npm run test -- tests/settings-panel.spec.tsx` and `rtk npm run check` before continuing.
-- [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
-- [ ] FINAL: update request, backlog, and task docs once all waves are closed.
+- [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
+- [x] FINAL: update request, backlog, and task docs once all waves are closed.
 
 # Delivery checkpoints
 
@@ -120,12 +120,12 @@ stateDiagram-v2
 
 # Definition of Done (DoD)
 
-- [ ] All three backlog items implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured per wave.
-- [ ] No wave closed before the relevant automated tests passed.
-- [ ] Linked request, backlog, and task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status moved to `Done` and progress to `100%`.
+- [x] All three backlog items implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured per wave.
+- [x] No wave closed before the relevant automated tests passed.
+- [x] Linked request, backlog, and task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status moved to `Done` and progress to `100%`.
 
 # Delivery update
 
@@ -134,7 +134,7 @@ stateDiagram-v2
 - Validation completed for Wave 1 with `rtk python3 -m pytest worker/tests/test_scoring.py -q`, `rtk npm run typecheck`, and `rtk npm run evaluate` (100% pass rate, quality gate pass on 20 mock queries).
 - Wave 2 implementation is now landed locally: `.github/workflows/ci.yml` is split into `frontend`, `worker`, and `contracts` jobs, hermetic evaluate output is redirected outside the repo tree, the worker HTTP smoke check is scripted, and an anti-zombie migration guard protects the browser runtime boundary.
 - Local Wave 2 validation completed with `rtk npm run ci:anti-zombie`, `rtk npm run typecheck`, `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`, `rtk python3 -m pytest worker/tests -q`, and `rtk python3 scripts/worker-contract-smoke.py`.
-- Wave 2 is not fully closed yet because the first clean GitHub Actions run still needs to be observed on a pushed branch.
+- Wave 2 is now fully closed. After the initial failing run `24609048677`, a follow-up fix made worker job-metadata writes atomic and the next GitHub Actions run `24609268556` passed cleanly on `main` with `frontend`, `worker`, and `contracts` green.
 - Wave 3 is now complete. Settings can export a full browser-side configuration snapshot as JSON, import it back through schema validation plus explicit confirmation, and warn clearly that exported files contain plaintext secrets.
 - Wave 3 validation completed with `rtk npm run test -- tests/settings-panel.spec.tsx`, `rtk npm run typecheck`, `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`, and a separate `rtk npm run evaluate` rerun.
-- Full local `rtk npm run check` still hits sandbox limits on E2E preview port binding and sandboxed `tsx` IPC; this does not reflect a product regression in the shipped Settings transfer flow.
+- Full local `rtk npm run check` still hits sandbox limits on E2E preview port binding and sandboxed `tsx` IPC; the remote GitHub Actions pass on run `24609268556` provides the final clean validation for this task.

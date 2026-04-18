@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: In Progress
+> Status: Done
 > Understanding: 100%
 > Confidence: 97%
-> Progress: 85%
+> Progress: 100%
 > Complexity: Low
 > Theme: Operational / Quality
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -61,4 +61,4 @@ flowchart LR
 - The worker smoke contract now lives in `scripts/worker-contract-smoke.py`, which starts the FastAPI worker and verifies `/api/health` plus `/api/config/mode` over real HTTP instead of only in-process tests.
 - The anti-zombie guard now lives in `scripts/ci-anti-zombie-check.mjs` and fails when browser runtime code reintroduces banned imports or legacy `/api/worker/` paths.
 - Local validation is complete with `rtk npm run ci:anti-zombie`, `rtk npm run typecheck`, `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`, `rtk python3 -m pytest worker/tests -q`, and `rtk python3 scripts/worker-contract-smoke.py`.
-- Final closure of this backlog item still depends on the first clean GitHub Actions run, which could not be observed from the local environment.
+- GitHub Actions run `24609268556` on `main` completed successfully with distinct `frontend`, `worker`, and `contracts` jobs green; `e2e` remained optional and untriggered as designed.
