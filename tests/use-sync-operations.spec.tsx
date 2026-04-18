@@ -278,6 +278,10 @@ describe('useSyncOperations', () => {
       ...DEFAULT_OPTIONS,
       extraEnv: {
         DEEPVAULT_DATA_MODE: 'live',
+        DEEPVAULT_ENTRA_AUTH_MODE: 'application',
+        DEEPVAULT_ENTRA_BASE_URL: 'https://graph.microsoft.com/v1.0',
+        DEEPVAULT_ENTRA_TIMEOUT_SECONDS: '45',
+        DEEPVAULT_ENTRA_SCOPES: 'Sites.Read.All,Files.Read.All',
         OPENAI_API_KEY: 'openai-key',
         GEMINI_API_KEY: 'gemini-key',
         ANTHROPIC_API_KEY: 'anthropic-key',
@@ -369,6 +373,36 @@ describe('useSyncOperations', () => {
     expect(publishBody.type).toBe('analyze')
     expect(publishBody.options.env).toEqual({
       DEEPVAULT_DATA_MODE: 'live',
+    })
+
+    await act(async () => {
+      result.current.cancelActiveJob()
+    })
+
+    fetchMock.mockClear()
+
+    await act(async () => {
+      result.current.startExportLiveResume()
+    })
+    await act(async () => {})
+
+    const exportResumeBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
+      type: string
+      options: { env: Record<string, string> }
+    }
+    expect(exportResumeBody.type).toBe('export-live')
+    expect(exportResumeBody.options.env).toEqual({
+      DEEPVAULT_DATA_MODE: 'live',
+      DEEPVAULT_EXPORT_LIVE_RESUME: '1',
+      DEEPVAULT_ENTRA_AUTH_MODE: 'application',
+      DEEPVAULT_ENTRA_BASE_URL: 'https://graph.microsoft.com/v1.0',
+      DEEPVAULT_ENTRA_TIMEOUT_SECONDS: '45',
+      DEEPVAULT_ENTRA_SCOPES: 'Sites.Read.All,Files.Read.All',
+      DEEPVAULT_ENTRA_APP_ID: 'app-id',
+      DEEPVAULT_ENTRA_TENANT_ID: 'tenant-id',
+      DEEPVAULT_ENTRA_SECRET_VALUE: 'entra-secret',
+      DEEPVAULT_ENTRA_SITES: 'https://tenant.sharepoint.com/sites/A',
+      DEEPVAULT_PILOT_SITE_NAMES: 'Site A',
     })
   })
 

@@ -7,6 +7,7 @@ from worker.app.infra.runtime_store import RuntimeStore, get_runtime_store
 from worker.app.services.bishop_service import BishopService
 from worker.app.services.corpus_service import CorpusService
 from worker.app.services.jobs_service import JobsService
+from worker.app.services.live_export_service import LiveExportService
 from worker.app.services.system_service import SystemService
 
 
@@ -39,4 +40,9 @@ def get_jobs_service(
         runtime_store=runtime_store,
         corpus_service=corpus_service,
         bishop_service=bishop_service,
+        live_export_service=LiveExportService(
+            settings=settings,
+            runtime_store=runtime_store,
+            corpus_service=corpus_service,
+        ),
     )

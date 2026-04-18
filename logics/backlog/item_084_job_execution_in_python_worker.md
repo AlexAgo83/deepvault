@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: In Progress
+> Status: Done
 > Understanding: 100%
-> Confidence: 97%
-> Progress: 92%
+> Confidence: 99%
+> Progress: 100%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -61,14 +61,16 @@
 - The worker-native job implementations now cover `evaluate`, `ingest`, and `analyze`. `ingest` builds the sync overview from the selected corpus source and writes `data/runtime/sync-state.json` or `data/runtime/sync-state.live.json` directly from the Python worker.
 - `analyze` now writes `data/runtime/analyzed-corpus.json` and `data/runtime/analyze-report.json` from the Python worker, with analysis reuse, bounded run budget, exclusion/stale states, and local heuristic fallback when a provider is requested but not yet wired on the worker.
 - The browser Sync runtime now uses the worker-native jobs endpoints (`/api/jobs`, `/api/jobs/{id}/cancel`, `/api/jobs/{id}/events`) instead of the legacy `/api/worker/jobs` contract, with a compatibility adapter preserving the existing UI status and console model during the migration.
-- The worker-native job implementations now cover `evaluate`, `ingest`, `analyze`, and a first useful `export-live` publication path. `export-live` now publishes `public/live-corpus.json`, persists `data/runtime/live-export-checkpoint.json`, and refreshes `data/runtime/sync-state.live.json` from a worker-selected local source (`DEEPVAULT_CORPUS_PATH`, `analyzed-corpus.json`, prior checkpoint, or mock baseline).
-- The remaining scope is now the last legacy tail: replace the residual Node live-export/Graph path with a worker-native Graph export and then delete the unused legacy execution path before closing the item.
+- The worker-native job implementations now cover `evaluate`, `ingest`, `analyze`, and `export-live`. `export-live` now performs the Graph export on the Python worker, supports checkpoint resume, publishes `public/live-corpus.json`, persists `data/runtime/live-export-checkpoint.json`, and refreshes `data/runtime/sync-state.live.json`.
+- The last browser/dev legacy execution tail is now disconnected: the Vite `ops-server` plugin routes that spawned Node job scripts have been removed, leaving the worker `/api/jobs` flow as the active runtime path for job execution.
 - Validation for this first slice:
   - `rtk python3 -m pytest worker/tests/test_jobs.py -v`
+  - `rtk python3 -m pytest worker/tests/test_live_export_service.py -v`
   - `rtk python3 -m pytest worker/tests/test_app_routes.py worker/tests/test_bishop.py worker/tests/test_jobs.py -v`
   - `rtk python3 -m worker.cli.main jobs run evaluate`
   - `rtk python3 -m worker.cli.main jobs run ingest`
   - `rtk python3 -m worker.cli.main jobs run export-live`
+  - `rtk python3 -m worker.cli.main jobs run export-live --resume`
   - `rtk python3 -m worker.cli.main jobs status 10504cb9-a722-4ebb-99f7-ddace960e4b2`
   - `rtk npm run test -- tests/worker-client.spec.ts tests/use-sync-operations.spec.tsx tests/app.spec.tsx`
   - `rtk npm run typecheck`

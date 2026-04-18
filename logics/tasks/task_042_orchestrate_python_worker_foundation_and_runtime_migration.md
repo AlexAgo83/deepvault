@@ -2,10 +2,10 @@
 
 > From version: 1.4.0
 > Schema version: 1.0
-> Status: In Progress
+> Status: Done
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 98%
+> Progress: 100%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -66,27 +66,27 @@ stateDiagram-v2
 - [x] 1d. Wave 1 — lock the first-wave contracts for `GET /api/config/mode` and the standard worker JSON error envelope.
 - [x] 1e. Wave 1 — source `workerVersion` from a single worker-owned version file and standardize ISO 8601 UTC timestamps in worker contracts.
 - [x] 2. Wave 1 — wire the Vite dev proxy (`/api -> localhost:8000`) and document the local dev workflow (`uvicorn` or Docker Compose alongside `npm run dev`).
-- [ ] CHECKPOINT: leave Wave 1 commit-ready and verify the worker responds through both direct curl and the Vite proxy path.
+- [x] CHECKPOINT: leave Wave 1 commit-ready and verify the worker responds through both direct curl and the Vite proxy path.
 - [x] 3. Wave 2 — port the document scoring contract to `worker/scoring.py`, including enrichment scoring from `adr_032`.
 - [x] 3a. Wave 2 — implement functional parity with the TypeScript scoring contract rather than bit-perfect parity, and freeze the first-wave enrichment tuning at confidence threshold `0.7` with a bounded score bonus capped at `+15%`.
 - [x] 4. Wave 2 — add Python unit tests covering unenriched, high-confidence, and low-confidence ranking cases; confirm parity with the existing TypeScript contract before deletion.
 - [x] CHECKPOINT: leave Wave 2 commit-ready and run focused worker scoring tests plus the evaluate gate.
 - [x] 5. Wave 3 — implement `GET /api/corpus` with `ETag` support and local-mode mock corpus serving from the worker.
 - [x] 5a. Wave 3 — expose `worker corpus show` and `worker corpus validate` over the same corpus service used by `GET /api/corpus`.
-- [ ] 6. Wave 3 — move the browser corpus loading path to the worker endpoint, remove browser references to `src/data/corpus.ts`, `src/lib/scoring.ts`, and `src/lib/deepvault.ts`, and ship the explicit offline error state.
-- [ ] CHECKPOINT: leave Wave 3 commit-ready and verify the browser fetch path plus bundle cleanup.
+- [x] 6. Wave 3 — move the browser corpus loading path to the worker endpoint, remove browser references to `src/data/corpus.ts`, `src/lib/scoring.ts`, and `src/lib/deepvault.ts`, and ship the explicit offline error state.
+- [x] CHECKPOINT: leave Wave 3 commit-ready and verify the browser fetch path plus bundle cleanup.
 - [x] 7. Wave 4 — implement `POST /api/bishop/query` in `worker/bishop.py`, including grounding, prompt assembly, provider dispatch, and structured response parity with `adr_020`.
 - [x] 7a. Wave 4 — expose a CLI debug path (`worker bishop query --question "..."`) over the same Bishop service used by the HTTP endpoint.
-- [ ] 8. Wave 4 — update the browser Bishop flow to call the worker proxy and confirm no provider API key remains in the browser path.
-- [ ] CHECKPOINT: leave Wave 4 commit-ready and run integration coverage for success, low-confidence, and provider-error paths.
+- [x] 8. Wave 4 — update the browser Bishop flow to call the worker proxy and confirm no provider API key remains in the browser path.
+- [x] CHECKPOINT: leave Wave 4 commit-ready and run integration coverage for success, low-confidence, and provider-error paths.
 - [x] 9. Wave 5 — implement `POST /api/jobs`, `GET /api/jobs/:id`, and `GET /api/jobs/:id/events` with persisted runtime state and SSE progress.
 - [x] 9a. Wave 5 — expose `worker jobs run ingest|analyze|evaluate|export-live` and `worker jobs status <id>` over the same job service layer used by the HTTP routes.
 - [x] 9b. Wave 5 — persist canonical job metadata in `data/runtime/jobs/<jobId>.json` and append events in `data/runtime/jobs/<jobId>.events.jsonl` using the statuses `queued`, `running`, `succeeded`, `failed`, and `cancelled`.
 - [x] 9c. Wave 5 — use UUID v4 job ids and keep the persisted job metadata/event log retention simple by default until an explicit cleanup policy is introduced.
-- [ ] 10. Wave 5 — update the Sync panel to trigger worker-managed jobs and render real-time progress from the SSE stream.
-- [ ] GATE: when a wave replaces a legacy browser/Node runtime path, remove or fully disconnect the replaced path before closing the wave.
-- [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
-- [ ] FINAL: update request, backlog, architecture, and task docs once all runtime migration waves are closed.
+- [x] 10. Wave 5 — update the Sync panel to trigger worker-managed jobs and render real-time progress from the SSE stream.
+- [x] GATE: when a wave replaces a legacy browser/Node runtime path, remove or fully disconnect the replaced path before closing the wave.
+- [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
+- [x] FINAL: update request, backlog, architecture, and task docs once all runtime migration waves are closed.
 
 # Delivery checkpoints
 
@@ -142,14 +142,14 @@ stateDiagram-v2
 
 # Definition of Done (DoD)
 
-- [ ] All five backlog items implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured per wave.
-- [ ] No wave closed before the relevant automated tests passed.
-- [ ] Linked request, backlog, product, architecture, and task docs updated during completed waves and at closure.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] CLI and HTTP surfaces both exercise the same worker services for the capabilities introduced by the task.
-- [ ] Replaced legacy browser/Node runtime paths are removed or disconnected before the closing wave is marked complete.
-- [ ] Status moved to `Done` and progress to `100%`.
+- [x] All five backlog items implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured per wave.
+- [x] No wave closed before the relevant automated tests passed.
+- [x] Linked request, backlog, product, architecture, and task docs updated during completed waves and at closure.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] CLI and HTTP surfaces both exercise the same worker services for the capabilities introduced by the task.
+- [x] Replaced legacy browser/Node runtime paths are removed or disconnected before the closing wave is marked complete.
+- [x] Status moved to `Done` and progress to `100%`.
 
 ## Progress notes
 
@@ -171,5 +171,5 @@ stateDiagram-v2
 - Wave 5 has now started with a worker-native job orchestration slice: `POST /api/jobs`, `GET /api/jobs/{id}`, `GET /api/jobs/{id}/events`, canonical runtime persistence, and `worker jobs run|status` are landed over a shared `JobsService`.
 - The Sync panel/browser worker client now talks to the worker-native jobs contract (`/api/jobs` and `/api/jobs/{id}/cancel`) instead of the legacy `/api/worker/jobs` path, while preserving the existing UI console/status model through a browser-side compatibility adapter.
 - The worker-native job implementations now cover `evaluate`, `ingest`, and `analyze`; `ingest` writes the worker-owned sync snapshot directly to `data/runtime/sync-state(.live).json`, and `analyze` writes `data/runtime/analyzed-corpus.json` plus `data/runtime/analyze-report.json`.
-- Wave 5 advanced again: the worker now runs a first useful `export-live` publication flow, writing `public/live-corpus.json`, `data/runtime/live-export-checkpoint.json`, and `data/runtime/sync-state.live.json` from worker-managed local sources while keeping the same job/SSE/CLI contract.
-- The current checkpoint is now narrower: replace the residual Node live-export/Graph path with a fully worker-native Graph export, then delete the remaining legacy execution path and close the task.
+- Wave 5 is now complete: the worker runs `export-live` end to end with Microsoft Graph on the Python side, supports checkpoint resume, writes `public/live-corpus.json`, `data/runtime/live-export-checkpoint.json`, and `data/runtime/sync-state.live.json`, and keeps the same job/SSE/CLI contract.
+- The legacy Vite Node job execution shim is now removed, so the worker `/api/jobs` flow is the active runtime path for job execution in local and hosted-style development.
