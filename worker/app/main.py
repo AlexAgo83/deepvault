@@ -5,6 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from worker.app.errors import build_error_envelope
+from worker.app.routes.corpus import router as corpus_router
 from worker.app.routes.config_mode import router as config_mode_router
 from worker.app.routes.health import router as health_router
 
@@ -12,6 +13,7 @@ from worker.app.routes.health import router as health_router
 app = FastAPI(title="DeepVault Nexus Worker", version="1.0.0")
 app.include_router(health_router)
 app.include_router(config_mode_router)
+app.include_router(corpus_router)
 
 
 @app.exception_handler(RequestValidationError)

@@ -17,6 +17,7 @@ function LiveCorpusProbe({ mode }: { mode: string }) {
 
 describe('useLiveCorpus', () => {
   afterEach(() => {
+    window.localStorage.clear()
     vi.unstubAllGlobals()
     vi.restoreAllMocks()
   })
@@ -25,6 +26,8 @@ describe('useLiveCorpus', () => {
     const { corpus } = getMockCorpusBundle()
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
+      status: 200,
+      headers: { get: vi.fn().mockReturnValue('etag-live') },
       json: async () => corpus,
     })
 
@@ -34,7 +37,7 @@ describe('useLiveCorpus', () => {
 
     await waitFor(() => expect(screen.getByTestId('mode')).toHaveTextContent('live'))
     expect(screen.getByTestId('label')).toHaveTextContent('Live')
-    expect(screen.getByTestId('detail')).toHaveTextContent('Live corpus loaded')
+    expect(screen.getByTestId('detail')).toHaveTextContent('Worker corpus loaded')
   })
 
   it('falls back to mock data when the live corpus payload is invalid', async () => {
@@ -69,7 +72,8 @@ describe('useLiveCorpus', () => {
 
     await waitFor(() => expect(screen.getByTestId('mode')).toHaveTextContent('mock'))
     expect(screen.getByTestId('label')).toHaveTextContent('Offline — corpus mock')
-    expect(screen.getByTestId('detail')).toHaveTextContent('Hors-ligne — corpus mock actif')
+    expect(screen.getByTestId('detail')).toHaveTextContent('Worker corpus unavailable offline')
+    expect(screen.getByTestId('detail')).toHaveTextContent('Use refresh to reconnect.')
   })
 
   it('resets to mock data immediately when live mode is not requested', async () => {

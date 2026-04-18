@@ -13,6 +13,10 @@ export type LiveCorpusFetchResult =
   | { status: 'offline'; detail: string }
   | { status: 'error'; detail: string }
 
+const LAST_LIVE_CORPUS_FETCH_AT_STORAGE_KEY = 'deepvault:last-live-corpus-fetch-at'
+
+let cachedLiveCorpus: { etag: string; corpus: Corpus } | null = null
+
 export function getMockCorpusBundle(): CorpusBundle {
   return { corpus: mockCorpus as Corpus, mode: 'mock' }
 }
@@ -129,33 +133,74 @@ export function isCorpusLike(value: unknown): value is Corpus {
 }
 
 export async function fetchLiveCorpus(): Promise<LiveCorpusFetchResult> {
+  const headers: Record<string, string> = {}
+  if (cachedLiveCorpus?.etag) {
+    headers['If-None-Match'] = cachedLiveCorpus.etag
+  }
+
   try {
-    const response = await fetch('/live-corpus.json', { cache: 'no-store' })
+    const response = await fetch('/api/corpus', { cache: 'no-store', headers })
+    if (response.status === 304 && cachedLiveCorpus) {
+      writeLastSuccessfulFetchAt(new Date().toISOString())
+      return { status: 'loaded', corpus: cachedLiveCorpus.corpus, detail: 'Live corpus unchanged' }
+    }
     if (!response.ok) {
       if (response.status === 404 || response.status === 410) {
-        return { status: 'missing', detail: 'Live corpus missing, fallback to mock' }
+        return { status: 'missing', detail: 'Worker corpus missing, fallback to mock' }
       }
-      return { status: 'error', detail: `Live corpus error: request failed with status ${response.status}` }
+      return { status: 'error', detail: `Worker corpus error: request failed with status ${response.status}` }
     }
     try {
       const payload: unknown = await response.json()
       if (!isCorpusLike(payload)) {
-        return { status: 'error', detail: 'Live corpus error: response payload was not a valid corpus' }
+        return { status: 'error', detail: 'Worker corpus error: response payload was not a valid corpus' }
       }
-      return { status: 'loaded', corpus: payload, detail: 'Live corpus loaded' }
+      const etag = response.headers.get('etag')
+      if (etag) {
+        cachedLiveCorpus = { etag, corpus: payload }
+      }
+      writeLastSuccessfulFetchAt(new Date().toISOString())
+      return { status: 'loaded', corpus: payload, detail: 'Worker corpus loaded' }
     } catch {
-      return { status: 'error', detail: 'Live corpus error: response body could not be parsed' }
+      return { status: 'error', detail: 'Worker corpus error: response body could not be parsed' }
     }
   } catch {
+    const lastSuccessfulFetchAt = readLastSuccessfulFetchAt()
     if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-      return { status: 'offline', detail: 'Live corpus unavailable offline, fallback to mock' }
+      return {
+        status: 'offline',
+        detail: lastSuccessfulFetchAt
+          ? `Worker corpus unavailable offline. Last successful fetch: ${lastSuccessfulFetchAt}`
+          : 'Worker corpus unavailable offline and no successful fetch is cached yet',
+      }
     }
-    return { status: 'error', detail: 'Live corpus error: request failed before a response was returned' }
+    return {
+      status: 'error',
+      detail: lastSuccessfulFetchAt
+        ? `Worker corpus request failed before a response was returned. Last successful fetch: ${lastSuccessfulFetchAt}`
+        : 'Worker corpus request failed before a response was returned',
+    }
   }
 }
 
 export function normalizeRequestedCorpusMode(value: string | undefined | null): CorpusMode {
   return normalizeCorpusMode(value)
+}
+
+function readLastSuccessfulFetchAt(): string | null {
+  try {
+    return window.localStorage.getItem(LAST_LIVE_CORPUS_FETCH_AT_STORAGE_KEY)
+  } catch {
+    return null
+  }
+}
+
+function writeLastSuccessfulFetchAt(value: string): void {
+  try {
+    window.localStorage.setItem(LAST_LIVE_CORPUS_FETCH_AT_STORAGE_KEY, value)
+  } catch {
+    // ignore storage failures
+  }
 }
 
 export default mockCorpus as Corpus

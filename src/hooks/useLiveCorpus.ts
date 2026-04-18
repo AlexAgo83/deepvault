@@ -51,7 +51,7 @@ export function useLiveCorpus(requestedModeValue: string | undefined | null): Li
         label: result.status === 'offline' ? 'Offline — corpus mock' : result.status === 'missing' ? 'Live fallback' : 'Live error',
         detail:
           result.status === 'offline'
-            ? 'Hors-ligne — corpus mock actif'
+            ? `${result.detail}. Use refresh to reconnect.`
             : result.status === 'missing'
               ? result.detail
               : result.detail,
