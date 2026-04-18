@@ -53,10 +53,37 @@ def test_jobs_service_runs_evaluate_and_persists_files(tmp_path) -> None:
     assert (tmp_path / "jobs" / f"{started['jobId']}.events.jsonl").exists()
 
 
+def test_jobs_service_runs_ingest_and_writes_sync_state(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+
+    started = service.start_job(job_type="ingest", options={"env": {"DEEPVAULT_DATA_MODE": "mock"}})
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    assert completed["status"] == "succeeded"
+    assert completed["result"]["mode"] == "mock"
+    assert (tmp_path / "sync-state.json").exists()
+
+
+def test_jobs_service_runs_ingest_in_live_mode_when_corpus_path_is_provided(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+    live_corpus_path = tmp_path / "live-corpus.json"
+    live_corpus_path.write_text(service._corpus_service.load_corpus_bytes().decode("utf-8"), encoding="utf-8")
+
+    started = service.start_job(
+        job_type="ingest",
+        options={"env": {"DEEPVAULT_DATA_MODE": "live", "DEEPVAULT_CORPUS_PATH": str(live_corpus_path)}},
+    )
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    assert completed["status"] == "succeeded"
+    assert completed["result"]["mode"] == "live"
+    assert (tmp_path / "sync-state.live.json").exists()
+
+
 def test_jobs_service_marks_unimplemented_job_types_failed(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
 
-    started = service.start_job(job_type="ingest", options={})
+    started = service.start_job(job_type="analyze", options={})
     completed = wait_for_terminal_status(service, started["jobId"])
 
     assert completed["status"] == "failed"
