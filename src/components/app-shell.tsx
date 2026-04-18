@@ -1,27 +1,18 @@
-import { useEffect, useRef, useState, type ReactElement } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ErrorBoundary } from './error-boundary'
-import { CompactDateTime, Pill, StatCard } from './app-ui'
+import { CompactDateTime, StatCard } from './app-ui'
 import { GettingStartedModal } from './getting-started-modal'
+import { AppSidebar, AppToolbar, AppTopbar, type RightPanelState, type SettingsShortcutTarget } from './app-shell-chrome'
 import { useInstallPrompt, useTheme } from '../hooks'
-import type { Theme } from '../hooks/useTheme'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
 import { AIStatsPanel, ArtifactsPanel, BishopPanel, createBishopExportHandlers, ExplorerPanel, createExplorerExportHandlers, SettingsPanel, SyncPanel } from './panels'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
-type NavSection = {
-  label: string
-  ariaLabel: string
-  items: ReadonlyArray<{ id: AppTab; label: string; icon: () => ReactElement }>
-}
-
-type RightPanelState = Record<Exclude<AppTab, 'sync'>, boolean>
 type TopbarScrollTarget = 'sync-status'
-type SettingsShortcutTarget = 'runtime' | 'ai-providers' | null
 type StatsHeaderState = Record<Extract<AppTab, 'settings' | 'sync' | 'ai-stats' | 'artifacts'>, boolean>
 
 const RIGHT_PANEL_STORAGE_KEY = 'deepvault_right_panel_visibility'
 const STATS_HEADER_STORAGE_KEY = 'deepvault_stats_headers_visibility'
-const TOPBAR_DETAILS_STORAGE_KEY = 'deepvault_topbar_details_expanded'
 const MOBILE_VIEWPORT_QUERY = '(max-width: 900px)'
 
 function readIsMobileViewport(): boolean {
@@ -78,471 +69,16 @@ function readStatsHeaderState(): StatsHeaderState {
   }
 }
 
-function readTopbarDetailsState(): boolean {
-  try {
-    const raw = localStorage.getItem(TOPBAR_DETAILS_STORAGE_KEY)
-    if (raw === null) return true
-    return raw === 'true'
-  } catch {
-    return true
-  }
-}
-
-const NAV_SECTIONS: ReadonlyArray<NavSection> = [
-  {
-    label: 'Navigation',
-    ariaLabel: 'Primary navigation',
-    items: [
-      { id: 'explorer', label: 'Explorer', icon: ExplorerIcon },
-      { id: 'bishop', label: 'Bishop', icon: BishopIcon },
-    ],
-  },
-  {
-    label: 'Application',
-    ariaLabel: 'Application panels',
-    items: [
-      { id: 'sync', label: 'Knowledge', icon: SyncIcon },
-      { id: 'artifacts', label: 'Artifacts', icon: ArtifactsIcon },
-      { id: 'ai-stats', label: 'AI View', icon: StatsIcon },
-      { id: 'settings', label: 'Settings', icon: SettingsIcon },
-    ],
-  },
-]
-
-function ExplorerIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <circle cx="9" cy="9" r="4.4" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <path d="m12.3 12.3 3.7 3.7" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function BishopIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <circle cx="10" cy="10" r="5.25" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <circle cx="8.2" cy="8.9" r="0.65" fill="currentColor" />
-      <circle cx="11.8" cy="8.9" r="0.65" fill="currentColor" />
-      <path d="M8.2 11.6c.45.58 1.1.9 1.8.9s1.35-.32 1.8-.9" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function SyncIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <ellipse cx="10" cy="4.75" rx="4.75" ry="1.75" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <path d="M5.25 4.75v4.5c0 .97 2.13 1.75 4.75 1.75s4.75-.78 4.75-1.75v-4.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <path d="M5.25 9.25v4.5c0 .97 2.13 1.75 4.75 1.75s4.75-.78 4.75-1.75v-4.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
-    </svg>
-  )
-}
-
-function SettingsIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M8.3 4.4 10 3.5l1.7.9 1.9-.2.8 1.8 1.6 1.1-.4 1.9.4 1.9-1.6 1.1-.8 1.8-1.9-.2-1.7.9-1.7-.9-1.9.2-.8-1.8-1.6-1.1.4-1.9-.4-1.9 1.6-1.1.8-1.8z" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-      <circle cx="10" cy="10" r="1.9" fill="none" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  )
-}
-
-function StatsIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M5 15.25V9.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M9.5 15.25V5.75" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M14 15.25V11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M4.5 15.25h11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function SunIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <circle cx="10" cy="10" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10 3.5v1.2M10 15.3v1.2M3.5 10h1.2M15.3 10h1.2M5.45 5.45l.85.85M13.7 13.7l.85.85M14.55 5.45l-.85.85M6.3 13.7l-.85.85" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function MoonIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M14.5 12.5A6 6 0 0 1 7.5 5.5a6.04 6.04 0 0 0-.5 2.4 6 6 0 0 0 6 6c.84 0 1.65-.17 2.38-.47A5.98 5.98 0 0 1 14.5 12.5Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function PwaInstallIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M10 4v8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M6.5 8.5 10 12l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M5 15h10" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function InfoIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M10 8.3v4.35" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
-      <circle cx="10" cy="6.2" r="0.75" fill="currentColor" />
-    </svg>
-  )
-}
-
-function QuestionIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M8.35 7.25a1.75 1.75 0 0 1 3.3.85c0 1.4-1.55 1.8-2.1 2.7-.16.27-.25.58-.25.95v.45" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="10" cy="14.45" r="0.75" fill="currentColor" />
-    </svg>
-  )
-}
-
-function StatsToggleIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M5.25 14.75V9.25" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
-      <path d="M9.5 14.75V6.75" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
-      <path d="M13.75 14.75V11" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
-      <path d="M4.5 14.75h11" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function ArtifactsIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <rect x="3" y="8.5" width="14" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <rect x="2" y="5.5" width="16" height="3.5" rx="1" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <path d="M8 5.5V4.5a2 2 0 0 1 4 0v1" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function MenuIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M4.5 9.25 10 4.75l5.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M6.5 8.9v6.35h7V8.9" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9 15.25v-3h2v3" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function AppSidebar({
-  activeTab,
-  canInstall,
-  install,
-  isStandalone,
-  isCollapsed,
-  isMobileViewport,
-  isMobileMenuOpen,
-  theme,
-  onToggleSidebar,
-  onTabChange,
-  onToggleTheme,
-  onRequestCloseMobileMenu,
-}: {
-  activeTab: AppTab
-  canInstall: boolean
-  install: () => Promise<void>
-  isStandalone: boolean
-  isCollapsed: boolean
-  isMobileViewport: boolean
-  isMobileMenuOpen: boolean
-  theme: Theme
-  onToggleSidebar: () => void
-  onTabChange: (_tab: AppTab) => void
-  onToggleTheme: () => void
-  onRequestCloseMobileMenu: () => void
-}) {
-  const appBuildLabel = __APP_BUILD_ID__.slice(0, 16).replace('T', ' ')
-
-  return (
-    <aside
-      id="app-sidebar"
-      className={`sidebar ${!isMobileViewport && isCollapsed ? 'sidebar-collapsed' : ''} ${isMobileMenuOpen ? 'sidebar-mobile-open' : ''}`}
-      aria-label="App sidebar"
-      aria-expanded={!isMobileViewport && !isCollapsed ? true : isMobileMenuOpen}
-    >
-      <div className="sidebar-brandline">
-        <span className="sidebar-brand">Nexus</span>
-        <button
-          type="button"
-          className="sidebar-collapse-button"
-          aria-label={isMobileMenuOpen ? 'Close menu' : isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          aria-pressed={isMobileMenuOpen ? true : isCollapsed}
-          aria-controls="app-sidebar"
-          title={isMobileMenuOpen ? 'Close menu' : isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          onClick={isMobileMenuOpen ? onRequestCloseMobileMenu : onToggleSidebar}
-        >
-          <MenuIcon />
-        </button>
-      </div>
-
-      {NAV_SECTIONS.map((section) => (
-        <div key={section.label} className="sidebar-section">
-          <div className="sidebar-label">{section.label}</div>
-          <nav className="nav-list" aria-label={section.ariaLabel}>
-            {section.items.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`nav-item ${activeTab === item.id ? 'nav-item-active' : ''}`}
-                aria-current={activeTab === item.id ? 'page' : undefined}
-                title={`Open ${item.label.toLowerCase()}`}
-                onClick={() => onTabChange(item.id)}
-              >
-                <span className="nav-item-icon" aria-hidden="true">
-                  <item.icon />
-                </span>
-                <span className="nav-item-label">{item.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-      ))}
-
-      {!isStandalone && canInstall ? (
-        <div className="sidebar-section">
-          <nav className="nav-list" aria-label="App actions">
-            {!isStandalone && canInstall ? (
-              <button
-                type="button"
-                className="nav-item nav-item-action pwa-action-button"
-                title="Install the app as a standalone application"
-                onClick={() => void install()}
-              >
-                <span className="pwa-action-icon" aria-hidden="true">
-                  <PwaInstallIcon />
-                </span>
-                <span className="nav-item-label">Installer l'app</span>
-              </button>
-            ) : null}
-          </nav>
-        </div>
-      ) : null}
-
-      <div className="theme-toggle">
-        <span className="theme-toggle-label">Theme</span>
-        <button
-          type="button"
-          className="theme-toggle-button"
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          aria-pressed={theme === 'dark'}
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          onClick={onToggleTheme}
-          >
-          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-        </button>
-      </div>
-
-      <div className="sidebar-version" aria-label="App version">
-        <span>Nexus</span>
-        <span>v{__APP_VERSION__}</span>
-        <span>{appBuildLabel}</span>
-        <span>© {new Date().getFullYear()}</span>
-      </div>
-    </aside>
-  )
-}
-
-function AppTopbar({
-  activeScopeLabel,
-  liveStateLabel,
-  liveStateTone,
-  liveStateDetail,
-  hasRightPanel,
-  isMobileViewport,
-  isMobileMenuOpen,
-  showRightPanel,
-  showStatsHeaders,
-  showStatsToggle,
-  onToggleStatsHeader,
-  provider,
-  role,
-  onOpenAiProviders,
-  onOpenSettings,
-  onOpenSyncStatus,
-  onToggleRightPanel,
-  onToggleMobileMenu,
-}: {
-  activeScopeLabel: string
-  liveStateLabel: string
-  liveStateTone: AppModel['liveState']['tone']
-  liveStateDetail: string
-  hasRightPanel: boolean
-  isMobileViewport: boolean
-  isMobileMenuOpen: boolean
-  showRightPanel: boolean
-  showStatsHeaders: boolean
-  showStatsToggle: boolean
-  onToggleStatsHeader: () => void
-  provider: string
-  role: string
-  onOpenAiProviders: () => void
-  onOpenSettings: () => void
-  onOpenSyncStatus: () => void
-  onToggleRightPanel: () => void
-  onToggleMobileMenu: () => void
-}) {
-  const [isExpanded, setIsExpanded] = useState<boolean>(() => readTopbarDetailsState())
-
-  useEffect(() => {
-    localStorage.setItem(TOPBAR_DETAILS_STORAGE_KEY, String(isExpanded))
-  }, [isExpanded])
-
-  return (
-    <header className="topbar">
-      <div className="topbar-actions">
-        <div className="topbar-badges">
-          {isExpanded ? (
-            <>
-              <div className="topbar-badge-group topbar-badge-group-status" aria-label="Knowledge">
-                <button
-                  type="button"
-                  className="topbar-pill-button"
-                  title={liveStateDetail}
-                  aria-label={`${liveStateLabel}. Open Settings and scroll to the Settings panel`}
-                  onClick={onOpenSettings}
-                >
-                  <Pill tone={liveStateTone} title={liveStateDetail}>
-                    {liveStateLabel}
-                  </Pill>
-                </button>
-                <button
-                  type="button"
-                  className="topbar-pill-button"
-                  title="Open Knowledge View and jump to Status"
-                  aria-label="Synced. Open Knowledge View and jump to Status"
-                  onClick={onOpenSyncStatus}
-                >
-                  <Pill tone="success">Synced</Pill>
-                </button>
-              </div>
-              <span className="topbar-badge-divider" aria-hidden="true" />
-              <div id="topbar-context" className="topbar-badge-group topbar-badge-group-context" aria-label="Active context">
-                <button
-                  type="button"
-                  className="topbar-pill-button"
-                  title="Open Settings and scroll to the Settings panel"
-                  aria-label={`${activeScopeLabel}. Open Settings and scroll to the Settings panel`}
-                  onClick={onOpenSettings}
-                >
-                  <Pill tone="neutral">{activeScopeLabel}</Pill>
-                </button>
-                <button
-                  type="button"
-                  className="topbar-pill-button"
-                  title="Open Settings and scroll to AI providers"
-                  aria-label={`${provider}. Open Settings and scroll to AI providers`}
-                  onClick={onOpenAiProviders}
-                >
-                  <Pill tone="neutral">{provider}</Pill>
-                </button>
-                <button
-                  type="button"
-                  className="topbar-pill-button"
-                  title="Open Settings and scroll to the Settings panel"
-                  aria-label={`${role}. Open Settings and scroll to the Settings panel`}
-                  onClick={onOpenSettings}
-                >
-                  <Pill tone="accent">{role}</Pill>
-                </button>
-              </div>
-            </>
-          ) : null}
-          <button
-            type="button"
-            className="topbar-info-button"
-            aria-expanded={isExpanded}
-            aria-controls="topbar-context"
-            aria-label={isExpanded ? 'Hide topbar details' : 'Show topbar details'}
-            title={isExpanded ? 'Hide details' : 'Show details'}
-            onClick={() => setIsExpanded((value) => !value)}
-          >
-            <InfoIcon />
-          </button>
-          {showStatsToggle ? (
-            <button
-              type="button"
-              className={`topbar-info-button topbar-stats-button ${showStatsHeaders ? '' : 'topbar-button-muted'}`}
-              aria-pressed={showStatsHeaders}
-              aria-label={showStatsHeaders ? 'Hide stats headers' : 'Show stats headers'}
-              title={showStatsHeaders ? 'Hide stats headers' : 'Show stats headers'}
-              onClick={onToggleStatsHeader}
-            >
-              <StatsToggleIcon />
-            </button>
-          ) : null}
-          {hasRightPanel ? (
-            <button
-              type="button"
-              className={`topbar-info-button topbar-help-button ${showRightPanel ? '' : 'topbar-button-muted'}`}
-              aria-expanded={showRightPanel}
-              aria-controls="panel-right"
-              aria-label={showRightPanel ? 'Hide right panel' : 'Show right panel'}
-              title={showRightPanel ? 'Hide right panel' : 'Show right panel'}
-              onClick={onToggleRightPanel}
-            >
-              <QuestionIcon />
-            </button>
-          ) : null}
-          {isMobileViewport ? (
-            <button
-              type="button"
-              className="topbar-info-button topbar-menu-button"
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="app-sidebar"
-              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-              title={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-              onClick={onToggleMobileMenu}
-            >
-              <MenuIcon />
-            </button>
-          ) : null}
-        </div>
-      </div>
-    </header>
-  )
-}
-
-function AppToolbar({
-  search,
-  onSearchChange,
-}: {
-  search: string
-  onSearchChange: (_value: string) => void
-}) {
-  return (
-    <section className="panel panel-toolbar">
-      <div className="toolbar">
-        <div className="toolbar-search">
-          <label htmlFor="search">Explorer search</label>
-          <input
-            id="search"
-            type="search"
-            value={search}
-            onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Budget, roadmap, policy, status..."
-          />
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export function AppShell(model: AppModel) {
   const {
     activeScopeLabel,
     activeTab,
     corpusProviders,
+    hostedMode,
+    hostedIdentityLabel,
+    canSignOutHostedSession,
+    signOutHostedSession,
+    isOperator,
     bishopSettings,
     clearBishopSettings,
     clearEntraSettings,
@@ -550,6 +86,7 @@ export function AppShell(model: AppModel) {
     clearWorkerSettings,
     entraSettings,
     explorerRows,
+    workerHealth,
     clearBishopHistory,
     handleAsk,
     isAsking,
@@ -696,6 +233,12 @@ export function AppShell(model: AppModel) {
   const showKpiGrid = (activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' || activeTab === 'artifacts') ? statsHeaderState[activeTab] : false
   const showStatsToggle = activeTab === 'settings' || activeTab === 'sync' || activeTab === 'ai-stats' || activeTab === 'artifacts'
   const isKnowledgeTab = activeTab === 'sync'
+  const canAccessArtifacts = !hostedMode || isOperator
+  useEffect(() => {
+    if (activeTab === 'artifacts' && !canAccessArtifacts) {
+      setActiveTab('sync')
+    }
+  }, [activeTab, canAccessArtifacts, setActiveTab])
   const toggleSidebar = () => setIsSidebarCollapsed((value) => !value)
   const toggleMobileMenu = () => {
     if (isMobileViewport) {
@@ -806,6 +349,7 @@ export function AppShell(model: AppModel) {
         }}
         onRequestCloseMobileMenu={closeMobileMenu}
         onToggleTheme={toggleTheme}
+        showArtifactsTab={canAccessArtifacts}
       />
 
       <main className={`main-content ${isKnowledgeTab ? 'main-content-knowledge' : ''}`}>
@@ -825,6 +369,7 @@ export function AppShell(model: AppModel) {
           onToggleMobileMenu={toggleMobileMenu}
           provider={provider}
           role={role}
+          hostedIdentityLabel={hostedMode ? hostedIdentityLabel : null}
           showRightPanel={showRightPanel}
           showStatsHeaders={currentStatsHeadersVisible}
           showStatsToggle={showStatsToggle}
@@ -836,6 +381,7 @@ export function AppShell(model: AppModel) {
             <div className="knowledge-scroll-region">
               <ErrorBoundary fallback={<div className="empty-state">Sync panel failed to render.</div>}>
                 <SyncPanel
+                  canManageJobs={!hostedMode || isOperator}
                   scopedCorpusSummary={scopedCorpusSummary}
                   scopedSiteSummaries={scopedSiteSummaries}
                   scopedSyncOverview={scopedSyncOverview}
@@ -851,32 +397,38 @@ export function AppShell(model: AppModel) {
 
         {activeTab === 'settings' ? (
           <ErrorBoundary fallback={<div className="empty-state">Settings panel failed to render.</div>}>
-          <SettingsPanel
-            corpusProviders={corpusProviders}
-            bishopSettings={bishopSettings}
-            conversationContextEnabled={conversationContextEnabled}
-            entraSettings={entraSettings}
-            providerSecrets={providerSecrets}
-            workerSettings={workerSettings}
-            onBishopChange={setBishopSetting}
-            onClear={clearProviderSecrets}
-            onClearBishop={clearBishopSettings}
-            onClearEntra={clearEntraSettings}
-            onClearWorker={clearWorkerSettings}
-            onEntraChange={setEntraSetting}
-            onKeyChange={setProviderSecret}
-            onProviderChange={(value) => setProvider(value)}
-            onRoleChange={(value) => setRole(value)}
-            onSiteFilterChange={setSiteFilter}
-            onConversationContextEnabledChange={setConversationContextEnabled}
-            onWorkerChange={setWorkerSetting}
-            showRightPanel={showRightPanel}
-            provider={provider}
-            requestedView={requestedSettingsView}
-            role={role}
-            siteFilter={siteFilter}
-            siteSummaries={siteSummaries}
-          />
+            <SettingsPanel
+              corpusProviders={corpusProviders}
+              bishopSettings={bishopSettings}
+              canSignOutHostedSession={canSignOutHostedSession}
+              conversationContextEnabled={conversationContextEnabled}
+              entraSettings={entraSettings}
+              hostedIdentityLabel={hostedIdentityLabel}
+              hostedMode={hostedMode}
+              isOperator={isOperator}
+              providerSecrets={providerSecrets}
+              workerHealth={workerHealth}
+              workerSettings={workerSettings}
+              onBishopChange={setBishopSetting}
+              onClear={clearProviderSecrets}
+              onClearBishop={clearBishopSettings}
+              onClearEntra={clearEntraSettings}
+              onClearWorker={clearWorkerSettings}
+              onEntraChange={setEntraSetting}
+              onKeyChange={setProviderSecret}
+              onProviderChange={(value) => setProvider(value)}
+              onRoleChange={(value) => setRole(value)}
+              onSignOutHostedSession={signOutHostedSession}
+              onSiteFilterChange={setSiteFilter}
+              onConversationContextEnabledChange={setConversationContextEnabled}
+              onWorkerChange={setWorkerSetting}
+              showRightPanel={showRightPanel}
+              provider={provider}
+              requestedView={requestedSettingsView}
+              role={role}
+              siteFilter={siteFilter}
+              siteSummaries={siteSummaries}
+            />
           </ErrorBoundary>
         ) : null}
 
@@ -928,7 +480,7 @@ export function AppShell(model: AppModel) {
           </ErrorBoundary>
         ) : null}
 
-        {activeTab === 'artifacts' ? (
+        {activeTab === 'artifacts' && canAccessArtifacts ? (
           <ErrorBoundary fallback={<div className="empty-state">Artifacts panel failed to render.</div>}>
             <ArtifactsPanel
               corpus={model.scopedCorpus}
@@ -939,7 +491,6 @@ export function AppShell(model: AppModel) {
             />
           </ErrorBoundary>
         ) : null}
-
       </main>
 
       <GettingStartedModal onClose={closeGettingStarted} open={gettingStartedOpen} />

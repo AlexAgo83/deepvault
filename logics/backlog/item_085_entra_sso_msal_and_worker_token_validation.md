@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 95%
-> Progress: 0%
+> Status: Done
+> Understanding: 99%
+> Confidence: 98%
+> Progress: 100%
 > Complexity: High
 > Theme: Security / Architecture
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -21,6 +21,15 @@
 - In: integrate `@azure/msal-browser` in the React app for browser-side token acquisition (silent SSO first, redirect fallback); attach the Entra access token to all worker API requests in the `Authorization: Bearer` header; implement JWKS-based token validation middleware in `worker/auth.py` — fetch JWKS from `https://login.microsoftonline.com/<tenant>/discovery/v2.0/keys`, validate signature, `aud`, `iss`, and `exp` claims on every request; return `401 Unauthorized` for invalid or missing tokens; bypass auth middleware when `WORKER_AUTH_ENABLED=false` (local dev mode); configure token scope (`api://<client-id>/Nexus.Access`); document the Entra app registration one-time setup (SPA type, redirect URI, `Nexus.Access` scope exposure).
 - In: treat HTTPS via the shared Caddy origin as the default hosted deployment assumption for non-localhost URLs; keep the runtime configuration surface minimal (`ENTRA_TENANT_ID`, `ENTRA_CLIENT_ID`, `WORKER_AUTH_ENABLED`, `OPERATOR_ALLOWLIST`) rather than introducing a broader first-wave auth config matrix.
 - Out: operator allowlist enforcement (item_086); hosted mode UI changes (item_087); Entra app registration itself (one-time admin action, not code).
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|entra-sso-msal-browser-integration-and-w|req-020-host-nexus-as-a-shared-multi-use|the-hosted-nexus-app-is-accessible|ac1-on-a-domain-joined-windows-machine
+flowchart LR
+    Problem[Hosted app lacks authentication] --> Build[Add MSAL in browser and JWKS validation in worker]
+    Build --> Outcome[Hosted requests require valid Entra token]
+    Outcome --> FollowOn[Expose oid for operator gating]
+```
 
 # Acceptance criteria
 
@@ -47,3 +56,12 @@
 - `curl -H "Authorization: Bearer <valid-token>" http://localhost:8000/api/corpus` → 200
 - `WORKER_AUTH_ENABLED=false uvicorn worker.main:app` → `curl http://localhost:8000/api/corpus` → 200 (no token required)
 - `python -m pytest worker/tests/test_auth.py -v`
+- `rtk python3 -m pytest worker/tests -q`
+- `rtk npm run check`
+
+# Outcome
+
+- Hosted mode now bootstraps browser auth from `/api/config/mode`, initializes `@azure/msal-browser`, prefers silent SSO, and falls back to redirect login/token acquisition when needed.
+- Worker API calls attach the hosted bearer token for corpus, bishop, and sync/job endpoints while preserving the existing local worker-token path for local development.
+- The Python worker now validates Entra JWTs locally against cached tenant JWKS on startup, enforces `401 Unauthorized` on protected `/api/*` routes when auth is enabled, and exposes `oid` / `tid` claims to downstream middleware.
+- Local development remains unchanged when `WORKER_AUTH_ENABLED=false`: no MSAL bootstrap is activated and worker routes remain reachable without a bearer token.

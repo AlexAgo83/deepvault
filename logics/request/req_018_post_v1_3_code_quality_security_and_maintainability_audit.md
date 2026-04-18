@@ -1,10 +1,10 @@
 ## req_018_post_v1_3_code_quality_security_and_maintainability_audit - Post-v1.3 code quality, security, and maintainability audit
 
-> From version: 1.3.0
+> From version: 1.4.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 98%
-> Confidence: 97%
+> Status: Done
+> Understanding: 99%
+> Confidence: 98%
 > Complexity: High
 > Theme: Quality / Security / Maintainability
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -24,7 +24,7 @@
 
 - A full repository audit conducted in April 2026 (v1.3.0) identified these items as the most concrete maintainability and security risks.
 - `bishop.ts` at 1216 lines formally violates the CONTRIBUTING.md rule of less than 1000 lines per file. It mixes orchestration, provider adapters for OpenAI/Gemini/Anthropic, prompt construction, and fallback logic in a single module — making execution path tracing difficult.
-- `app-shell.tsx` at 948 lines is at the threshold: the next feature addition will likely push it over the limit.
+- `app-shell.tsx` was at 948 lines when the audit was opened; Wave 2 has now reduced it to 478 lines by extracting shell chrome into a dedicated module.
 - `useSyncOperations.ts` at 778 lines is dense but cohesive (a job state machine) — monitor before refactoring.
 - `styles.css` at 75 KB is not a performance problem (gzip compresses it well), but it makes it hard to know which styles are active for which component and increases CSS regression risk when editing.
 - Provider API keys (OpenAI, Gemini, Anthropic) are stored in `localStorage` — this is intentional for local/dev use, but no UI warning communicates that risk to the user.
@@ -58,7 +58,7 @@ flowchart TD
 - [x] Problem statement is explicit and concrete risks are documented.
 - [x] In/out scope is defined.
 - [x] Acceptance criteria are testable.
-- [ ] Backlog items to be created before starting.
+- [x] Backlog items to be created before starting.
 - [x] Inter-axis dependencies identified (AC1 before AC2; AC6 is independent).
 
 # Scope
@@ -101,7 +101,14 @@ flowchart TD
 # Backlog
 
 - ~~`item_072_split_bishop_into_bounded_sub_modules`~~ — Cancelled (adr_035)
-- `item_073_reduce_app_shell_below_800_lines`
-- `item_074_harden_localstorage_api_key_warning_and_schema_validation`
-- `item_075_add_worker_health_check_and_granular_error_boundaries`
+- `item_073_reduce_app_shell_below_800_lines` — Done
+- `item_074_harden_localstorage_api_key_warning_and_schema_validation` — Done
+- `item_075_add_worker_health_check_and_granular_error_boundaries` — Done
 - ~~`item_076_lazy_load_mock_corpus_chunk`~~ — Cancelled (adr_035)
+
+## Progress notes
+
+- Execution has started through Wave 2: `item_073` is now complete, and `src/components/app-shell.tsx` is down to 478 lines after extracting sidebar/topbar/toolbar chrome into `src/components/app-shell-chrome.tsx`.
+- Wave 3 is now complete: `item_074` added explicit plaintext `localStorage` warnings under each provider API key field and hardened the critical persisted browser state reads with shared schema guards plus diagnostic warnings.
+- Wave 4 is now complete: remote worker mode now performs a silent startup `/api/health` probe and exposes the resulting operator-facing status in Settings, while app-shell integration tests confirm one panel failure stays isolated behind its own boundary.
+- `req_018` is now complete: the remaining required audit items are closed, and the final `rtk npm run check` gate passed with lint, typecheck, tests, build, E2E, and evaluation green.

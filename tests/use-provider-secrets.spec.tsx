@@ -1,9 +1,10 @@
 import { renderHook, act } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PROVIDER_SECRETS_STORAGE_KEY, useProviderSecrets } from '../src/hooks/useProviderSecrets'
 
 describe('useProviderSecrets', () => {
   afterEach(() => {
+    vi.restoreAllMocks()
     sessionStorage.clear()
     localStorage.clear()
   })
@@ -80,5 +81,19 @@ describe('useProviderSecrets', () => {
       geminiApiKey: '',
       anthropicApiKey: '',
     })
+  })
+
+  it('falls back to empty secrets and logs when stored JSON is invalid', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    localStorage.setItem(PROVIDER_SECRETS_STORAGE_KEY, '{invalid-json')
+
+    const { result } = renderHook(() => useProviderSecrets())
+
+    expect(result.current.providerSecrets).toEqual({
+      openaiApiKey: '',
+      geminiApiKey: '',
+      anthropicApiKey: '',
+    })
+    expect(warnSpy).toHaveBeenCalled()
   })
 })

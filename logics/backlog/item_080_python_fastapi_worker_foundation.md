@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: In Progress
+> Status: Done
 > Understanding: 97%
 > Confidence: 96%
-> Progress: 90%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Architecture / Infrastructure
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -67,4 +67,5 @@ flowchart LR
 ## Progress notes
 
 - Wave 1 foundation started on `1.4.0` with the initial `worker/` package, shared service layer, `GET /api/health`, `GET /api/config/mode`, CLI stubs, pinned requirements, Dockerfile, and Vite `/api` proxy wiring.
-- Remaining work in this item is the final direct bind/proxy smoke-check outside the sandbox; route contracts, CLI checks, Python tests, and Logics updates are now in place.
+- The final direct bind/proxy smoke-check is now closed: `rtk python3 -m uvicorn worker.main:app --host 127.0.0.1 --port 8000` answered on `/api/health`, and `rtk npm run dev -- --host 127.0.0.1 --port 4174` successfully proxied `/api/health` to the worker on port `8000`.
+- Route contracts, CLI checks, Python tests, README setup, and local proxy validation are now in place, so the foundation slice is complete and the remaining hosted work can build on top of it.

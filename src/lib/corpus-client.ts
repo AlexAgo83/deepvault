@@ -145,10 +145,13 @@ export function isCorpusLike(value: unknown): value is Corpus {
     )
 }
 
-export async function fetchLiveCorpus(): Promise<LiveCorpusFetchResult> {
+export async function fetchLiveCorpus(accessToken?: string | null): Promise<LiveCorpusFetchResult> {
   const headers: Record<string, string> = {}
   if (cachedLiveCorpus?.etag) {
     headers['If-None-Match'] = cachedLiveCorpus.etag
+  }
+  if (accessToken?.trim()) {
+    headers.Authorization = `Bearer ${accessToken.trim()}`
   }
 
   try {

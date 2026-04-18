@@ -1,10 +1,10 @@
 ## req_020_host_nexus_as_a_shared_multi_user_web_application - Host Nexus as a shared multi-user web application
 
-> From version: 1.4.0
+> From version: 1.4.1
 > Schema version: 1.0
 > Status: In Progress
-> Understanding: 98%
-> Confidence: 97%
+> Understanding: 99%
+> Confidence: 98%
 > Complexity: High
 > Theme: Architecture / Product / Operational
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -123,5 +123,9 @@ flowchart TD
 
 ## Progress notes
 
-- Execution has started with `item_080`: the repo now contains the initial Python FastAPI worker foundation, local `/api` proxy wiring in Vite, and minimal CLI parity for worker health/config inspection.
-- The request remains open while validation completes and the subsequent worker migration waves (`item_081` onward) replace browser-owned scoring, corpus, Bishop, and job execution paths.
+- `item_080` is now closed: the Python FastAPI worker foundation, local `/api` proxy wiring in Vite, minimal CLI parity, and direct bind/proxy smoke validation are complete.
+- `req_018` is now closed, removing the remaining cleanup blocker that was explicitly called out before the hosted-delivery waves.
+- `item_085` is now closed: hosted mode bootstraps Entra auth from `/api/config/mode`, the browser performs MSAL silent SSO with redirect fallback, worker API calls forward bearer tokens, and the Python worker validates JWTs locally against cached tenant JWKS with the local-dev bypass preserved.
+- `item_086` is now closed: job-control routes enforce `OPERATOR_ALLOWLIST`, `/api/config/mode` can surface `isOperator` for authenticated hosted requests, and the worker writes structured access logs under `data/logs/` with daily file rollover and 30-day retention cleanup.
+- `item_087` is now closed: hosted mode shows the authenticated session in the UI, hides API key inputs, removes operator-only surfaces for non-operators, and preserves the previous local-development behavior.
+- The request remains open only for the deployment packaging wave (`item_088`).

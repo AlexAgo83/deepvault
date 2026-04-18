@@ -1790,6 +1790,70 @@ select:focus-visible {
   line-height: 1.45;
 }
 
+.settings-warning-text {
+  color: var(--warning, #b45a2a);
+  font-weight: 600;
+}
+
+.settings-worker-health {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-elevated) 88%, transparent);
+}
+
+.settings-worker-health-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.settings-worker-health p {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.settings-hosted-banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-elevated) 92%, transparent), color-mix(in srgb, var(--accent-soft) 20%, transparent));
+}
+
+.settings-hosted-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-hosted-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-hosted-copy p {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .settings-scope-field {
   display: grid;
   gap: 8px;

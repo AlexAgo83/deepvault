@@ -42,6 +42,10 @@ function createProps() {
       workerFallbackMode: 'block' as const,
       analyzeLimit: 25,
     },
+    canSignOutHostedSession: false,
+    hostedIdentityLabel: null,
+    hostedMode: false,
+    isOperator: true,
     onClear: vi.fn(),
     onClearBishop: vi.fn(),
     onClearEntra: vi.fn(),
@@ -52,6 +56,7 @@ function createProps() {
     onConversationContextEnabledChange: vi.fn(),
     onProviderChange: vi.fn(),
     onRoleChange: vi.fn(),
+    onSignOutHostedSession: vi.fn(),
     onSiteFilterChange: vi.fn(),
     onWorkerChange: vi.fn(),
     showRightPanel: false,
@@ -215,5 +220,14 @@ describe('SettingsPanel', () => {
     expect(props.onKeyChange).toHaveBeenCalledWith('anthropic', 'new-anthropic')
     expect(props.onEntraChange).toHaveBeenCalledWith('appId', 'new-app')
     expect(props.onWorkerChange).toHaveBeenCalledWith('workerTimeoutSeconds', 60)
+  })
+
+  it('shows the localStorage plaintext warning next to each provider key field', async () => {
+    const user = userEvent.setup()
+    render(<SettingsPanel {...createProps()} requestedView="ai-providers" />)
+
+    await user.click(screen.getByRole('button', { name: 'AI providers' }))
+
+    expect(screen.getAllByText('Stored in plaintext in localStorage on this browser. Local/dev use only.')).toHaveLength(3)
   })
 })

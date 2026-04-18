@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 94%
-> Progress: 0%
+> Status: Done
+> Understanding: 99%
+> Confidence: 98%
+> Progress: 100%
 > Complexity: Low
 > Theme: Robustness / Operational
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -33,7 +33,23 @@
 - Architecture decision(s): (none yet)
 - Task(s): `task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit`
 
+```mermaid
+%% logics-kind: backlog-item
+%% logics-signature: backlog|add-remote-worker-health-check-and-granu|req-018-post-v1-3-code-quality-security-|in-live-mode-with-a-remote|ac1-when-a-remote-worker-url
+flowchart TD
+    Risk[Remote worker health was only discovered] --> Guard[Run startup health check and keep per-panel boundaries]
+    Guard --> Outcome[AC1 to AC3 covered]
+    Outcome --> Proof[Integration tests plus full check gate]
+```
+
 # Validation evidence
 
-- `rtk npm run test -- tests/error-boundary.spec.tsx tests/use-worker-settings.spec.tsx`
+- `rtk npm run test -- tests/app-worker-health.spec.tsx tests/app-shell-error-boundary.spec.tsx tests/error-boundary.spec.tsx tests/app.spec.tsx tests/settings-panel.spec.tsx tests/use-worker-settings.spec.ts`
 - `rtk npm run check`
+
+## Progress notes
+
+- Added `src/hooks/useWorkerHealth.ts` to run a silent startup `GET /api/health` check whenever `workerMode=remote` is configured with an https URL and token, without blocking the shell.
+- Surfaced the dedicated worker availability state inside the Settings worker screen with an explicit startup-health card, covering reachable, degraded, unreachable, local, and misconfigured states.
+- Kept the per-panel `ErrorBoundary` isolation in `src/components/app-shell.tsx` and added `tests/app-shell-error-boundary.spec.tsx` to prove that a crashing Explorer panel falls back locally while the rest of the shell remains usable.
+- Added `tests/app-worker-health.spec.tsx` to verify the startup remote health check hits `/api/health` with the configured bearer token and renders the resulting availability indicator in Settings.

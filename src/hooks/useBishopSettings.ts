@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { isRecord, parseStoredJsonOrNull } from '../lib/storage-schema'
 
 export const BISHOP_SETTINGS_STORAGE_KEY = 'deepvault_bishop_settings'
 
@@ -33,20 +34,33 @@ function readBishopSettings(): BishopSettings {
     return BISHOP_SETTINGS_DEFAULTS
   }
 
-  try {
-    const parsed = JSON.parse(raw) as Partial<BishopSettings>
-    const sourceLimit = clampInteger(parsed.sourceLimit, 1, 8, BISHOP_SETTINGS_DEFAULTS.sourceLimit)
-    const candidateMinimum = sourceLimit
-    const candidateLimit = clampInteger(parsed.candidateLimit, candidateMinimum, 20, Math.max(BISHOP_SETTINGS_DEFAULTS.candidateLimit, candidateMinimum))
-    const historyTurnLimit = clampInteger(parsed.historyTurnLimit, 0, 20, BISHOP_SETTINGS_DEFAULTS.historyTurnLimit)
+  const parsed = parseStoredJsonOrNull(raw, {
+    storageKey: BISHOP_SETTINGS_STORAGE_KEY,
+    validate: (value) => {
+      if (!isRecord(value)) {
+        return null
+      }
 
-    return {
-      sourceLimit,
-      candidateLimit,
-      historyTurnLimit,
-    }
-  } catch {
+      return {
+        sourceLimit: typeof value.sourceLimit === 'number' ? value.sourceLimit : undefined,
+        candidateLimit: typeof value.candidateLimit === 'number' ? value.candidateLimit : undefined,
+        historyTurnLimit: typeof value.historyTurnLimit === 'number' ? value.historyTurnLimit : undefined,
+      }
+    },
+  })
+  if (!parsed) {
     return BISHOP_SETTINGS_DEFAULTS
+  }
+
+  const sourceLimit = clampInteger(parsed.sourceLimit, 1, 8, BISHOP_SETTINGS_DEFAULTS.sourceLimit)
+  const candidateMinimum = sourceLimit
+  const candidateLimit = clampInteger(parsed.candidateLimit, candidateMinimum, 20, Math.max(BISHOP_SETTINGS_DEFAULTS.candidateLimit, candidateMinimum))
+  const historyTurnLimit = clampInteger(parsed.historyTurnLimit, 0, 20, BISHOP_SETTINGS_DEFAULTS.historyTurnLimit)
+
+  return {
+    sourceLimit,
+    candidateLimit,
+    historyTurnLimit,
   }
 }
 

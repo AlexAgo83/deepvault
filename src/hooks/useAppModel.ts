@@ -10,15 +10,18 @@ import type { Corpus, CorpusDocument, ProviderId, UserRole } from '../lib/runtim
 import { useBishopConversation } from './useBishopConversation'
 import { useAIUsage } from './useAIUsage'
 import { useLiveCorpus } from './useLiveCorpus'
+import { useHostedAuth } from './useHostedAuth'
 import { useEntraSettings } from './useEntraSettings'
 import { useBishopSettings } from './useBishopSettings'
 import { useProviderSecrets } from './useProviderSecrets'
 import { useSyncOperations } from './useSyncOperations'
 import { useWorkerSettings } from './useWorkerSettings'
+import { useWorkerHealth } from './useWorkerHealth'
 import type { LiveState } from './useLiveCorpus'
 import type { EntraSettings } from './useEntraSettings'
 import type { SyncOperationJob } from './useSyncOperations'
 import type { WorkerSettings } from './useWorkerSettings'
+import type { WorkerHealthState } from './useWorkerHealth'
 import type { BishopSettings } from './useBishopSettings'
 import { resolveCorpusMode } from '../lib/corpus-mode'
 
@@ -59,12 +62,18 @@ export interface AppModel {
   scopedSyncOverview: ReturnType<typeof buildSyncOverview>
   explorerRows: ExplorerRow[]
   providerSecrets: ReturnType<typeof useProviderSecrets>['providerSecrets']
+  hostedMode: boolean
+  hostedIdentityLabel: string | null
+  canSignOutHostedSession: boolean
+  signOutHostedSession: () => Promise<void>
+  isOperator: boolean
   setProviderSecret: ReturnType<typeof useProviderSecrets>['setApiKey']
   clearProviderSecrets: ReturnType<typeof useProviderSecrets>['clearProviderSecrets']
   entraSettings: EntraSettings
   setEntraSetting: ReturnType<typeof useEntraSettings>['setEntraSetting']
   clearEntraSettings: ReturnType<typeof useEntraSettings>['clearEntraSettings']
   workerSettings: WorkerSettings
+  workerHealth: WorkerHealthState
   setWorkerSetting: ReturnType<typeof useWorkerSettings>['setWorkerSetting']
   clearWorkerSettings: ReturnType<typeof useWorkerSettings>['clearWorkerSettings']
   bishopSettings: BishopSettings
@@ -148,7 +157,13 @@ export function useAppModel(): AppModel {
   const { workerSettings, setWorkerSetting, clearWorkerSettings } = useWorkerSettings()
   const { bishopSettings, setBishopSetting, clearBishopSettings } = useBishopSettings()
   const requestedCorpusMode = resolveCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE, entraSettings.dataMode)
-  const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(requestedCorpusMode)
+  const hostedAuth = useHostedAuth()
+  const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(requestedCorpusMode, {
+    accessToken: hostedAuth.accessToken,
+    authRequired: hostedAuth.authConfig.enabled,
+    authReady: hostedAuth.ready,
+  })
+  const workerHealth = useWorkerHealth(workerSettings, requestedCorpusMode)
   const corpus = corpusBundle.corpus
   const bishopEndpoint = workerSettings.workerMode === 'remote' && workerSettings.workerUrl
     ? `${workerSettings.workerUrl.replace(/\/$/, '')}/api/bishop/query`
@@ -162,6 +177,8 @@ export function useAppModel(): AppModel {
   const [selectedDocId, setSelectedDocId] = useState<string>(() => corpus.documents[0]?.id || '')
   const { providerSecrets, setApiKey: setProviderSecret, clearProviderSecrets } = useProviderSecrets()
   const { events: aiUsageEvents, summary: aiUsageSummary } = useAIUsage()
+  const hostedMode = hostedAuth.mode === 'hosted'
+  const isOperator = hostedMode ? hostedAuth.isOperator : true
 
   const corpusProviders = useMemo<Corpus['providers']>(() => {
     const providerNames = new Map(DEFAULT_PROVIDER_OPTIONS.map((item) => [item.id, item.name]))
@@ -217,6 +234,7 @@ export function useAppModel(): AppModel {
     provider,
     bishopSettings,
     endpoint: bishopEndpoint,
+    accessToken: hostedAuth.accessToken,
     onActivateTab: () => setActiveTab('bishop'),
   })
   const extraEnv = useMemo(() => {
@@ -243,6 +261,7 @@ export function useAppModel(): AppModel {
     restrictedSites: scopedSyncOverview.restrictedSites,
     refreshPolicy: scopedSyncOverview.refreshPolicy,
     onRefreshCorpus: refreshCorpus,
+    authToken: hostedAuth.accessToken,
     workerSettings,
   })
 
@@ -329,12 +348,18 @@ export function useAppModel(): AppModel {
     scopedSyncOverview,
     explorerRows,
     providerSecrets,
+    hostedMode,
+    hostedIdentityLabel: hostedAuth.identityLabel,
+    canSignOutHostedSession: hostedMode && hostedAuth.ready && Boolean(hostedAuth.authConfig.enabled),
+    signOutHostedSession: hostedAuth.signOut,
+    isOperator,
     setProviderSecret,
     clearProviderSecrets,
     entraSettings,
     setEntraSetting,
     clearEntraSettings,
     workerSettings,
+    workerHealth,
     setWorkerSetting,
     clearWorkerSettings,
     bishopSettings,

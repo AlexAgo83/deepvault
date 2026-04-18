@@ -23,6 +23,13 @@ class WorkerFeatures(BaseModel):
     authEnabled: bool
 
 
+class WorkerAuthConfigResponse(BaseModel):
+    enabled: bool
+    tenantId: Optional[str] = None
+    clientId: Optional[str] = None
+    scope: Optional[str] = None
+
+
 class HealthResponse(BaseModel):
     status: str
     workerVersion: str
@@ -36,6 +43,7 @@ class ConfigModeResponse(BaseModel):
     corpusVersion: Optional[str]
     isOperator: bool
     features: WorkerFeatures
+    auth: WorkerAuthConfigResponse
     timestamp: str
 
 

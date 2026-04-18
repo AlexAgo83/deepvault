@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CompactDateTime, PathLabel, Pill, SectionHeading } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
+import { warnInvalidStoredValue } from '../../lib/storage-schema'
 
 type ArtifactGroup = 'all' | 'type' | 'source'
 type ArtifactFilter = 'all' | 'processed-file' | 'sync-run' | 'generated-answer' | 'analysis' | 'analysis-report'
@@ -36,14 +37,18 @@ function readStoredArtifactFilter(): ArtifactFilter {
   }
 
   const stored = window.localStorage.getItem(ARTIFACT_FILTER_STORAGE_KEY)
-  return stored === 'all'
+  const validated = stored === 'all'
     || stored === 'processed-file'
     || stored === 'sync-run'
     || stored === 'generated-answer'
     || stored === 'analysis'
     || stored === 'analysis-report'
     ? stored
-    : 'processed-file'
+    : null
+  if (stored && !validated) {
+    warnInvalidStoredValue({ storageKey: ARTIFACT_FILTER_STORAGE_KEY }, 'Expected a known artifact filter value.', stored)
+  }
+  return validated ?? 'processed-file'
 }
 
 function readStoredArtifactGroup(): ArtifactGroup {
@@ -52,9 +57,13 @@ function readStoredArtifactGroup(): ArtifactGroup {
   }
 
   const stored = window.localStorage.getItem(ARTIFACT_GROUP_STORAGE_KEY)
-  return stored === 'all' || stored === 'type' || stored === 'source'
+  const validated = stored === 'all' || stored === 'type' || stored === 'source'
     ? stored
-    : 'all'
+    : null
+  if (stored && !validated) {
+    warnInvalidStoredValue({ storageKey: ARTIFACT_GROUP_STORAGE_KEY }, 'Expected a known artifact group value.', stored)
+  }
+  return validated ?? 'all'
 }
 
 function readStoredAnalyzedOnly(): boolean {

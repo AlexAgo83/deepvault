@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Dict, Optional
+
 import json
 
 from worker.app.config import Settings
@@ -154,7 +156,7 @@ def test_live_export_service_resume_uses_checkpoint_timestamp_and_reconciles_doc
 
     monkeypatch.setattr(service, "acquire_graph_access_token", lambda config: "test-token")
 
-    observed: dict[str, str | None] = {}
+    observed: Dict[str, Optional[str]] = {}
 
     def fake_export_site_corpus(*args, **kwargs):
         observed["updated_after"] = kwargs["updated_after"]
@@ -210,7 +212,7 @@ def test_live_export_service_resume_uses_checkpoint_timestamp_and_reconciles_doc
 
 def test_live_export_service_client_credentials_auth_posts_expected_form(monkeypatch, tmp_path) -> None:
     service = build_service(tmp_path)
-    captured: dict[str, object] = {}
+    captured: Dict[str, object] = {}
 
     class FakeResponse:
         status_code = 200

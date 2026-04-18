@@ -329,7 +329,9 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/api/corpus'))).toBe(true),
+    )
     await user.click(screen.getByRole('button', { name: 'Settings' }))
 
     expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
@@ -359,7 +361,9 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/api/corpus'))).toBe(true),
+    )
     await user.click(screen.getByRole('button', { name: 'Settings' }))
     await user.click(screen.getByRole('button', { name: 'AI providers' }))
     await user.type(screen.getByLabelText('OpenAI API key'), 'test-openai-key')
@@ -606,11 +610,16 @@ describe('DeepVault app', () => {
     expect(mockEs).not.toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Cancel job' }))
 
-    expect(fetchMock).toHaveBeenNthCalledWith(
-      2,
-      expect.stringContaining('/api/jobs/test-job-cancel/cancel'),
-      expect.objectContaining({ method: 'POST' }),
-    )
+    expect(
+      fetchMock.mock.calls.some(
+        ([url, options]) =>
+          String(url).includes('/api/jobs/test-job-cancel/cancel') &&
+          typeof options === 'object' &&
+          options !== null &&
+          'method' in options &&
+          (options as RequestInit).method === 'POST',
+      ),
+    ).toBe(true)
     expect(screen.getAllByText('cancelled').length).toBeGreaterThan(0)
   })
 
