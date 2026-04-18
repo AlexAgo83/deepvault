@@ -83,7 +83,7 @@
 | [req_017_implement_the_full_app_worker_corpus_and_shell_plan](request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md) | Implement the full app worker corpus and shell plan | Done |  | request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md |
 | [req_018_post_v1_3_code_quality_security_and_maintainability_audit](request/req_018_post_v1_3_code_quality_security_and_maintainability_audit.md) | Progress notes | Done |  | request/req_018_post_v1_3_code_quality_security_and_maintainability_audit.md |
 | [req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability](request/req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability.md) | Post-v1.3 consolidation: close the enrichment loop, add automated CI, and make configuration portable | Done |  | request/req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability.md |
-| [req_020_host_nexus_as_a_shared_multi_user_web_application](request/req_020_host_nexus_as_a_shared_multi_user_web_application.md) | Progress notes | In Progress |  | request/req_020_host_nexus_as_a_shared_multi_user_web_application.md |
+| [req_020_host_nexus_as_a_shared_multi_user_web_application](request/req_020_host_nexus_as_a_shared_multi_user_web_application.md) | Progress notes | Done |  | request/req_020_host_nexus_as_a_shared_multi_user_web_application.md |
 
 ## Backlog
 
@@ -173,7 +173,7 @@
 | [item_085_entra_sso_msal_and_worker_token_validation](backlog/item_085_entra_sso_msal_and_worker_token_validation.md) | Entra SSO — MSAL browser integration and worker token validation | Done | 100% | backlog/item_085_entra_sso_msal_and_worker_token_validation.md |
 | [item_086_operator_allowlist_and_access_log](backlog/item_086_operator_allowlist_and_access_log.md) | Operator allowlist and structured access log | Done | 100% | backlog/item_086_operator_allowlist_and_access_log.md |
 | [item_087_hosted_mode_ui](backlog/item_087_hosted_mode_ui.md) | Hosted mode UI (identity display, Shared label, sign-out, API key inputs hidden) | Done | 100% | backlog/item_087_hosted_mode_ui.md |
-| [item_088_docker_compose_deployment_package](backlog/item_088_docker_compose_deployment_package.md) | Docker Compose deployment package (Caddy + Python worker, Windows) | Ready | 0% | backlog/item_088_docker_compose_deployment_package.md |
+| [item_088_docker_compose_deployment_package](backlog/item_088_docker_compose_deployment_package.md) | Docker Compose deployment package (Caddy + Python worker, Windows) | Done | 100% | backlog/item_088_docker_compose_deployment_package.md |
 
 ## Tasks
 
@@ -214,4 +214,4 @@
 | [task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit](tasks/task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit.md) | Progress notes | Done | 100% | tasks/task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit.md |
 | [task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability](tasks/task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability.md) | Wave map | Done | 100% | tasks/task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability.md |
 | [task_042_orchestrate_python_worker_foundation_and_runtime_migration](tasks/task_042_orchestrate_python_worker_foundation_and_runtime_migration.md) | Progress notes | Done | 100% | tasks/task_042_orchestrate_python_worker_foundation_and_runtime_migration.md |
-| [task_043_orchestrate_hosted_auth_access_and_deployment](tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md) | Progress notes | In Progress | 75% | tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md |
+| [task_043_orchestrate_hosted_auth_access_and_deployment](tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md) | Progress notes | Done | 100% | tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md |
