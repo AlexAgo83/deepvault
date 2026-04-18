@@ -387,21 +387,25 @@ describe('DeepVault app', () => {
     expect(screen.getByRole('heading', { name: 'Changelogs' })).toBeInTheDocument()
   })
 
-  it('uses the configured OpenAI key when Bishop calls the provider', async () => {
+  it('uses the worker bishop proxy when Bishop answers a question', async () => {
     const user = userEvent.setup()
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
+      status: 200,
       json: async () => ({
-        choices: [
-          {
-            message: {
-              content: 'OpenAI remote answer.',
-            },
-          },
-        ],
-        usage: {
-          prompt_tokens: 111,
-          completion_tokens: 22,
+        status: 'answered',
+        provider: 'openai',
+        answer: 'OpenAI remote answer.',
+        chunkCount: 18,
+        tokenCount: 133,
+        inputTokenCount: 111,
+        outputTokenCount: 22,
+        latencyMs: 480,
+        confidence: 88,
+        trace: {
+          mode: 'remote',
+          providerTracePreview: 'openai response: OpenAI remote answer.',
+          prompt: 'prompt',
         },
       }),
     })
@@ -418,11 +422,11 @@ describe('DeepVault app', () => {
 
     expect(await screen.findByText('OpenAI remote answer.')).toBeInTheDocument()
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://api.openai.com/v1/chat/completions',
+      '/api/bishop/query',
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
-          authorization: 'Bearer test-openai-key',
+          'content-type': 'application/json',
         }),
       }),
     )
