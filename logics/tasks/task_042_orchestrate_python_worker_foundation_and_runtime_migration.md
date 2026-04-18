@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 77%
+> Progress: 80%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -158,6 +158,7 @@ stateDiagram-v2
 - Wave 3 is in progress: the worker corpus service, `GET /api/corpus`, CLI corpus inspection, frontend `/api/corpus` fetch path, and `ETag` reuse are now landed.
 - `src/data/corpus.ts` is now removed and callers use the new corpus client / mock corpus split instead of the old mixed browser helper.
 - Wave 4 is now materially advanced: the worker exposes the Bishop proxy plus matching CLI command, the browser uses `/api/bishop/query` by default, and the worker performs server-side dispatch for OpenAI, Gemini, and Anthropic.
+- Wave 4 is now complete: the worker-backed Bishop proxy, CLI parity, browser proxy path, provider-dispatch tests, and final browser-side legacy module retirement are all landed and validated.
 - The active browser Bishop runtime now goes through a dedicated HTTP client instead of importing `src/lib/bishop.ts`, while keeping a thin local fallback path to avoid regressions during migration.
 - Browser-safe modules now consume a dedicated `runtime-types` boundary instead of importing shared types through `deepvault.ts`, reducing the browser dependency footprint on legacy business-logic modules.
 - The app model now uses browser-safe corpus view helpers from `corpus-view.ts` instead of pulling those view helpers from `deepvault.ts`.
@@ -167,4 +168,4 @@ stateDiagram-v2
 - Focused Playwright coverage now verifies the live-mode worker-unreachable state in the browser, which closes the remaining Wave 3 offline verification gap.
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
 - Explicit non-browser imports now point to `src/lib/bishop-orchestration.ts`, and `src/lib/bishop.ts` has been removed from the codebase.
-- The current checkpoint is runtime/offline verification and closure evidence for the worker-backed Bishop path before Wave 4 can close.
+- The current checkpoint is Wave 5 job execution completion plus final task closure updates once the remaining worker-managed job path is fully landed.
