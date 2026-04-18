@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 98%
 > Confidence: 97%
-> Progress: 56%
+> Progress: 60%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -158,5 +158,6 @@ stateDiagram-v2
 - Wave 3 is in progress: the worker corpus service, `GET /api/corpus`, CLI corpus inspection, frontend `/api/corpus` fetch path, and `ETag` reuse are now landed.
 - `src/data/corpus.ts` is now removed and callers use the new corpus client / mock corpus split instead of the old mixed browser helper.
 - Wave 4 is now materially advanced: the worker exposes the Bishop proxy plus matching CLI command, the browser uses `/api/bishop/query` by default, and the worker performs server-side dispatch for OpenAI, Gemini, and Anthropic.
+- The active browser Bishop runtime now goes through a dedicated HTTP client instead of importing `src/lib/bishop.ts`, while keeping a thin local fallback path to avoid regressions during migration.
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
-- The current checkpoint is finishing the remaining browser bundle cleanup around `deepvault.ts` / `scoring.ts` / `bishop.ts` before Wave 4 can close.
+- The current checkpoint is the final browser bundle cleanup around `deepvault.ts`, `scoring.ts`, and removal of the legacy `src/lib/bishop.ts` module before Wave 4 can close.
