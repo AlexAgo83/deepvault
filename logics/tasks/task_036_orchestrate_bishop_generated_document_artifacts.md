@@ -31,7 +31,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-bishop-generated-document-ar|item-068-deliver-bishop-first-wave-gener|1-wave-1-lock-the-first|run-rtk-npm-run-typecheck-for
+%% logics-signature: task|orchestrate-bishop-generated-document-ar|prod-009-enable-bishop-generated-document|1-lock-the-first-wave-artifact|run-rtk-npm-run-typecheck-and
 stateDiagram-v2
     state "prod_009_enable_bishop_generated_document" as Product
     state "1. Lock the first-wave artifact scope" as Scope
