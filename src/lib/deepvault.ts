@@ -11,7 +11,7 @@ export {
   searchDocuments,
   summarizeCorpus,
 } from './corpus-view'
-export { normalizeText, tokenize } from './scoring'
+export { normalizeText, tokenize } from './corpus-ranking'
 
 export type UserRole = 'analyst' | 'admin' | 'guest'
 export type ProviderId = 'openai' | 'gemini' | 'anthropic'

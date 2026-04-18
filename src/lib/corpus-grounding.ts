@@ -1,5 +1,5 @@
 import * as corpusView from './corpus-view'
-import { normalizeText, tokenize } from './scoring'
+import { normalizeText, tokenize } from './corpus-ranking'
 import type {
   AnswerResult,
   Corpus,

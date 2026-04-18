@@ -1,4 +1,4 @@
-import { getDocumentScore, normalizeText, tokenize } from './scoring'
+import { getDocumentScore, normalizeText, tokenize } from './corpus-ranking'
 import type {
   Corpus,
   CorpusDocument,
