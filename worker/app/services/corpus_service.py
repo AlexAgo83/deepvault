@@ -17,12 +17,39 @@ class CorpusService:
             return self._settings.mock_corpus_path
         return self._settings.runtime_data_dir / "corpus-published.json"
 
+    def resolve_job_corpus_path(
+        self,
+        *,
+        mode: Optional[str] = None,
+        input_path: Optional[str] = None,
+    ) -> Path:
+        if input_path:
+            return Path(input_path).expanduser().resolve()
+        if mode == "live":
+            return (self._settings.runtime_data_dir.parent.parent / "public" / "live-corpus.json").resolve()
+        return self._settings.mock_corpus_path
+
     def load_corpus_bytes(self) -> bytes:
         corpus_path = self.resolve_corpus_path()
         return corpus_path.read_bytes()
 
     def load_corpus_payload(self) -> Dict[str, Any]:
         return json.loads(self.load_corpus_bytes().decode("utf-8"))
+
+    def load_job_corpus_payload(
+        self,
+        *,
+        mode: Optional[str] = None,
+        input_path: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        corpus_path = self.resolve_job_corpus_path(mode=mode, input_path=input_path)
+        if not corpus_path.exists():
+            if mode == "live":
+                raise FileNotFoundError(
+                    f"Live corpus not found at {corpus_path}. Provide DEEPVAULT_CORPUS_PATH or run export-live first."
+                )
+            raise FileNotFoundError(f"Corpus not found at {corpus_path}.")
+        return json.loads(corpus_path.read_text(encoding="utf-8"))
 
     def build_etag(self, payload_bytes: Optional[bytes] = None) -> str:
         source = payload_bytes if payload_bytes is not None else self.load_corpus_bytes()

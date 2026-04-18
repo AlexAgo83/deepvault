@@ -24,6 +24,11 @@ class RuntimeStore:
     def jobs_dir(self) -> Path:
         return self.runtime_dir / "jobs"
 
+    def sync_state_path(self, mode: str = "mock") -> Path:
+        if mode == "live":
+            return self.runtime_dir / "sync-state.live.json"
+        return self.runtime_dir / "sync-state.json"
+
     def job_metadata_path(self, job_id: str) -> Path:
         return self.jobs_dir() / f"{job_id}.json"
 
@@ -56,6 +61,12 @@ class RuntimeStore:
                 continue
             events.append(json.loads(line))
         return events
+
+    def write_sync_state(self, payload: Dict[str, Any], mode: str = "mock") -> Path:
+        self.ensure_runtime_dirs()
+        path = self.sync_state_path(mode)
+        path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
+        return path
 
 
 def get_runtime_store() -> RuntimeStore:

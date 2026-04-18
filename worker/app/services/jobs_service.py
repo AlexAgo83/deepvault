@@ -14,7 +14,7 @@ from worker.app.services.bishop_service import BishopService
 from worker.app.services.corpus_service import CorpusService
 
 
-SUPPORTED_JOB_TYPES = {"evaluate"}
+SUPPORTED_JOB_TYPES = {"ingest", "evaluate"}
 ALL_JOB_TYPES = {"ingest", "analyze", "evaluate", "export-live"}
 TERMINAL_STATUSES = {"succeeded", "failed", "cancelled"}
 
@@ -217,11 +217,14 @@ class JobsService:
             return
 
         job_type = job["type"]
+        options = job.get("options") if isinstance(job.get("options"), dict) else {}
         try:
             if job_type not in SUPPORTED_JOB_TYPES:
                 raise NotImplementedError(f"Job type '{job_type}' is not implemented on the Python worker yet.")
 
-            if job_type == "evaluate":
+            if job_type == "ingest":
+                result = self._run_ingest_job(job_id, options)
+            elif job_type == "evaluate":
                 result = self._run_evaluate_job(job_id)
             else:
                 raise NotImplementedError(f"Job type '{job_type}' is not implemented on the Python worker yet.")
@@ -320,6 +323,104 @@ class JobsService:
             "totalCount": total_count,
             "passRate": pass_rate,
             "results": results,
+        }
+
+    def _run_ingest_job(self, job_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        env = options.get("env", {}) if isinstance(options, dict) else {}
+        mode = "live" if env.get("DEEPVAULT_DATA_MODE") == "live" else "mock"
+        input_path = env.get("DEEPVAULT_CORPUS_PATH")
+
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "load-corpus",
+                "pct": 20,
+                "message": f"Loading {mode} corpus snapshot...",
+            },
+        )
+        corpus_path = self._corpus_service.resolve_job_corpus_path(mode=mode, input_path=input_path)
+        corpus = self._corpus_service.load_job_corpus_payload(mode=mode, input_path=input_path)
+
+        role = str(corpus.get("defaultUserRole") or "analyst")
+        permitted_documents = [
+            document
+            for document in corpus.get("documents", [])
+            if role in document.get("access", []) or "all" in document.get("access", [])
+        ]
+        last_run = None
+        sync_runs = corpus.get("syncRuns", [])
+        if isinstance(sync_runs, list) and sync_runs:
+            last_run = max(sync_runs, key=lambda run: str(run.get("finishedAt", "")))
+
+        site_summaries = []
+        for site in corpus.get("sites", []):
+            site_documents = [document for document in corpus.get("documents", []) if document.get("siteId") == site.get("id")]
+            permitted_site_documents = [
+                document
+                for document in site_documents
+                if role in document.get("access", []) or "all" in document.get("access", [])
+            ]
+            latest_sync = None
+            if isinstance(sync_runs, list) and sync_runs:
+                matching_runs = [run for run in sync_runs if site.get("id") in run.get("siteIds", [])]
+                if matching_runs:
+                    latest_sync = max(matching_runs, key=lambda run: str(run.get("finishedAt", "")))
+
+            site_summaries.append(
+                {
+                    **site,
+                    "documentCount": len(site_documents),
+                    "permittedDocumentCount": len(permitted_site_documents),
+                    "chunkCount": len(permitted_site_documents) * 6,
+                    "lastRefresh": latest_sync.get("finishedAt") if latest_sync else None,
+                    "lastRefreshStatus": latest_sync.get("status") if latest_sync else "pending",
+                }
+            )
+
+        sync_overview = {
+            "siteSummaries": site_summaries,
+            "documentCount": len(permitted_documents),
+            "chunkCount": len(permitted_documents) * 6,
+            "syncedSites": len([site for site in site_summaries if site.get("status") == "synced"]),
+            "restrictedSites": len([site for site in site_summaries if site.get("status") == "restricted"]),
+            "providerReadiness": corpus.get("providers", []),
+            "lastRun": last_run,
+            "refreshPolicy": "Incremental daily refresh with manual refresh on demand",
+        }
+        summary = {
+            **sync_overview,
+            "sourcesIndexed": len(corpus.get("documents", [])),
+            "visibleSources": len(permitted_documents),
+            "deniedSources": len(corpus.get("documents", [])) - len(permitted_documents),
+        }
+
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "write-sync-state",
+                "pct": 75,
+                "message": "Writing worker sync snapshot...",
+            },
+        )
+        payload = {
+            "generatedAt": utc_now_iso(),
+            "mode": mode,
+            "corpusPath": str(corpus_path),
+            "summary": summary,
+            "syncOverview": sync_overview,
+            "sites": site_summaries,
+        }
+        output_path = self._runtime_store.write_sync_state(payload, mode=mode)
+        return {
+            "summary": f"Ingest completed: wrote {output_path.name} for {summary['visibleSources']} visible documents.",
+            "mode": mode,
+            "corpusPath": str(corpus_path),
+            "outputPath": str(output_path),
+            "visibleSources": summary["visibleSources"],
+            "sourcesIndexed": summary["sourcesIndexed"],
+            "siteCount": len(site_summaries),
         }
 
     def _update_job(self, job_id: str, patch: Dict[str, Any]) -> None:
