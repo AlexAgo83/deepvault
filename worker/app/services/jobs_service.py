@@ -44,6 +44,10 @@ def build_evaluation_rows() -> List[Dict[str, Any]]:
     ]
 
 
+class JobCancelledError(Exception):
+    pass
+
+
 class JobsService:
     def __init__(
         self,
@@ -143,6 +147,26 @@ class JobsService:
             raise http_error(code="not_found", message=f"Unknown job: {job_id}", status_code=404)
         return job
 
+    def cancel_job(self, job_id: str) -> Dict[str, Any]:
+        job = self.get_job(job_id)
+        if job["status"] in TERMINAL_STATUSES:
+            return job
+
+        cancelled_at = utc_now_iso()
+        summary = f"{job['type']} cancelled."
+        self._update_job(
+            job_id,
+            {
+                "status": "cancelled",
+                "finishedAt": cancelled_at,
+                "summary": summary,
+                "error": None,
+                "cancelRequested": True,
+            },
+        )
+        self._append_event(job_id, "status", {"status": "cancelled", "message": summary})
+        return self.get_job(job_id)
+
     async def stream_job_events(self, job_id: str):
         if self._runtime_store.read_job_metadata(job_id) is None:
             raise http_error(code="not_found", message=f"Unknown job: {job_id}", status_code=404)
@@ -153,15 +177,39 @@ class JobsService:
             while cursor < len(events):
                 record = events[cursor]
                 cursor += 1
-                yield {
-                    "event": record.get("event", "message"),
-                    "data": json.dumps(record.get("data", {})),
-                }
+                yield {"data": json.dumps(self._normalize_stream_event(record))}
 
             job = self._runtime_store.read_job_metadata(job_id)
             if job and job.get("status") in TERMINAL_STATUSES:
                 return
             await asyncio.sleep(0.1)
+
+    def _normalize_stream_event(self, record: Dict[str, Any]) -> Dict[str, Any]:
+        event_name = str(record.get("event", "message"))
+        data = record.get("data", {})
+        if not isinstance(data, dict):
+            return {"type": "line", "text": str(data)}
+
+        if event_name == "progress":
+            return {
+                "type": "progress",
+                "step": data.get("step"),
+                "pct": data.get("pct"),
+                "text": data.get("message"),
+            }
+
+        if event_name == "status":
+            status = str(data.get("status", ""))
+            message = data.get("message")
+            if status == "succeeded":
+                return {"type": "done", "exitCode": 0, "text": message}
+            if status == "failed":
+                return {"type": "done", "exitCode": 1, "text": message, "isError": True}
+            if status == "cancelled":
+                return {"type": "done", "exitCode": 130, "text": message, "isError": True}
+            return {"type": "line", "text": message}
+
+        return {"type": "line", "text": data.get("message") or json.dumps(data)}
 
     def _run_job(self, job_id: str) -> None:
         job = self._runtime_store.read_job_metadata(job_id)
@@ -178,6 +226,10 @@ class JobsService:
             else:
                 raise NotImplementedError(f"Job type '{job_type}' is not implemented on the Python worker yet.")
 
+            final_state = self._runtime_store.read_job_metadata(job_id) or {}
+            if final_state.get("status") == "cancelled":
+                return
+
             self._update_job(
                 job_id,
                 {
@@ -189,6 +241,19 @@ class JobsService:
                 },
             )
             self._append_event(job_id, "status", {"status": "succeeded", "message": result["summary"]})
+        except JobCancelledError:
+            final_state = self._runtime_store.read_job_metadata(job_id) or {}
+            if final_state.get("status") != "cancelled":
+                self._update_job(
+                    job_id,
+                    {
+                        "status": "cancelled",
+                        "finishedAt": utc_now_iso(),
+                        "summary": f"{job_type} cancelled.",
+                        "error": None,
+                    },
+                )
+                self._append_event(job_id, "status", {"status": "cancelled", "message": f"{job_type} cancelled."})
         except Exception as exc:
             self._update_job(
                 job_id,
@@ -206,6 +271,10 @@ class JobsService:
         results: List[Dict[str, Any]] = []
 
         for index, row in enumerate(rows):
+            current_job = self._runtime_store.read_job_metadata(job_id) or {}
+            if current_job.get("status") == "cancelled" or current_job.get("cancelRequested") is True:
+                raise JobCancelledError()
+
             payload = self._bishop_service.query(
                 query=row["query"],
                 role=row["role"],

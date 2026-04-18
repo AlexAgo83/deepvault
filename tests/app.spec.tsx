@@ -606,8 +606,9 @@ describe('DeepVault app', () => {
     expect(mockEs).not.toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Cancel job' }))
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('/api/worker/jobs/test-job-cancel/cancel'),
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining('/api/jobs/test-job-cancel/cancel'),
       expect.objectContaining({ method: 'POST' }),
     )
     expect(screen.getAllByText('cancelled').length).toBeGreaterThan(0)

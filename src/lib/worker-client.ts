@@ -12,9 +12,9 @@ export interface WorkerClientConfig {
 
 export interface WorkerHealth {
   status: 'ok' | 'degraded'
-  version: string
-  workerVersion?: string
-  uptime?: number
+  workerVersion: string
+  mode: string
+  timestamp: string
 }
 
 export interface WorkerEffectiveConfig {
@@ -34,7 +34,7 @@ export interface WorkerAuditContext {
 }
 
 export type WorkerJobKind = 'ingest' | 'analyze' | 'publish-analysis' | 'evaluate' | 'export-live' | 'export-live-resume'
-export type WorkerJobStatus = 'queued' | 'running' | 'completed' | 'failed' | 'cancelled' | 'rejected'
+export type WorkerJobStatus = 'queued' | 'running' | 'completed' | 'failed' | 'cancelled'
 
 export interface WorkerJob {
   id: string
@@ -46,23 +46,6 @@ export interface WorkerJob {
   progress: number
   exitCode?: number
   notes?: string
-  launchedBy?: string
-  client?: string
-  effectiveConfig?: WorkerEffectiveConfig
-}
-
-export interface WorkerJobManifest {
-  jobId: string
-  kind: WorkerJobKind
-  status: WorkerJobStatus
-  startedAt: string
-  finishedAt?: string
-  durationMs?: number
-  progress: number
-  exitCode?: number
-  lineCount?: number
-  summary?: string
-  schemaVersion: string
   launchedBy?: string
   client?: string
   effectiveConfig?: WorkerEffectiveConfig
@@ -80,6 +63,7 @@ export interface WorkerStartJobPayload {
 
 export interface WorkerStartJobResponse {
   jobId: string
+  status?: 'running'
 }
 
 export interface WorkerEventStream {
@@ -155,10 +139,16 @@ async function buildResponseError(response: Response, fallbackMessage: string): 
     if (trimmed) {
       try {
         const payload = JSON.parse(trimmed) as { error?: unknown; message?: unknown; detail?: unknown; notes?: unknown }
+        const nestedError = (
+          payload.error &&
+          typeof payload.error === 'object' &&
+          'message' in payload.error &&
+          typeof payload.error.message === 'string'
+        ) ? payload.error.message : undefined
         const candidate = [payload.message, payload.error, payload.detail, payload.notes].find(
           (value) => typeof value === 'string' && value.trim().length > 0,
         )
-        detail = typeof candidate === 'string' ? candidate.trim() : trimmed
+        detail = typeof candidate === 'string' ? candidate.trim() : nestedError?.trim() || trimmed
       } catch {
         detail = trimmed
       }
@@ -185,6 +175,36 @@ async function streamRemoteEvents(
   const decoder = new TextDecoder()
   let buffer = ''
 
+  function normalizeEventPayload(eventName: string | null, data: string): string | null {
+    try {
+      const parsed = JSON.parse(data) as Record<string, unknown>
+      if (eventName === 'progress') {
+        return JSON.stringify({
+          type: 'progress',
+          pct: typeof parsed.pct === 'number' ? parsed.pct : undefined,
+          text: typeof parsed.message === 'string' ? parsed.message : undefined,
+          step: typeof parsed.step === 'string' ? parsed.step : undefined,
+        })
+      }
+      if (eventName === 'status') {
+        const status = typeof parsed.status === 'string' ? parsed.status : ''
+        if (status === 'succeeded') {
+          return JSON.stringify({ type: 'done', exitCode: 0, text: parsed.message })
+        }
+        if (status === 'failed') {
+          return JSON.stringify({ type: 'done', exitCode: 1, text: parsed.message, isError: true })
+        }
+        if (status === 'cancelled') {
+          return JSON.stringify({ type: 'done', exitCode: 130, text: parsed.message, isError: true })
+        }
+        return JSON.stringify({ type: 'line', text: parsed.message, isError: false })
+      }
+      return data
+    } catch {
+      return data
+    }
+  }
+
   function emitBufferedEvents(flush = false) {
     const chunks = flush ? [buffer] : buffer.split('\n\n')
     if (!flush) {
@@ -194,14 +214,18 @@ async function streamRemoteEvents(
     }
 
     for (const chunk of chunks) {
-      const data = chunk
-        .split('\n')
+      const lines = chunk.split('\n')
+      const eventName = lines.find((line) => line.startsWith('event:'))?.slice(6).trim() || null
+      const data = lines
         .filter((line) => line.startsWith('data:'))
         .map((line) => line.slice(5).trimStart())
         .join('\n')
 
       if (data) {
-        stream.onmessage?.({ data } as MessageEvent<string>)
+        const normalized = normalizeEventPayload(eventName, data)
+        if (normalized) {
+          stream.onmessage?.({ data: normalized } as MessageEvent<string>)
+        }
       }
     }
   }
@@ -216,6 +240,48 @@ async function streamRemoteEvents(
 
     buffer += decoder.decode(value, { stream: true })
     emitBufferedEvents(false)
+  }
+}
+
+function mapJobKind(kind: WorkerJobKind): 'ingest' | 'analyze' | 'evaluate' | 'export-live' {
+  if (kind === 'publish-analysis') return 'analyze'
+  if (kind === 'export-live-resume') return 'export-live'
+  return kind
+}
+
+function mapWorkerStatus(status: string): WorkerJobStatus {
+  if (status === 'completed') return 'completed'
+  if (status === 'succeeded') return 'completed'
+  if (status === 'failed') return 'failed'
+  if (status === 'cancelled') return 'cancelled'
+  return status === 'queued' ? 'queued' : 'running'
+}
+
+function mapWorkerJob(payload: Record<string, unknown>): WorkerJob {
+  const startedAt = typeof payload.startedAt === 'string' ? payload.startedAt : new Date().toISOString()
+  const finishedAt = typeof payload.finishedAt === 'string' ? payload.finishedAt : undefined
+  const status = mapWorkerStatus(typeof payload.status === 'string' ? payload.status : 'running')
+  const progress = status === 'completed' || status === 'cancelled' ? 100 : typeof payload.progress === 'number' ? payload.progress : 0
+  return {
+    id: String(payload.jobId || payload.id || ''),
+    kind: String(payload.type || payload.kind || 'evaluate') as WorkerJobKind,
+    status,
+    startedAt,
+    finishedAt,
+    durationMs: finishedAt ? Math.max(0, new Date(finishedAt).getTime() - new Date(startedAt).getTime()) : undefined,
+    progress,
+    notes: typeof payload.summary === 'string'
+      ? payload.summary
+      : typeof payload.notes === 'string'
+        ? payload.notes
+        : typeof payload.error === 'string'
+          ? payload.error
+          : undefined,
+    launchedBy: typeof payload.launchedBy === 'string' ? payload.launchedBy : undefined,
+    client: typeof payload.client === 'string' ? payload.client : undefined,
+    effectiveConfig: typeof payload.effectiveConfig === 'object' && payload.effectiveConfig !== null
+      ? payload.effectiveConfig as WorkerEffectiveConfig
+      : undefined,
   }
 }
 
@@ -237,28 +303,40 @@ export function createWorkerClient(config: WorkerClientConfig) {
   const timeoutMs = config.workerTimeoutSeconds * 1000
 
   async function checkHealth(): Promise<WorkerHealth> {
-    const res = await fetchWithTimeout(`${base}/api/worker/health`, { headers }, timeoutMs)
+    const res = await fetchWithTimeout(`${base}/api/health`, { headers }, timeoutMs)
     if (!res.ok) throw await buildResponseError(res, `Worker health check failed: ${res.status}`)
     return res.json() as Promise<WorkerHealth>
   }
 
   async function getEffectiveConfig(): Promise<WorkerEffectiveConfig> {
-    const res = await fetchWithTimeout(`${base}/api/worker/config/effective`, { headers }, timeoutMs)
+    const res = await fetchWithTimeout(`${base}/api/config/mode`, { headers }, timeoutMs)
     if (!res.ok) throw await buildResponseError(res, `Failed to fetch effective config: ${res.status}`)
-    return res.json() as Promise<WorkerEffectiveConfig>
+    const payload = await res.json() as {
+      mode: string
+      workerVersion: string
+      corpusVersion?: string | null
+    }
+    return {
+      workerMode: config.workerMode,
+      workerUrl: config.workerUrl,
+      workerFallbackMode: config.workerFallbackMode,
+      workerTimeoutSeconds: config.workerTimeoutSeconds,
+      analyzeLimit: config.analyzeLimit,
+      dataMode: config.dataMode || payload.mode || 'mock',
+    }
   }
 
   async function startJob(payload: WorkerStartJobPayload): Promise<WorkerStartJobResponse> {
     const res = await fetchWithTimeout(
-      `${base}/api/worker/jobs`,
+      `${base}/api/jobs`,
       {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          ...payload,
-          launchedBy: payload.launchedBy || auditContext.launchedBy,
-          client: payload.client || auditContext.client,
-          effectiveConfig: payload.effectiveConfig || auditContext.effectiveConfig,
+          type: mapJobKind(payload.kind),
+          options: {
+            env: payload.env || {},
+          },
         }),
       },
       timeoutMs,
@@ -268,28 +346,19 @@ export function createWorkerClient(config: WorkerClientConfig) {
   }
 
   async function getJob(jobId: string): Promise<WorkerJob> {
-    const res = await fetchWithTimeout(`${base}/api/worker/jobs/${jobId}`, { headers }, timeoutMs)
+    const res = await fetchWithTimeout(`${base}/api/jobs/${jobId}`, { headers }, timeoutMs)
     if (!res.ok) throw await buildResponseError(res, `Failed to fetch job ${jobId}: ${res.status}`)
-    return res.json() as Promise<WorkerJob>
+    return mapWorkerJob(await res.json() as Record<string, unknown>)
   }
 
   async function cancelJob(jobId: string): Promise<void> {
-    await fetchWithTimeout(
-      `${base}/api/worker/jobs/${jobId}/cancel`,
-      { method: 'POST', headers },
-      timeoutMs,
-    )
-  }
-
-  async function getManifest(jobId: string): Promise<WorkerJobManifest> {
-    const res = await fetchWithTimeout(`${base}/api/worker/jobs/${jobId}/manifest`, { headers }, timeoutMs)
-    if (!res.ok) throw await buildResponseError(res, `Failed to fetch manifest for ${jobId}: ${res.status}`)
-    return res.json() as Promise<WorkerJobManifest>
+    const res = await fetchWithTimeout(`${base}/api/jobs/${jobId}/cancel`, { method: 'POST', headers }, timeoutMs)
+    if (!res.ok) throw await buildResponseError(res, `Failed to cancel job ${jobId}: ${res.status}`)
   }
 
   function openJobEvents(jobId: string): WorkerEventStream {
     if (config.workerMode !== 'remote') {
-      return new EventSource(`${base}/api/worker/jobs/${jobId}/events`) as unknown as WorkerEventStream
+      return new EventSource(`${base}/api/jobs/${jobId}/events`) as unknown as WorkerEventStream
     }
 
     const controller = new AbortController()
@@ -299,7 +368,7 @@ export function createWorkerClient(config: WorkerClientConfig) {
       close: () => controller.abort(),
     }
 
-    void streamRemoteEvents(`${base}/api/worker/jobs/${jobId}/events`, headers, controller.signal, stream)
+    void streamRemoteEvents(`${base}/api/jobs/${jobId}/events`, headers, controller.signal, stream)
       .catch((error) => {
         if (controller.signal.aborted) {
           return
@@ -317,7 +386,6 @@ export function createWorkerClient(config: WorkerClientConfig) {
     startJob,
     getJob,
     cancelJob,
-    getManifest,
     openJobEvents,
   }
 }

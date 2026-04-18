@@ -74,6 +74,19 @@ def test_jobs_service_run_job_blocks_until_terminal_status(tmp_path) -> None:
     assert (tmp_path / "jobs" / f"{completed['jobId']}.json").exists()
 
 
+def test_jobs_service_can_cancel_running_job(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+
+    started = service.start_job(job_type="evaluate", options={}, launched_by="test", client="pytest")
+    cancelled = service.cancel_job(started["jobId"])
+
+    assert cancelled["status"] == "cancelled"
+    assert cancelled["summary"] == "evaluate cancelled."
+
+    completed = wait_for_terminal_status(service, started["jobId"])
+    assert completed["status"] == "cancelled"
+
+
 def test_jobs_route_starts_and_reads_evaluate_jobs(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
     from worker.app.dependencies import get_jobs_service
@@ -89,5 +102,23 @@ def test_jobs_route_starts_and_reads_evaluate_jobs(tmp_path) -> None:
     response = client.get(f"/api/jobs/{job_id}")
     assert response.status_code == 200
     assert response.json()["status"] == completed["status"]
+
+    app.dependency_overrides.clear()
+
+
+def test_jobs_route_cancels_running_job(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+    from worker.app.dependencies import get_jobs_service
+
+    app.dependency_overrides[get_jobs_service] = lambda: service
+    client = TestClient(app)
+
+    response = client.post("/api/jobs", json={"type": "evaluate", "options": {}})
+    assert response.status_code == 200
+    job_id = response.json()["jobId"]
+
+    cancel_response = client.post(f"/api/jobs/{job_id}/cancel")
+    assert cancel_response.status_code == 200
+    assert cancel_response.json()["status"] == "cancelled"
 
     app.dependency_overrides.clear()

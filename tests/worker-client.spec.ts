@@ -29,75 +29,72 @@ describe('createWorkerClient — local mode', () => {
     vi.restoreAllMocks()
   })
 
-  it('checkHealth hits /api/worker/health with no base', async () => {
-    mockFetch({ status: 'ok', version: '1.0.0' })
+  it('checkHealth hits /api/health with no base', async () => {
+    mockFetch({ status: 'ok', workerVersion: '1.0.0', mode: 'local', timestamp: '2026-04-18T00:00:00Z' })
     const client = createWorkerClient(LOCAL_CONFIG)
     const health = await client.checkHealth()
     expect(health.status).toBe('ok')
     expect(vi.mocked(fetch)).toHaveBeenCalledWith(
-      '/api/worker/health',
+      '/api/health',
       expect.objectContaining({ signal: expect.any(AbortSignal) }),
     )
   })
 
-  it('getEffectiveConfig hits /api/worker/config/effective', async () => {
-    mockFetch({ workerMode: 'local', workerUrl: '', workerFallbackMode: 'read_only', workerTimeoutSeconds: 30, analyzeLimit: 12, dataMode: 'mock' })
+  it('getEffectiveConfig hits /api/config/mode', async () => {
+    mockFetch({ mode: 'local', workerVersion: '1.0.0', corpusVersion: null, isOperator: false, features: { authEnabled: false }, timestamp: '2026-04-18T00:00:00Z' })
     const client = createWorkerClient(LOCAL_CONFIG)
     const config = await client.getEffectiveConfig()
     expect(config.workerMode).toBe('local')
     expect(config.analyzeLimit).toBe(12)
   })
 
-  it('startJob posts to /api/worker/jobs', async () => {
-    mockFetch({ jobId: 'job-abc' }, 201)
+  it('startJob posts to /api/jobs using the worker-native payload', async () => {
+    mockFetch({ jobId: 'job-abc', status: 'running' }, 200)
     const client = createWorkerClient(LOCAL_CONFIG)
     const result = await client.startJob({ kind: 'ingest', env: { OPENAI_API_KEY: 'sk-test' } })
     expect(result.jobId).toBe('job-abc')
-    expect(vi.mocked(fetch)).toHaveBeenCalledWith(
-      '/api/worker/jobs',
-      expect.objectContaining({ method: 'POST' }),
-    )
+    const [url, options] = vi.mocked(fetch).mock.calls[0] as [string, RequestInit]
+    expect(url).toBe('/api/jobs')
+    expect(options.method).toBe('POST')
+    expect(JSON.parse(String(options.body))).toEqual({
+      type: 'ingest',
+      options: {
+        env: { OPENAI_API_KEY: 'sk-test' },
+      },
+    })
   })
 
   it('accepts publish-analysis as a valid worker job kind', async () => {
-    mockFetch({ jobId: 'job-publish' }, 201)
+    mockFetch({ jobId: 'job-publish', status: 'running' }, 200)
     const client = createWorkerClient(LOCAL_CONFIG)
     const result = await client.startJob({ kind: 'publish-analysis' })
     expect(result.jobId).toBe('job-publish')
   })
 
-  it('getJob fetches /api/worker/jobs/:id', async () => {
-    mockFetch({ id: 'job-abc', kind: 'ingest', status: 'running', startedAt: '2026-04-14T10:00:00Z', progress: 50 })
+  it('getJob fetches /api/jobs/:id and maps worker summary fields', async () => {
+    mockFetch({ jobId: 'job-abc', type: 'ingest', status: 'running', startedAt: '2026-04-14T10:00:00Z', summary: 'Ingest running.' })
     const client = createWorkerClient(LOCAL_CONFIG)
     const job = await client.getJob('job-abc')
     expect(job.id).toBe('job-abc')
     expect(job.status).toBe('running')
   })
 
-  it('cancelJob posts to /api/worker/jobs/:id/cancel', async () => {
+  it('cancelJob posts to /api/jobs/:id/cancel', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, status: 200, json: () => Promise.resolve({}) }))
     const client = createWorkerClient(LOCAL_CONFIG)
     await expect(client.cancelJob('job-abc')).resolves.toBeUndefined()
     expect(vi.mocked(fetch)).toHaveBeenCalledWith(
-      '/api/worker/jobs/job-abc/cancel',
+      '/api/jobs/job-abc/cancel',
       expect.objectContaining({ method: 'POST' }),
     )
   })
 
-  it('getManifest fetches /api/worker/jobs/:id/manifest', async () => {
-    mockFetch({ jobId: 'job-abc', kind: 'ingest', status: 'completed', schemaVersion: '1.0', startedAt: '2026-04-14T10:00:00Z', progress: 100 })
-    const client = createWorkerClient(LOCAL_CONFIG)
-    const manifest = await client.getManifest('job-abc')
-    expect(manifest.jobId).toBe('job-abc')
-    expect(manifest.schemaVersion).toBe('1.0')
-  })
-
-  it('openJobEvents returns an EventSource for /api/worker/jobs/:id/events', () => {
+  it('openJobEvents returns an EventSource for /api/jobs/:id/events in local mode', () => {
     const mockES = { close: vi.fn(), onmessage: null, onerror: null }
     vi.stubGlobal('EventSource', vi.fn(() => mockES))
     const client = createWorkerClient(LOCAL_CONFIG)
     const es = client.openJobEvents('job-abc')
-    expect(vi.mocked(EventSource)).toHaveBeenCalledWith('/api/worker/jobs/job-abc/events')
+    expect(vi.mocked(EventSource)).toHaveBeenCalledWith('/api/jobs/job-abc/events')
     expect(es).toBe(mockES)
   })
 
@@ -129,27 +126,27 @@ describe('createWorkerClient — remote mode', () => {
   })
 
   it('prepends workerUrl to request paths', async () => {
-    mockFetch({ status: 'ok', version: '1.0.0' })
+    mockFetch({ status: 'ok', workerVersion: '1.0.0', mode: 'local', timestamp: '2026-04-18T00:00:00Z' })
     const client = createWorkerClient(REMOTE_CONFIG)
     await client.checkHealth()
     expect(vi.mocked(fetch)).toHaveBeenCalledWith(
-      'https://worker.example.com/api/worker/health',
+      'https://worker.example.com/api/health',
       expect.anything(),
     )
   })
 
   it('strips trailing slash from workerUrl', async () => {
-    mockFetch({ status: 'ok', version: '1.0.0' })
+    mockFetch({ status: 'ok', workerVersion: '1.0.0', mode: 'local', timestamp: '2026-04-18T00:00:00Z' })
     const client = createWorkerClient({ ...REMOTE_CONFIG, workerUrl: 'https://worker.example.com/' })
     await client.checkHealth()
     expect(vi.mocked(fetch)).toHaveBeenCalledWith(
-      'https://worker.example.com/api/worker/health',
+      'https://worker.example.com/api/health',
       expect.anything(),
     )
   })
 
   it('includes Authorization header when token is set', async () => {
-    mockFetch({ jobId: 'job-xyz' }, 201)
+    mockFetch({ jobId: 'job-xyz', status: 'running' }, 200)
     const client = createWorkerClient(REMOTE_CONFIG)
     await client.startJob({ kind: 'evaluate' })
     const [, options] = vi.mocked(fetch).mock.calls[0] as [string, RequestInit]
@@ -188,7 +185,7 @@ describe('createWorkerClient — remote mode', () => {
     client.openJobEvents('job-abc')
     expect(vi.mocked(EventSource)).not.toHaveBeenCalled()
     expect(vi.mocked(fetch)).toHaveBeenCalledWith(
-      'https://worker.example.com/api/worker/jobs/job-abc/events',
+      'https://worker.example.com/api/jobs/job-abc/events',
       expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: 'Bearer test-token',
