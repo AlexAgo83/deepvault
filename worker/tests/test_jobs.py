@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import time
 
 from fastapi.testclient import TestClient
@@ -110,14 +111,39 @@ def test_jobs_service_analyze_falls_back_to_local_when_provider_requested(tmp_pa
     assert '"providerStatus": "fallback"' in analyzed_corpus
 
 
-def test_jobs_service_marks_unimplemented_job_types_failed(tmp_path) -> None:
+def test_jobs_service_runs_export_live_and_writes_live_artifacts(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
 
     started = service.start_job(job_type="export-live", options={})
     completed = wait_for_terminal_status(service, started["jobId"])
 
-    assert completed["status"] == "failed"
-    assert "not implemented" in completed["error"].lower()
+    assert completed["status"] == "succeeded"
+    assert completed["result"]["sourceKind"] == "mock-baseline"
+    assert (tmp_path.parent.parent / "public" / "live-corpus.json").exists()
+    assert (tmp_path / "live-export-checkpoint.json").exists()
+    assert (tmp_path / "sync-state.live.json").exists()
+
+
+def test_jobs_service_export_live_prefers_analyzed_runtime_artifact(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+    analyzed_corpus_path = tmp_path / "analyzed-corpus.json"
+    analyzed_corpus = service._corpus_service.load_corpus_payload()
+    analyzed_corpus["documents"][0]["analysis"] = {
+        "status": "analyzed",
+        "summary": "Worker-generated analysis.",
+    }
+    analyzed_corpus_path.write_text(json.dumps(analyzed_corpus), encoding="utf-8")
+
+    started = service.start_job(job_type="export-live", options={"env": {"DEEPVAULT_DATA_MODE": "live"}})
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    published_corpus = (tmp_path.parent.parent / "public" / "live-corpus.json").read_text(encoding="utf-8")
+    checkpoint = (tmp_path / "live-export-checkpoint.json").read_text(encoding="utf-8")
+
+    assert completed["status"] == "succeeded"
+    assert completed["result"]["sourceKind"] == "analyzed-runtime"
+    assert '"status": "analyzed"' in published_corpus
+    assert '"syncedAt":' in checkpoint
 
 
 def test_jobs_service_run_job_blocks_until_terminal_status(tmp_path) -> None:

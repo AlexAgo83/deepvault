@@ -35,6 +35,12 @@ class RuntimeStore:
     def analyze_report_path(self) -> Path:
         return self.runtime_dir / "analyze-report.json"
 
+    def live_export_checkpoint_path(self) -> Path:
+        return self.runtime_dir / "live-export-checkpoint.json"
+
+    def live_corpus_path(self) -> Path:
+        return self.runtime_dir.parent.parent / "public" / "live-corpus.json"
+
     def job_metadata_path(self, job_id: str) -> Path:
         return self.jobs_dir() / f"{job_id}.json"
 
@@ -76,6 +82,7 @@ class RuntimeStore:
 
     def write_json_artifact(self, path: Path, payload: Dict[str, Any]) -> Path:
         self.ensure_runtime_dirs()
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
         return path
 
