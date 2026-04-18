@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 73%
+> Progress: 75%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -165,5 +165,5 @@ stateDiagram-v2
 - The `live` corpus path now stays worker-backed even when `/api/corpus` is missing or the worker is offline: the app shows an explicit empty/error state plus reconnect guidance instead of silently switching back to mock data.
 - Browser-safe ranking now flows through `src/lib/corpus-ranking.ts`, leaving `src/lib/scoring.ts` as a compatibility wrapper for non-browser imports and shrinking the remaining legacy browser dependency surface.
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
-- `src/lib/bishop.ts` is now reduced to a compatibility re-export over `src/lib/bishop-orchestration.ts`, shrinking the remaining legacy module surface to explicit non-browser imports only.
-- The current checkpoint is runtime/offline verification plus final retirement of the remaining explicit `src/lib/bishop.ts` imports before Wave 4 can close.
+- Explicit non-browser imports now point to `src/lib/bishop-orchestration.ts`, and `src/lib/bishop.ts` has been removed from the codebase.
+- The current checkpoint is runtime/offline verification and closure evidence for the worker-backed Bishop path before Wave 4 can close.

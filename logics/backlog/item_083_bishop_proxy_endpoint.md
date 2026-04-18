@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 99%
 > Confidence: 98%
-> Progress: 90%
+> Progress: 95%
 > Complexity: High
 > Theme: Architecture / Product
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -65,5 +65,5 @@ flowchart LR
 - Worker and app coverage now include successful provider-dispatched answers plus graceful fallback when provider keys are missing, upstream provider calls fail, or the worker cannot be reached.
 - The last browser-side local fallback no longer imports `src/lib/deepvault.ts`; it now uses `src/lib/corpus-grounding.ts` so the Bishop client no longer depends on the legacy aggregate module at runtime.
 - The shared `src/lib` barrel no longer re-exports Bishop orchestration helpers, which reduces the accidental public/runtime surface of the legacy `src/lib/bishop.ts` module to explicit test and script imports only.
-- `src/lib/bishop.ts` is now a compatibility-only facade that re-exports `src/lib/bishop-orchestration.ts`; the implementation no longer lives in the legacy filename and the remaining surface is limited to explicit test/script imports.
-- Remaining work in this item is the final cleanup or retirement of the explicit non-browser imports that still point at `src/lib/bishop.ts`.
+- Explicit test/script imports now point to `src/lib/bishop-orchestration.ts`, and the legacy `src/lib/bishop.ts` compatibility facade has been removed.
+- Remaining work in this item is final runtime verification and closure evidence for the worker-backed Bishop path.
