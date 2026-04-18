@@ -37,7 +37,7 @@
 | [adr_031_local_ai_usage_event_store_and_sectioned_ai_view](architecture/adr_031_local_ai_usage_event_store_and_sectioned_ai_view.md) | Local AI usage event store and sectioned AI View | Accepted |  | architecture/adr_031_local_ai_usage_event_store_and_sectioned_ai_view.md |
 | [adr_032_integrate_analyze_enrichment_fields_into_bishop_retrieval_scoring](architecture/adr_032_integrate_analyze_enrichment_fields_into_bishop_retrieval_scoring.md) | Integrate analyze enrichment fields into Bishop retrieval scoring | Accepted |  | architecture/adr_032_integrate_analyze_enrichment_fields_into_bishop_retrieval_scoring.md |
 | [adr_033_split_bishop_ts_into_bounded_sub_modules](architecture/adr_033_split_bishop_ts_into_bounded_sub_modules.md) | Split bishop.ts into bounded sub-modules | Superseded |  | architecture/adr_033_split_bishop_ts_into_bounded_sub_modules.md |
-| [adr_034_nexus_hosted_deployment_topology_and_multi_user_access_model](architecture/adr_034_nexus_hosted_deployment_topology_and_multi_user_access_model.md) | Nexus hosted deployment topology and multi-user access model | Proposed |  | architecture/adr_034_nexus_hosted_deployment_topology_and_multi_user_access_model.md |
+| [adr_034_nexus_hosted_deployment_topology_and_multi_user_access_model](architecture/adr_034_nexus_hosted_deployment_topology_and_multi_user_access_model.md) | Nexus hosted deployment topology and multi-user access model | Accepted |  | architecture/adr_034_nexus_hosted_deployment_topology_and_multi_user_access_model.md |
 | [adr_035_python_fastapi_as_the_worker_runtime](architecture/adr_035_python_fastapi_as_the_worker_runtime.md) | Python FastAPI as the worker runtime | Accepted |  | architecture/adr_035_python_fastapi_as_the_worker_runtime.md |
 
 ## Product briefs
@@ -57,8 +57,8 @@
 | [prod_011_add_an_artifacts_visualization_surface_for_generated_outputs](product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md) | Add an Artifacts visualization surface for generated outputs | Validated |  | product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md |
 | [prod_012_add_ai_consumption_observability_and_sectioned_ai_view](product/prod_012_add_ai_consumption_observability_and_sectioned_ai_view.md) | Add AI consumption observability and a sectioned AI View | Validated |  | product/prod_012_add_ai_consumption_observability_and_sectioned_ai_view.md |
 | [prod_013_make_application_configuration_exportable_and_importable](product/prod_013_make_application_configuration_exportable_and_importable.md) | Make application configuration exportable and importable | Validated |  | product/prod_013_make_application_configuration_exportable_and_importable.md |
-| [prod_014_host_nexus_as_a_shared_multi_user_web_application](product/prod_014_host_nexus_as_a_shared_multi_user_web_application.md) | Host Nexus as a shared multi-user web application | Proposed |  | product/prod_014_host_nexus_as_a_shared_multi_user_web_application.md |
-| [prod_015_user_authentication_and_access_management](product/prod_015_user_authentication_and_access_management.md) | User authentication and access management | Proposed |  | product/prod_015_user_authentication_and_access_management.md |
+| [prod_014_host_nexus_as_a_shared_multi_user_web_application](product/prod_014_host_nexus_as_a_shared_multi_user_web_application.md) | Host Nexus as a shared multi-user web application | Validated |  | product/prod_014_host_nexus_as_a_shared_multi_user_web_application.md |
+| [prod_015_user_authentication_and_access_management](product/prod_015_user_authentication_and_access_management.md) | User authentication and access management | Validated |  | product/prod_015_user_authentication_and_access_management.md |
 
 ## Requests
 

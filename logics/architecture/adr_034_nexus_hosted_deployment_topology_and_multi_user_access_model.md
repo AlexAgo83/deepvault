@@ -1,7 +1,7 @@
 ## adr_034_nexus_hosted_deployment_topology_and_multi_user_access_model - Nexus hosted deployment topology and multi-user access model
 
 > Date: 2026-04-18
-> Status: Proposed
+> Status: Accepted
 > Drivers: Move Nexus from a per-operator local tool to a shared hosted web application with a single corpus, server-side secrets, and a dedicated worker machine — without breaking the local development path or the worker boundary contract from adr_023.
 > Related request: `logics/request/req_020_host_nexus_as_a_shared_multi_user_web_application.md`
 > Related backlog: `logics/backlog/item_080_python_fastapi_worker_foundation.md`, `logics/backlog/item_081_port_scoring_to_python_worker.md`, `logics/backlog/item_082_corpus_endpoint_and_browser_bundle_cleanup.md`, `logics/backlog/item_083_bishop_proxy_endpoint.md`, `logics/backlog/item_084_job_execution_in_python_worker.md`, `logics/backlog/item_085_entra_sso_msal_and_worker_token_validation.md`, `logics/backlog/item_086_operator_allowlist_and_access_log.md`, `logics/backlog/item_087_hosted_mode_ui.md`, `logics/backlog/item_088_docker_compose_deployment_package.md`
@@ -210,9 +210,9 @@ Supporting conventions:
 
 # Follow-up work
 
-- Entra app registration configuration, MSAL browser integration, token validation, and operator provisioning are covered in full in `logics/product/prod_015_user_authentication_and_access_management.md`.
-- Define the corpus `ETag` and cache invalidation strategy so browsers know when to refetch without polling.
-- Define the `docker-compose.yml` configuration in full: Python FastAPI image, Caddy image, volume mounts for `data/runtime/`, env file wiring, Caddy proxy config, and port exposure. Include Windows startup automation (Docker Desktop auto-start or Task Scheduler).
-- Define the monitoring baseline for the worker machine: `GET /health` polling interval, corpus staleness alerting, and error rate logging.
-- Define the migration guide for operators moving their local settings (API keys, Entra config) to the worker machine's server-side environment variables.
-- Revisit `adr_013` (Azure + Gordon) once the first hosted wave is stable if the team wants to scale beyond the local network.
+- ~~Entra app registration, MSAL browser integration, token validation, and operator provisioning~~ **Done** — delivered by `item_085`, `item_086`, `item_087`. See `logics/product/prod_015_user_authentication_and_access_management.md` for the full design record.
+- ~~Define `docker-compose.yml` and operator runbook~~ **Done** — delivered by `item_088`: `docker-compose.yml`, `Caddyfile`, `.env.example`, `.dockerignore`, and `docs/deployment-guide.md` are committed. Windows startup automation documented in the runbook.
+- ~~Define the migration guide for operators moving their local settings to server-side env vars~~ **Done** — `docs/deployment-guide.md` covers the full operator onboarding workflow.
+- Define the corpus `ETag` and cache invalidation strategy so browsers know when to refetch without polling. (Future wave.)
+- Define the monitoring baseline for the worker machine: `GET /health` polling interval, corpus staleness alerting, error rate logging. (Future wave.)
+- Revisit `adr_013` (Azure + Gordon) once the first hosted wave is stable if the team wants to scale beyond the local network. (Future wave.)

@@ -1,7 +1,7 @@
 ## prod_014_host_nexus_as_a_shared_multi_user_web_application - Host Nexus as a shared multi-user web application
 
 > Date: 2026-04-18
-> Status: Proposed
+> Status: Validated
 > Related request: `logics/request/req_020_host_nexus_as_a_shared_multi_user_web_application.md`
 > Related backlog: `logics/backlog/item_080_python_fastapi_worker_foundation.md`, `logics/backlog/item_081_port_scoring_to_python_worker.md`, `logics/backlog/item_082_corpus_endpoint_and_browser_bundle_cleanup.md`, `logics/backlog/item_083_bishop_proxy_endpoint.md`, `logics/backlog/item_084_job_execution_in_python_worker.md`, `logics/backlog/item_085_entra_sso_msal_and_worker_token_validation.md`, `logics/backlog/item_086_operator_allowlist_and_access_log.md`, `logics/backlog/item_087_hosted_mode_ui.md`, `logics/backlog/item_088_docker_compose_deployment_package.md`
 > Related task: `logics/tasks/task_042_orchestrate_python_worker_foundation_and_runtime_migration.md`, `logics/tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md`
@@ -195,7 +195,7 @@ First-wave storage conventions:
 
 # Open questions
 
-- Should the hosted app show a visible mode indicator (banner or badge) telling users they are on the shared hosted instance vs a local development instance?
+- ~~Should the hosted app show a visible mode indicator (banner or badge) telling users they are on the shared hosted instance vs a local development instance?~~ **Resolved**: a subtle `Shared` label in the Settings panel — not a persistent banner. The authenticated user's name in the shell already implicitly signals shared mode. See `prod_015` Resolved decisions.
 
 # Confirmed context
 
