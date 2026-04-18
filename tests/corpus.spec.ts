@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fetchLiveCorpus, getMockCorpusBundle, isCorpusLike, normalizeRequestedCorpusMode } from '../src/data/corpus'
+import { normalizeCorpusMode } from '../src/lib/corpus-mode'
+import { fetchLiveCorpus, getMockCorpusBundle, isCorpusLike } from '../src/lib/corpus-client'
 
 describe('corpus helpers', () => {
   afterEach(() => {
@@ -17,10 +18,10 @@ describe('corpus helpers', () => {
   })
 
   it('normalizes requested corpus mode values', () => {
-    expect(normalizeRequestedCorpusMode('live')).toBe('live')
-    expect(normalizeRequestedCorpusMode('mock')).toBe('mock')
-    expect(normalizeRequestedCorpusMode(undefined)).toBe('mock')
-    expect(normalizeRequestedCorpusMode(null)).toBe('mock')
+    expect(normalizeCorpusMode('live')).toBe('live')
+    expect(normalizeCorpusMode('mock')).toBe('mock')
+    expect(normalizeCorpusMode(undefined)).toBe('mock')
+    expect(normalizeCorpusMode(null)).toBe('mock')
   })
 
   it('returns the live corpus when fetch succeeds', async () => {

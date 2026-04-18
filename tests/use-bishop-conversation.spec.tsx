@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { getMockCorpusBundle } from '../src/data/corpus'
+import { getMockCorpusBundle } from '../src/lib/corpus-client'
 import { orchestrateBishopAnswer } from '../src/lib/bishop'
 import {
   BISHOP_CONTEXT_STORAGE_KEY,

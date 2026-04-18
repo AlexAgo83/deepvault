@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { getMockCorpusBundle } from '../src/data/corpus'
+import { getMockCorpusBundle } from '../src/lib/corpus-client'
 import type { Corpus, CorpusDocument } from '../src/lib/deepvault'
 import { analyzeCorpusDocuments, buildAnalysisRunReport } from '../scripts/analyze-corpus'
 

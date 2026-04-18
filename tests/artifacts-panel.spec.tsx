@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { afterEach } from 'vitest'
 import { describe, expect, it, vi } from 'vitest'
 import { ArtifactsPanel } from '../src/components/panels/artifacts-panel'
-import { getMockCorpusBundle } from '../src/data/corpus'
+import { getMockCorpusBundle } from '../src/lib/corpus-client'
 
 afterEach(() => {
   window.localStorage.clear()

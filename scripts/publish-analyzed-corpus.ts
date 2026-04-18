@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Corpus } from '../src/lib/deepvault'
 import { summarizeCorpus } from '../src/lib/deepvault'
-import { isCorpusLike } from '../src/data/corpus'
+import { isCorpusLike } from '../src/lib/corpus-client'
 import { writeCorpusFile } from './deepvault-graph'
 import { loadProjectEnv } from './runtime-env'
 

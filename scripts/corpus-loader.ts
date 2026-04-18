@@ -2,7 +2,7 @@ import { access, readFile } from 'node:fs/promises'
 import { constants } from 'node:fs'
 import { resolve } from 'node:path'
 import type { Corpus } from '../src/lib/deepvault'
-import { isCorpusLike } from '../src/data/corpus'
+import { isCorpusLike } from '../src/lib/corpus-client'
 import { normalizeCorpusMode, type CorpusMode } from '../src/lib/corpus-mode'
 import { loadProjectEnv } from './runtime-env'
 
