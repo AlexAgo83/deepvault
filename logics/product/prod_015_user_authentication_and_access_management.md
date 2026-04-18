@@ -1,7 +1,7 @@
 ## prod_015_user_authentication_and_access_management - User authentication and access management
 
 > Date: 2026-04-18
-> Status: Proposed
+> Status: Validated
 > Related request: `logics/request/req_020_host_nexus_as_a_shared_multi_user_web_application.md`
 > Related backlog: `logics/backlog/item_085_entra_sso_msal_and_worker_token_validation.md`, `logics/backlog/item_086_operator_allowlist_and_access_log.md`, `logics/backlog/item_087_hosted_mode_ui.md`
 > Related task: `logics/tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md`
