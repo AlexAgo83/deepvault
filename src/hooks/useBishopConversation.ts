@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { orchestrateBishopAnswer } from '../lib/bishop'
 import { appendAIUsageEvent } from '../lib/ai-usage'
+import { askBishop } from '../lib/bishop-client'
 import { type ChatMessage, type Corpus, type ProviderId, type SourceRecord, type UserRole } from '../lib/deepvault'
 import type { BishopSettings } from './useBishopSettings'
 
@@ -20,9 +20,6 @@ export interface UseBishopConversationOptions {
   provider: ProviderId
   bishopSettings?: BishopSettings
   endpoint?: string | null
-  openaiApiKey?: string | null
-  geminiApiKey?: string | null
-  anthropicApiKey?: string | null
   onActivateTab?: () => void
 }
 
@@ -194,16 +191,11 @@ export function useBishopConversation({
   provider,
   bishopSettings,
   endpoint,
-  openaiApiKey,
-  geminiApiKey,
-  anthropicApiKey,
   onActivateTab,
 }: UseBishopConversationOptions) {
   const answerTimers = useRef<number[]>([])
   const persistNextChange = useRef(true)
   const historyTurnLimit = bishopSettings?.historyTurnLimit ?? BISHOP_PROMPT_HISTORY_LIMIT
-  const sourceLimit = bishopSettings?.sourceLimit ?? 3
-  const candidateLimit = bishopSettings?.candidateLimit ?? 10
   const [question, setQuestion] = useState('')
   const [isAsking, setIsAsking] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadBishopMessages() || [createBishopSeedMessage()])
@@ -274,15 +266,13 @@ export function useBishopConversation({
     answerTimers.current.push(answerDelay)
 
     try {
-      const result = await orchestrateBishopAnswer(corpus, trimmed, {
+      const result = await askBishop(trimmed, {
+        corpus,
         role,
         provider,
-        limit: sourceLimit,
-        candidateLimit,
+        limit: bishopSettings?.sourceLimit ?? 3,
+        candidateLimit: bishopSettings?.candidateLimit ?? 10,
         endpoint,
-        openaiApiKey,
-        geminiApiKey,
-        anthropicApiKey,
         conversationHistory,
       })
 

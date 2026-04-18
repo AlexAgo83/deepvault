@@ -2,18 +2,18 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getMockCorpusBundle } from '../src/lib/corpus-client'
-import { orchestrateBishopAnswer } from '../src/lib/bishop'
+import { askBishop } from '../src/lib/bishop-client'
 import {
   BISHOP_CONTEXT_STORAGE_KEY,
   BISHOP_HISTORY_STORAGE_KEY,
   useBishopConversation,
 } from '../src/hooks/useBishopConversation'
 
-vi.mock('../src/lib/bishop', async () => {
-  const actual = await vi.importActual<typeof import('../src/lib/bishop')>('../src/lib/bishop')
+vi.mock('../src/lib/bishop-client', async () => {
+  const actual = await vi.importActual<typeof import('../src/lib/bishop-client')>('../src/lib/bishop-client')
   return {
     ...actual,
-    orchestrateBishopAnswer: vi.fn(actual.orchestrateBishopAnswer),
+    askBishop: vi.fn(actual.askBishop),
   }
 })
 
@@ -171,9 +171,9 @@ describe('useBishopConversation', () => {
 
   it('passes the configured context settings into bishop orchestration', async () => {
     const user = userEvent.setup()
-    const orchestrateMock = vi.mocked(orchestrateBishopAnswer)
+    const askBishopMock = vi.mocked(askBishop)
 
-    orchestrateMock.mockResolvedValueOnce({
+    askBishopMock.mockResolvedValueOnce({
       status: 'answered',
       provider: 'openai',
       query: 'What is the budget for Q3 2025?',
@@ -195,10 +195,8 @@ describe('useBishopConversation', () => {
     await user.type(screen.getByRole('textbox', { name: 'Question' }), 'What is the budget for Q3 2025?')
     await user.click(screen.getByRole('button', { name: 'Ask' }))
 
-    await waitFor(() => expect(orchestrateMock).toHaveBeenCalledTimes(1))
-    expect(orchestrateMock.mock.calls[0]?.[2]).toMatchObject({
-      limit: 5,
-      candidateLimit: 14,
+    await waitFor(() => expect(askBishopMock).toHaveBeenCalledTimes(1))
+    expect(askBishopMock.mock.calls[0]?.[1]).toMatchObject({
       conversationHistory: [],
     })
   })

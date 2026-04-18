@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 99%
 > Confidence: 98%
-> Progress: 62%
+> Progress: 78%
 > Complexity: High
 > Theme: Architecture / Product
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -60,7 +60,7 @@ flowchart LR
 ## Progress notes
 
 - The worker now exposes a grounded Bishop proxy at `POST /api/bishop/query`, backed by a shared `BishopService` and mirrored by `worker bishop query --question "..."`.
-- The browser now points Bishop to `/api/bishop/query` by default, so the active app path no longer calls provider APIs directly from the browser.
-- The worker proxy now performs server-side provider dispatch for `openai`, `gemini`, and `anthropic` using worker env vars (`BISHOP_PROVIDER`, `BISHOP_MODEL`, provider API keys) and returns the structured Bishop response contract with `mode`, `trace`, `model`, token usage, and confidence metadata.
-- Worker integration coverage now includes successful provider-dispatched answers plus graceful fallback when provider keys are missing or upstream provider calls fail.
-- Remaining work in this item is the browser bundle cleanup: remove `src/lib/bishop.ts` and the remaining browser-side orchestration helpers entirely from the production path.
+- The worker proxy performs server-side provider dispatch for `openai`, `gemini`, and `anthropic` using worker env vars (`BISHOP_PROVIDER`, `BISHOP_MODEL`, provider API keys) and returns the structured Bishop response contract with `mode`, `trace`, `model`, token usage, and confidence metadata.
+- The browser runtime path no longer imports `src/lib/bishop.ts` for conversation handling; it now uses a dedicated HTTP client against `/api/bishop/query`, keeping the worker as the primary orchestration path.
+- Worker and app coverage now include successful provider-dispatched answers plus graceful fallback when provider keys are missing, upstream provider calls fail, or the worker cannot be reached.
+- Remaining work in this item is the final cleanup of the legacy `src/lib/bishop.ts` module and adjacent browser-side orchestration remnants so the old path can be removed completely.

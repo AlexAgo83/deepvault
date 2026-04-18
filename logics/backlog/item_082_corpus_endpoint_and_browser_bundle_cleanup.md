@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 99%
 > Confidence: 98%
-> Progress: 65%
+> Progress: 72%
 > Complexity: Medium
 > Theme: Architecture / Performance
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -63,4 +63,5 @@ flowchart LR
 - The worker CLI now supports `worker corpus show` and `worker corpus validate` over the same corpus service as the HTTP route.
 - The browser fetch path now targets `/api/corpus`, reuses `ETag` on repeat fetches, preserves the last successful fetch timestamp to make worker-offline states more explicit, and now runs through `src/lib/corpus-client.ts`.
 - `src/data/corpus.ts` has been removed and callers now import the corpus client or mock corpus directly.
+- The browser Bishop runtime path no longer imports `src/lib/bishop.ts`; it now uses a dedicated HTTP client against the worker proxy with a thin local fallback path during migration.
 - The remaining work in this item is the deeper browser bundle cleanup around `src/lib/scoring.ts` and `src/lib/deepvault.ts`, plus final offline UX verification in the running app.

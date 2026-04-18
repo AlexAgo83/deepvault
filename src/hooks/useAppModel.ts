@@ -220,9 +220,6 @@ export function useAppModel(): AppModel {
     provider,
     bishopSettings,
     endpoint: bishopEndpoint,
-    openaiApiKey: providerSecrets.openaiApiKey,
-    geminiApiKey: providerSecrets.geminiApiKey,
-    anthropicApiKey: providerSecrets.anthropicApiKey,
     onActivateTab: () => setActiveTab('bishop'),
   })
   const extraEnv = useMemo(() => {
