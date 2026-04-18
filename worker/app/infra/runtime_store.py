@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import json
+from uuid import uuid4
 
 from worker.app.config import get_settings
 
@@ -49,7 +50,7 @@ class RuntimeStore:
 
     def write_job_metadata(self, job_id: str, payload: Dict[str, Any]) -> None:
         self.ensure_runtime_dirs()
-        self.job_metadata_path(job_id).write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
+        self._write_text_atomic(self.job_metadata_path(job_id), f"{json.dumps(payload, indent=2)}\n")
 
     def read_job_metadata(self, job_id: str) -> Optional[Dict[str, Any]]:
         path = self.job_metadata_path(job_id)
@@ -77,14 +78,20 @@ class RuntimeStore:
     def write_sync_state(self, payload: Dict[str, Any], mode: str = "mock") -> Path:
         self.ensure_runtime_dirs()
         path = self.sync_state_path(mode)
-        path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
+        self._write_text_atomic(path, f"{json.dumps(payload, indent=2)}\n")
         return path
 
     def write_json_artifact(self, path: Path, payload: Dict[str, Any]) -> Path:
         self.ensure_runtime_dirs()
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
+        self._write_text_atomic(path, f"{json.dumps(payload, indent=2)}\n")
         return path
+
+    def _write_text_atomic(self, path: Path, content: str) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temp_path = path.with_name(f"{path.name}.{uuid4().hex}.tmp")
+        temp_path.write_text(content, encoding="utf-8")
+        temp_path.replace(path)
 
 
 def get_runtime_store() -> RuntimeStore:
