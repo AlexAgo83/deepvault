@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 97%
 > Confidence: 96%
-> Progress: 35%
+> Progress: 90%
 > Complexity: Medium
 > Theme: Architecture / Infrastructure
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -67,4 +67,4 @@ flowchart LR
 ## Progress notes
 
 - Wave 1 foundation started on `1.4.0` with the initial `worker/` package, shared service layer, `GET /api/health`, `GET /api/config/mode`, CLI stubs, pinned requirements, Dockerfile, and Vite `/api` proxy wiring.
-- Remaining work in this item is validation, any contract cleanup discovered during smoke checks, and capturing final evidence before the item can move to `Done`.
+- Remaining work in this item is the final direct bind/proxy smoke-check outside the sandbox; route contracts, CLI checks, Python tests, and Logics updates are now in place.

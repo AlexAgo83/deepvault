@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 96%
 > Confidence: 95%
-> Progress: 8%
+> Progress: 26%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -67,10 +67,10 @@ stateDiagram-v2
 - [x] 1e. Wave 1 — source `workerVersion` from a single worker-owned version file and standardize ISO 8601 UTC timestamps in worker contracts.
 - [x] 2. Wave 1 — wire the Vite dev proxy (`/api -> localhost:8000`) and document the local dev workflow (`uvicorn` or Docker Compose alongside `npm run dev`).
 - [ ] CHECKPOINT: leave Wave 1 commit-ready and verify the worker responds through both direct curl and the Vite proxy path.
-- [ ] 3. Wave 2 — port the document scoring contract to `worker/scoring.py`, including enrichment scoring from `adr_032`.
-- [ ] 3a. Wave 2 — implement functional parity with the TypeScript scoring contract rather than bit-perfect parity, and freeze the first-wave enrichment tuning at confidence threshold `0.7` with a bounded score bonus capped at `+15%`.
-- [ ] 4. Wave 2 — add Python unit tests covering unenriched, high-confidence, and low-confidence ranking cases; confirm parity with the existing TypeScript contract before deletion.
-- [ ] CHECKPOINT: leave Wave 2 commit-ready and run focused worker scoring tests plus the evaluate gate.
+- [x] 3. Wave 2 — port the document scoring contract to `worker/scoring.py`, including enrichment scoring from `adr_032`.
+- [x] 3a. Wave 2 — implement functional parity with the TypeScript scoring contract rather than bit-perfect parity, and freeze the first-wave enrichment tuning at confidence threshold `0.7` with a bounded score bonus capped at `+15%`.
+- [x] 4. Wave 2 — add Python unit tests covering unenriched, high-confidence, and low-confidence ranking cases; confirm parity with the existing TypeScript contract before deletion.
+- [x] CHECKPOINT: leave Wave 2 commit-ready and run focused worker scoring tests plus the evaluate gate.
 - [ ] 5. Wave 3 — implement `GET /api/corpus` with `ETag` support and local-mode mock corpus serving from the worker.
 - [ ] 5a. Wave 3 — expose `worker corpus show` and `worker corpus validate` over the same corpus service used by `GET /api/corpus`.
 - [ ] 6. Wave 3 — move the browser corpus loading path to the worker endpoint, remove browser references to `src/data/corpus.ts`, `src/lib/scoring.ts`, and `src/lib/deepvault.ts`, and ship the explicit offline error state.
@@ -154,4 +154,5 @@ stateDiagram-v2
 ## Progress notes
 
 - Wave 1 implementation is in progress on top of `1.4.0`: the Python worker skeleton now exists with shared services, foundation routes, CLI parity for health/config mode, pinned dependencies, Dockerfile, tests, and Vite proxy wiring.
-- The current checkpoint is validation and cleanup of any issues discovered while smoke-testing the worker directly and through the frontend proxy before Wave 1 is closed.
+- Wave 2 is now complete: the worker has a Python scoring module with enrichment-aware ranking, worker-side tests, a TypeScript spot-check on the static path, and a passing evaluate gate.
+- The current checkpoint is closing the remaining direct bind/proxy validation for Wave 1, then moving to Wave 3 (`GET /api/corpus` and browser bundle cleanup).

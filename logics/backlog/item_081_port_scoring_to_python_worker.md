@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 95%
-> Progress: 0%
+> Status: Done
+> Understanding: 98%
+> Confidence: 97%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Architecture / Quality
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -15,6 +15,15 @@
 - Document ranking and enrichment scoring currently lives in `src/lib/scoring.ts` (browser-side TypeScript).
 - In the Python FastAPI model, scoring must run on the worker — it is called by the bishop proxy endpoint during corpus grounding.
 - Keeping a TypeScript scoring implementation alongside a Python one would introduce divergence risk.
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|port-document-scoring-to-python-worker|req-020-host-nexus-as-a-shared-multi-use|document-ranking-and-enrichment-scoring-|ac1-worker-scoring-py-implements-documen
+flowchart LR
+    Problem[Browser-side scoring risks divergence] --> Port[Port scoring contract to Python]
+    Port --> Tests[Add worker ranking tests]
+    Tests --> Gate[Validate with evaluate and parity spot-checks]
+```
 
 # Scope
 
@@ -40,3 +49,10 @@
 
 - `python -m pytest worker/tests/test_scoring.py -v`
 - Spot-check: run scoring against a sample corpus and compare with TypeScript output
+
+## Progress notes
+
+- `worker/scoring.py` now ports the scoring helpers and retrieval weights from `src/lib/scoring.ts`, including the first-wave enrichment branch from `adr_032`.
+- Worker tests cover unenriched ordering, high-confidence enrichment boost, low-confidence fallback, token normalization, and generic-token filtering.
+- Spot-check parity confirmed on the static scoring path: the same sample document/query pair returns `30` in TypeScript and Python.
+- `rtk npm run evaluate` passed after the worker scoring module landed, preserving the current mock retrieval baseline.
