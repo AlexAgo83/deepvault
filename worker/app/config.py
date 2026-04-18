@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     worker_port: int = Field(default=8000, alias="WORKER_PORT")
     runtime_data_dir: Path = Field(default=ROOT_DIR / "data" / "runtime", alias="WORKER_RUNTIME_DATA_DIR")
     mock_corpus_path: Path = Field(default=ROOT_DIR / "data" / "mock" / "corpus.json", alias="WORKER_MOCK_CORPUS_PATH")
+    bishop_provider: str = Field(default="openai", alias="BISHOP_PROVIDER")
 
 
 @lru_cache(maxsize=1)

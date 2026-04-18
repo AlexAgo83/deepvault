@@ -1,11 +1,11 @@
 ## item_083_bishop_proxy_endpoint - Bishop proxy endpoint on Python worker
 
-> From version: 1.3.0
+> From version: 1.4.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 95%
-> Progress: 0%
+> Status: In Progress
+> Understanding: 98%
+> Confidence: 97%
+> Progress: 35%
 > Complexity: High
 > Theme: Architecture / Product
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -15,6 +15,16 @@
 - Bishop LLM calls are currently made directly from the browser using API keys stored in localStorage. This means API keys are exposed in the browser and team members must supply their own keys.
 - In the Python FastAPI model, the worker proxies bishop queries — the browser sends a question, the worker performs grounding and calls the LLM provider with server-side keys, the browser receives the structured response.
 - `src/lib/bishop.ts` must be removed from the browser bundle; all orchestration and adapter logic moves to `worker/bishop.py`.
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|bishop-proxy-endpoint-on-python-worker|req-020-host-nexus-as-a-shared-multi-use|bishop-llm-calls-are-currently-made|ac1-post-api-bishop-query-with
+flowchart LR
+    Browser[Browser bishop flow] --> Proxy[POST /api/bishop/query]
+    Proxy --> Grounding[Worker grounding + prompt assembly]
+    Grounding --> Providers[Server-side provider dispatch]
+    Providers --> Cli[Shared HTTP and CLI bishop path]
+```
 
 # Scope
 
@@ -46,3 +56,10 @@
 - Browser devtools: no API key in network requests
 - `npm run build` → no `bishop.ts` reference in dist/
 - `python -m pytest worker/tests/test_bishop.py -v`
+
+## Progress notes
+
+- The worker now exposes a first grounded Bishop proxy slice at `POST /api/bishop/query`, backed by a shared `BishopService` and mirrored by `worker bishop query --question "..."`.
+- The browser now points Bishop to `/api/bishop/query` by default, so the active app path no longer calls provider APIs directly from the browser.
+- The current proxy implementation is grounded/local on the worker and returns the structured response contract, including sources, confidence, and trace metadata.
+- Remaining work in this item is the server-side provider dispatch by `BISHOP_PROVIDER`, graceful provider-error coverage, and removing `src/lib/bishop.ts` from the browser codebase entirely.

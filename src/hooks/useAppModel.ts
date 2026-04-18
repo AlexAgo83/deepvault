@@ -153,6 +153,9 @@ export function useAppModel(): AppModel {
   const requestedCorpusMode = resolveCorpusMode(import.meta.env.VITE_DEEPVAULT_DATA_MODE, entraSettings.dataMode)
   const { corpusBundle, liveState, refreshCorpus } = useLiveCorpus(requestedCorpusMode)
   const corpus = corpusBundle.corpus
+  const bishopEndpoint = workerSettings.workerMode === 'remote' && workerSettings.workerUrl
+    ? `${workerSettings.workerUrl.replace(/\/$/, '')}/api/bishop/query`
+    : import.meta.env.VITE_BISHOP_LLM_ENDPOINT || '/api/bishop/query'
   const [activeTab, setActiveTab] = useState<AppTab>(() => parseActiveTab(window.location.hash))
   const [role, setRole] = useState<UserRole>(() => readStoredRole(corpus.defaultUserRole))
   const [provider, setProvider] = useState<ProviderId>('openai')
@@ -216,7 +219,7 @@ export function useAppModel(): AppModel {
     role,
     provider,
     bishopSettings,
-    endpoint: import.meta.env.VITE_BISHOP_LLM_ENDPOINT,
+    endpoint: bishopEndpoint,
     openaiApiKey: providerSecrets.openaiApiKey,
     geminiApiKey: providerSecrets.geminiApiKey,
     anthropicApiKey: providerSecrets.anthropicApiKey,
