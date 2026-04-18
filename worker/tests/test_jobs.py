@@ -80,10 +80,40 @@ def test_jobs_service_runs_ingest_in_live_mode_when_corpus_path_is_provided(tmp_
     assert (tmp_path / "sync-state.live.json").exists()
 
 
+def test_jobs_service_runs_analyze_and_writes_analysis_artifacts(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+
+    started = service.start_job(
+        job_type="analyze",
+        options={"env": {"DEEPVAULT_DATA_MODE": "mock", "DEEPVAULT_ANALYZE_LIMIT": "5"}},
+    )
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    assert completed["status"] == "succeeded"
+    assert completed["result"]["analyzed"] == 5
+    assert (tmp_path / "analyzed-corpus.json").exists()
+    assert (tmp_path / "analyze-report.json").exists()
+
+
+def test_jobs_service_analyze_falls_back_to_local_when_provider_requested(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+
+    started = service.start_job(
+        job_type="analyze",
+        options={"env": {"DEEPVAULT_DATA_MODE": "mock", "DEEPVAULT_ANALYZE_PROVIDER": "openai", "DEEPVAULT_ANALYZE_LIMIT": "1"}},
+    )
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    assert completed["status"] == "succeeded"
+    assert completed["result"]["provider"] == "openai"
+    analyzed_corpus = (tmp_path / "analyzed-corpus.json").read_text(encoding="utf-8")
+    assert '"providerStatus": "fallback"' in analyzed_corpus
+
+
 def test_jobs_service_marks_unimplemented_job_types_failed(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
 
-    started = service.start_job(job_type="analyze", options={})
+    started = service.start_job(job_type="export-live", options={})
     completed = wait_for_terminal_status(service, started["jobId"])
 
     assert completed["status"] == "failed"

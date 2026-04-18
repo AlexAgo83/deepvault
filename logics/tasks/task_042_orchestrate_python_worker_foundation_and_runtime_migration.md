@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 93%
+> Progress: 96%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -170,5 +170,5 @@ stateDiagram-v2
 - Explicit non-browser imports now point to `src/lib/bishop-orchestration.ts`, and `src/lib/bishop.ts` has been removed from the codebase.
 - Wave 5 has now started with a worker-native job orchestration slice: `POST /api/jobs`, `GET /api/jobs/{id}`, `GET /api/jobs/{id}/events`, canonical runtime persistence, and `worker jobs run|status` are landed over a shared `JobsService`.
 - The Sync panel/browser worker client now talks to the worker-native jobs contract (`/api/jobs` and `/api/jobs/{id}/cancel`) instead of the legacy `/api/worker/jobs` path, while preserving the existing UI console/status model through a browser-side compatibility adapter.
-- The worker-native job implementations now cover `evaluate` and `ingest`; `ingest` writes the worker-owned sync snapshot directly to `data/runtime/sync-state(.live).json` from a selected mock/live corpus source.
-- The current checkpoint is the rest of Wave 5: port `analyze` and `export-live`, then remove the residual legacy Node execution path and close the task once worker-native execution is complete end to end.
+- The worker-native job implementations now cover `evaluate`, `ingest`, and `analyze`; `ingest` writes the worker-owned sync snapshot directly to `data/runtime/sync-state(.live).json`, and `analyze` writes `data/runtime/analyzed-corpus.json` plus `data/runtime/analyze-report.json`.
+- The current checkpoint is the final remainder of Wave 5: port `export-live`, then remove the residual legacy Node execution path and close the task once worker-native execution is complete end to end.

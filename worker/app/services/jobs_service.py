@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import threading
 from typing import Any, Dict, List, Optional
@@ -14,9 +15,17 @@ from worker.app.services.bishop_service import BishopService
 from worker.app.services.corpus_service import CorpusService
 
 
-SUPPORTED_JOB_TYPES = {"ingest", "evaluate"}
+SUPPORTED_JOB_TYPES = {"ingest", "analyze", "evaluate"}
 ALL_JOB_TYPES = {"ingest", "analyze", "evaluate", "export-live"}
 TERMINAL_STATUSES = {"succeeded", "failed", "cancelled"}
+ANALYSIS_VERSION = "1.0"
+DEFAULT_ANALYZE_LIMIT = 12
+DEFAULT_PROVIDER_MODELS = {
+    "local": "heuristic-v1",
+    "openai": "gpt-5.4-mini",
+    "gemini": "gemini-2.0-flash",
+    "anthropic": "claude-3-5-sonnet-latest",
+}
 
 
 def build_evaluation_rows() -> List[Dict[str, Any]]:
@@ -224,6 +233,8 @@ class JobsService:
 
             if job_type == "ingest":
                 result = self._run_ingest_job(job_id, options)
+            elif job_type == "analyze":
+                result = self._run_analyze_job(job_id, options)
             elif job_type == "evaluate":
                 result = self._run_evaluate_job(job_id)
             else:
@@ -422,6 +433,287 @@ class JobsService:
             "sourcesIndexed": summary["sourcesIndexed"],
             "siteCount": len(site_summaries),
         }
+
+    def _run_analyze_job(self, job_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        env = options.get("env", {}) if isinstance(options, dict) else {}
+        mode = "live" if env.get("DEEPVAULT_DATA_MODE") == "live" else "mock"
+        input_path = env.get("DEEPVAULT_CORPUS_PATH")
+        provider = str(env.get("DEEPVAULT_ANALYZE_PROVIDER") or "local")
+        limit = max(1, int(env.get("DEEPVAULT_ANALYZE_LIMIT") or DEFAULT_ANALYZE_LIMIT))
+        model = DEFAULT_PROVIDER_MODELS.get(provider, DEFAULT_PROVIDER_MODELS["local"])
+
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "load-corpus",
+                "pct": 10,
+                "message": f"Loading {mode} corpus for analysis...",
+            },
+        )
+        corpus_path = self._corpus_service.resolve_job_corpus_path(mode=mode, input_path=input_path)
+        corpus = self._corpus_service.load_job_corpus_payload(mode=mode, input_path=input_path)
+        documents = corpus.get("documents", [])
+        total_documents = len(documents)
+
+        analyzed = 0
+        failed = 0
+        excluded = 0
+        reused = 0
+        stale = 0
+        selection_reasons: Dict[str, int] = {}
+        exclusion_reasons: Dict[str, int] = {}
+        analyzed_documents: List[Dict[str, Any]] = []
+
+        for index, document in enumerate(documents):
+            current_job = self._runtime_store.read_job_metadata(job_id) or {}
+            if current_job.get("status") == "cancelled" or current_job.get("cancelRequested") is True:
+                raise JobCancelledError()
+
+            content_hash = self._build_content_hash(document)
+            existing_analysis = document.get("analysis")
+            if self._should_reuse_existing_analysis(existing_analysis, content_hash):
+                reused += 1
+                analyzed_documents.append(document)
+                continue
+
+            exclusion_reason = self._get_analysis_exclusion_reason(document)
+            if exclusion_reason:
+                excluded += 1
+                exclusion_reasons[exclusion_reason] = exclusion_reasons.get(exclusion_reason, 0) + 1
+                analyzed_documents.append(
+                    {
+                        **document,
+                        "analysis": {
+                            "status": "excluded",
+                            "version": ANALYSIS_VERSION,
+                            "contentHash": content_hash,
+                            "excludedReason": exclusion_reason,
+                        },
+                    }
+                )
+                continue
+
+            if analyzed >= limit:
+                stale += 1
+                analyzed_documents.append(
+                    {
+                        **document,
+                        "analysis": {
+                            "status": "stale",
+                            "version": ANALYSIS_VERSION,
+                            "contentHash": content_hash,
+                            "failureReason": "run_budget_reached",
+                        },
+                    }
+                )
+                continue
+
+            try:
+                analyzed += 1
+                selection_reason = self._select_analysis_candidate_reason(document)
+                selection_reasons[selection_reason] = selection_reasons.get(selection_reason, 0) + 1
+                analysis = self._build_local_analysis(document, provider=provider, model=model, content_hash=content_hash)
+                analyzed_documents.append({**document, "analysis": analysis})
+            except Exception as exc:
+                failed += 1
+                analyzed -= 1
+                analyzed_documents.append(
+                    {
+                        **document,
+                        "analysis": {
+                            "status": "failed",
+                            "version": ANALYSIS_VERSION,
+                            "contentHash": content_hash,
+                            "failureReason": str(exc),
+                        },
+                    }
+                )
+
+            pct = 10 + round(((index + 1) / max(total_documents, 1)) * 75)
+            if analyzed > 0 and (analyzed == limit or analyzed % 5 == 0):
+                self._append_event(
+                    job_id,
+                    "progress",
+                    {
+                        "step": "analyze-documents",
+                        "pct": min(pct, 90),
+                        "message": f"Analyzed {analyzed}/{limit} documents.",
+                    },
+                )
+
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "write-analysis-artifacts",
+                "pct": 95,
+                "message": "Writing derived analysis artifacts...",
+            },
+        )
+
+        analyzed_corpus = {**corpus, "documents": analyzed_documents}
+        analyzed_corpus_path = self._runtime_store.write_json_artifact(
+            self._runtime_store.analyzed_corpus_path(),
+            analyzed_corpus,
+        )
+        report = {
+            "schemaVersion": "1.0",
+            "analysisVersion": ANALYSIS_VERSION,
+            "generatedAt": utc_now_iso(),
+            "provider": provider,
+            "model": model,
+            "inputPath": str(corpus_path),
+            "outputPath": str(analyzed_corpus_path),
+            "corpusMode": mode,
+            "selectionMode": "necessary",
+            "limit": limit,
+            "scanned": total_documents,
+            "selected": analyzed + failed + stale,
+            "analyzed": analyzed,
+            "failed": failed,
+            "excluded": excluded,
+            "reused": reused,
+            "stale": stale,
+            "exclusionReasons": exclusion_reasons,
+            "selectionReasons": selection_reasons,
+            "estimatedInputTokens": analyzed * 900,
+            "estimatedOutputTokens": analyzed * 220,
+            "estimatedCostUsd": 0,
+            "actualInputTokens": 0,
+            "actualOutputTokens": 0,
+            "tokenCountMode": "estimated",
+            "providerAttempts": 0 if provider == "local" else analyzed,
+            "providerSuccesses": 0,
+            "providerFallbacks": analyzed if provider != "local" else 0,
+            "providerFailureReasons": {} if provider == "local" else {"provider_not_wired_on_worker_yet": analyzed},
+            "elapsedMs": 0,
+            "averageDocumentMs": 0,
+        }
+        report_path = self._runtime_store.write_json_artifact(self._runtime_store.analyze_report_path(), report)
+        return {
+            "summary": f"Analyze completed: wrote {analyzed_corpus_path.name} and {report_path.name}.",
+            "mode": mode,
+            "provider": provider,
+            "model": model,
+            "inputPath": str(corpus_path),
+            "outputPath": str(analyzed_corpus_path),
+            "reportPath": str(report_path),
+            "analyzed": analyzed,
+            "excluded": excluded,
+            "reused": reused,
+            "stale": stale,
+            "failed": failed,
+        }
+
+    def _build_content_hash(self, document: Dict[str, Any]) -> str:
+        payload = "\n".join(
+            [
+                str(document.get("updatedAt", "")),
+                str(document.get("summary", "")),
+                str(document.get("content", "")),
+                str(document.get("directAnswer", "")),
+            ]
+        )
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+    def _infer_document_type(self, document: Dict[str, Any]) -> str:
+        return str(document.get("fileType") or document.get("kind") or str(document.get("path", "")).split(".")[-1] or "document")
+
+    def _build_analysis_sections(self, document: Dict[str, Any]) -> List[Dict[str, str]]:
+        sections = document.get("sections")
+        if isinstance(sections, list) and sections:
+            return [section for section in sections[:4] if isinstance(section, dict)]
+
+        sentences = [
+            sentence.strip()
+            for sentence in str(document.get("content", "")).replace("\n", " ").split(".")
+            if sentence.strip()
+        ][:3]
+        return [
+            {
+                "heading": "Overview" if index == 0 else f"Section {index + 1}",
+                "content": f"{sentence}.",
+            }
+            for index, sentence in enumerate(sentences)
+        ]
+
+    def _build_keywords(self, document: Dict[str, Any]) -> List[str]:
+        raw = " ".join(
+            [str(document.get("title", "")), str(document.get("summary", ""))]
+            + [str(tag) for tag in document.get("tags", []) if isinstance(tag, str)]
+        ).lower()
+        tokens = [
+            token
+            for token in "".join(char if char.isalnum() or char.isspace() else " " for char in raw).split()
+            if len(token) > 3
+        ]
+        deduped: List[str] = []
+        for token in tokens:
+            if token not in deduped:
+                deduped.append(token)
+        return deduped[:8]
+
+    def _build_local_analysis(
+        self,
+        document: Dict[str, Any],
+        *,
+        provider: str,
+        model: str,
+        content_hash: str,
+    ) -> Dict[str, Any]:
+        sections = self._build_analysis_sections(document)
+        summary = str(document.get("summary") or (sections[0].get("content") if sections else "") or document.get("title") or "").strip()
+        confidence = max(55, min(92, 58 + (len(sections) * 8) + (6 if document.get("tags") else 0)))
+        effective_provider = "local"
+        effective_model = DEFAULT_PROVIDER_MODELS["local"]
+        analysis: Dict[str, Any] = {
+            "status": "analyzed",
+            "version": ANALYSIS_VERSION,
+            "provider": effective_provider,
+            "requestedProvider": provider,
+            "model": effective_model,
+            "requestedModel": model,
+            "analyzedAt": utc_now_iso(),
+            "contentHash": content_hash,
+            "summary": summary,
+            "keywords": self._build_keywords(document),
+            "sections": sections,
+            "documentType": self._infer_document_type(document),
+            "confidence": confidence,
+            "providerStatus": "local" if provider == "local" else "fallback",
+        }
+        if provider != "local":
+            analysis["fallbackReason"] = "provider_not_wired_on_worker_yet"
+        return analysis
+
+    def _should_reuse_existing_analysis(self, analysis: Any, content_hash: str) -> bool:
+        if not isinstance(analysis, dict):
+            return False
+        return analysis.get("status") == "analyzed" and analysis.get("version") == ANALYSIS_VERSION and analysis.get("contentHash") == content_hash
+
+    def _select_analysis_candidate_reason(self, document: Dict[str, Any]) -> str:
+        file_type = str(document.get("fileType") or "")
+        if file_type in {"pdf", "document", "presentation"}:
+            return "priority_file_type"
+        content = str(document.get("content", "")).strip()
+        summary = str(document.get("summary", "")).strip()
+        if not summary or len(content) < 280:
+            return "weak_local_extraction"
+        sections = document.get("sections")
+        if not isinstance(sections, list) or len(sections) == 0:
+            return "missing_structure"
+        return "all_documents"
+
+    def _get_analysis_exclusion_reason(self, document: Dict[str, Any]) -> Optional[str]:
+        path = str(document.get("path", "")).lower()
+        if any(path.endswith(ext) for ext in (".zip", ".exe", ".dmg", ".mp4", ".mov", ".png", ".jpg", ".jpeg")):
+            return "unsupported_file_type"
+        if not str(document.get("content", "")).strip() and not str(document.get("summary", "")).strip():
+            return "unreadable_content"
+        if len(str(document.get("content", ""))) > 18000:
+            return "file_too_large"
+        return None
 
     def _update_job(self, job_id: str, patch: Dict[str, Any]) -> None:
         job = self._runtime_store.read_job_metadata(job_id)
