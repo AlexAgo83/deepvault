@@ -3,9 +3,9 @@
 > From version: 1.3.0
 > Schema version: 1.0
 > Status: In Progress
-> Understanding: 97%
-> Confidence: 96%
-> Progress: 48%
+> Understanding: 98%
+> Confidence: 97%
+> Progress: 56%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -75,8 +75,8 @@ stateDiagram-v2
 - [x] 5a. Wave 3 — expose `worker corpus show` and `worker corpus validate` over the same corpus service used by `GET /api/corpus`.
 - [ ] 6. Wave 3 — move the browser corpus loading path to the worker endpoint, remove browser references to `src/data/corpus.ts`, `src/lib/scoring.ts`, and `src/lib/deepvault.ts`, and ship the explicit offline error state.
 - [ ] CHECKPOINT: leave Wave 3 commit-ready and verify the browser fetch path plus bundle cleanup.
-- [ ] 7. Wave 4 — implement `POST /api/bishop/query` in `worker/bishop.py`, including grounding, prompt assembly, provider dispatch, and structured response parity with `adr_020`.
-- [ ] 7a. Wave 4 — expose a CLI debug path (`worker bishop query --question "..."`) over the same Bishop service used by the HTTP endpoint.
+- [x] 7. Wave 4 — implement `POST /api/bishop/query` in `worker/bishop.py`, including grounding, prompt assembly, provider dispatch, and structured response parity with `adr_020`.
+- [x] 7a. Wave 4 — expose a CLI debug path (`worker bishop query --question "..."`) over the same Bishop service used by the HTTP endpoint.
 - [ ] 8. Wave 4 — update the browser Bishop flow to call the worker proxy and confirm no provider API key remains in the browser path.
 - [ ] CHECKPOINT: leave Wave 4 commit-ready and run integration coverage for success, low-confidence, and provider-error paths.
 - [ ] 9. Wave 5 — implement `POST /api/jobs`, `GET /api/jobs/:id`, and `GET /api/jobs/:id/events` with persisted runtime state and SSE progress.
@@ -157,5 +157,6 @@ stateDiagram-v2
 - Wave 2 is now complete: the worker has a Python scoring module with enrichment-aware ranking, worker-side tests, a TypeScript spot-check on the static path, and a passing evaluate gate.
 - Wave 3 is in progress: the worker corpus service, `GET /api/corpus`, CLI corpus inspection, frontend `/api/corpus` fetch path, and `ETag` reuse are now landed.
 - `src/data/corpus.ts` is now removed and callers use the new corpus client / mock corpus split instead of the old mixed browser helper.
-- Wave 4 is now started: the worker exposes a first grounded Bishop proxy slice plus a matching CLI command, and the browser uses `/api/bishop/query` by default.
-- The current checkpoint is finishing the remaining browser bundle cleanup around `deepvault.ts` / `scoring.ts` / `bishop.ts` and then completing the server-side provider dispatch path before Wave 4 can close.
+- Wave 4 is now materially advanced: the worker exposes the Bishop proxy plus matching CLI command, the browser uses `/api/bishop/query` by default, and the worker performs server-side dispatch for OpenAI, Gemini, and Anthropic.
+- Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
+- The current checkpoint is finishing the remaining browser bundle cleanup around `deepvault.ts` / `scoring.ts` / `bishop.ts` before Wave 4 can close.

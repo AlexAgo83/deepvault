@@ -77,6 +77,7 @@ class BishopQueryResponse(BaseModel):
     provider: str
     query: str
     answer: str
+    model: Optional[str] = None
     sources: List[BishopSourceResponse]
     deniedSources: List[BishopSourceResponse]
     chunkCount: int
