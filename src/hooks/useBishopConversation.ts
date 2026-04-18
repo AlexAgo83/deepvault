@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { appendAIUsageEvent } from '../lib/ai-usage'
 import { askBishop } from '../lib/bishop-client'
-import { type ChatMessage, type Corpus, type ProviderId, type SourceRecord, type UserRole } from '../lib/deepvault'
+import { type ChatMessage, type Corpus, type ProviderId, type SourceRecord, type UserRole } from '../lib/runtime-types'
 import type { BishopSettings } from './useBishopSettings'
 
 export const BISHOP_HISTORY_STORAGE_KEY = 'deepvault_bishop_history'

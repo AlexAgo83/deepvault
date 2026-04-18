@@ -64,4 +64,5 @@ flowchart LR
 - The browser fetch path now targets `/api/corpus`, reuses `ETag` on repeat fetches, preserves the last successful fetch timestamp to make worker-offline states more explicit, and now runs through `src/lib/corpus-client.ts`.
 - `src/data/corpus.ts` has been removed and callers now import the corpus client or mock corpus directly.
 - The browser Bishop runtime path no longer imports `src/lib/bishop.ts`; it now uses a dedicated HTTP client against the worker proxy with a thin local fallback path during migration.
-- The remaining work in this item is the deeper browser bundle cleanup around `src/lib/scoring.ts` and `src/lib/deepvault.ts`, plus final offline UX verification in the running app.
+- Browser-safe modules now import shared corpus/chat/provider types from a dedicated `src/lib/runtime-types.ts` boundary instead of pulling those types from `src/lib/deepvault.ts`.
+- The remaining work in this item is the deeper browser bundle cleanup around `src/lib/scoring.ts` and the remaining runtime helpers still sourced from `src/lib/deepvault.ts`, plus final offline UX verification in the running app.
