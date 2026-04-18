@@ -16,6 +16,7 @@
     "ingest": "node scripts/run-with-cleanup.mjs tsx scripts/ingest.ts",
     "ingest:live": "node scripts/run-with-cleanup.mjs tsx scripts/ingest.ts --mode live",
     "analyze": "node scripts/run-with-cleanup.mjs tsx scripts/analyze-corpus.ts",
+    "analyze:publish": "node scripts/run-with-cleanup.mjs tsx scripts/publish-analyzed-corpus.ts",
     "evaluate": "node scripts/run-with-cleanup.mjs tsx scripts/evaluate.ts",
     "evaluate:live": "node scripts/run-with-cleanup.mjs tsx scripts/evaluate.ts --mode live",
     "export:live": "node scripts/run-with-cleanup.mjs tsx scripts/export-live.ts",

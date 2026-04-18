@@ -28,6 +28,7 @@ const ARTIFACT_BATCH_SIZE = 24
 const ARTIFACT_MAX_VISIBLE = 240
 const ARTIFACT_FILTER_STORAGE_KEY = 'deepvault_artifacts_filter'
 const ARTIFACT_GROUP_STORAGE_KEY = 'deepvault_artifacts_group'
+const ARTIFACT_ANALYZED_ONLY_STORAGE_KEY = 'deepvault_artifacts_analyzed_only'
 
 function readStoredArtifactFilter(): ArtifactFilter {
   if (typeof window === 'undefined') {
@@ -54,6 +55,14 @@ function readStoredArtifactGroup(): ArtifactGroup {
   return stored === 'all' || stored === 'type' || stored === 'source'
     ? stored
     : 'all'
+}
+
+function readStoredAnalyzedOnly(): boolean {
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  return window.localStorage.getItem(ARTIFACT_ANALYZED_ONLY_STORAGE_KEY) === 'true'
 }
 
 function getTone(status: string) {
@@ -432,6 +441,7 @@ export function ArtifactsPanel({
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<ArtifactFilter>(() => readStoredArtifactFilter())
   const [group, setGroup] = useState<ArtifactGroup>(() => readStoredArtifactGroup())
+  const [analyzedOnly, setAnalyzedOnly] = useState<boolean>(() => readStoredAnalyzedOnly())
   const [visibleCount, setVisibleCount] = useState(ARTIFACT_BATCH_SIZE)
   const loadMoreSentinelRef = useRef<HTMLDivElement | null>(null)
   const artifactsListRef = useRef<HTMLDivElement | null>(null)
@@ -445,10 +455,13 @@ export function ArtifactsPanel({
         if (filter !== 'all' && artifact.type !== filter) {
           return false
         }
+        if (analyzedOnly && artifact.analysisStatus !== 'analyzed') {
+          return false
+        }
         const haystack = [artifact.title, artifact.sourceLabel, artifact.location, artifact.summary || ''].join(' ').toLowerCase()
         return haystack.includes(search.trim().toLowerCase())
       }),
-    [artifactRecords, filter, search],
+    [analyzedOnly, artifactRecords, filter, search],
   )
   const visibleArtifacts = useMemo(
     () => filteredArtifacts.slice(0, Math.min(visibleCount, ARTIFACT_MAX_VISIBLE)),
@@ -460,7 +473,7 @@ export function ArtifactsPanel({
 
   useEffect(() => {
     setVisibleCount(ARTIFACT_BATCH_SIZE)
-  }, [search, filter, group, artifactRecords.length])
+  }, [search, filter, group, analyzedOnly, artifactRecords.length])
 
   useEffect(() => {
     window.localStorage.setItem(ARTIFACT_FILTER_STORAGE_KEY, filter)
@@ -469,6 +482,10 @@ export function ArtifactsPanel({
   useEffect(() => {
     window.localStorage.setItem(ARTIFACT_GROUP_STORAGE_KEY, group)
   }, [group])
+
+  useEffect(() => {
+    window.localStorage.setItem(ARTIFACT_ANALYZED_ONLY_STORAGE_KEY, String(analyzedOnly))
+  }, [analyzedOnly])
 
   useEffect(() => {
     const sentinel = loadMoreSentinelRef.current
@@ -536,13 +553,23 @@ export function ArtifactsPanel({
             <option value="analysis">Analysis</option>
             <option value="analysis-report">Analysis reports</option>
             <option value="sync-run">Runs</option>
-            <option value="generated-answer">Generated answers</option>
+            <option value="generated-answer">Gen. answers</option>
           </select>
           <select aria-label="Artifact grouping" value={group} onChange={(event) => setGroup(event.target.value as ArtifactGroup)}>
             <option value="all">All</option>
             <option value="type">By type</option>
             <option value="source">By source</option>
           </select>
+          <label className="artifacts-toolbar-toggle ui-toggle">
+            <input
+              aria-label="Reviewed"
+              type="checkbox"
+              checked={analyzedOnly}
+              onChange={(event) => setAnalyzedOnly(event.target.checked)}
+            />
+            <span className="ui-toggle-switch" aria-hidden="true" />
+            <span>Reviewed</span>
+          </label>
         </div>
 
         <div ref={artifactsListRef} className="artifacts-list">
@@ -616,7 +643,7 @@ export function ArtifactsPanel({
                     {selectedArtifact.derivedOutputs?.length ? (
                       <div className="artifacts-tag-row">
                         {selectedArtifact.derivedOutputs.map((item) => (
-                          <Pill key={item}>{item}</Pill>
+                          <Pill key={item} tone="accent">{item}</Pill>
                         ))}
                       </div>
                     ) : null}

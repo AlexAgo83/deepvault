@@ -168,12 +168,13 @@ export function BishopPanel({
           <div className="chat-form-actions">
             <div className="chat-note">Enter sends. Shift+Enter adds a new line.</div>
             <div className="chat-form-submit-group">
-              <label className="chat-context-toggle" title="Keep previous Bishop turns in the prompt">
+              <label className="chat-context-toggle ui-toggle" title="Keep previous Bishop turns in the prompt">
                 <input
                   type="checkbox"
                   checked={conversationContextEnabled}
                   onChange={(event) => onConversationContextChange(event.target.checked)}
                 />
+                <span className="ui-toggle-switch" aria-hidden="true" />
                 <span>Keep context</span>
               </label>
               <button type="submit" className="primary-button" title="Send the question to Bishop" disabled={isAsking}>

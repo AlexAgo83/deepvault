@@ -6,7 +6,7 @@ import type { AppModel } from '../../hooks/useAppModel'
 import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 import { formatDuration } from './sync-panel-utils'
 
-type OpsKey = 'ingest' | 'analyze' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
+type OpsKey = 'ingest' | 'analyze' | 'publishAnalysis' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
 export type SyncView = 'status' | 'operations' | 'history' | 'config'
 
 const SYNC_VIEW_PARAM = 'sync'
@@ -30,6 +30,13 @@ const OPS_CONFIG: Record<OpsKey, {
     description: 'Scans the current corpus, selects bounded candidates, and writes additive analysis metadata to a derived runtime artifact.',
     warning: 'This uses the bounded analysis path. Provider-backed enrichment is optional, but current local settings still affect the run.',
     confirmLabel: 'Analyze',
+  },
+  publishAnalysis: {
+    label: 'Publish analysis',
+    tooltip: 'Promote the analyzed corpus into the live app snapshot',
+    description: 'Publishes data/runtime/analyzed-corpus.json into public/live-corpus.json so the app reads the analyzed snapshot as its live corpus.',
+    warning: 'This updates the published live corpus consumed by the app. Run Analyze first if you want fresh analysis results included.',
+    confirmLabel: 'Publish analysis',
   },
   evaluate: {
     label: 'Evaluate',
@@ -156,6 +163,15 @@ function AnalyzeIcon() {
   )
 }
 
+function PublishAnalysisIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5.25 5.5h9.5v5.25h-9.5z" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M10 15.25V8.5M7.75 13l2.25 2.25L12.25 13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function EvaluateIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
@@ -276,6 +292,7 @@ export function SyncPanel({
     setPendingOp(null)
     if (op === 'ingest') syncOperations.startIngest()
     else if (op === 'analyze') syncOperations.startAnalyze()
+    else if (op === 'publishAnalysis') syncOperations.startPublishAnalysis()
     else if (op === 'evaluate') syncOperations.startEvaluate()
     else if (op === 'refresh') syncOperations.startRefresh()
     else if (op === 'exportLive') syncOperations.startExportLive()
@@ -453,7 +470,7 @@ export function SyncPanel({
               <div className="sync-controls-group">
                 <span className="sync-controls-label">Local pipeline</span>
                 <div className="sync-controls-actions">
-                  {(['ingest', 'analyze', 'evaluate'] as OpsKey[]).map((op) => (
+                  {(['ingest', 'analyze', 'publishAnalysis', 'evaluate'] as OpsKey[]).map((op) => (
                     <button
                       key={op}
                       type="button"
@@ -465,6 +482,7 @@ export function SyncPanel({
                       <span className="sync-action-icon" aria-hidden="true">
                         {op === 'ingest' ? <IngestIcon /> : null}
                         {op === 'analyze' ? <AnalyzeIcon /> : null}
+                        {op === 'publishAnalysis' ? <PublishAnalysisIcon /> : null}
                         {op === 'evaluate' ? <EvaluateIcon /> : null}
                       </span>
                       {OPS_CONFIG[op].label}

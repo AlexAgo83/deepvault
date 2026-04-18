@@ -59,6 +59,13 @@ describe('createWorkerClient — local mode', () => {
     )
   })
 
+  it('accepts publish-analysis as a valid worker job kind', async () => {
+    mockFetch({ jobId: 'job-publish' }, 201)
+    const client = createWorkerClient(LOCAL_CONFIG)
+    const result = await client.startJob({ kind: 'publish-analysis' })
+    expect(result.jobId).toBe('job-publish')
+  })
+
   it('getJob fetches /api/worker/jobs/:id', async () => {
     mockFetch({ id: 'job-abc', kind: 'ingest', status: 'running', startedAt: '2026-04-14T10:00:00Z', progress: 50 })
     const client = createWorkerClient(LOCAL_CONFIG)

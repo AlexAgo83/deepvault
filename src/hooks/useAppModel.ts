@@ -89,6 +89,7 @@ export interface AppModel {
     startExportLiveResume: () => void
     startIngest: () => void
     startAnalyze: () => void
+    startPublishAnalysis: () => void
     startRefresh: () => void
   }
   aiUsageEvents: ReturnType<typeof useAIUsage>['events']

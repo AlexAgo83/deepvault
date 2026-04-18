@@ -26,6 +26,7 @@ describe('ArtifactsPanel', () => {
           isRunning: false,
           lastCompletedJob: null,
           startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
           startEvaluate: () => undefined,
           startExportLive: () => undefined,
           startExportLiveResume: () => undefined,
@@ -54,6 +55,7 @@ describe('ArtifactsPanel', () => {
         isRunning: false,
         lastCompletedJob: null,
         startAnalyze: () => undefined,
+        startPublishAnalysis: () => undefined,
         startEvaluate: () => undefined,
         startExportLive: () => undefined,
         startExportLiveResume: () => undefined,
@@ -66,9 +68,11 @@ describe('ArtifactsPanel', () => {
 
     await user.selectOptions(screen.getByLabelText('Artifact filter'), 'analysis')
     await user.selectOptions(screen.getByLabelText('Artifact grouping'), 'source')
+    await user.click(screen.getByLabelText('Reviewed'))
 
     expect(window.localStorage.getItem('deepvault_artifacts_filter')).toBe('analysis')
     expect(window.localStorage.getItem('deepvault_artifacts_group')).toBe('source')
+    expect(window.localStorage.getItem('deepvault_artifacts_analyzed_only')).toBe('true')
 
     unmount()
 
@@ -76,6 +80,77 @@ describe('ArtifactsPanel', () => {
 
     expect(screen.getByLabelText('Artifact filter')).toHaveValue('analysis')
     expect(screen.getByLabelText('Artifact grouping')).toHaveValue('source')
+    expect(screen.getByLabelText('Reviewed')).toBeChecked()
+  })
+
+  it('filters processed files down to already analyzed documents', async () => {
+    const user = userEvent.setup()
+    const corpus = getMockCorpusBundle().corpus
+
+    render(
+      <ArtifactsPanel
+        corpus={{
+          ...corpus,
+          documents: [
+            {
+              ...corpus.documents[0],
+              id: 'doc-analyzed',
+              title: 'Analyzed budget note',
+              analysis: {
+                status: 'analyzed',
+                version: '1.0',
+                analyzedAt: '2026-04-17T10:00:00.000Z',
+                summary: 'Analyzed summary',
+              },
+            },
+            {
+              ...corpus.documents[1],
+              id: 'doc-stale',
+              title: 'Stale budget note',
+              analysis: {
+                status: 'stale',
+                version: '1.0',
+                analyzedAt: '2026-04-17T11:00:00.000Z',
+                summary: 'Stale summary',
+              },
+            },
+            {
+              ...corpus.documents[2],
+              id: 'doc-raw',
+              title: 'Raw budget note',
+              analysis: undefined,
+            },
+          ],
+        }}
+        messages={[] as never}
+        resolveFileHref={() => null}
+        showRightPanel={false}
+        syncOperations={{
+          activeJob: null,
+          cancelActiveJob: () => undefined,
+          history: [],
+          isRunning: false,
+          lastCompletedJob: null,
+          startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
+          startEvaluate: () => undefined,
+          startExportLive: () => undefined,
+          startExportLiveResume: () => undefined,
+          startIngest: () => undefined,
+          startRefresh: () => undefined,
+        }}
+      />,
+    )
+
+    expect(screen.getByRole('button', { name: /analyzed budget note/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /stale budget note/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /raw budget note/i })).toBeInTheDocument()
+
+    await user.click(screen.getByLabelText('Reviewed'))
+
+    expect(screen.getByRole('button', { name: /analyzed budget note/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /stale budget note/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /raw budget note/i })).not.toBeInTheDocument()
   })
 
   it('renders processed files and shows a detail record', async () => {
@@ -112,6 +187,7 @@ describe('ArtifactsPanel', () => {
           isRunning: false,
           lastCompletedJob: null,
           startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
           startEvaluate: () => undefined,
           startExportLive: () => undefined,
           startExportLiveResume: () => undefined,
@@ -167,6 +243,7 @@ describe('ArtifactsPanel', () => {
           isRunning: false,
           lastCompletedJob: null,
           startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
           startEvaluate: () => undefined,
           startExportLive: () => undefined,
           startExportLiveResume: () => undefined,
@@ -216,6 +293,7 @@ describe('ArtifactsPanel', () => {
           isRunning: false,
           lastCompletedJob: null,
           startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
           startEvaluate: () => undefined,
           startExportLive: () => undefined,
           startExportLiveResume: () => undefined,
@@ -272,6 +350,7 @@ describe('ArtifactsPanel', () => {
           isRunning: false,
           lastCompletedJob: null,
           startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
           startEvaluate: () => undefined,
           startExportLive: () => undefined,
           startExportLiveResume: () => undefined,
@@ -329,6 +408,7 @@ describe('ArtifactsPanel', () => {
           isRunning: false,
           lastCompletedJob: null,
           startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
           startEvaluate: () => undefined,
           startExportLive: () => undefined,
           startExportLiveResume: () => undefined,
@@ -392,6 +472,7 @@ describe('ArtifactsPanel', () => {
           isRunning: false,
           lastCompletedJob: null,
           startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
           startEvaluate: () => undefined,
           startExportLive: () => undefined,
           startExportLiveResume: () => undefined,
@@ -444,6 +525,7 @@ describe('ArtifactsPanel', () => {
           isRunning: false,
           lastCompletedJob: null,
           startAnalyze: () => undefined,
+          startPublishAnalysis: () => undefined,
           startEvaluate: () => undefined,
           startExportLive: () => undefined,
           startExportLiveResume: () => undefined,
