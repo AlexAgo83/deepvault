@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     runtime_data_dir: Path = Field(default=ROOT_DIR / "data" / "runtime", alias="WORKER_RUNTIME_DATA_DIR")
     mock_corpus_path: Path = Field(default=ROOT_DIR / "data" / "mock" / "corpus.json", alias="WORKER_MOCK_CORPUS_PATH")
     bishop_provider: str = Field(default="openai", alias="BISHOP_PROVIDER")
+    bishop_model: str = Field(default="", alias="BISHOP_MODEL")
+    openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
+    gemini_api_key: str = Field(default="", alias="GEMINI_API_KEY")
+    anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
 
 
 @lru_cache(maxsize=1)
