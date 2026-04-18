@@ -84,6 +84,7 @@ This repo is intentionally local-first:
 
 - Node 22
 - npm
+- Python 3.9+ locally, with a `python:3.12-slim` worker container for the hosted/runtime image
 
 ## Install
 
@@ -149,6 +150,56 @@ set VITE_DEEPVAULT_DATA_MODE=live && npm run dev
 That makes the app try to load `public/live-corpus.json`.
 You can also switch the same setting from `Settings` in the app; the local setting overrides the env default.
 If the file is missing, the app falls back to the bundled mock corpus.
+
+## Local Worker Foundation
+
+Wave 1 of the Python worker migration ships a minimal FastAPI worker for local development and hosted-mode preparation.
+
+1. Create a virtual environment for the worker:
+
+   ```bash
+   rtk python3 -m venv .venv-worker
+   ```
+
+2. Install the worker dependencies:
+
+   ```bash
+   . .venv-worker/bin/activate
+   rtk python3 -m pip install -r worker/requirements.txt
+   ```
+
+3. Start the worker on port `8000`:
+
+   ```bash
+   rtk python3 -m uvicorn worker.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+4. In a second terminal, start the frontend:
+
+   ```bash
+   npm run dev
+   ```
+
+The Vite dev server now proxies `/api/*` to `http://localhost:8000`.
+
+Smoke checks without the browser:
+
+```bash
+rtk python3 -m worker.cli.main health
+rtk python3 -m worker.cli.main config-mode
+```
+
+Windows PowerShell activation:
+
+```powershell
+.venv-worker\Scripts\Activate.ps1
+```
+
+Windows Command Prompt activation:
+
+```cmd
+.venv-worker\Scripts\activate.bat
+```
 
 ## Local Testing Guide
 

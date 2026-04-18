@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In Progress
 > Understanding: 96%
 > Confidence: 95%
-> Progress: 0%
+> Progress: 8%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -59,13 +59,13 @@ stateDiagram-v2
 
 # Plan
 
-- [ ] 1. Wave 1 — create the `worker/` FastAPI foundation (`main.py`, `config.py`, requirements, Dockerfile) and expose `GET /api/health` plus `GET /api/config/mode`.
-- [ ] 1b. Wave 1 — add a minimal CLI entrypoint over the shared worker services and ship `worker health` plus `worker config-mode`.
-- [ ] 1a. Wave 1 — pin the initial worker stack to `fastapi`, `uvicorn[standard]`, `httpx`, `pydantic-settings`, `python-jose[cryptography]`, `sse-starlette`, `pytest`, and `pytest-asyncio`, and use `worker/tests/` as the canonical Python test tree.
-- [ ] 1c. Wave 1 — lay out the worker with `app/routes`, `app/services`, `app/auth`, `app/infra`, `cli/commands`, and `tests`; keep business logic out of routes and commands.
-- [ ] 1d. Wave 1 — lock the first-wave contracts for `GET /api/config/mode` and the standard worker JSON error envelope.
-- [ ] 1e. Wave 1 — source `workerVersion` from a single worker-owned version file and standardize ISO 8601 UTC timestamps in worker contracts.
-- [ ] 2. Wave 1 — wire the Vite dev proxy (`/api -> localhost:8000`) and document the local dev workflow (`uvicorn` or Docker Compose alongside `npm run dev`).
+- [x] 1. Wave 1 — create the `worker/` FastAPI foundation (`main.py`, `config.py`, requirements, Dockerfile) and expose `GET /api/health` plus `GET /api/config/mode`.
+- [x] 1b. Wave 1 — add a minimal CLI entrypoint over the shared worker services and ship `worker health` plus `worker config-mode`.
+- [x] 1a. Wave 1 — pin the initial worker stack to `fastapi`, `uvicorn[standard]`, `httpx`, `pydantic-settings`, `python-jose[cryptography]`, `sse-starlette`, `pytest`, and `pytest-asyncio`, and use `worker/tests/` as the canonical Python test tree.
+- [x] 1c. Wave 1 — lay out the worker with `app/routes`, `app/services`, `app/auth`, `app/infra`, `cli/commands`, and `tests`; keep business logic out of routes and commands.
+- [x] 1d. Wave 1 — lock the first-wave contracts for `GET /api/config/mode` and the standard worker JSON error envelope.
+- [x] 1e. Wave 1 — source `workerVersion` from a single worker-owned version file and standardize ISO 8601 UTC timestamps in worker contracts.
+- [x] 2. Wave 1 — wire the Vite dev proxy (`/api -> localhost:8000`) and document the local dev workflow (`uvicorn` or Docker Compose alongside `npm run dev`).
 - [ ] CHECKPOINT: leave Wave 1 commit-ready and verify the worker responds through both direct curl and the Vite proxy path.
 - [ ] 3. Wave 2 — port the document scoring contract to `worker/scoring.py`, including enrichment scoring from `adr_032`.
 - [ ] 3a. Wave 2 — implement functional parity with the TypeScript scoring contract rather than bit-perfect parity, and freeze the first-wave enrichment tuning at confidence threshold `0.7` with a bounded score bonus capped at `+15%`.
@@ -150,3 +150,8 @@ stateDiagram-v2
 - [ ] CLI and HTTP surfaces both exercise the same worker services for the capabilities introduced by the task.
 - [ ] Replaced legacy browser/Node runtime paths are removed or disconnected before the closing wave is marked complete.
 - [ ] Status moved to `Done` and progress to `100%`.
+
+## Progress notes
+
+- Wave 1 implementation is in progress on top of `1.4.0`: the Python worker skeleton now exists with shared services, foundation routes, CLI parity for health/config mode, pinned dependencies, Dockerfile, tests, and Vite proxy wiring.
+- The current checkpoint is validation and cleanup of any issues discovered while smoke-testing the worker directly and through the frontend proxy before Wave 1 is closed.

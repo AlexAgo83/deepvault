@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
+> Status: In Progress
 > Understanding: 97%
 > Confidence: 96%
-> Progress: 0%
+> Progress: 35%
 > Complexity: Medium
 > Theme: Architecture / Infrastructure
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -15,6 +15,15 @@
 - All non-frontend logic (bishop orchestration, scoring, corpus serving, job execution) currently lives either in browser TypeScript or in ad-hoc Node.js CLI scripts.
 - There is no shared HTTP server that can serve as the backend for both local development and the hosted deployment.
 - The browser cannot be a pure UI client without a worker API to call.
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|python-fastapi-worker-foundation|req-020-host-nexus-as-a-shared-multi-use|all-non-frontend-logic-bishop-orchestrat|ac1-get-api-health-returns-status
+flowchart LR
+    Problem[No shared Python worker foundation] --> Foundation[Create worker package + FastAPI routes]
+    Foundation --> Contracts[Ship health and config-mode contracts]
+    Contracts --> Validation[CLI smoke checks and local proxy wiring]
+```
 
 # Scope
 
@@ -54,3 +63,8 @@
 - `rtk python3 -m worker.cli.main config-mode`
 - `docker build -t nexus-worker ./worker` → `docker run --rm -p 8000:8000 nexus-worker` → `curl http://localhost:8000/api/health`
 - `npm run dev` → browser network tab → `/api/health` returns worker response
+
+## Progress notes
+
+- Wave 1 foundation started on `1.4.0` with the initial `worker/` package, shared service layer, `GET /api/health`, `GET /api/config/mode`, CLI stubs, pinned requirements, Dockerfile, and Vite `/api` proxy wiring.
+- Remaining work in this item is validation, any contract cleanup discovered during smoke checks, and capturing final evidence before the item can move to `Done`.
