@@ -23,10 +23,10 @@
 %% logics-kind: backlog
 %% logics-signature: backlog|deliver-bishop-first-wave-generated-arti|deliver-bishop-first-wave-generated-arti|bishop-could-answer-grounded-questions-b|ac1-explicit-artifact-requests-for-suppo
 flowchart TD
-    Product[prod_009_enable_bishop_generated_document] --> Problem[Bishop could answer but not hand back]
-    Problem --> Scope[Deliver first-wave generated artifact cont]
-    Scope --> Acceptance[AC1: Explicit artifact requests return a]
-    Acceptance --> Tasks[task_036_orchestrate_bishop_generated_doc]
+    Request[Deliver Bishop first-wave generated artifa] --> Problem[Bishop could answer grounded questions but]
+    Problem --> Scope[Deliver Bishop first-wave generated artifa]
+    Scope --> Acceptance[AC1: Explicit artifact requests for suppor]
+    Acceptance --> Tasks[task_036_orchestrate_bishop_generated_docu]
 ```
 
 # Acceptance criteria

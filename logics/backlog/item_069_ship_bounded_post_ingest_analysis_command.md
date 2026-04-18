@@ -12,7 +12,6 @@
 # Problem
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|ship-bounded-post-ingest-analysis-comman|ship-bounded-post-ingest-analysis-comman|mermaid|ac1-a-standalone-analysis-command-reads
 flowchart LR
     Gap[Thin post-ingest corpus entries] --> Command[Bounded analyze command]
     Command --> Trace[Explicit provider observability]

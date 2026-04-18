@@ -1,0 +1,3474 @@
+{
+  "config_path": "logics.yaml",
+  "edges": [
+    {
+      "from": "item_000_v1_graph_discovery_and_pilot_scope",
+      "to": "item_000_v1_graph_discovery_and_pilot_scope"
+    },
+    {
+      "from": "item_000_v1_graph_discovery_and_pilot_scope",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_001_v1_sharepoint_ingestion_and_sync_pipeline",
+      "to": "item_001_v1_sharepoint_ingestion_and_sync_pipeline"
+    },
+    {
+      "from": "item_001_v1_sharepoint_ingestion_and_sync_pipeline",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_002_v1_hybrid_knowledge_store_and_retrieval",
+      "to": "item_002_v1_hybrid_knowledge_store_and_retrieval"
+    },
+    {
+      "from": "item_002_v1_hybrid_knowledge_store_and_retrieval",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_003_v1_explorer_ui_for_sharepoint_navigation",
+      "to": "item_003_v1_explorer_ui_for_sharepoint_navigation"
+    },
+    {
+      "from": "item_003_v1_explorer_ui_for_sharepoint_navigation",
+      "to": "item_008_v1_local_explorer_shell_and_navigation"
+    },
+    {
+      "from": "item_003_v1_explorer_ui_for_sharepoint_navigation",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_005_v1_runtime_config_and_operations",
+      "to": "item_005_v1_runtime_config_and_operations"
+    },
+    {
+      "from": "item_005_v1_runtime_config_and_operations",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_006_v1_local_companion_app_for_explorer_and_chat",
+      "to": "item_006_v1_local_companion_app_for_explorer_and_chat"
+    },
+    {
+      "from": "item_006_v1_local_companion_app_for_explorer_and_chat",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_007_v1_llm_provider_abstraction_for_openai_and_gemini",
+      "to": "item_007_v1_llm_provider_abstraction_for_openai_and_gemini"
+    },
+    {
+      "from": "item_007_v1_llm_provider_abstraction_for_openai_and_gemini",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_008_v1_local_explorer_shell_and_navigation",
+      "to": "item_008_v1_local_explorer_shell_and_navigation"
+    },
+    {
+      "from": "item_008_v1_local_explorer_shell_and_navigation",
+      "to": "item_003_v1_explorer_ui_for_sharepoint_navigation"
+    },
+    {
+      "from": "item_008_v1_local_explorer_shell_and_navigation",
+      "to": "item_006_v1_local_companion_app_for_explorer_and_chat"
+    },
+    {
+      "from": "item_008_v1_local_explorer_shell_and_navigation",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_009_v1_local_chat_surface_and_answer_flow",
+      "to": "item_009_v1_local_chat_surface_and_answer_flow"
+    },
+    {
+      "from": "item_009_v1_local_chat_surface_and_answer_flow",
+      "to": "item_006_v1_local_companion_app_for_explorer_and_chat"
+    },
+    {
+      "from": "item_009_v1_local_chat_surface_and_answer_flow",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_010_v1_local_sync_status_and_operational_view",
+      "to": "item_010_v1_local_sync_status_and_operational_view"
+    },
+    {
+      "from": "item_010_v1_local_sync_status_and_operational_view",
+      "to": "item_006_v1_local_companion_app_for_explorer_and_chat"
+    },
+    {
+      "from": "item_010_v1_local_sync_status_and_operational_view",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "item_014_v1_incremental_live_sync_and_resumable_export",
+      "to": "item_014_v1_incremental_live_sync_and_resumable_export"
+    },
+    {
+      "from": "item_014_v1_incremental_live_sync_and_resumable_export",
+      "to": "req_001_v1_local_hardening_and_scope_evolution"
+    },
+    {
+      "from": "item_014_v1_incremental_live_sync_and_resumable_export",
+      "to": "task_009_local_hardening_and_v1_scope_evolution"
+    },
+    {
+      "from": "item_015_v1_live_explorer_site_filter_alignment",
+      "to": "item_015_v1_live_explorer_site_filter_alignment"
+    },
+    {
+      "from": "item_015_v1_live_explorer_site_filter_alignment",
+      "to": "req_001_v1_local_hardening_and_scope_evolution"
+    },
+    {
+      "from": "item_015_v1_live_explorer_site_filter_alignment",
+      "to": "task_009_local_hardening_and_v1_scope_evolution"
+    },
+    {
+      "from": "item_016_v1_live_evaluation_set_and_quality_gate",
+      "to": "item_016_v1_live_evaluation_set_and_quality_gate"
+    },
+    {
+      "from": "item_016_v1_live_evaluation_set_and_quality_gate",
+      "to": "req_001_v1_local_hardening_and_scope_evolution"
+    },
+    {
+      "from": "item_016_v1_live_evaluation_set_and_quality_gate",
+      "to": "task_009_local_hardening_and_v1_scope_evolution"
+    },
+    {
+      "from": "item_017_v1_crawl_resilience_and_artifact_governance",
+      "to": "item_017_v1_crawl_resilience_and_artifact_governance"
+    },
+    {
+      "from": "item_017_v1_crawl_resilience_and_artifact_governance",
+      "to": "req_001_v1_local_hardening_and_scope_evolution"
+    },
+    {
+      "from": "item_017_v1_crawl_resilience_and_artifact_governance",
+      "to": "task_009_local_hardening_and_v1_scope_evolution"
+    },
+    {
+      "from": "item_018_v1_pre_v2_backlog_and_doc_cleanup",
+      "to": "item_018_v1_pre_v2_backlog_and_doc_cleanup"
+    },
+    {
+      "from": "item_018_v1_pre_v2_backlog_and_doc_cleanup",
+      "to": "req_001_v1_local_hardening_and_scope_evolution"
+    },
+    {
+      "from": "item_019_shell_rebrand_and_split_layout",
+      "to": "item_019_shell_rebrand_and_split_layout"
+    },
+    {
+      "from": "item_019_shell_rebrand_and_split_layout",
+      "to": "req_003_nexus_v1_1_ui_and_product_polish"
+    },
+    {
+      "from": "item_019_shell_rebrand_and_split_layout",
+      "to": "task_011_nexus_v1_1_shell_and_live_state_delivery"
+    },
+    {
+      "from": "item_020_compact_live_state_and_sync_panels",
+      "to": "item_020_compact_live_state_and_sync_panels"
+    },
+    {
+      "from": "item_020_compact_live_state_and_sync_panels",
+      "to": "req_003_nexus_v1_1_ui_and_product_polish"
+    },
+    {
+      "from": "item_020_compact_live_state_and_sync_panels",
+      "to": "task_011_nexus_v1_1_shell_and_live_state_delivery"
+    },
+    {
+      "from": "item_021_shell_chrome_and_layout_cleanup",
+      "to": "item_021_shell_chrome_and_layout_cleanup"
+    },
+    {
+      "from": "item_021_shell_chrome_and_layout_cleanup",
+      "to": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up"
+    },
+    {
+      "from": "item_021_shell_chrome_and_layout_cleanup",
+      "to": "task_012_nexus_v1_1_remaining_polish_orchestration"
+    },
+    {
+      "from": "item_022_live_state_and_status_density_polish",
+      "to": "item_022_live_state_and_status_density_polish"
+    },
+    {
+      "from": "item_022_live_state_and_status_density_polish",
+      "to": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up"
+    },
+    {
+      "from": "item_022_live_state_and_status_density_polish",
+      "to": "task_012_nexus_v1_1_remaining_polish_orchestration"
+    },
+    {
+      "from": "item_023_bishop_response_flow_and_answer_trace_polish",
+      "to": "item_023_bishop_response_flow_and_answer_trace_polish"
+    },
+    {
+      "from": "item_023_bishop_response_flow_and_answer_trace_polish",
+      "to": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up"
+    },
+    {
+      "from": "item_023_bishop_response_flow_and_answer_trace_polish",
+      "to": "task_012_nexus_v1_1_remaining_polish_orchestration"
+    },
+    {
+      "from": "item_024_path_display_and_hover_cleanup",
+      "to": "item_024_path_display_and_hover_cleanup"
+    },
+    {
+      "from": "item_024_path_display_and_hover_cleanup",
+      "to": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up"
+    },
+    {
+      "from": "item_024_path_display_and_hover_cleanup",
+      "to": "task_012_nexus_v1_1_remaining_polish_orchestration"
+    },
+    {
+      "from": "item_025_corpus_mode_normalization_tests",
+      "to": "item_025_corpus_mode_normalization_tests"
+    },
+    {
+      "from": "item_025_corpus_mode_normalization_tests",
+      "to": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core"
+    },
+    {
+      "from": "item_025_corpus_mode_normalization_tests",
+      "to": "task_013_coverage_and_explorer_polish_orchestration"
+    },
+    {
+      "from": "item_026_live_corpus_fetch_branch_coverage",
+      "to": "item_026_live_corpus_fetch_branch_coverage"
+    },
+    {
+      "from": "item_026_live_corpus_fetch_branch_coverage",
+      "to": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core"
+    },
+    {
+      "from": "item_026_live_corpus_fetch_branch_coverage",
+      "to": "task_013_coverage_and_explorer_polish_orchestration"
+    },
+    {
+      "from": "item_027_deepvault_retrieval_branch_coverage",
+      "to": "item_027_deepvault_retrieval_branch_coverage"
+    },
+    {
+      "from": "item_027_deepvault_retrieval_branch_coverage",
+      "to": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core"
+    },
+    {
+      "from": "item_027_deepvault_retrieval_branch_coverage",
+      "to": "task_013_coverage_and_explorer_polish_orchestration"
+    },
+    {
+      "from": "item_028_explorer_card_hierarchy_cleanup",
+      "to": "item_028_explorer_card_hierarchy_cleanup"
+    },
+    {
+      "from": "item_028_explorer_card_hierarchy_cleanup",
+      "to": "req_006_explorer_card_hierarchy_and_visual_polish"
+    },
+    {
+      "from": "item_028_explorer_card_hierarchy_cleanup",
+      "to": "task_013_coverage_and_explorer_polish_orchestration"
+    },
+    {
+      "from": "item_029_explorer_badge_and_source_line_polish",
+      "to": "item_029_explorer_badge_and_source_line_polish"
+    },
+    {
+      "from": "item_029_explorer_badge_and_source_line_polish",
+      "to": "req_006_explorer_card_hierarchy_and_visual_polish"
+    },
+    {
+      "from": "item_029_explorer_badge_and_source_line_polish",
+      "to": "task_013_coverage_and_explorer_polish_orchestration"
+    },
+    {
+      "from": "item_030_compact_paths_in_explorer_excerpts_and_summaries",
+      "to": "item_030_compact_paths_in_explorer_excerpts_and_summaries"
+    },
+    {
+      "from": "item_030_compact_paths_in_explorer_excerpts_and_summaries",
+      "to": "req_007_compact_paths_in_explorer_excerpts_and_summaries"
+    },
+    {
+      "from": "item_030_compact_paths_in_explorer_excerpts_and_summaries",
+      "to": "task_013_coverage_and_explorer_polish_orchestration"
+    },
+    {
+      "from": "item_031_bishop_grounding_contract_and_response_shape",
+      "to": "item_031_bishop_grounding_contract_and_response_shape"
+    },
+    {
+      "from": "item_031_bishop_grounding_contract_and_response_shape",
+      "to": "req_008_bishop_llm_orchestration_after_local_grounding"
+    },
+    {
+      "from": "item_031_bishop_grounding_contract_and_response_shape",
+      "to": "task_014_bishop_llm_orchestration_delivery"
+    },
+    {
+      "from": "item_032_bishop_llm_orchestration_and_fallback",
+      "to": "item_032_bishop_llm_orchestration_and_fallback"
+    },
+    {
+      "from": "item_032_bishop_llm_orchestration_and_fallback",
+      "to": "req_008_bishop_llm_orchestration_after_local_grounding"
+    },
+    {
+      "from": "item_032_bishop_llm_orchestration_and_fallback",
+      "to": "task_014_bishop_llm_orchestration_delivery"
+    },
+    {
+      "from": "item_033_bishop_trace_status_and_evaluation_coverage",
+      "to": "item_033_bishop_trace_status_and_evaluation_coverage"
+    },
+    {
+      "from": "item_033_bishop_trace_status_and_evaluation_coverage",
+      "to": "req_008_bishop_llm_orchestration_after_local_grounding"
+    },
+    {
+      "from": "item_033_bishop_trace_status_and_evaluation_coverage",
+      "to": "task_014_bishop_llm_orchestration_delivery"
+    },
+    {
+      "from": "item_034_inline_file_type_pill_in_explorer_title_row",
+      "to": "item_034_inline_file_type_pill_in_explorer_title_row"
+    },
+    {
+      "from": "item_034_inline_file_type_pill_in_explorer_title_row",
+      "to": "req_009_explorer_file_type_pill_inline_with_title"
+    },
+    {
+      "from": "item_034_inline_file_type_pill_in_explorer_title_row",
+      "to": "task_015_sharepoint_file_link_and_file_type_ui_delivery"
+    },
+    {
+      "from": "item_035_compact_title_row_spacing_and_regression_checks",
+      "to": "item_035_compact_title_row_spacing_and_regression_checks"
+    },
+    {
+      "from": "item_035_compact_title_row_spacing_and_regression_checks",
+      "to": "req_009_explorer_file_type_pill_inline_with_title"
+    },
+    {
+      "from": "item_035_compact_title_row_spacing_and_regression_checks",
+      "to": "task_015_sharepoint_file_link_and_file_type_ui_delivery"
+    },
+    {
+      "from": "item_036_use_native_sharepoint_file_weburl",
+      "to": "item_036_use_native_sharepoint_file_weburl"
+    },
+    {
+      "from": "item_036_use_native_sharepoint_file_weburl",
+      "to": "req_010_fix_sharepoint_file_links_in_explorer"
+    },
+    {
+      "from": "item_036_use_native_sharepoint_file_weburl",
+      "to": "task_015_sharepoint_file_link_and_file_type_ui_delivery"
+    },
+    {
+      "from": "item_037_fallback_file_link_resolution_and_link_tests",
+      "to": "item_037_fallback_file_link_resolution_and_link_tests"
+    },
+    {
+      "from": "item_037_fallback_file_link_resolution_and_link_tests",
+      "to": "req_010_fix_sharepoint_file_links_in_explorer"
+    },
+    {
+      "from": "item_037_fallback_file_link_resolution_and_link_tests",
+      "to": "task_015_sharepoint_file_link_and_file_type_ui_delivery"
+    },
+    {
+      "from": "item_038_refactor_app_shell_and_ui_state",
+      "to": "item_038_refactor_app_shell_and_ui_state"
+    },
+    {
+      "from": "item_038_refactor_app_shell_and_ui_state",
+      "to": "req_011_audit_de_dette_technique_et_cleanup_structurel"
+    },
+    {
+      "from": "item_038_refactor_app_shell_and_ui_state",
+      "to": "task_016_orchestrate_technical_debt_cleanup_waves"
+    },
+    {
+      "from": "item_039_split_deepvault_retrieval_and_evaluation_helpers",
+      "to": "item_039_split_deepvault_retrieval_and_evaluation_helpers"
+    },
+    {
+      "from": "item_039_split_deepvault_retrieval_and_evaluation_helpers",
+      "to": "req_011_audit_de_dette_technique_et_cleanup_structurel"
+    },
+    {
+      "from": "item_039_split_deepvault_retrieval_and_evaluation_helpers",
+      "to": "task_016_orchestrate_technical_debt_cleanup_waves"
+    },
+    {
+      "from": "item_040_clarify_bishop_orchestration_contract",
+      "to": "item_040_clarify_bishop_orchestration_contract"
+    },
+    {
+      "from": "item_040_clarify_bishop_orchestration_contract",
+      "to": "req_011_audit_de_dette_technique_et_cleanup_structurel"
+    },
+    {
+      "from": "item_040_clarify_bishop_orchestration_contract",
+      "to": "task_016_orchestrate_technical_debt_cleanup_waves"
+    },
+    {
+      "from": "item_041_harden_live_export_and_checkpoint_handling",
+      "to": "item_041_harden_live_export_and_checkpoint_handling"
+    },
+    {
+      "from": "item_041_harden_live_export_and_checkpoint_handling",
+      "to": "req_011_audit_de_dette_technique_et_cleanup_structurel"
+    },
+    {
+      "from": "item_041_harden_live_export_and_checkpoint_handling",
+      "to": "task_016_orchestrate_technical_debt_cleanup_waves"
+    },
+    {
+      "from": "item_042_clean_logics_workflow_hygiene_and_references",
+      "to": "item_042_clean_logics_workflow_hygiene_and_references"
+    },
+    {
+      "from": "item_042_clean_logics_workflow_hygiene_and_references",
+      "to": "item_001_v1_sharepoint_ingestion_and_sync_pipeline"
+    },
+    {
+      "from": "item_042_clean_logics_workflow_hygiene_and_references",
+      "to": "item_003_v1_explorer_ui_for_sharepoint_navigation"
+    },
+    {
+      "from": "item_042_clean_logics_workflow_hygiene_and_references",
+      "to": "item_008_v1_local_explorer_shell_and_navigation"
+    },
+    {
+      "from": "item_042_clean_logics_workflow_hygiene_and_references",
+      "to": "req_011_audit_de_dette_technique_et_cleanup_structurel"
+    },
+    {
+      "from": "item_042_clean_logics_workflow_hygiene_and_references",
+      "to": "task_016_orchestrate_technical_debt_cleanup_waves"
+    },
+    {
+      "from": "item_043_add_leading_icons_to_navigation",
+      "to": "item_043_add_leading_icons_to_navigation"
+    },
+    {
+      "from": "item_043_add_leading_icons_to_navigation",
+      "to": "req_012_add_leading_icons_to_navigation"
+    },
+    {
+      "from": "item_043_add_leading_icons_to_navigation",
+      "to": "task_017_orchestrate_navigation_and_runtime_ui_changes"
+    },
+    {
+      "from": "item_044_move_site_selector_into_runtime",
+      "to": "item_044_move_site_selector_into_runtime"
+    },
+    {
+      "from": "item_044_move_site_selector_into_runtime",
+      "to": "req_013_move_site_selector_into_runtime"
+    },
+    {
+      "from": "item_044_move_site_selector_into_runtime",
+      "to": "task_017_orchestrate_navigation_and_runtime_ui_changes"
+    },
+    {
+      "from": "item_045_move_runtime_under_sync_status",
+      "to": "item_045_move_runtime_under_sync_status"
+    },
+    {
+      "from": "item_045_move_runtime_under_sync_status",
+      "to": "req_014_move_runtime_under_sync_status"
+    },
+    {
+      "from": "item_045_move_runtime_under_sync_status",
+      "to": "task_017_orchestrate_navigation_and_runtime_ui_changes"
+    },
+    {
+      "from": "item_046_split_app_shell_into_panel_components",
+      "to": "item_046_split_app_shell_into_panel_components"
+    },
+    {
+      "from": "item_046_split_app_shell_into_panel_components",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_046_split_app_shell_into_panel_components",
+      "to": "task_018_structural_refactoring_and_resilience_foundation"
+    },
+    {
+      "from": "item_047_extract_scoring_module_and_barrel_exports",
+      "to": "item_047_extract_scoring_module_and_barrel_exports"
+    },
+    {
+      "from": "item_047_extract_scoring_module_and_barrel_exports",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_047_extract_scoring_module_and_barrel_exports",
+      "to": "task_018_structural_refactoring_and_resilience_foundation"
+    },
+    {
+      "from": "item_048_react_error_boundaries_for_panels",
+      "to": "item_048_react_error_boundaries_for_panels"
+    },
+    {
+      "from": "item_048_react_error_boundaries_for_panels",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_048_react_error_boundaries_for_panels",
+      "to": "task_018_structural_refactoring_and_resilience_foundation"
+    },
+    {
+      "from": "item_049_graph_api_retry_timeout_and_corpus_validation",
+      "to": "item_049_graph_api_retry_timeout_and_corpus_validation"
+    },
+    {
+      "from": "item_049_graph_api_retry_timeout_and_corpus_validation",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_049_graph_api_retry_timeout_and_corpus_validation",
+      "to": "task_019_infrastructure_hardening_graph_and_corpus"
+    },
+    {
+      "from": "item_050_e2e_full_workflow_coverage",
+      "to": "item_050_e2e_full_workflow_coverage"
+    },
+    {
+      "from": "item_050_e2e_full_workflow_coverage",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_050_e2e_full_workflow_coverage",
+      "to": "task_020_test_coverage_expansion"
+    },
+    {
+      "from": "item_051_unit_tests_scoring_and_bishop_contract",
+      "to": "item_051_unit_tests_scoring_and_bishop_contract"
+    },
+    {
+      "from": "item_051_unit_tests_scoring_and_bishop_contract",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_051_unit_tests_scoring_and_bishop_contract",
+      "to": "task_020_test_coverage_expansion"
+    },
+    {
+      "from": "item_052_bishop_claude_api_integration",
+      "to": "item_052_bishop_claude_api_integration"
+    },
+    {
+      "from": "item_052_bishop_claude_api_integration",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_052_bishop_claude_api_integration",
+      "to": "task_021_bishop_intelligence_and_ux"
+    },
+    {
+      "from": "item_053_bishop_session_persistence_and_export",
+      "to": "item_053_bishop_session_persistence_and_export"
+    },
+    {
+      "from": "item_053_bishop_session_persistence_and_export",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_053_bishop_session_persistence_and_export",
+      "to": "task_021_bishop_intelligence_and_ux"
+    },
+    {
+      "from": "item_054_corpus_delta_sync_via_graph_lastmodified",
+      "to": "item_054_corpus_delta_sync_via_graph_lastmodified"
+    },
+    {
+      "from": "item_054_corpus_delta_sync_via_graph_lastmodified",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "item_054_corpus_delta_sync_via_graph_lastmodified",
+      "to": "task_019_infrastructure_hardening_graph_and_corpus"
+    },
+    {
+      "from": "item_055_pwa_vite_plugin_and_workbox_setup",
+      "to": "item_055_pwa_vite_plugin_and_workbox_setup"
+    },
+    {
+      "from": "item_055_pwa_vite_plugin_and_workbox_setup",
+      "to": "req_016_pwa_install_and_offline_first"
+    },
+    {
+      "from": "item_055_pwa_vite_plugin_and_workbox_setup",
+      "to": "task_022_pwa_progressive_web_app_delivery"
+    },
+    {
+      "from": "item_056_pwa_install_button_in_header",
+      "to": "item_056_pwa_install_button_in_header"
+    },
+    {
+      "from": "item_056_pwa_install_button_in_header",
+      "to": "req_016_pwa_install_and_offline_first"
+    },
+    {
+      "from": "item_056_pwa_install_button_in_header",
+      "to": "task_022_pwa_progressive_web_app_delivery"
+    },
+    {
+      "from": "item_057_pwa_update_banner",
+      "to": "item_057_pwa_update_banner"
+    },
+    {
+      "from": "item_057_pwa_update_banner",
+      "to": "req_016_pwa_install_and_offline_first"
+    },
+    {
+      "from": "item_057_pwa_update_banner",
+      "to": "task_022_pwa_progressive_web_app_delivery"
+    },
+    {
+      "from": "item_058_pwa_offline_cache_and_mock_fallback",
+      "to": "item_058_pwa_offline_cache_and_mock_fallback"
+    },
+    {
+      "from": "item_058_pwa_offline_cache_and_mock_fallback",
+      "to": "req_016_pwa_install_and_offline_first"
+    },
+    {
+      "from": "item_058_pwa_offline_cache_and_mock_fallback",
+      "to": "task_022_pwa_progressive_web_app_delivery"
+    },
+    {
+      "from": "item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts",
+      "to": "item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts"
+    },
+    {
+      "from": "item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts",
+      "to": "task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts"
+    },
+    {
+      "from": "item_060_split_sync_status_into_dedicated_operations_screens",
+      "to": "item_060_split_sync_status_into_dedicated_operations_screens"
+    },
+    {
+      "from": "item_060_split_sync_status_into_dedicated_operations_screens",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_060_split_sync_status_into_dedicated_operations_screens",
+      "to": "task_028_split_sync_status_into_dedicated_operations_screens"
+    },
+    {
+      "from": "item_061_stabilize_navigation_and_runtime_ownership",
+      "to": "item_061_stabilize_navigation_and_runtime_ownership"
+    },
+    {
+      "from": "item_061_stabilize_navigation_and_runtime_ownership",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_061_stabilize_navigation_and_runtime_ownership",
+      "to": "task_029_stabilize_navigation_and_runtime_ownership"
+    },
+    {
+      "from": "item_062_improve_corpus_metadata_chunking_and_bishop_hints",
+      "to": "item_062_improve_corpus_metadata_chunking_and_bishop_hints"
+    },
+    {
+      "from": "item_062_improve_corpus_metadata_chunking_and_bishop_hints",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_062_improve_corpus_metadata_chunking_and_bishop_hints",
+      "to": "task_030_improve_corpus_metadata_chunking_and_bishop_hints"
+    },
+    {
+      "from": "item_063_add_persisted_sidebar_theme_switch",
+      "to": "item_063_add_persisted_sidebar_theme_switch"
+    },
+    {
+      "from": "item_063_add_persisted_sidebar_theme_switch",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_063_add_persisted_sidebar_theme_switch",
+      "to": "task_031_add_persisted_sidebar_theme_switch"
+    },
+    {
+      "from": "item_064_harden_worker_security_fallback_and_audit_boundaries",
+      "to": "item_064_harden_worker_security_fallback_and_audit_boundaries"
+    },
+    {
+      "from": "item_064_harden_worker_security_fallback_and_audit_boundaries",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_064_harden_worker_security_fallback_and_audit_boundaries",
+      "to": "task_032_harden_worker_security_fallback_and_audit_boundaries"
+    },
+    {
+      "from": "item_065_finalize_sync_navigation_model_and_recovery_entry_points",
+      "to": "item_065_finalize_sync_navigation_model_and_recovery_entry_points"
+    },
+    {
+      "from": "item_065_finalize_sync_navigation_model_and_recovery_entry_points",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_065_finalize_sync_navigation_model_and_recovery_entry_points",
+      "to": "task_033_finalize_sync_navigation_model_and_recovery_entry_points"
+    },
+    {
+      "from": "item_066_verify_theme_fallback_and_shell_surface_coverage",
+      "to": "item_066_verify_theme_fallback_and_shell_surface_coverage"
+    },
+    {
+      "from": "item_066_verify_theme_fallback_and_shell_surface_coverage",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_066_verify_theme_fallback_and_shell_surface_coverage",
+      "to": "task_034_verify_theme_fallback_and_shell_surface_coverage"
+    },
+    {
+      "from": "item_067_lock_corpus_metadata_contract_and_required_fields",
+      "to": "item_067_lock_corpus_metadata_contract_and_required_fields"
+    },
+    {
+      "from": "item_067_lock_corpus_metadata_contract_and_required_fields",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "item_067_lock_corpus_metadata_contract_and_required_fields",
+      "to": "task_035_lock_corpus_metadata_contract_and_required_fields"
+    },
+    {
+      "from": "item_068_deliver_bishop_first_wave_generated_artifact_contract",
+      "to": "item_068_deliver_bishop_first_wave_generated_artifact_contract"
+    },
+    {
+      "from": "item_068_deliver_bishop_first_wave_generated_artifact_contract",
+      "to": "task_036_orchestrate_bishop_generated_document_artifacts"
+    },
+    {
+      "from": "item_069_ship_bounded_post_ingest_analysis_command",
+      "to": "item_069_ship_bounded_post_ingest_analysis_command"
+    },
+    {
+      "from": "item_069_ship_bounded_post_ingest_analysis_command",
+      "to": "task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment"
+    },
+    {
+      "from": "item_070_ship_artifacts_inspection_surface",
+      "to": "item_070_ship_artifacts_inspection_surface"
+    },
+    {
+      "from": "item_070_ship_artifacts_inspection_surface",
+      "to": "task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs"
+    },
+    {
+      "from": "item_071_ship_ai_usage_store_and_sectioned_ai_view",
+      "to": "item_071_ship_ai_usage_store_and_sectioned_ai_view"
+    },
+    {
+      "from": "item_071_ship_ai_usage_store_and_sectioned_ai_view",
+      "to": "task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view"
+    },
+    {
+      "from": "item_072_split_bishop_into_bounded_sub_modules",
+      "to": "item_072_split_bishop_into_bounded_sub_modules"
+    },
+    {
+      "from": "item_072_split_bishop_into_bounded_sub_modules",
+      "to": "req_018_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_072_split_bishop_into_bounded_sub_modules",
+      "to": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_073_reduce_app_shell_below_800_lines",
+      "to": "item_073_reduce_app_shell_below_800_lines"
+    },
+    {
+      "from": "item_073_reduce_app_shell_below_800_lines",
+      "to": "req_018_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_073_reduce_app_shell_below_800_lines",
+      "to": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_074_harden_localstorage_api_key_warning_and_schema_validation",
+      "to": "item_074_harden_localstorage_api_key_warning_and_schema_validation"
+    },
+    {
+      "from": "item_074_harden_localstorage_api_key_warning_and_schema_validation",
+      "to": "req_018_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_074_harden_localstorage_api_key_warning_and_schema_validation",
+      "to": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_075_add_worker_health_check_and_granular_error_boundaries",
+      "to": "item_075_add_worker_health_check_and_granular_error_boundaries"
+    },
+    {
+      "from": "item_075_add_worker_health_check_and_granular_error_boundaries",
+      "to": "req_018_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_075_add_worker_health_check_and_granular_error_boundaries",
+      "to": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_076_lazy_load_mock_corpus_chunk",
+      "to": "item_076_lazy_load_mock_corpus_chunk"
+    },
+    {
+      "from": "item_076_lazy_load_mock_corpus_chunk",
+      "to": "req_018_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_076_lazy_load_mock_corpus_chunk",
+      "to": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "item_077_integrate_analyze_enrichment_into_bishop_scoring",
+      "to": "item_077_integrate_analyze_enrichment_into_bishop_scoring"
+    },
+    {
+      "from": "item_077_integrate_analyze_enrichment_into_bishop_scoring",
+      "to": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability"
+    },
+    {
+      "from": "item_077_integrate_analyze_enrichment_into_bishop_scoring",
+      "to": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability"
+    },
+    {
+      "from": "item_078_add_github_actions_ci_workflow",
+      "to": "item_078_add_github_actions_ci_workflow"
+    },
+    {
+      "from": "item_078_add_github_actions_ci_workflow",
+      "to": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability"
+    },
+    {
+      "from": "item_078_add_github_actions_ci_workflow",
+      "to": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability"
+    },
+    {
+      "from": "item_079_add_configuration_export_and_import_to_settings",
+      "to": "item_079_add_configuration_export_and_import_to_settings"
+    },
+    {
+      "from": "item_079_add_configuration_export_and_import_to_settings",
+      "to": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability"
+    },
+    {
+      "from": "item_079_add_configuration_export_and_import_to_settings",
+      "to": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability"
+    },
+    {
+      "from": "item_080_python_fastapi_worker_foundation",
+      "to": "item_080_python_fastapi_worker_foundation"
+    },
+    {
+      "from": "item_080_python_fastapi_worker_foundation",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_080_python_fastapi_worker_foundation",
+      "to": "task_042_orchestrate_python_worker_foundation_and_runtime_migration"
+    },
+    {
+      "from": "item_081_port_scoring_to_python_worker",
+      "to": "item_081_port_scoring_to_python_worker"
+    },
+    {
+      "from": "item_081_port_scoring_to_python_worker",
+      "to": "item_077_integrate_analyze_enrichment_into_bishop_scoring"
+    },
+    {
+      "from": "item_081_port_scoring_to_python_worker",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_081_port_scoring_to_python_worker",
+      "to": "task_042_orchestrate_python_worker_foundation_and_runtime_migration"
+    },
+    {
+      "from": "item_082_corpus_endpoint_and_browser_bundle_cleanup",
+      "to": "item_082_corpus_endpoint_and_browser_bundle_cleanup"
+    },
+    {
+      "from": "item_082_corpus_endpoint_and_browser_bundle_cleanup",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_082_corpus_endpoint_and_browser_bundle_cleanup",
+      "to": "task_042_orchestrate_python_worker_foundation_and_runtime_migration"
+    },
+    {
+      "from": "item_083_bishop_proxy_endpoint",
+      "to": "item_083_bishop_proxy_endpoint"
+    },
+    {
+      "from": "item_083_bishop_proxy_endpoint",
+      "to": "item_081_port_scoring_to_python_worker"
+    },
+    {
+      "from": "item_083_bishop_proxy_endpoint",
+      "to": "item_082_corpus_endpoint_and_browser_bundle_cleanup"
+    },
+    {
+      "from": "item_083_bishop_proxy_endpoint",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_083_bishop_proxy_endpoint",
+      "to": "task_042_orchestrate_python_worker_foundation_and_runtime_migration"
+    },
+    {
+      "from": "item_084_job_execution_in_python_worker",
+      "to": "item_084_job_execution_in_python_worker"
+    },
+    {
+      "from": "item_084_job_execution_in_python_worker",
+      "to": "item_080_python_fastapi_worker_foundation"
+    },
+    {
+      "from": "item_084_job_execution_in_python_worker",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_084_job_execution_in_python_worker",
+      "to": "task_042_orchestrate_python_worker_foundation_and_runtime_migration"
+    },
+    {
+      "from": "item_085_entra_sso_msal_and_worker_token_validation",
+      "to": "item_085_entra_sso_msal_and_worker_token_validation"
+    },
+    {
+      "from": "item_085_entra_sso_msal_and_worker_token_validation",
+      "to": "item_080_python_fastapi_worker_foundation"
+    },
+    {
+      "from": "item_085_entra_sso_msal_and_worker_token_validation",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_085_entra_sso_msal_and_worker_token_validation",
+      "to": "task_043_orchestrate_hosted_auth_access_and_deployment"
+    },
+    {
+      "from": "item_086_operator_allowlist_and_access_log",
+      "to": "item_086_operator_allowlist_and_access_log"
+    },
+    {
+      "from": "item_086_operator_allowlist_and_access_log",
+      "to": "item_085_entra_sso_msal_and_worker_token_validation"
+    },
+    {
+      "from": "item_086_operator_allowlist_and_access_log",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_086_operator_allowlist_and_access_log",
+      "to": "task_043_orchestrate_hosted_auth_access_and_deployment"
+    },
+    {
+      "from": "item_087_hosted_mode_ui",
+      "to": "item_087_hosted_mode_ui"
+    },
+    {
+      "from": "item_087_hosted_mode_ui",
+      "to": "item_085_entra_sso_msal_and_worker_token_validation"
+    },
+    {
+      "from": "item_087_hosted_mode_ui",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_087_hosted_mode_ui",
+      "to": "task_043_orchestrate_hosted_auth_access_and_deployment"
+    },
+    {
+      "from": "item_088_docker_compose_deployment_package",
+      "to": "item_088_docker_compose_deployment_package"
+    },
+    {
+      "from": "item_088_docker_compose_deployment_package",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "item_088_docker_compose_deployment_package",
+      "to": "task_043_orchestrate_hosted_auth_access_and_deployment"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_000_v1_graph_discovery_and_pilot_scope"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_001_v1_sharepoint_ingestion_and_sync_pipeline"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_002_v1_hybrid_knowledge_store_and_retrieval"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_003_v1_explorer_ui_for_sharepoint_navigation"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_005_v1_runtime_config_and_operations"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_006_v1_local_companion_app_for_explorer_and_chat"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_007_v1_llm_provider_abstraction_for_openai_and_gemini"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_008_v1_local_explorer_shell_and_navigation"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_009_v1_local_chat_surface_and_answer_flow"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "item_010_v1_local_sync_status_and_operational_view"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "task_001_v1_local_companion_vertical_slice"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "task_002_v1_ingestion_sync_and_retrieval_hardening"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "task_005_v1_local_development_and_validation_milestone"
+    },
+    {
+      "from": "req_000_v0_bootstrap_and_initial_foundations",
+      "to": "task_008_v1_retrieval_evaluation_set_and_quality_gates"
+    },
+    {
+      "from": "req_001_v1_local_hardening_and_scope_evolution",
+      "to": "item_014_v1_incremental_live_sync_and_resumable_export"
+    },
+    {
+      "from": "req_001_v1_local_hardening_and_scope_evolution",
+      "to": "item_015_v1_live_explorer_site_filter_alignment"
+    },
+    {
+      "from": "req_001_v1_local_hardening_and_scope_evolution",
+      "to": "item_016_v1_live_evaluation_set_and_quality_gate"
+    },
+    {
+      "from": "req_001_v1_local_hardening_and_scope_evolution",
+      "to": "item_017_v1_crawl_resilience_and_artifact_governance"
+    },
+    {
+      "from": "req_001_v1_local_hardening_and_scope_evolution",
+      "to": "item_018_v1_pre_v2_backlog_and_doc_cleanup"
+    },
+    {
+      "from": "req_001_v1_local_hardening_and_scope_evolution",
+      "to": "req_001_v1_local_hardening_and_scope_evolution"
+    },
+    {
+      "from": "req_001_v1_local_hardening_and_scope_evolution",
+      "to": "task_009_local_hardening_and_v1_scope_evolution"
+    },
+    {
+      "from": "req_003_nexus_v1_1_ui_and_product_polish",
+      "to": "item_019_shell_rebrand_and_split_layout"
+    },
+    {
+      "from": "req_003_nexus_v1_1_ui_and_product_polish",
+      "to": "item_020_compact_live_state_and_sync_panels"
+    },
+    {
+      "from": "req_003_nexus_v1_1_ui_and_product_polish",
+      "to": "req_003_nexus_v1_1_ui_and_product_polish"
+    },
+    {
+      "from": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up",
+      "to": "item_021_shell_chrome_and_layout_cleanup"
+    },
+    {
+      "from": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up",
+      "to": "item_022_live_state_and_status_density_polish"
+    },
+    {
+      "from": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up",
+      "to": "item_023_bishop_response_flow_and_answer_trace_polish"
+    },
+    {
+      "from": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up",
+      "to": "item_024_path_display_and_hover_cleanup"
+    },
+    {
+      "from": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up",
+      "to": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up"
+    },
+    {
+      "from": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core",
+      "to": "item_025_corpus_mode_normalization_tests"
+    },
+    {
+      "from": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core",
+      "to": "item_026_live_corpus_fetch_branch_coverage"
+    },
+    {
+      "from": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core",
+      "to": "item_027_deepvault_retrieval_branch_coverage"
+    },
+    {
+      "from": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core",
+      "to": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core"
+    },
+    {
+      "from": "req_006_explorer_card_hierarchy_and_visual_polish",
+      "to": "item_028_explorer_card_hierarchy_cleanup"
+    },
+    {
+      "from": "req_006_explorer_card_hierarchy_and_visual_polish",
+      "to": "item_029_explorer_badge_and_source_line_polish"
+    },
+    {
+      "from": "req_006_explorer_card_hierarchy_and_visual_polish",
+      "to": "req_006_explorer_card_hierarchy_and_visual_polish"
+    },
+    {
+      "from": "req_007_compact_paths_in_explorer_excerpts_and_summaries",
+      "to": "item_030_compact_paths_in_explorer_excerpts_and_summaries"
+    },
+    {
+      "from": "req_007_compact_paths_in_explorer_excerpts_and_summaries",
+      "to": "req_007_compact_paths_in_explorer_excerpts_and_summaries"
+    },
+    {
+      "from": "req_008_bishop_llm_orchestration_after_local_grounding",
+      "to": "item_031_bishop_grounding_contract_and_response_shape"
+    },
+    {
+      "from": "req_008_bishop_llm_orchestration_after_local_grounding",
+      "to": "item_032_bishop_llm_orchestration_and_fallback"
+    },
+    {
+      "from": "req_008_bishop_llm_orchestration_after_local_grounding",
+      "to": "item_033_bishop_trace_status_and_evaluation_coverage"
+    },
+    {
+      "from": "req_008_bishop_llm_orchestration_after_local_grounding",
+      "to": "req_008_bishop_llm_orchestration_after_local_grounding"
+    },
+    {
+      "from": "req_009_explorer_file_type_pill_inline_with_title",
+      "to": "item_034_inline_file_type_pill_in_explorer_title_row"
+    },
+    {
+      "from": "req_009_explorer_file_type_pill_inline_with_title",
+      "to": "item_035_compact_title_row_spacing_and_regression_checks"
+    },
+    {
+      "from": "req_009_explorer_file_type_pill_inline_with_title",
+      "to": "req_009_explorer_file_type_pill_inline_with_title"
+    },
+    {
+      "from": "req_010_fix_sharepoint_file_links_in_explorer",
+      "to": "item_036_use_native_sharepoint_file_weburl"
+    },
+    {
+      "from": "req_010_fix_sharepoint_file_links_in_explorer",
+      "to": "item_037_fallback_file_link_resolution_and_link_tests"
+    },
+    {
+      "from": "req_010_fix_sharepoint_file_links_in_explorer",
+      "to": "req_010_fix_sharepoint_file_links_in_explorer"
+    },
+    {
+      "from": "req_011_audit_de_dette_technique_et_cleanup_structurel",
+      "to": "item_038_refactor_app_shell_and_ui_state"
+    },
+    {
+      "from": "req_011_audit_de_dette_technique_et_cleanup_structurel",
+      "to": "item_039_split_deepvault_retrieval_and_evaluation_helpers"
+    },
+    {
+      "from": "req_011_audit_de_dette_technique_et_cleanup_structurel",
+      "to": "item_040_clarify_bishop_orchestration_contract"
+    },
+    {
+      "from": "req_011_audit_de_dette_technique_et_cleanup_structurel",
+      "to": "item_041_harden_live_export_and_checkpoint_handling"
+    },
+    {
+      "from": "req_011_audit_de_dette_technique_et_cleanup_structurel",
+      "to": "item_042_clean_logics_workflow_hygiene_and_references"
+    },
+    {
+      "from": "req_011_audit_de_dette_technique_et_cleanup_structurel",
+      "to": "req_011_audit_de_dette_technique_et_cleanup_structurel"
+    },
+    {
+      "from": "req_011_audit_de_dette_technique_et_cleanup_structurel",
+      "to": "task_016_orchestrate_technical_debt_cleanup_waves"
+    },
+    {
+      "from": "req_012_add_leading_icons_to_navigation",
+      "to": "item_043_add_leading_icons_to_navigation"
+    },
+    {
+      "from": "req_012_add_leading_icons_to_navigation",
+      "to": "req_012_add_leading_icons_to_navigation"
+    },
+    {
+      "from": "req_013_move_site_selector_into_runtime",
+      "to": "item_044_move_site_selector_into_runtime"
+    },
+    {
+      "from": "req_013_move_site_selector_into_runtime",
+      "to": "req_013_move_site_selector_into_runtime"
+    },
+    {
+      "from": "req_014_move_runtime_under_sync_status",
+      "to": "item_045_move_runtime_under_sync_status"
+    },
+    {
+      "from": "req_014_move_runtime_under_sync_status",
+      "to": "req_014_move_runtime_under_sync_status"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_046_split_app_shell_into_panel_components"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_047_extract_scoring_module_and_barrel_exports"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_048_react_error_boundaries_for_panels"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_049_graph_api_retry_timeout_and_corpus_validation"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_050_e2e_full_workflow_coverage"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_051_unit_tests_scoring_and_bishop_contract"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_052_bishop_claude_api_integration"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_053_bishop_session_persistence_and_export"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "item_054_corpus_delta_sync_via_graph_lastmodified"
+    },
+    {
+      "from": "req_015_architecture_robustness_and_product_improvements",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "req_016_pwa_install_and_offline_first",
+      "to": "item_055_pwa_vite_plugin_and_workbox_setup"
+    },
+    {
+      "from": "req_016_pwa_install_and_offline_first",
+      "to": "item_056_pwa_install_button_in_header"
+    },
+    {
+      "from": "req_016_pwa_install_and_offline_first",
+      "to": "item_057_pwa_update_banner"
+    },
+    {
+      "from": "req_016_pwa_install_and_offline_first",
+      "to": "item_058_pwa_offline_cache_and_mock_fallback"
+    },
+    {
+      "from": "req_016_pwa_install_and_offline_first",
+      "to": "req_016_pwa_install_and_offline_first"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_061_stabilize_navigation_and_runtime_ownership"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_060_split_sync_status_into_dedicated_operations_screens"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_062_improve_corpus_metadata_chunking_and_bishop_hints"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_063_add_persisted_sidebar_theme_switch"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_064_harden_worker_security_fallback_and_audit_boundaries"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_065_finalize_sync_navigation_model_and_recovery_entry_points"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_066_verify_theme_fallback_and_shell_surface_coverage"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "item_067_lock_corpus_metadata_contract_and_required_fields"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "task_029_stabilize_navigation_and_runtime_ownership"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "task_028_split_sync_status_into_dedicated_operations_screens"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "task_030_improve_corpus_metadata_chunking_and_bishop_hints"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "task_031_add_persisted_sidebar_theme_switch"
+    },
+    {
+      "from": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "to": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan"
+    },
+    {
+      "from": "req_018_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_072_split_bishop_into_bounded_sub_modules"
+    },
+    {
+      "from": "req_018_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_073_reduce_app_shell_below_800_lines"
+    },
+    {
+      "from": "req_018_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_074_harden_localstorage_api_key_warning_and_schema_validation"
+    },
+    {
+      "from": "req_018_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_075_add_worker_health_check_and_granular_error_boundaries"
+    },
+    {
+      "from": "req_018_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_076_lazy_load_mock_corpus_chunk"
+    },
+    {
+      "from": "req_018_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "req_018_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability",
+      "to": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability"
+    },
+    {
+      "from": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability",
+      "to": "item_077_integrate_analyze_enrichment_into_bishop_scoring"
+    },
+    {
+      "from": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability",
+      "to": "item_078_add_github_actions_ci_workflow"
+    },
+    {
+      "from": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability",
+      "to": "item_079_add_configuration_export_and_import_to_settings"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_080_python_fastapi_worker_foundation"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_081_port_scoring_to_python_worker"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_082_corpus_endpoint_and_browser_bundle_cleanup"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_083_bishop_proxy_endpoint"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_084_job_execution_in_python_worker"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_085_entra_sso_msal_and_worker_token_validation"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_086_operator_allowlist_and_access_log"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_087_hosted_mode_ui"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "item_088_docker_compose_deployment_package"
+    },
+    {
+      "from": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "task_001_v1_local_companion_vertical_slice",
+      "to": "item_006_v1_local_companion_app_for_explorer_and_chat"
+    },
+    {
+      "from": "task_001_v1_local_companion_vertical_slice",
+      "to": "item_008_v1_local_explorer_shell_and_navigation"
+    },
+    {
+      "from": "task_001_v1_local_companion_vertical_slice",
+      "to": "item_009_v1_local_chat_surface_and_answer_flow"
+    },
+    {
+      "from": "task_001_v1_local_companion_vertical_slice",
+      "to": "item_010_v1_local_sync_status_and_operational_view"
+    },
+    {
+      "from": "task_001_v1_local_companion_vertical_slice",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "task_001_v1_local_companion_vertical_slice",
+      "to": "task_001_v1_local_companion_vertical_slice"
+    },
+    {
+      "from": "task_002_v1_ingestion_sync_and_retrieval_hardening",
+      "to": "item_000_v1_graph_discovery_and_pilot_scope"
+    },
+    {
+      "from": "task_002_v1_ingestion_sync_and_retrieval_hardening",
+      "to": "item_001_v1_sharepoint_ingestion_and_sync_pipeline"
+    },
+    {
+      "from": "task_002_v1_ingestion_sync_and_retrieval_hardening",
+      "to": "item_002_v1_hybrid_knowledge_store_and_retrieval"
+    },
+    {
+      "from": "task_002_v1_ingestion_sync_and_retrieval_hardening",
+      "to": "item_005_v1_runtime_config_and_operations"
+    },
+    {
+      "from": "task_002_v1_ingestion_sync_and_retrieval_hardening",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "task_002_v1_ingestion_sync_and_retrieval_hardening",
+      "to": "task_002_v1_ingestion_sync_and_retrieval_hardening"
+    },
+    {
+      "from": "task_005_v1_local_development_and_validation_milestone",
+      "to": "item_000_v1_graph_discovery_and_pilot_scope"
+    },
+    {
+      "from": "task_005_v1_local_development_and_validation_milestone",
+      "to": "item_001_v1_sharepoint_ingestion_and_sync_pipeline"
+    },
+    {
+      "from": "task_005_v1_local_development_and_validation_milestone",
+      "to": "item_002_v1_hybrid_knowledge_store_and_retrieval"
+    },
+    {
+      "from": "task_005_v1_local_development_and_validation_milestone",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "task_005_v1_local_development_and_validation_milestone",
+      "to": "task_005_v1_local_development_and_validation_milestone"
+    },
+    {
+      "from": "task_005_v1_local_development_and_validation_milestone",
+      "to": "task_001_v1_local_companion_vertical_slice"
+    },
+    {
+      "from": "task_005_v1_local_development_and_validation_milestone",
+      "to": "task_002_v1_ingestion_sync_and_retrieval_hardening"
+    },
+    {
+      "from": "task_008_v1_retrieval_evaluation_set_and_quality_gates",
+      "to": "item_002_v1_hybrid_knowledge_store_and_retrieval"
+    },
+    {
+      "from": "task_008_v1_retrieval_evaluation_set_and_quality_gates",
+      "to": "req_000_v0_bootstrap_and_initial_foundations"
+    },
+    {
+      "from": "task_008_v1_retrieval_evaluation_set_and_quality_gates",
+      "to": "task_008_v1_retrieval_evaluation_set_and_quality_gates"
+    },
+    {
+      "from": "task_009_local_hardening_and_v1_scope_evolution",
+      "to": "item_014_v1_incremental_live_sync_and_resumable_export"
+    },
+    {
+      "from": "task_009_local_hardening_and_v1_scope_evolution",
+      "to": "item_017_v1_crawl_resilience_and_artifact_governance"
+    },
+    {
+      "from": "task_009_local_hardening_and_v1_scope_evolution",
+      "to": "item_015_v1_live_explorer_site_filter_alignment"
+    },
+    {
+      "from": "task_009_local_hardening_and_v1_scope_evolution",
+      "to": "item_016_v1_live_evaluation_set_and_quality_gate"
+    },
+    {
+      "from": "task_009_local_hardening_and_v1_scope_evolution",
+      "to": "item_018_v1_pre_v2_backlog_and_doc_cleanup"
+    },
+    {
+      "from": "task_009_local_hardening_and_v1_scope_evolution",
+      "to": "req_001_v1_local_hardening_and_scope_evolution"
+    },
+    {
+      "from": "task_009_local_hardening_and_v1_scope_evolution",
+      "to": "task_009_local_hardening_and_v1_scope_evolution"
+    },
+    {
+      "from": "task_011_nexus_v1_1_shell_and_live_state_delivery",
+      "to": "item_019_shell_rebrand_and_split_layout"
+    },
+    {
+      "from": "task_011_nexus_v1_1_shell_and_live_state_delivery",
+      "to": "item_020_compact_live_state_and_sync_panels"
+    },
+    {
+      "from": "task_011_nexus_v1_1_shell_and_live_state_delivery",
+      "to": "req_003_nexus_v1_1_ui_and_product_polish"
+    },
+    {
+      "from": "task_011_nexus_v1_1_shell_and_live_state_delivery",
+      "to": "task_011_nexus_v1_1_shell_and_live_state_delivery"
+    },
+    {
+      "from": "task_012_nexus_v1_1_remaining_polish_orchestration",
+      "to": "item_021_shell_chrome_and_layout_cleanup"
+    },
+    {
+      "from": "task_012_nexus_v1_1_remaining_polish_orchestration",
+      "to": "item_022_live_state_and_status_density_polish"
+    },
+    {
+      "from": "task_012_nexus_v1_1_remaining_polish_orchestration",
+      "to": "item_023_bishop_response_flow_and_answer_trace_polish"
+    },
+    {
+      "from": "task_012_nexus_v1_1_remaining_polish_orchestration",
+      "to": "item_024_path_display_and_hover_cleanup"
+    },
+    {
+      "from": "task_012_nexus_v1_1_remaining_polish_orchestration",
+      "to": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up"
+    },
+    {
+      "from": "task_012_nexus_v1_1_remaining_polish_orchestration",
+      "to": "task_012_nexus_v1_1_remaining_polish_orchestration"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "item_025_corpus_mode_normalization_tests"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "item_026_live_corpus_fetch_branch_coverage"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "item_027_deepvault_retrieval_branch_coverage"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "item_028_explorer_card_hierarchy_cleanup"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "item_029_explorer_badge_and_source_line_polish"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "item_030_compact_paths_in_explorer_excerpts_and_summaries"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "req_006_explorer_card_hierarchy_and_visual_polish"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "req_007_compact_paths_in_explorer_excerpts_and_summaries"
+    },
+    {
+      "from": "task_013_coverage_and_explorer_polish_orchestration",
+      "to": "task_013_coverage_and_explorer_polish_orchestration"
+    },
+    {
+      "from": "task_014_bishop_llm_orchestration_delivery",
+      "to": "item_031_bishop_grounding_contract_and_response_shape"
+    },
+    {
+      "from": "task_014_bishop_llm_orchestration_delivery",
+      "to": "item_032_bishop_llm_orchestration_and_fallback"
+    },
+    {
+      "from": "task_014_bishop_llm_orchestration_delivery",
+      "to": "item_033_bishop_trace_status_and_evaluation_coverage"
+    },
+    {
+      "from": "task_014_bishop_llm_orchestration_delivery",
+      "to": "req_008_bishop_llm_orchestration_after_local_grounding"
+    },
+    {
+      "from": "task_014_bishop_llm_orchestration_delivery",
+      "to": "task_014_bishop_llm_orchestration_delivery"
+    },
+    {
+      "from": "task_015_sharepoint_file_link_and_file_type_ui_delivery",
+      "to": "item_034_inline_file_type_pill_in_explorer_title_row"
+    },
+    {
+      "from": "task_015_sharepoint_file_link_and_file_type_ui_delivery",
+      "to": "item_035_compact_title_row_spacing_and_regression_checks"
+    },
+    {
+      "from": "task_015_sharepoint_file_link_and_file_type_ui_delivery",
+      "to": "item_036_use_native_sharepoint_file_weburl"
+    },
+    {
+      "from": "task_015_sharepoint_file_link_and_file_type_ui_delivery",
+      "to": "item_037_fallback_file_link_resolution_and_link_tests"
+    },
+    {
+      "from": "task_015_sharepoint_file_link_and_file_type_ui_delivery",
+      "to": "req_009_explorer_file_type_pill_inline_with_title"
+    },
+    {
+      "from": "task_015_sharepoint_file_link_and_file_type_ui_delivery",
+      "to": "req_010_fix_sharepoint_file_links_in_explorer"
+    },
+    {
+      "from": "task_015_sharepoint_file_link_and_file_type_ui_delivery",
+      "to": "task_015_sharepoint_file_link_and_file_type_ui_delivery"
+    },
+    {
+      "from": "task_016_orchestrate_technical_debt_cleanup_waves",
+      "to": "item_042_clean_logics_workflow_hygiene_and_references"
+    },
+    {
+      "from": "task_016_orchestrate_technical_debt_cleanup_waves",
+      "to": "item_038_refactor_app_shell_and_ui_state"
+    },
+    {
+      "from": "task_016_orchestrate_technical_debt_cleanup_waves",
+      "to": "item_039_split_deepvault_retrieval_and_evaluation_helpers"
+    },
+    {
+      "from": "task_016_orchestrate_technical_debt_cleanup_waves",
+      "to": "item_040_clarify_bishop_orchestration_contract"
+    },
+    {
+      "from": "task_016_orchestrate_technical_debt_cleanup_waves",
+      "to": "item_041_harden_live_export_and_checkpoint_handling"
+    },
+    {
+      "from": "task_016_orchestrate_technical_debt_cleanup_waves",
+      "to": "req_011_audit_de_dette_technique_et_cleanup_structurel"
+    },
+    {
+      "from": "task_016_orchestrate_technical_debt_cleanup_waves",
+      "to": "task_016_orchestrate_technical_debt_cleanup_waves"
+    },
+    {
+      "from": "task_017_orchestrate_navigation_and_runtime_ui_changes",
+      "to": "item_043_add_leading_icons_to_navigation"
+    },
+    {
+      "from": "task_017_orchestrate_navigation_and_runtime_ui_changes",
+      "to": "item_044_move_site_selector_into_runtime"
+    },
+    {
+      "from": "task_017_orchestrate_navigation_and_runtime_ui_changes",
+      "to": "item_045_move_runtime_under_sync_status"
+    },
+    {
+      "from": "task_017_orchestrate_navigation_and_runtime_ui_changes",
+      "to": "req_012_add_leading_icons_to_navigation"
+    },
+    {
+      "from": "task_017_orchestrate_navigation_and_runtime_ui_changes",
+      "to": "req_013_move_site_selector_into_runtime"
+    },
+    {
+      "from": "task_017_orchestrate_navigation_and_runtime_ui_changes",
+      "to": "req_014_move_runtime_under_sync_status"
+    },
+    {
+      "from": "task_017_orchestrate_navigation_and_runtime_ui_changes",
+      "to": "task_017_orchestrate_navigation_and_runtime_ui_changes"
+    },
+    {
+      "from": "task_018_structural_refactoring_and_resilience_foundation",
+      "to": "item_046_split_app_shell_into_panel_components"
+    },
+    {
+      "from": "task_018_structural_refactoring_and_resilience_foundation",
+      "to": "item_047_extract_scoring_module_and_barrel_exports"
+    },
+    {
+      "from": "task_018_structural_refactoring_and_resilience_foundation",
+      "to": "item_048_react_error_boundaries_for_panels"
+    },
+    {
+      "from": "task_018_structural_refactoring_and_resilience_foundation",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "task_018_structural_refactoring_and_resilience_foundation",
+      "to": "task_018_structural_refactoring_and_resilience_foundation"
+    },
+    {
+      "from": "task_019_infrastructure_hardening_graph_and_corpus",
+      "to": "item_049_graph_api_retry_timeout_and_corpus_validation"
+    },
+    {
+      "from": "task_019_infrastructure_hardening_graph_and_corpus",
+      "to": "item_054_corpus_delta_sync_via_graph_lastmodified"
+    },
+    {
+      "from": "task_019_infrastructure_hardening_graph_and_corpus",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "task_019_infrastructure_hardening_graph_and_corpus",
+      "to": "task_019_infrastructure_hardening_graph_and_corpus"
+    },
+    {
+      "from": "task_020_test_coverage_expansion",
+      "to": "item_051_unit_tests_scoring_and_bishop_contract"
+    },
+    {
+      "from": "task_020_test_coverage_expansion",
+      "to": "item_050_e2e_full_workflow_coverage"
+    },
+    {
+      "from": "task_020_test_coverage_expansion",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "task_020_test_coverage_expansion",
+      "to": "task_020_test_coverage_expansion"
+    },
+    {
+      "from": "task_021_bishop_intelligence_and_ux",
+      "to": "item_052_bishop_claude_api_integration"
+    },
+    {
+      "from": "task_021_bishop_intelligence_and_ux",
+      "to": "item_053_bishop_session_persistence_and_export"
+    },
+    {
+      "from": "task_021_bishop_intelligence_and_ux",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "task_021_bishop_intelligence_and_ux",
+      "to": "task_021_bishop_intelligence_and_ux"
+    },
+    {
+      "from": "task_022_pwa_progressive_web_app_delivery",
+      "to": "item_055_pwa_vite_plugin_and_workbox_setup"
+    },
+    {
+      "from": "task_022_pwa_progressive_web_app_delivery",
+      "to": "item_056_pwa_install_button_in_header"
+    },
+    {
+      "from": "task_022_pwa_progressive_web_app_delivery",
+      "to": "item_057_pwa_update_banner"
+    },
+    {
+      "from": "task_022_pwa_progressive_web_app_delivery",
+      "to": "item_058_pwa_offline_cache_and_mock_fallback"
+    },
+    {
+      "from": "task_022_pwa_progressive_web_app_delivery",
+      "to": "req_016_pwa_install_and_offline_first"
+    },
+    {
+      "from": "task_022_pwa_progressive_web_app_delivery",
+      "to": "task_022_pwa_progressive_web_app_delivery"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_000_v1_graph_discovery_and_pilot_scope"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_001_v1_sharepoint_ingestion_and_sync_pipeline"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_002_v1_hybrid_knowledge_store_and_retrieval"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_003_v1_explorer_ui_for_sharepoint_navigation"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_005_v1_runtime_config_and_operations"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_006_v1_local_companion_app_for_explorer_and_chat"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_007_v1_llm_provider_abstraction_for_openai_and_gemini"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_008_v1_local_explorer_shell_and_navigation"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_009_v1_local_chat_surface_and_answer_flow"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_010_v1_local_sync_status_and_operational_view"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_014_v1_incremental_live_sync_and_resumable_export"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_015_v1_live_explorer_site_filter_alignment"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_016_v1_live_evaluation_set_and_quality_gate"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_017_v1_crawl_resilience_and_artifact_governance"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_019_shell_rebrand_and_split_layout"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_020_compact_live_state_and_sync_panels"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_021_shell_chrome_and_layout_cleanup"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_022_live_state_and_status_density_polish"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_023_bishop_response_flow_and_answer_trace_polish"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_024_path_display_and_hover_cleanup"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_025_corpus_mode_normalization_tests"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_026_live_corpus_fetch_branch_coverage"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_027_deepvault_retrieval_branch_coverage"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_028_explorer_card_hierarchy_cleanup"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_029_explorer_badge_and_source_line_polish"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_030_compact_paths_in_explorer_excerpts_and_summaries"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_031_bishop_grounding_contract_and_response_shape"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_032_bishop_llm_orchestration_and_fallback"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_033_bishop_trace_status_and_evaluation_coverage"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_034_inline_file_type_pill_in_explorer_title_row"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_035_compact_title_row_spacing_and_regression_checks"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_036_use_native_sharepoint_file_weburl"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_037_fallback_file_link_resolution_and_link_tests"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_038_refactor_app_shell_and_ui_state"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_039_split_deepvault_retrieval_and_evaluation_helpers"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_040_clarify_bishop_orchestration_contract"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_041_harden_live_export_and_checkpoint_handling"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_042_clean_logics_workflow_hygiene_and_references"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_043_add_leading_icons_to_navigation"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_044_move_site_selector_into_runtime"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_045_move_runtime_under_sync_status"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_046_split_app_shell_into_panel_components"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_047_extract_scoring_module_and_barrel_exports"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_048_react_error_boundaries_for_panels"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_049_graph_api_retry_timeout_and_corpus_validation"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_050_e2e_full_workflow_coverage"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_051_unit_tests_scoring_and_bishop_contract"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_052_bishop_claude_api_integration"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_053_bishop_session_persistence_and_export"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_054_corpus_delta_sync_via_graph_lastmodified"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_055_pwa_vite_plugin_and_workbox_setup"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_056_pwa_install_button_in_header"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_057_pwa_update_banner"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "item_058_pwa_offline_cache_and_mock_fallback"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_001_v1_local_hardening_and_scope_evolution"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_003_nexus_v1_1_ui_and_product_polish"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_006_explorer_card_hierarchy_and_visual_polish"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_007_compact_paths_in_explorer_excerpts_and_summaries"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_008_bishop_llm_orchestration_after_local_grounding"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_009_explorer_file_type_pill_inline_with_title"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_010_fix_sharepoint_file_links_in_explorer"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_011_audit_de_dette_technique_et_cleanup_structurel"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_012_add_leading_icons_to_navigation"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_013_move_site_selector_into_runtime"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_014_move_runtime_under_sync_status"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_015_architecture_robustness_and_product_improvements"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "req_016_pwa_install_and_offline_first"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_025_non_v2_delivery_orchestration_and_validation_hardening"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_001_v1_local_companion_vertical_slice"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_002_v1_ingestion_sync_and_retrieval_hardening"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_005_v1_local_development_and_validation_milestone"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_008_v1_retrieval_evaluation_set_and_quality_gates"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_009_local_hardening_and_v1_scope_evolution"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_011_nexus_v1_1_shell_and_live_state_delivery"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_012_nexus_v1_1_remaining_polish_orchestration"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_013_coverage_and_explorer_polish_orchestration"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_015_sharepoint_file_link_and_file_type_ui_delivery"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_017_orchestrate_navigation_and_runtime_ui_changes"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_014_bishop_llm_orchestration_delivery"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_021_bishop_intelligence_and_ux"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_016_orchestrate_technical_debt_cleanup_waves"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_018_structural_refactoring_and_resilience_foundation"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_019_infrastructure_hardening_graph_and_corpus"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_020_test_coverage_expansion"
+    },
+    {
+      "from": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "to": "task_022_pwa_progressive_web_app_delivery"
+    },
+    {
+      "from": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan",
+      "to": "item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts"
+    },
+    {
+      "from": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan",
+      "to": "item_060_split_sync_status_into_dedicated_operations_screens"
+    },
+    {
+      "from": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan",
+      "to": "item_061_stabilize_navigation_and_runtime_ownership"
+    },
+    {
+      "from": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan",
+      "to": "item_062_improve_corpus_metadata_chunking_and_bishop_hints"
+    },
+    {
+      "from": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan",
+      "to": "item_063_add_persisted_sidebar_theme_switch"
+    },
+    {
+      "from": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan",
+      "to": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan"
+    },
+    {
+      "from": "task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts",
+      "to": "item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts"
+    },
+    {
+      "from": "task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts",
+      "to": "task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts"
+    },
+    {
+      "from": "task_028_split_sync_status_into_dedicated_operations_screens",
+      "to": "item_060_split_sync_status_into_dedicated_operations_screens"
+    },
+    {
+      "from": "task_028_split_sync_status_into_dedicated_operations_screens",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_028_split_sync_status_into_dedicated_operations_screens",
+      "to": "task_028_split_sync_status_into_dedicated_operations_screens"
+    },
+    {
+      "from": "task_029_stabilize_navigation_and_runtime_ownership",
+      "to": "item_061_stabilize_navigation_and_runtime_ownership"
+    },
+    {
+      "from": "task_029_stabilize_navigation_and_runtime_ownership",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_029_stabilize_navigation_and_runtime_ownership",
+      "to": "task_029_stabilize_navigation_and_runtime_ownership"
+    },
+    {
+      "from": "task_030_improve_corpus_metadata_chunking_and_bishop_hints",
+      "to": "item_062_improve_corpus_metadata_chunking_and_bishop_hints"
+    },
+    {
+      "from": "task_030_improve_corpus_metadata_chunking_and_bishop_hints",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_030_improve_corpus_metadata_chunking_and_bishop_hints",
+      "to": "task_030_improve_corpus_metadata_chunking_and_bishop_hints"
+    },
+    {
+      "from": "task_031_add_persisted_sidebar_theme_switch",
+      "to": "item_063_add_persisted_sidebar_theme_switch"
+    },
+    {
+      "from": "task_031_add_persisted_sidebar_theme_switch",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_031_add_persisted_sidebar_theme_switch",
+      "to": "task_031_add_persisted_sidebar_theme_switch"
+    },
+    {
+      "from": "task_032_harden_worker_security_fallback_and_audit_boundaries",
+      "to": "item_064_harden_worker_security_fallback_and_audit_boundaries"
+    },
+    {
+      "from": "task_032_harden_worker_security_fallback_and_audit_boundaries",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_032_harden_worker_security_fallback_and_audit_boundaries",
+      "to": "task_032_harden_worker_security_fallback_and_audit_boundaries"
+    },
+    {
+      "from": "task_033_finalize_sync_navigation_model_and_recovery_entry_points",
+      "to": "item_065_finalize_sync_navigation_model_and_recovery_entry_points"
+    },
+    {
+      "from": "task_033_finalize_sync_navigation_model_and_recovery_entry_points",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_033_finalize_sync_navigation_model_and_recovery_entry_points",
+      "to": "task_033_finalize_sync_navigation_model_and_recovery_entry_points"
+    },
+    {
+      "from": "task_034_verify_theme_fallback_and_shell_surface_coverage",
+      "to": "item_066_verify_theme_fallback_and_shell_surface_coverage"
+    },
+    {
+      "from": "task_034_verify_theme_fallback_and_shell_surface_coverage",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_034_verify_theme_fallback_and_shell_surface_coverage",
+      "to": "task_034_verify_theme_fallback_and_shell_surface_coverage"
+    },
+    {
+      "from": "task_035_lock_corpus_metadata_contract_and_required_fields",
+      "to": "item_067_lock_corpus_metadata_contract_and_required_fields"
+    },
+    {
+      "from": "task_035_lock_corpus_metadata_contract_and_required_fields",
+      "to": "req_017_implement_the_full_app_worker_corpus_and_shell_plan"
+    },
+    {
+      "from": "task_035_lock_corpus_metadata_contract_and_required_fields",
+      "to": "task_035_lock_corpus_metadata_contract_and_required_fields"
+    },
+    {
+      "from": "task_036_orchestrate_bishop_generated_document_artifacts",
+      "to": "item_068_deliver_bishop_first_wave_generated_artifact_contract"
+    },
+    {
+      "from": "task_036_orchestrate_bishop_generated_document_artifacts",
+      "to": "task_036_orchestrate_bishop_generated_document_artifacts"
+    },
+    {
+      "from": "task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment",
+      "to": "item_069_ship_bounded_post_ingest_analysis_command"
+    },
+    {
+      "from": "task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment",
+      "to": "task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment"
+    },
+    {
+      "from": "task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs",
+      "to": "item_070_ship_artifacts_inspection_surface"
+    },
+    {
+      "from": "task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs",
+      "to": "task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs"
+    },
+    {
+      "from": "task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view",
+      "to": "item_071_ship_ai_usage_store_and_sectioned_ai_view"
+    },
+    {
+      "from": "task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view",
+      "to": "task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view"
+    },
+    {
+      "from": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_072_split_bishop_into_bounded_sub_modules"
+    },
+    {
+      "from": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_073_reduce_app_shell_below_800_lines"
+    },
+    {
+      "from": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_074_harden_localstorage_api_key_warning_and_schema_validation"
+    },
+    {
+      "from": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_075_add_worker_health_check_and_granular_error_boundaries"
+    },
+    {
+      "from": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "item_076_lazy_load_mock_corpus_chunk"
+    },
+    {
+      "from": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "req_018_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit",
+      "to": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit"
+    },
+    {
+      "from": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability",
+      "to": "item_077_integrate_analyze_enrichment_into_bishop_scoring"
+    },
+    {
+      "from": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability",
+      "to": "item_078_add_github_actions_ci_workflow"
+    },
+    {
+      "from": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability",
+      "to": "item_079_add_configuration_export_and_import_to_settings"
+    },
+    {
+      "from": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability",
+      "to": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability"
+    },
+    {
+      "from": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability",
+      "to": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability"
+    },
+    {
+      "from": "task_042_orchestrate_python_worker_foundation_and_runtime_migration",
+      "to": "item_080_python_fastapi_worker_foundation"
+    },
+    {
+      "from": "task_042_orchestrate_python_worker_foundation_and_runtime_migration",
+      "to": "item_081_port_scoring_to_python_worker"
+    },
+    {
+      "from": "task_042_orchestrate_python_worker_foundation_and_runtime_migration",
+      "to": "item_082_corpus_endpoint_and_browser_bundle_cleanup"
+    },
+    {
+      "from": "task_042_orchestrate_python_worker_foundation_and_runtime_migration",
+      "to": "item_083_bishop_proxy_endpoint"
+    },
+    {
+      "from": "task_042_orchestrate_python_worker_foundation_and_runtime_migration",
+      "to": "item_084_job_execution_in_python_worker"
+    },
+    {
+      "from": "task_042_orchestrate_python_worker_foundation_and_runtime_migration",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "task_042_orchestrate_python_worker_foundation_and_runtime_migration",
+      "to": "task_042_orchestrate_python_worker_foundation_and_runtime_migration"
+    },
+    {
+      "from": "task_043_orchestrate_hosted_auth_access_and_deployment",
+      "to": "item_085_entra_sso_msal_and_worker_token_validation"
+    },
+    {
+      "from": "task_043_orchestrate_hosted_auth_access_and_deployment",
+      "to": "item_086_operator_allowlist_and_access_log"
+    },
+    {
+      "from": "task_043_orchestrate_hosted_auth_access_and_deployment",
+      "to": "item_087_hosted_mode_ui"
+    },
+    {
+      "from": "task_043_orchestrate_hosted_auth_access_and_deployment",
+      "to": "item_088_docker_compose_deployment_package"
+    },
+    {
+      "from": "task_043_orchestrate_hosted_auth_access_and_deployment",
+      "to": "req_020_host_nexus_as_a_shared_multi_user_web_application"
+    },
+    {
+      "from": "task_043_orchestrate_hosted_auth_access_and_deployment",
+      "to": "task_043_orchestrate_hosted_auth_access_and_deployment"
+    }
+  ],
+  "nodes": [
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_000_v1_graph_discovery_and_pilot_scope.md",
+      "ref": "item_000_v1_graph_discovery_and_pilot_scope",
+      "status": "Done",
+      "title": "V1 \u2014 Graph discovery and pilot scope"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md",
+      "ref": "item_001_v1_sharepoint_ingestion_and_sync_pipeline",
+      "status": "Done",
+      "title": "V1 \u2014 SharePoint ingestion and sync pipeline"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md",
+      "ref": "item_002_v1_hybrid_knowledge_store_and_retrieval",
+      "status": "Done",
+      "title": "V1 \u2014 Hybrid knowledge store and retrieval"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md",
+      "ref": "item_003_v1_explorer_ui_for_sharepoint_navigation",
+      "status": "Done",
+      "title": "V1 \u2014 DeepVault - Navy explorer UI for SharePoint navigation"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_005_v1_runtime_config_and_operations.md",
+      "ref": "item_005_v1_runtime_config_and_operations",
+      "status": "Done",
+      "title": "V1 \u2014 Runtime config and operations"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md",
+      "ref": "item_006_v1_local_companion_app_for_explorer_and_chat",
+      "status": "Done",
+      "title": "V1 \u2014 DeepVault - Navy app for explorer and chat"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md",
+      "ref": "item_007_v1_llm_provider_abstraction_for_openai_and_gemini",
+      "status": "Done",
+      "title": "V1 \u2014 DeepVault - Bishop LLM provider abstraction for OpenAI and Gemini"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md",
+      "ref": "item_008_v1_local_explorer_shell_and_navigation",
+      "status": "Done",
+      "title": "V1 \u2014 DeepVault - Navy explorer shell and navigation"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md",
+      "ref": "item_009_v1_local_chat_surface_and_answer_flow",
+      "status": "Done",
+      "title": "V1 \u2014 DeepVault - Bishop chat surface and answer flow"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_010_v1_local_sync_status_and_operational_view.md",
+      "ref": "item_010_v1_local_sync_status_and_operational_view",
+      "status": "Done",
+      "title": "V1 \u2014 DeepVault - Navy sync status and operational view"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_014_v1_incremental_live_sync_and_resumable_export.md",
+      "ref": "item_014_v1_incremental_live_sync_and_resumable_export",
+      "status": "Done",
+      "title": "V1 \u2014 Incremental live sync and resumable export"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_015_v1_live_explorer_site_filter_alignment.md",
+      "ref": "item_015_v1_live_explorer_site_filter_alignment",
+      "status": "Done",
+      "title": "V1 \u2014 Live explorer site filter alignment"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_016_v1_live_evaluation_set_and_quality_gate.md",
+      "ref": "item_016_v1_live_evaluation_set_and_quality_gate",
+      "status": "Done",
+      "title": "V1 \u2014 Live evaluation set and quality gate"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_017_v1_crawl_resilience_and_artifact_governance.md",
+      "ref": "item_017_v1_crawl_resilience_and_artifact_governance",
+      "status": "Done",
+      "title": "V1 \u2014 Crawl resilience and artifact governance"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_018_v1_pre_v2_backlog_and_doc_cleanup.md",
+      "ref": "item_018_v1_pre_v2_backlog_and_doc_cleanup",
+      "status": "Done",
+      "title": "V1 \u2014 Pre-V2 backlog and doc cleanup"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_019_shell_rebrand_and_split_layout.md",
+      "ref": "item_019_shell_rebrand_and_split_layout",
+      "status": "Done",
+      "title": "Shell rebrand and split layout"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_020_compact_live_state_and_sync_panels.md",
+      "ref": "item_020_compact_live_state_and_sync_panels",
+      "status": "Done",
+      "title": "Compact live state and sync panels"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_021_shell_chrome_and_layout_cleanup.md",
+      "ref": "item_021_shell_chrome_and_layout_cleanup",
+      "status": "Done",
+      "title": "Shell chrome and layout cleanup"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_022_live_state_and_status_density_polish.md",
+      "ref": "item_022_live_state_and_status_density_polish",
+      "status": "Done",
+      "title": "Live state and status density polish"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_023_bishop_response_flow_and_answer_trace_polish.md",
+      "ref": "item_023_bishop_response_flow_and_answer_trace_polish",
+      "status": "Done",
+      "title": "Bishop response flow and answer trace polish"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_024_path_display_and_hover_cleanup.md",
+      "ref": "item_024_path_display_and_hover_cleanup",
+      "status": "Done",
+      "title": "Path display and hover cleanup"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_025_corpus_mode_normalization_tests.md",
+      "ref": "item_025_corpus_mode_normalization_tests",
+      "status": "Done",
+      "title": "Corpus mode normalization tests"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_026_live_corpus_fetch_branch_coverage.md",
+      "ref": "item_026_live_corpus_fetch_branch_coverage",
+      "status": "Done",
+      "title": "Live corpus fetch branch coverage"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_027_deepvault_retrieval_branch_coverage.md",
+      "ref": "item_027_deepvault_retrieval_branch_coverage",
+      "status": "Done",
+      "title": "Deepvault retrieval branch coverage"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_028_explorer_card_hierarchy_cleanup.md",
+      "ref": "item_028_explorer_card_hierarchy_cleanup",
+      "status": "Done",
+      "title": "Explorer card hierarchy cleanup"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_029_explorer_badge_and_source_line_polish.md",
+      "ref": "item_029_explorer_badge_and_source_line_polish",
+      "status": "Done",
+      "title": "Explorer badge and source line polish"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_030_compact_paths_in_explorer_excerpts_and_summaries.md",
+      "ref": "item_030_compact_paths_in_explorer_excerpts_and_summaries",
+      "status": "Done",
+      "title": "Compact paths in explorer excerpts and summaries"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_031_bishop_grounding_contract_and_response_shape.md",
+      "ref": "item_031_bishop_grounding_contract_and_response_shape",
+      "status": "Done",
+      "title": "Bishop grounding contract and response shape"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_032_bishop_llm_orchestration_and_fallback.md",
+      "ref": "item_032_bishop_llm_orchestration_and_fallback",
+      "status": "Done",
+      "title": "Bishop LLM orchestration and fallback"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_033_bishop_trace_status_and_evaluation_coverage.md",
+      "ref": "item_033_bishop_trace_status_and_evaluation_coverage",
+      "status": "Done",
+      "title": "Bishop trace, status, and evaluation coverage"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_034_inline_file_type_pill_in_explorer_title_row.md",
+      "ref": "item_034_inline_file_type_pill_in_explorer_title_row",
+      "status": "Done",
+      "title": "Inline file type pill in Explorer title row"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_035_compact_title_row_spacing_and_regression_checks.md",
+      "ref": "item_035_compact_title_row_spacing_and_regression_checks",
+      "status": "Done",
+      "title": "Compact title row spacing and regression checks"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_036_use_native_sharepoint_file_weburl.md",
+      "ref": "item_036_use_native_sharepoint_file_weburl",
+      "status": "Done",
+      "title": "Use native SharePoint file webUrl"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_037_fallback_file_link_resolution_and_link_tests.md",
+      "ref": "item_037_fallback_file_link_resolution_and_link_tests",
+      "status": "Done",
+      "title": "Fallback file link resolution and link tests"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_038_refactor_app_shell_and_ui_state.md",
+      "ref": "item_038_refactor_app_shell_and_ui_state",
+      "status": "Done",
+      "title": "Refactor app shell and UI state"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_039_split_deepvault_retrieval_and_evaluation_helpers.md",
+      "ref": "item_039_split_deepvault_retrieval_and_evaluation_helpers",
+      "status": "Done",
+      "title": "Split deepvault retrieval and evaluation helpers"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_040_clarify_bishop_orchestration_contract.md",
+      "ref": "item_040_clarify_bishop_orchestration_contract",
+      "status": "Done",
+      "title": "Clarify Bishop orchestration contract"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_041_harden_live_export_and_checkpoint_handling.md",
+      "ref": "item_041_harden_live_export_and_checkpoint_handling",
+      "status": "Done",
+      "title": "Harden live export and checkpoint handling"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_042_clean_logics_workflow_hygiene_and_references.md",
+      "ref": "item_042_clean_logics_workflow_hygiene_and_references",
+      "status": "Done",
+      "title": "Clean Logics workflow hygiene and references"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_043_add_leading_icons_to_navigation.md",
+      "ref": "item_043_add_leading_icons_to_navigation",
+      "status": "Done",
+      "title": "Add leading icons to navigation"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_044_move_site_selector_into_runtime.md",
+      "ref": "item_044_move_site_selector_into_runtime",
+      "status": "Done",
+      "title": "Move site selector into runtime"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_045_move_runtime_under_sync_status.md",
+      "ref": "item_045_move_runtime_under_sync_status",
+      "status": "Done",
+      "title": "Move runtime under Sync status"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_046_split_app_shell_into_panel_components.md",
+      "ref": "item_046_split_app_shell_into_panel_components",
+      "status": "Done",
+      "title": "Split app-shell into panel components"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_047_extract_scoring_module_and_barrel_exports.md",
+      "ref": "item_047_extract_scoring_module_and_barrel_exports",
+      "status": "Done",
+      "title": "Extract scoring module and add barrel exports"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_048_react_error_boundaries_for_panels.md",
+      "ref": "item_048_react_error_boundaries_for_panels",
+      "status": "Done",
+      "title": "React Error Boundaries for panels"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_049_graph_api_retry_timeout_and_corpus_validation.md",
+      "ref": "item_049_graph_api_retry_timeout_and_corpus_validation",
+      "status": "Done",
+      "title": "Graph API retry, timeout and corpus validation"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_050_e2e_full_workflow_coverage.md",
+      "ref": "item_050_e2e_full_workflow_coverage",
+      "status": "Done",
+      "title": "E2E full workflow coverage"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_051_unit_tests_scoring_and_bishop_contract.md",
+      "ref": "item_051_unit_tests_scoring_and_bishop_contract",
+      "status": "Done",
+      "title": "Unit tests for scoring and Bishop fallback contract"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_052_bishop_claude_api_integration.md",
+      "ref": "item_052_bishop_claude_api_integration",
+      "status": "Done",
+      "title": "Bishop Claude API integration"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_053_bishop_session_persistence_and_export.md",
+      "ref": "item_053_bishop_session_persistence_and_export",
+      "status": "Done",
+      "title": "Bishop session persistence and results export"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_054_corpus_delta_sync_via_graph_lastmodified.md",
+      "ref": "item_054_corpus_delta_sync_via_graph_lastmodified",
+      "status": "Done",
+      "title": "Corpus delta sync via Graph lastModifiedDateTime"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_055_pwa_vite_plugin_and_workbox_setup.md",
+      "ref": "item_055_pwa_vite_plugin_and_workbox_setup",
+      "status": "Done",
+      "title": "PWA: vite-plugin-pwa and Workbox setup"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_056_pwa_install_button_in_header.md",
+      "ref": "item_056_pwa_install_button_in_header",
+      "status": "Done",
+      "title": "PWA: install button in header"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_057_pwa_update_banner.md",
+      "ref": "item_057_pwa_update_banner",
+      "status": "Done",
+      "title": "PWA: update banner"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_058_pwa_offline_cache_and_mock_fallback.md",
+      "ref": "item_058_pwa_offline_cache_and_mock_fallback",
+      "status": "Done",
+      "title": "PWA: offline cache and mock corpus fallback"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md",
+      "ref": "item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts",
+      "status": "Done",
+      "title": "Establish worker boundary and CLI parity with shared corpus artifacts"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md",
+      "ref": "item_060_split_sync_status_into_dedicated_operations_screens",
+      "status": "Done",
+      "title": "Split Sync Status into dedicated operations screens"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_061_stabilize_navigation_and_runtime_ownership.md",
+      "ref": "item_061_stabilize_navigation_and_runtime_ownership",
+      "status": "Done",
+      "title": "Stabilize navigation and runtime ownership"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md",
+      "ref": "item_062_improve_corpus_metadata_chunking_and_bishop_hints",
+      "status": "Done",
+      "title": "Improve corpus metadata chunking and Bishop hints"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_063_add_persisted_sidebar_theme_switch.md",
+      "ref": "item_063_add_persisted_sidebar_theme_switch",
+      "status": "Done",
+      "title": "Add persisted sidebar theme switch"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_064_harden_worker_security_fallback_and_audit_boundaries.md",
+      "ref": "item_064_harden_worker_security_fallback_and_audit_boundaries",
+      "status": "Done",
+      "title": "Harden worker security, fallback, and audit boundaries"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_065_finalize_sync_navigation_model_and_recovery_entry_points.md",
+      "ref": "item_065_finalize_sync_navigation_model_and_recovery_entry_points",
+      "status": "Done",
+      "title": "Finalize sync navigation model and recovery entry points"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_066_verify_theme_fallback_and_shell_surface_coverage.md",
+      "ref": "item_066_verify_theme_fallback_and_shell_surface_coverage",
+      "status": "Done",
+      "title": "Verify theme fallback and shell surface coverage"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_067_lock_corpus_metadata_contract_and_required_fields.md",
+      "ref": "item_067_lock_corpus_metadata_contract_and_required_fields",
+      "status": "Done",
+      "title": "Lock corpus metadata contract and required fields"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md",
+      "ref": "item_068_deliver_bishop_first_wave_generated_artifact_contract",
+      "status": "Done",
+      "title": "Deliver Bishop first-wave generated artifact contract"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md",
+      "ref": "item_069_ship_bounded_post_ingest_analysis_command",
+      "status": "Done",
+      "title": "Ship bounded post-ingest analysis command"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_070_ship_artifacts_inspection_surface.md",
+      "ref": "item_070_ship_artifacts_inspection_surface",
+      "status": "Done",
+      "title": "Ship Artifacts inspection surface"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_071_ship_ai_usage_store_and_sectioned_ai_view.md",
+      "ref": "item_071_ship_ai_usage_store_and_sectioned_ai_view",
+      "status": "Done",
+      "title": "Ship AI usage store and sectioned AI View"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_072_split_bishop_into_bounded_sub_modules.md",
+      "ref": "item_072_split_bishop_into_bounded_sub_modules",
+      "status": "Obsolete",
+      "title": "Split bishop.ts into bounded sub-modules"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_073_reduce_app_shell_below_800_lines.md",
+      "ref": "item_073_reduce_app_shell_below_800_lines",
+      "status": "Ready",
+      "title": "Reduce app-shell.tsx below 800 lines"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_074_harden_localstorage_api_key_warning_and_schema_validation.md",
+      "ref": "item_074_harden_localstorage_api_key_warning_and_schema_validation",
+      "status": "Ready",
+      "title": "Harden localStorage: API key warning and schema validation"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_075_add_worker_health_check_and_granular_error_boundaries.md",
+      "ref": "item_075_add_worker_health_check_and_granular_error_boundaries",
+      "status": "Ready",
+      "title": "Add remote worker health check and granular panel error boundaries"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_076_lazy_load_mock_corpus_chunk.md",
+      "ref": "item_076_lazy_load_mock_corpus_chunk",
+      "status": "Obsolete",
+      "title": "Lazy-load the mock corpus as a separate Vite chunk"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_077_integrate_analyze_enrichment_into_bishop_scoring.md",
+      "ref": "item_077_integrate_analyze_enrichment_into_bishop_scoring",
+      "status": "Ready",
+      "title": "Integrate analyze enrichment fields into Bishop retrieval scoring"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_078_add_github_actions_ci_workflow.md",
+      "ref": "item_078_add_github_actions_ci_workflow",
+      "status": "Ready",
+      "title": "Add GitHub Actions CI workflow"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_079_add_configuration_export_and_import_to_settings.md",
+      "ref": "item_079_add_configuration_export_and_import_to_settings",
+      "status": "Ready",
+      "title": "Add configuration export and import to the Settings panel"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_080_python_fastapi_worker_foundation.md",
+      "ref": "item_080_python_fastapi_worker_foundation",
+      "status": "Ready",
+      "title": "Python FastAPI worker \u2014 foundation"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_081_port_scoring_to_python_worker.md",
+      "ref": "item_081_port_scoring_to_python_worker",
+      "status": "Ready",
+      "title": "Port document scoring to Python worker"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_082_corpus_endpoint_and_browser_bundle_cleanup.md",
+      "ref": "item_082_corpus_endpoint_and_browser_bundle_cleanup",
+      "status": "Ready",
+      "title": "Corpus endpoint and browser bundle cleanup"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_083_bishop_proxy_endpoint.md",
+      "ref": "item_083_bishop_proxy_endpoint",
+      "status": "Ready",
+      "title": "Bishop proxy endpoint on Python worker"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_084_job_execution_in_python_worker.md",
+      "ref": "item_084_job_execution_in_python_worker",
+      "status": "Ready",
+      "title": "Job execution in Python worker (ingest, analyze, evaluate, export-live)"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_085_entra_sso_msal_and_worker_token_validation.md",
+      "ref": "item_085_entra_sso_msal_and_worker_token_validation",
+      "status": "Ready",
+      "title": "Entra SSO \u2014 MSAL browser integration and worker token validation"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_086_operator_allowlist_and_access_log.md",
+      "ref": "item_086_operator_allowlist_and_access_log",
+      "status": "Ready",
+      "title": "Operator allowlist and structured access log"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_087_hosted_mode_ui.md",
+      "ref": "item_087_hosted_mode_ui",
+      "status": "Ready",
+      "title": "Hosted mode UI (identity display, Shared label, sign-out, API key inputs hidden)"
+    },
+    {
+      "kind": "backlog",
+      "path": "logics/backlog/item_088_docker_compose_deployment_package.md",
+      "ref": "item_088_docker_compose_deployment_package",
+      "status": "Ready",
+      "title": "Docker Compose deployment package (Caddy + Python worker, Windows)"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_000_v0_bootstrap_and_initial_foundations.md",
+      "ref": "req_000_v0_bootstrap_and_initial_foundations",
+      "status": "Done",
+      "title": "V0 \u2014 Bootstrap and initial foundations"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_001_v1_local_hardening_and_scope_evolution.md",
+      "ref": "req_001_v1_local_hardening_and_scope_evolution",
+      "status": "Done",
+      "title": "V1 \u2014 Local hardening and scope evolution"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_003_nexus_v1_1_ui_and_product_polish.md",
+      "ref": "req_003_nexus_v1_1_ui_and_product_polish",
+      "status": "Done",
+      "title": "Nexus V1.1.0 shell and product polish"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up.md",
+      "ref": "req_004_nexus_v1_1_remaining_polish_and_bishop_ux_follow_up",
+      "status": "Done",
+      "title": "Nexus V1.1 remaining polish and Bishop UX follow-up"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core.md",
+      "ref": "req_005_coverage_uplift_for_corpus_mode_live_fetch_and_deepvault_core",
+      "status": "Done",
+      "title": "Coverage uplift for corpus mode, live fetch, and deepvault core"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_006_explorer_card_hierarchy_and_visual_polish.md",
+      "ref": "req_006_explorer_card_hierarchy_and_visual_polish",
+      "status": "Done",
+      "title": "Explorer card hierarchy and visual polish"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_007_compact_paths_in_explorer_excerpts_and_summaries.md",
+      "ref": "req_007_compact_paths_in_explorer_excerpts_and_summaries",
+      "status": "Done",
+      "title": "Compact paths in explorer excerpts and summaries"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_008_bishop_llm_orchestration_after_local_grounding.md",
+      "ref": "req_008_bishop_llm_orchestration_after_local_grounding",
+      "status": "Done",
+      "title": "Bishop LLM orchestration after local grounding"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_009_explorer_file_type_pill_inline_with_title.md",
+      "ref": "req_009_explorer_file_type_pill_inline_with_title",
+      "status": "Done",
+      "title": "Explorer file type pill inline with document title"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_010_fix_sharepoint_file_links_in_explorer.md",
+      "ref": "req_010_fix_sharepoint_file_links_in_explorer",
+      "status": "Done",
+      "title": "Fix SharePoint file links in Explorer"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_011_audit_de_dette_technique_et_cleanup_structurel.md",
+      "ref": "req_011_audit_de_dette_technique_et_cleanup_structurel",
+      "status": "Done",
+      "title": "Technical debt and structural cleanup audit"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_012_add_leading_icons_to_navigation.md",
+      "ref": "req_012_add_leading_icons_to_navigation",
+      "status": "Done",
+      "title": "Add leading icons to navigation"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_013_move_site_selector_into_runtime.md",
+      "ref": "req_013_move_site_selector_into_runtime",
+      "status": "Done",
+      "title": "Move site selector into runtime"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_014_move_runtime_under_sync_status.md",
+      "ref": "req_014_move_runtime_under_sync_status",
+      "status": "Done",
+      "title": "Move runtime under Sync status"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_015_architecture_robustness_and_product_improvements.md",
+      "ref": "req_015_architecture_robustness_and_product_improvements",
+      "status": "Done",
+      "title": "Architecture, robustesse et \u00e9volution produit"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_016_pwa_install_and_offline_first.md",
+      "ref": "req_016_pwa_install_and_offline_first",
+      "status": "Done",
+      "title": "PWA : installation, mise \u00e0 jour et fonctionnement hors-ligne"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md",
+      "ref": "req_017_implement_the_full_app_worker_corpus_and_shell_plan",
+      "status": "Done",
+      "title": "Implement the full app worker corpus and shell plan"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_018_post_v1_3_code_quality_security_and_maintainability_audit.md",
+      "ref": "req_018_post_v1_3_code_quality_security_and_maintainability_audit",
+      "status": "Ready",
+      "title": "Post-v1.3 code quality, security, and maintainability audit"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability.md",
+      "ref": "req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability",
+      "status": "Ready",
+      "title": "Post-v1.3 consolidation: close the enrichment loop, add automated CI, and make configuration portable"
+    },
+    {
+      "kind": "request",
+      "path": "logics/request/req_020_host_nexus_as_a_shared_multi_user_web_application.md",
+      "ref": "req_020_host_nexus_as_a_shared_multi_user_web_application",
+      "status": "Ready",
+      "title": "Host Nexus as a shared multi-user web application"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_001_v1_local_companion_vertical_slice.md",
+      "ref": "task_001_v1_local_companion_vertical_slice",
+      "status": "Done",
+      "title": "V1 \u2014 DeepVault - Navy vertical slice"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md",
+      "ref": "task_002_v1_ingestion_sync_and_retrieval_hardening",
+      "status": "Done",
+      "title": "V1 \u2014 Ingestion, sync, and retrieval hardening"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_005_v1_local_development_and_validation_milestone.md",
+      "ref": "task_005_v1_local_development_and_validation_milestone",
+      "status": "Done",
+      "title": "V1 \u2014 Local development and validation milestone"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md",
+      "ref": "task_008_v1_retrieval_evaluation_set_and_quality_gates",
+      "status": "Done",
+      "title": "V1 \u2014 Retrieval evaluation set and quality gates"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_009_local_hardening_and_v1_scope_evolution.md",
+      "ref": "task_009_local_hardening_and_v1_scope_evolution",
+      "status": "Done",
+      "title": "V1 scope evolution \u2014 local hardening and live delivery"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_011_nexus_v1_1_shell_and_live_state_delivery.md",
+      "ref": "task_011_nexus_v1_1_shell_and_live_state_delivery",
+      "status": "Done",
+      "title": "Nexus V1.1 shell and live state delivery"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_012_nexus_v1_1_remaining_polish_orchestration.md",
+      "ref": "task_012_nexus_v1_1_remaining_polish_orchestration",
+      "status": "Done",
+      "title": "Nexus V1.1 remaining polish orchestration"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_013_coverage_and_explorer_polish_orchestration.md",
+      "ref": "task_013_coverage_and_explorer_polish_orchestration",
+      "status": "Done",
+      "title": "Coverage and explorer polish orchestration"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_014_bishop_llm_orchestration_delivery.md",
+      "ref": "task_014_bishop_llm_orchestration_delivery",
+      "status": "Done",
+      "title": "Bishop LLM orchestration delivery"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_015_sharepoint_file_link_and_file_type_ui_delivery.md",
+      "ref": "task_015_sharepoint_file_link_and_file_type_ui_delivery",
+      "status": "Done",
+      "title": "SharePoint file link and file type UI delivery"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_016_orchestrate_technical_debt_cleanup_waves.md",
+      "ref": "task_016_orchestrate_technical_debt_cleanup_waves",
+      "status": "Done",
+      "title": "Orchestrate technical debt cleanup waves"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_017_orchestrate_navigation_and_runtime_ui_changes.md",
+      "ref": "task_017_orchestrate_navigation_and_runtime_ui_changes",
+      "status": "Done",
+      "title": "Orchestrate navigation and runtime UI changes"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_018_structural_refactoring_and_resilience_foundation.md",
+      "ref": "task_018_structural_refactoring_and_resilience_foundation",
+      "status": "Done",
+      "title": "Structural refactoring and resilience foundation"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_019_infrastructure_hardening_graph_and_corpus.md",
+      "ref": "task_019_infrastructure_hardening_graph_and_corpus",
+      "status": "Done",
+      "title": "Infrastructure hardening: Graph API and corpus"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_020_test_coverage_expansion.md",
+      "ref": "task_020_test_coverage_expansion",
+      "status": "Done",
+      "title": "Test coverage expansion"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_021_bishop_intelligence_and_ux.md",
+      "ref": "task_021_bishop_intelligence_and_ux",
+      "status": "Done",
+      "title": "Bishop intelligence and UX"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_022_pwa_progressive_web_app_delivery.md",
+      "ref": "task_022_pwa_progressive_web_app_delivery",
+      "status": "Done",
+      "title": "PWA progressive web app delivery"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md",
+      "ref": "task_025_non_v2_delivery_orchestration_and_validation_hardening",
+      "status": "Done",
+      "title": "Non-V2 delivery orchestration and validation hardening"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan.md",
+      "ref": "task_026_wave_0_execution_planning_and_backlog_split_for_the_full_implementation_plan",
+      "status": "Done",
+      "title": "Wave 0 execution planning and backlog split for the full implementation plan"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md",
+      "ref": "task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts",
+      "status": "Done",
+      "title": "Establish worker boundary and CLI parity with shared corpus artifacts"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_028_split_sync_status_into_dedicated_operations_screens.md",
+      "ref": "task_028_split_sync_status_into_dedicated_operations_screens",
+      "status": "Done",
+      "title": "Split Sync Status into dedicated operations screens"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_029_stabilize_navigation_and_runtime_ownership.md",
+      "ref": "task_029_stabilize_navigation_and_runtime_ownership",
+      "status": "Done",
+      "title": "Stabilize navigation and runtime ownership"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_030_improve_corpus_metadata_chunking_and_bishop_hints.md",
+      "ref": "task_030_improve_corpus_metadata_chunking_and_bishop_hints",
+      "status": "Done",
+      "title": "Improve corpus metadata chunking and Bishop hints"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_031_add_persisted_sidebar_theme_switch.md",
+      "ref": "task_031_add_persisted_sidebar_theme_switch",
+      "status": "Done",
+      "title": "Add persisted sidebar theme switch"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_032_harden_worker_security_fallback_and_audit_boundaries.md",
+      "ref": "task_032_harden_worker_security_fallback_and_audit_boundaries",
+      "status": "Done",
+      "title": "Harden worker security, fallback, and audit boundaries"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_033_finalize_sync_navigation_model_and_recovery_entry_points.md",
+      "ref": "task_033_finalize_sync_navigation_model_and_recovery_entry_points",
+      "status": "Done",
+      "title": "Finalize sync navigation model and recovery entry points"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_034_verify_theme_fallback_and_shell_surface_coverage.md",
+      "ref": "task_034_verify_theme_fallback_and_shell_surface_coverage",
+      "status": "Done",
+      "title": "Verify theme fallback and shell surface coverage"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_035_lock_corpus_metadata_contract_and_required_fields.md",
+      "ref": "task_035_lock_corpus_metadata_contract_and_required_fields",
+      "status": "Done",
+      "title": "Lock corpus metadata contract and required fields"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_036_orchestrate_bishop_generated_document_artifacts.md",
+      "ref": "task_036_orchestrate_bishop_generated_document_artifacts",
+      "status": "Done",
+      "title": "Orchestrate Bishop generated document artifacts"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md",
+      "ref": "task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment",
+      "status": "Done",
+      "title": "Orchestrate post-ingest AI analysis command for corpus enrichment"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md",
+      "ref": "task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs",
+      "status": "Done",
+      "title": "Orchestrate Artifacts visualization surface for generated outputs"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md",
+      "ref": "task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view",
+      "status": "Done",
+      "title": "Orchestrate AI consumption observability and a sectioned AI View"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit.md",
+      "ref": "task_040_orchestrate_post_v1_3_code_quality_security_and_maintainability_audit",
+      "status": "Ready",
+      "title": "Orchestrate post-v1.3 code quality, security, and maintainability audit"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability.md",
+      "ref": "task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability",
+      "status": "Ready",
+      "title": "Orchestrate post-v1.3 consolidation: enrichment loop, CI, and configuration portability"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_042_orchestrate_python_worker_foundation_and_runtime_migration.md",
+      "ref": "task_042_orchestrate_python_worker_foundation_and_runtime_migration",
+      "status": "Ready",
+      "title": "Orchestrate Python worker foundation and runtime migration"
+    },
+    {
+      "kind": "task",
+      "path": "logics/tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md",
+      "ref": "task_043_orchestrate_hosted_auth_access_and_deployment",
+      "status": "Ready",
+      "title": "Orchestrate hosted auth, access control, and deployment packaging"
+    }
+  ]
+}

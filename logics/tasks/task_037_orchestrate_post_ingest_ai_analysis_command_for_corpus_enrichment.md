@@ -31,7 +31,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-post-ingest-ai-analysis-comm|item-069-ship-bounded-post-ingest-analys|1-wave-1-lock-the-first-wave|run-rtk-npm-run-typecheck-for
+%% logics-signature: task|orchestrate-post-ingest-ai-analysis-comm|prod-010-post-ingest-ai-analysis-command|1-lock-the-first-wave-analysis|run-rtk-npm-run-typecheck-and
 stateDiagram-v2
     state "prod_010_post_ingest_ai_analysis_command" as Product
     state "1. Lock the first-wave analysis contract" as Scope
