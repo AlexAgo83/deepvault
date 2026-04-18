@@ -3,9 +3,9 @@
 > From version: 1.4.0
 > Schema version: 1.0
 > Status: In Progress
-> Understanding: 99%
-> Confidence: 98%
-> Progress: 72%
+> Understanding: 100%
+> Confidence: 99%
+> Progress: 79%
 > Complexity: Medium
 > Theme: Architecture / Performance
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -65,4 +65,5 @@ flowchart LR
 - `src/data/corpus.ts` has been removed and callers now import the corpus client or mock corpus directly.
 - The browser Bishop runtime path no longer imports `src/lib/bishop.ts`; it now uses a dedicated HTTP client against the worker proxy with a thin local fallback path during migration.
 - Browser-safe modules now import shared corpus/chat/provider types from a dedicated `src/lib/runtime-types.ts` boundary instead of pulling those types from `src/lib/deepvault.ts`.
-- The remaining work in this item is the deeper browser bundle cleanup around `src/lib/scoring.ts` and the remaining runtime helpers still sourced from `src/lib/deepvault.ts`, plus final offline UX verification in the running app.
+- The app model now consumes browser-safe corpus view helpers from `src/lib/corpus-view.ts` instead of importing those runtime helpers from `src/lib/deepvault.ts`.
+- The remaining work in this item is the deeper browser bundle cleanup around `src/lib/scoring.ts`, plus the final removal or isolation of the remaining legacy `deepvault.ts` browser fallback path and offline UX verification in the running app.

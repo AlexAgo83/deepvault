@@ -5,7 +5,7 @@ import {
   buildSyncOverview,
   resolveSharePointFileUrl,
   summarizeCorpus,
-} from '../lib/deepvault'
+} from '../lib/corpus-view'
 import type { Corpus, CorpusDocument, ProviderId, UserRole } from '../lib/runtime-types'
 import { useBishopConversation } from './useBishopConversation'
 import { useAIUsage } from './useAIUsage'
