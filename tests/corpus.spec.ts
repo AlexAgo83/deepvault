@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { normalizeCorpusMode } from '../src/lib/corpus-mode'
-import { fetchLiveCorpus, getMockCorpusBundle, isCorpusLike } from '../src/lib/corpus-client'
+import { fetchLiveCorpus, getEmptyLiveCorpusBundle, getMockCorpusBundle, isCorpusLike } from '../src/lib/corpus-client'
 
 describe('corpus helpers', () => {
   afterEach(() => {
@@ -15,6 +15,14 @@ describe('corpus helpers', () => {
     expect(bundle.mode).toBe('mock')
     expect(bundle.corpus.documents.length).toBeGreaterThan(0)
     expect(bundle.corpus.sites).toHaveLength(3)
+  })
+
+  it('returns an empty live bundle for worker-backed startup states', () => {
+    const bundle = getEmptyLiveCorpusBundle()
+
+    expect(bundle.mode).toBe('live')
+    expect(bundle.corpus.documents).toHaveLength(0)
+    expect(bundle.corpus.sites).toHaveLength(0)
   })
 
   it('normalizes requested corpus mode values', () => {
@@ -39,7 +47,7 @@ describe('corpus helpers', () => {
     expect(fetchMock).toHaveBeenCalledWith('/api/corpus', { cache: 'no-store', headers: {} })
   })
 
-  it('returns the fallback state when the live corpus is missing', async () => {
+  it('returns the missing state when the live corpus is missing', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 404,
@@ -52,11 +60,11 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'missing',
-      detail: 'Worker corpus missing, fallback to mock',
+      detail: 'Worker corpus missing or not published yet',
     })
   })
 
-  it('returns the fallback state when the live corpus is gone', async () => {
+  it('returns the missing state when the live corpus is gone', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 410,
@@ -69,7 +77,7 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'missing',
-      detail: 'Worker corpus missing, fallback to mock',
+      detail: 'Worker corpus missing or not published yet',
     })
   })
 

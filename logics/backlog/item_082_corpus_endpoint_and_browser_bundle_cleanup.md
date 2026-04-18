@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 84%
+> Progress: 89%
 > Complexity: Medium
 > Theme: Architecture / Performance
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -67,4 +67,5 @@ flowchart LR
 - Browser-safe modules now import shared corpus/chat/provider types from a dedicated `src/lib/runtime-types.ts` boundary instead of pulling those types from `src/lib/deepvault.ts`.
 - The app model now consumes browser-safe corpus view helpers from `src/lib/corpus-view.ts` instead of importing those runtime helpers from `src/lib/deepvault.ts`.
 - The Bishop browser fallback path now goes through `src/lib/corpus-grounding.ts`, which isolates local grounding helpers away from `src/lib/deepvault.ts` and removes the last value import of that legacy module from the browser runtime path.
-- The remaining work in this item is the deeper browser bundle cleanup around `src/lib/scoring.ts` plus offline UX verification in the running app.
+- In `live` mode, a worker outage or missing corpus no longer falls back to the bundled mock corpus; the app now stays on an explicit worker-backed empty state with reconnect guidance, aligning the browser behavior with `adr_027` and `adr_035`.
+- The remaining work in this item is the deeper browser bundle cleanup around `src/lib/scoring.ts` plus runtime/devtools verification of the worker-unreachable state.

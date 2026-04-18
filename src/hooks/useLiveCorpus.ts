@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { fetchLiveCorpus, getMockCorpusBundle, type CorpusBundle } from '../lib/corpus-client'
+import { fetchLiveCorpus, getEmptyLiveCorpusBundle, getMockCorpusBundle, type CorpusBundle } from '../lib/corpus-client'
 import { type CorpusMode, normalizeCorpusMode } from '../lib/corpus-mode'
 import type { PillTone } from '../components/app-ui'
 
@@ -24,7 +24,9 @@ function buildIdleState(mode: CorpusMode): LiveState {
 export function useLiveCorpus(requestedModeValue: string | undefined | null): LiveCorpusState {
   const requestedCorpusMode = normalizeCorpusMode(requestedModeValue)
   const [refreshToken, setRefreshToken] = useState(0)
-  const [corpusBundle, setCorpusBundle] = useState<CorpusBundle>(() => getMockCorpusBundle())
+  const [corpusBundle, setCorpusBundle] = useState<CorpusBundle>(() =>
+    requestedCorpusMode === 'live' ? getEmptyLiveCorpusBundle() : getMockCorpusBundle(),
+  )
   const [liveState, setLiveState] = useState<LiveState>(() => buildIdleState(requestedCorpusMode))
 
   useEffect(() => {
@@ -46,16 +48,16 @@ export function useLiveCorpus(requestedModeValue: string | undefined | null): Li
         setLiveState({ label: 'Live', detail: result.detail, tone: 'success' })
         return
       }
-      setCorpusBundle(getMockCorpusBundle())
+      setCorpusBundle(getEmptyLiveCorpusBundle())
       setLiveState({
-        label: result.status === 'offline' ? 'Offline — corpus mock' : result.status === 'missing' ? 'Live fallback' : 'Live error',
+        label: result.status === 'offline' ? 'Offline — worker unreachable' : result.status === 'missing' ? 'Live corpus missing' : 'Live error',
         detail:
           result.status === 'offline'
             ? `${result.detail}. Use refresh to reconnect.`
             : result.status === 'missing'
               ? result.detail
               : result.detail,
-        tone: result.status === 'missing' || result.status === 'offline' ? 'accent' : 'danger',
+        tone: result.status === 'offline' || result.status === 'missing' ? 'accent' : 'danger',
       })
     })
 

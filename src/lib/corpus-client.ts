@@ -20,6 +20,20 @@ export function getMockCorpusBundle(): CorpusBundle {
   return { corpus: getMockCorpus(), mode: 'mock' }
 }
 
+export function getEmptyLiveCorpusBundle(): CorpusBundle {
+  return {
+    mode: 'live',
+    corpus: {
+      schemaVersion: '1.0',
+      defaultUserRole: 'analyst',
+      providers: [],
+      sites: [],
+      syncRuns: [],
+      documents: [],
+    },
+  }
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
@@ -145,7 +159,7 @@ export async function fetchLiveCorpus(): Promise<LiveCorpusFetchResult> {
     }
     if (!response.ok) {
       if (response.status === 404 || response.status === 410) {
-        return { status: 'missing', detail: 'Worker corpus missing, fallback to mock' }
+        return { status: 'missing', detail: 'Worker corpus missing or not published yet' }
       }
       return { status: 'error', detail: `Worker corpus error: request failed with status ${response.status}` }
     }
