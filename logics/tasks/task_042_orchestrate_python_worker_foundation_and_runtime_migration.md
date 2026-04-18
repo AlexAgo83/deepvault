@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 80%
+> Progress: 86%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -79,10 +79,10 @@ stateDiagram-v2
 - [x] 7a. Wave 4 — expose a CLI debug path (`worker bishop query --question "..."`) over the same Bishop service used by the HTTP endpoint.
 - [ ] 8. Wave 4 — update the browser Bishop flow to call the worker proxy and confirm no provider API key remains in the browser path.
 - [ ] CHECKPOINT: leave Wave 4 commit-ready and run integration coverage for success, low-confidence, and provider-error paths.
-- [ ] 9. Wave 5 — implement `POST /api/jobs`, `GET /api/jobs/:id`, and `GET /api/jobs/:id/events` with persisted runtime state and SSE progress.
-- [ ] 9a. Wave 5 — expose `worker jobs run ingest|analyze|evaluate|export-live` and `worker jobs status <id>` over the same job service layer used by the HTTP routes.
-- [ ] 9b. Wave 5 — persist canonical job metadata in `data/runtime/jobs/<jobId>.json` and append events in `data/runtime/jobs/<jobId>.events.jsonl` using the statuses `queued`, `running`, `succeeded`, `failed`, and `cancelled`.
-- [ ] 9c. Wave 5 — use UUID v4 job ids and keep the persisted job metadata/event log retention simple by default until an explicit cleanup policy is introduced.
+- [x] 9. Wave 5 — implement `POST /api/jobs`, `GET /api/jobs/:id`, and `GET /api/jobs/:id/events` with persisted runtime state and SSE progress.
+- [x] 9a. Wave 5 — expose `worker jobs run ingest|analyze|evaluate|export-live` and `worker jobs status <id>` over the same job service layer used by the HTTP routes.
+- [x] 9b. Wave 5 — persist canonical job metadata in `data/runtime/jobs/<jobId>.json` and append events in `data/runtime/jobs/<jobId>.events.jsonl` using the statuses `queued`, `running`, `succeeded`, `failed`, and `cancelled`.
+- [x] 9c. Wave 5 — use UUID v4 job ids and keep the persisted job metadata/event log retention simple by default until an explicit cleanup policy is introduced.
 - [ ] 10. Wave 5 — update the Sync panel to trigger worker-managed jobs and render real-time progress from the SSE stream.
 - [ ] GATE: when a wave replaces a legacy browser/Node runtime path, remove or fully disconnect the replaced path before closing the wave.
 - [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
@@ -168,4 +168,6 @@ stateDiagram-v2
 - Focused Playwright coverage now verifies the live-mode worker-unreachable state in the browser, which closes the remaining Wave 3 offline verification gap.
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
 - Explicit non-browser imports now point to `src/lib/bishop-orchestration.ts`, and `src/lib/bishop.ts` has been removed from the codebase.
-- The current checkpoint is Wave 5 job execution completion plus final task closure updates once the remaining worker-managed job path is fully landed.
+- Wave 5 has now started with a worker-native job orchestration slice: `POST /api/jobs`, `GET /api/jobs/{id}`, `GET /api/jobs/{id}/events`, canonical runtime persistence, and `worker jobs run|status` are landed over a shared `JobsService`.
+- The first worker-native job implementation is `evaluate`, which persists progress events and a structured summary result; `ingest`, `analyze`, and `export-live` still fail explicitly as not implemented, so the Sync panel migration and the remaining pipeline ports stay open.
+- The current checkpoint is the rest of Wave 5: port the remaining job types, move the Sync panel to the worker contract, and then close the task once the legacy Node execution path is fully disconnected.

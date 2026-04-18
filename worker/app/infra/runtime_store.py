@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, List, Optional
+import json
 
 from worker.app.config import get_settings
 
@@ -15,6 +16,46 @@ class RuntimeStore:
         if not corpus_path.exists():
             return None
         return f"file:{corpus_path.stat().st_mtime_ns}"
+
+    def ensure_runtime_dirs(self) -> None:
+        self.runtime_dir.mkdir(parents=True, exist_ok=True)
+        self.jobs_dir().mkdir(parents=True, exist_ok=True)
+
+    def jobs_dir(self) -> Path:
+        return self.runtime_dir / "jobs"
+
+    def job_metadata_path(self, job_id: str) -> Path:
+        return self.jobs_dir() / f"{job_id}.json"
+
+    def job_events_path(self, job_id: str) -> Path:
+        return self.jobs_dir() / f"{job_id}.events.jsonl"
+
+    def write_job_metadata(self, job_id: str, payload: Dict[str, Any]) -> None:
+        self.ensure_runtime_dirs()
+        self.job_metadata_path(job_id).write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
+
+    def read_job_metadata(self, job_id: str) -> Optional[Dict[str, Any]]:
+        path = self.job_metadata_path(job_id)
+        if not path.exists():
+            return None
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def append_job_event(self, job_id: str, payload: Dict[str, Any]) -> None:
+        self.ensure_runtime_dirs()
+        with self.job_events_path(job_id).open("a", encoding="utf-8") as handle:
+            handle.write(f"{json.dumps(payload)}\n")
+
+    def read_job_events(self, job_id: str) -> List[Dict[str, Any]]:
+        path = self.job_events_path(job_id)
+        if not path.exists():
+            return []
+        events: List[Dict[str, Any]] = []
+        for line in path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            events.append(json.loads(line))
+        return events
 
 
 def get_runtime_store() -> RuntimeStore:

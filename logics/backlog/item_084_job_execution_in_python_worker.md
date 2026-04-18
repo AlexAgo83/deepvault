@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 95%
-> Confidence: 93%
-> Progress: 0%
+> Status: In Progress
+> Understanding: 100%
+> Confidence: 95%
+> Progress: 35%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -53,3 +53,15 @@
 - Browser Sync panel → trigger ingest → progress updates visible in real time
 - After ingest: `data/runtime/corpus-published.json` is updated
 - `python -m pytest worker/tests/test_jobs.py -v`
+
+## Progress notes
+
+- Wave 5 has started with a first worker-native job slice: the FastAPI worker now exposes `POST /api/jobs`, `GET /api/jobs/{id}`, and `GET /api/jobs/{id}/events`, and persists canonical metadata plus append-only event logs under `data/runtime/jobs/`.
+- The first-party CLI now calls the same `JobsService` as the HTTP routes through `worker jobs run ...` and `worker jobs status <id>`, with `run` executing synchronously so the process does not exit before the worker-owned lifecycle is persisted.
+- The first implemented worker-native job type is `evaluate`, which records progress events and stores a structured result summary. `ingest`, `analyze`, and `export-live` are still explicit `not implemented` failures on the Python worker and remain the main remaining scope for this item.
+- Validation for this first slice:
+  - `rtk python3 -m pytest worker/tests/test_jobs.py -v`
+  - `rtk python3 -m pytest worker/tests/test_app_routes.py worker/tests/test_bishop.py worker/tests/test_jobs.py -v`
+  - `rtk python3 -m worker.cli.main jobs run evaluate`
+  - `rtk python3 -m worker.cli.main jobs run ingest`
+  - `rtk python3 -m worker.cli.main jobs status 10504cb9-a722-4ebb-99f7-ddace960e4b2`

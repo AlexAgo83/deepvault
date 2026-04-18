@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ErrorDetails(BaseModel):
@@ -88,3 +88,27 @@ class BishopQueryResponse(BaseModel):
     latencyMs: int
     confidence: int
     trace: BishopTraceResponse
+
+
+class JobStartRequest(BaseModel):
+    type: str
+    options: Dict[str, Any] = Field(default_factory=dict)
+
+
+class JobStartResponse(BaseModel):
+    jobId: str
+    status: str
+
+
+class JobSummaryResponse(BaseModel):
+    jobId: str
+    type: str
+    status: str
+    startedAt: str
+    finishedAt: Optional[str] = None
+    summary: Optional[str] = None
+    result: Optional[Dict[str, Any]] = None
+    error: Optional[str] = None
+    launchedBy: Optional[str] = None
+    client: Optional[str] = None
+    effectiveConfig: Optional[Dict[str, Any]] = None
