@@ -6,10 +6,10 @@ import { dismissGettingStarted } from './helpers'
 const distIndexPath = resolve(process.cwd(), 'dist/index.html')
 const buildInfoPath = resolve(process.cwd(), 'dist/build-info.json')
 
-function mutateTitle(html: string, nextTitle: string) {
-  const mutated = html.replace('<title>Nexus</title>', `<title>${nextTitle}</title>`)
+function mutateBuildMarker(html: string, nextBuildId: string) {
+  const mutated = html.replace('<body>', `<body data-build-marker="${nextBuildId}">`)
   if (mutated === html) {
-    throw new Error('Unable to inject reload sentinel into dist/index.html')
+    throw new Error('Unable to inject build marker into dist/index.html')
   }
   return mutated
 }
@@ -26,7 +26,6 @@ test.describe('DeepVault PWA refresh behavior', () => {
     const page = await context.newPage()
     const originalIndex = readFileSync(distIndexPath, 'utf8')
     const originalBuildInfo = readFileSync(buildInfoPath, 'utf8')
-    const updatedTitle = 'Nexus Reload Sentinel'
     const updatedBuildId = 'reload-sentinel-build'
 
     try {
@@ -34,16 +33,17 @@ test.describe('DeepVault PWA refresh behavior', () => {
       await page.waitForLoadState('networkidle')
       await dismissGettingStarted(page)
       await expect(page).toHaveTitle('Nexus')
+      await expect(page.locator('body')).not.toHaveAttribute('data-build-marker', updatedBuildId)
 
-      writeFileSync(distIndexPath, mutateTitle(originalIndex, updatedTitle))
+      writeFileSync(distIndexPath, mutateBuildMarker(originalIndex, updatedBuildId))
       writeFileSync(buildInfoPath, mutateBuildInfo(originalBuildInfo, updatedBuildId))
 
       const buildInfoResponse = await request.get(`/build-info.json?ts=${Date.now()}`)
       expect(await buildInfoResponse.text()).toContain(updatedBuildId)
 
       await page.reload()
-      await expect(page).toHaveTitle(updatedTitle, { timeout: 15000 })
       await expect(page).toHaveURL(new RegExp(`\\?__build=${updatedBuildId}`))
+      await expect(page.locator('body')).toHaveAttribute('data-build-marker', updatedBuildId, { timeout: 15000 })
     } finally {
       writeFileSync(distIndexPath, originalIndex)
       writeFileSync(buildInfoPath, originalBuildInfo)
