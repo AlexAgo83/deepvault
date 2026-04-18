@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 99%
 > Confidence: 98%
-> Progress: 78%
+> Progress: 83%
 > Complexity: High
 > Theme: Architecture / Product
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -63,4 +63,5 @@ flowchart LR
 - The worker proxy performs server-side provider dispatch for `openai`, `gemini`, and `anthropic` using worker env vars (`BISHOP_PROVIDER`, `BISHOP_MODEL`, provider API keys) and returns the structured Bishop response contract with `mode`, `trace`, `model`, token usage, and confidence metadata.
 - The browser runtime path no longer imports `src/lib/bishop.ts` for conversation handling; it now uses a dedicated HTTP client against `/api/bishop/query`, keeping the worker as the primary orchestration path.
 - Worker and app coverage now include successful provider-dispatched answers plus graceful fallback when provider keys are missing, upstream provider calls fail, or the worker cannot be reached.
-- Remaining work in this item is the final cleanup of the legacy `src/lib/bishop.ts` module and adjacent browser-side orchestration remnants so the old path can be removed completely.
+- The last browser-side local fallback no longer imports `src/lib/deepvault.ts`; it now uses `src/lib/corpus-grounding.ts` so the Bishop client no longer depends on the legacy aggregate module at runtime.
+- Remaining work in this item is the final cleanup or retirement of the legacy `src/lib/bishop.ts` module for non-browser test/script usage so the old path can be removed completely.
