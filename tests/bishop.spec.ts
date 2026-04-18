@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getMockCorpusBundle } from '../src/lib/corpus-client'
-import { buildBishopPrompt, buildNeedRefinementTerms, groundQuestion, orchestrateBishopAnswer } from '../src/lib/bishop'
+import { buildBishopPrompt, buildNeedRefinementTerms, groundQuestion, orchestrateBishopAnswer } from '../src/lib/bishop-orchestration'
 
 const corpus = getMockCorpusBundle().corpus
 

@@ -6,7 +6,7 @@ import {
   type Corpus,
   type EvaluationRow,
 } from '../src/lib/deepvault'
-import { orchestrateBishopAnswer } from '../src/lib/bishop'
+import { orchestrateBishopAnswer } from '../src/lib/bishop-orchestration'
 import { loadCorpus, resolveSnapshotPath } from './corpus-loader'
 
 function readArg(name: string): string | undefined {
