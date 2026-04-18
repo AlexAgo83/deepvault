@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { fetchLiveCorpus, getMockCorpusBundle, type CorpusBundle } from '../data/corpus'
+import { fetchLiveCorpus, getMockCorpusBundle, type CorpusBundle } from '../lib/corpus-client'
 import { type CorpusMode, normalizeCorpusMode } from '../lib/corpus-mode'
 import type { PillTone } from '../components/app-ui'
 
