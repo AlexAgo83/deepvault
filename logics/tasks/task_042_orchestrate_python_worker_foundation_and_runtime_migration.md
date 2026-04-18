@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 75%
+> Progress: 77%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -164,6 +164,7 @@ stateDiagram-v2
 - The local Bishop fallback path is now isolated in `src/lib/corpus-grounding.ts`, removing the final browser-runtime value import of `deepvault.ts` while keeping Node-side tests and scripts compatible through re-exports.
 - The `live` corpus path now stays worker-backed even when `/api/corpus` is missing or the worker is offline: the app shows an explicit empty/error state plus reconnect guidance instead of silently switching back to mock data.
 - Browser-safe ranking now flows through `src/lib/corpus-ranking.ts`, leaving `src/lib/scoring.ts` as a compatibility wrapper for non-browser imports and shrinking the remaining legacy browser dependency surface.
+- Focused Playwright coverage now verifies the live-mode worker-unreachable state in the browser, which closes the remaining Wave 3 offline verification gap.
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
 - Explicit non-browser imports now point to `src/lib/bishop-orchestration.ts`, and `src/lib/bishop.ts` has been removed from the codebase.
 - The current checkpoint is runtime/offline verification and closure evidence for the worker-backed Bishop path before Wave 4 can close.

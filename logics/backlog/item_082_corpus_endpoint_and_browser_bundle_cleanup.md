@@ -2,10 +2,10 @@
 
 > From version: 1.4.0
 > Schema version: 1.0
-> Status: In Progress
+> Status: Done
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 93%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Architecture / Performance
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -55,7 +55,7 @@ flowchart LR
 - `rtk python3 -m worker.cli.main corpus show`
 - `rtk python3 -m worker.cli.main corpus validate`
 - `npm run build` → bundle contains no `corpus.ts`, `scoring.ts`, or `deepvault.ts` references (`grep -r "scoring" dist/`)
-- Browser devtools: network tab shows corpus fetched from `/api/corpus`; kill worker → offline state shown
+- `rtk npm run e2e -- tests/e2e/workflows.spec.ts` → live mode keeps an explicit worker-unreachable state with reconnect guidance and no mock fallback
 
 ## Progress notes
 
@@ -69,4 +69,4 @@ flowchart LR
 - The Bishop browser fallback path now goes through `src/lib/corpus-grounding.ts`, which isolates local grounding helpers away from `src/lib/deepvault.ts` and removes the last value import of that legacy module from the browser runtime path.
 - In `live` mode, a worker outage or missing corpus no longer falls back to the bundled mock corpus; the app now stays on an explicit worker-backed empty state with reconnect guidance, aligning the browser behavior with `adr_027` and `adr_035`.
 - Browser-safe modules now import ranking helpers from `src/lib/corpus-ranking.ts`; `src/lib/scoring.ts` is kept only as a compatibility facade for scripts and tests, not as the browser runtime entry point.
-- The remaining work in this item is runtime/devtools verification of the worker-unreachable state before closure.
+- Runtime/browser verification now covers the worker-unreachable path in live mode: the app stays on an explicit empty live state, shows reconnect guidance, and does not fall back to mock data.
