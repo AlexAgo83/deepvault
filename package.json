@@ -22,6 +22,7 @@
     "evaluate:live": "node scripts/run-with-cleanup.mjs tsx scripts/evaluate.ts --mode live",
     "export:live": "node scripts/run-with-cleanup.mjs tsx scripts/export-live.ts",
     "check": "node scripts/check.mjs",
+    "ci:anti-zombie": "node scripts/ci-anti-zombie-check.mjs",
     "ci:local": "npm run lint && npm run typecheck && npm run test:coverage && npm run build && rtk node --import tsx scripts/evaluate.ts && rtk npx playwright install chromium && rtk npm run e2e && rtk npm run e2e:pwa-refresh"
   },
   "dependencies": {

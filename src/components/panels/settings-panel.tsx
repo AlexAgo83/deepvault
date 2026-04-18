@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import type { EntraSettings } from '../../hooks/useEntraSettings'
 import type { BishopSettings } from '../../hooks/useBishopSettings'
 import type { ProviderSecrets } from '../../hooks/useProviderSecrets'
 import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 import type { AppModel } from '../../hooks/useAppModel'
 import { type ProviderId, type UserRole } from '../../lib/deepvault'
+import { downloadTextFile } from '../../lib/file-download'
+import {
+  buildSettingsTransferPayload,
+  parseSettingsTransferPayload,
+  type SettingsTransferPayload,
+} from '../../lib/settings-transfer'
+import { ConfirmModal } from '../confirm-modal'
 import { SettingsChangelogPanel } from './settings-changelog-panel'
 
 type SettingsView = 'runtime' | 'assistant-context' | 'sharepoint' | 'ai-providers' | 'worker'
@@ -118,12 +125,15 @@ export function SettingsPanel({
   onWorkerChange: <K extends keyof WorkerSettings>(_key: K, _value: WorkerSettings[K]) => void
   showRightPanel: boolean
   provider: string
-  requestedView?: 'runtime' | 'assistant-context' | 'ai-providers' | null
+  requestedView?: 'runtime' | 'assistant-context' | 'ai-providers' | 'worker' | null
   role: string
   siteFilter: string
   siteSummaries: AppModel['siteSummaries']
 }) {
   const [settingsView, setSettingsView] = useState<SettingsView>('runtime')
+  const [importError, setImportError] = useState<string | null>(null)
+  const [pendingImport, setPendingImport] = useState<SettingsTransferPayload | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!requestedView) {
@@ -132,6 +142,73 @@ export function SettingsPanel({
 
     setSettingsView(requestedView)
   }, [requestedView])
+
+  const handleExportConfiguration = () => {
+    const payload = buildSettingsTransferPayload({
+      role: role as UserRole,
+      provider: provider as ProviderId,
+      siteFilter,
+      conversationContextEnabled,
+      bishopSettings,
+      providerSecrets,
+      entraSettings,
+      workerSettings,
+    })
+
+    downloadTextFile(
+      `deepvault-settings-${new Date().toISOString().slice(0, 10)}.json`,
+      JSON.stringify(payload, null, 2),
+      'application/json',
+    )
+  }
+
+  const applyImportedConfiguration = (payload: SettingsTransferPayload) => {
+    onRoleChange(payload.runtime.role)
+    onProviderChange(payload.runtime.provider)
+    onSiteFilterChange(payload.runtime.siteFilter || 'all')
+    onConversationContextEnabledChange(payload.runtime.conversationContextEnabled)
+
+    onBishopChange('sourceLimit', payload.bishopSettings.sourceLimit)
+    onBishopChange('candidateLimit', payload.bishopSettings.candidateLimit)
+    onBishopChange('historyTurnLimit', payload.bishopSettings.historyTurnLimit)
+
+    onKeyChange('openai', payload.providerSecrets.openaiApiKey)
+    onKeyChange('gemini', payload.providerSecrets.geminiApiKey)
+    onKeyChange('anthropic', payload.providerSecrets.anthropicApiKey)
+
+    onEntraChange('appId', payload.entraSettings.appId)
+    onEntraChange('tenantId', payload.entraSettings.tenantId)
+    onEntraChange('secretValue', payload.entraSettings.secretValue)
+    onEntraChange('sites', payload.entraSettings.sites)
+    onEntraChange('siteNames', payload.entraSettings.siteNames)
+    onEntraChange('dataMode', payload.entraSettings.dataMode)
+
+    onWorkerChange('workerMode', payload.workerSettings.workerMode)
+    onWorkerChange('workerUrl', payload.workerSettings.workerUrl)
+    onWorkerChange('workerToken', payload.workerSettings.workerToken)
+    onWorkerChange('workerTimeoutSeconds', payload.workerSettings.workerTimeoutSeconds)
+    onWorkerChange('workerFallbackMode', payload.workerSettings.workerFallbackMode)
+    onWorkerChange('analyzeLimit', payload.workerSettings.analyzeLimit)
+  }
+
+  const handleImportFile = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) {
+      return
+    }
+
+    try {
+      const parsed = JSON.parse(await readFileAsText(file)) as unknown
+      const payload = parseSettingsTransferPayload(parsed)
+      setImportError(null)
+      setPendingImport(payload)
+    } catch (error) {
+      setPendingImport(null)
+      setImportError(error instanceof Error ? error.message : 'Configuration import failed.')
+    }
+  }
 
   return (
     <section className={`settings-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
@@ -504,6 +581,39 @@ export function SettingsPanel({
                   </button>
                   <span className="settings-actions-filler" aria-hidden="true" />
                 </div>
+
+                <div className="settings-transfer-card">
+                  <div className="settings-transfer-copy">
+                    <h4>Configuration transfer</h4>
+                    <p>Export your local configuration to a JSON file or import a previously exported file to overwrite the current browser settings.</p>
+                    <p className="settings-transfer-warning">
+                      Warning: exported configuration files contain secrets in plaintext and must be handled as sensitive files.
+                    </p>
+                    {importError ? (
+                      <p className="settings-transfer-error" role="alert">
+                        {importError}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="settings-actions settings-transfer-actions">
+                    <button type="button" className="secondary-button" onClick={handleExportConfiguration}>
+                      Export configuration
+                    </button>
+                    <button type="button" className="secondary-button" onClick={() => fileInputRef.current?.click()}>
+                      Import configuration
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      hidden
+                      type="file"
+                      accept="application/json,.json"
+                      aria-label="Import configuration file"
+                      onChange={(event) => void handleImportFile(event)}
+                    />
+                    <span className="settings-actions-filler" aria-hidden="true" />
+                  </div>
+                </div>
               </section>
             ) : null}
           </div>
@@ -511,7 +621,28 @@ export function SettingsPanel({
       </div>
 
       {showRightPanel ? <SettingsChangelogPanel /> : null}
+      {pendingImport ? (
+        <ConfirmModal
+          title="Import configuration"
+          description="This will overwrite the current browser-stored settings, API keys, Entra values, worker settings, and runtime preferences."
+          warning="The imported file is applied only after confirmation. Existing local values will be replaced."
+          confirmLabel="Import and overwrite"
+          onConfirm={() => {
+            applyImportedConfiguration(pendingImport)
+            setPendingImport(null)
+            setImportError(null)
+          }}
+          onCancel={() => setPendingImport(null)}
+        />
+      ) : null}
 
     </section>
   )
 }
+  const readFileAsText = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
+      reader.onerror = () => reject(new Error('Configuration import failed: could not read the selected file.'))
+      reader.readAsText(file)
+    })

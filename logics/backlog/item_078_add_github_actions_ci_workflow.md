@@ -2,15 +2,24 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 97%
-> Confidence: 96%
-> Progress: 0%
+> Status: In Progress
+> Understanding: 100%
+> Confidence: 97%
+> Progress: 85%
 > Complexity: Low
 > Theme: Operational / Quality
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
 
 # Problem
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|add-github-actions-ci-workflow|req-019-post-v1-3-consolidation-enrichme|mermaid|ac1-a-github-actions-workflow-is
+flowchart LR
+    Manual[Manual-only validation] --> Workflow[GitHub Actions CI]
+    Workflow --> Split[frontend + worker + contracts jobs]
+    Split --> Guard[Hermetic evaluate and anti-zombie guard]
+```
 
 - No automated CI workflow exists. Only local scripts (`npm run check`, `npm run ci:local`) are available.
 - PRs are not protected by an automatic gate — regressions can land without anyone having manually run the check.
@@ -43,3 +52,13 @@
 - `rtk npm run check` passes locally to confirm parity before pushing.
 - GitHub Actions run shows separate `frontend`, `worker`, and `contracts` jobs.
 - The `contracts` job proves `/api/health` and `/api/config/mode` respond successfully in CI.
+
+# Delivery update
+
+- `.github/workflows/ci.yml` now defines separate `frontend`, `worker`, and `contracts` jobs on push/PR to `main`, plus an optional manual `e2e` job for Playwright.
+- The frontend job now runs `typecheck`, the anti-zombie migration guard, a CI-safe `check` path with E2E/evaluate skipped inside `scripts/check.mjs`, an explicit build, and a hermetic strict `evaluate` run with its output redirected outside the repo tree.
+- Hermetic support now includes `scripts/evaluate.ts --output ...`, so CI can run strict mock evaluation without writing snapshots into `data/eval/`.
+- The worker smoke contract now lives in `scripts/worker-contract-smoke.py`, which starts the FastAPI worker and verifies `/api/health` plus `/api/config/mode` over real HTTP instead of only in-process tests.
+- The anti-zombie guard now lives in `scripts/ci-anti-zombie-check.mjs` and fails when browser runtime code reintroduces banned imports or legacy `/api/worker/` paths.
+- Local validation is complete with `rtk npm run ci:anti-zombie`, `rtk npm run typecheck`, `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`, `rtk python3 -m pytest worker/tests -q`, and `rtk python3 scripts/worker-contract-smoke.py`.
+- Final closure of this backlog item still depends on the first clean GitHub Actions run, which could not be observed from the local environment.

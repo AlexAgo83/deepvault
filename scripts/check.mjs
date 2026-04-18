@@ -3,7 +3,17 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-const steps = ['lint', 'typecheck', 'test', 'build', 'e2e', 'evaluate']
+const allSteps = ['lint', 'typecheck', 'test', 'build', 'e2e', 'evaluate']
+const skippedSteps = new Set()
+
+if (process.env.DEEPVAULT_CHECK_SKIP_E2E === '1') {
+  skippedSteps.add('e2e')
+}
+if (process.env.DEEPVAULT_CHECK_SKIP_EVALUATE === '1') {
+  skippedSteps.add('evaluate')
+}
+
+const steps = allSteps.filter((step) => !skippedSteps.has(step))
 
 // Resolve Playwright browsers path when HOME is overridden (e.g. sandbox environments).
 // USER is typically not overridden, so /Users/$USER/Library/Caches reaches the real home.

@@ -2,15 +2,24 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 94%
-> Progress: 0%
+> Status: Done
+> Understanding: 100%
+> Confidence: 97%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Product / Quality
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
 
 # Problem
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|integrate-analyze-enrichment-fields-into|req-019-post-v1-3-consolidation-enrichme|mermaid|ac1-documents-with-a-high-confidence
+flowchart LR
+    Analyze[Published analyze enrichment exists] --> Gap[Static scoring ignores enriched signals]
+    Gap --> Decision[Prefer fresh analysis fields in worker scoring]
+    Decision --> Outcome[Higher-confidence analyzed docs rank above plain equivalents]
+```
 
 - The `analyze` pipeline enriches documents with AI summaries, extracted keywords, and confidence scores, but Bishop retrieval scoring still uses static weights (title=8, summary=6, content=4, tags=5, path=2) with no awareness of enrichment state or confidence level.
 - The enrichment exists but does not close the loop on answer quality — documents that have been deeply analyzed are not ranked higher than unenriched ones.
@@ -39,3 +48,11 @@
 - `python -m pytest worker/tests/test_scoring.py`
 - `rtk npm run evaluate`
 - `rtk npm run check`
+
+# Delivery update
+
+- `worker/scoring.py` now prefers fresh `analysis.summary`, `analysis.keywords`, and `analysis.sections` when the analysis state is `analyzed` and the confidence clears the scoring threshold.
+- The confidence boost is explicitly bounded and documented inline so enriched matches outrank equivalent plain matches without overwhelming stronger raw evidence.
+- Scoring now normalizes both the shipped analyze confidence scale (`55..95`) and older ratio-style payloads (`0..1`), closing the contract gap between analyze output and retrieval weighting.
+- `worker/tests/test_scoring.py` now covers unenriched, high-confidence, low-confidence, and ratio-compatibility cases.
+- Validation completed: `rtk python3 -m pytest worker/tests/test_scoring.py -q`, `rtk npm run typecheck`, and `rtk npm run evaluate`.

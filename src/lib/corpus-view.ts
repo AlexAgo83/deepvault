@@ -1,11 +1,10 @@
-import { getDocumentScore, normalizeText, tokenize } from './corpus-ranking'
+import { getDocumentScore, tokenize } from './corpus-ranking'
 import type {
   Corpus,
   CorpusDocument,
   CorpusSection,
   ProviderRecord,
   SiteRecord,
-  SourceRecord,
   SyncRun,
   UserRole,
 } from './runtime-types'

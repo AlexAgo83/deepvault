@@ -29,6 +29,7 @@
 | [adr_029_bound_post_ingest_analysis_contract_and_runtime_output](architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md) | Bound post-ingest analysis contract and runtime output | Accepted |  | architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md |
 | [adr_030_artifacts_surface_information_model_and_processed_record](architecture/adr_030_artifacts_surface_information_model_and_processed_record.md) | Artifacts surface information model and processed record | Accepted |  | architecture/adr_030_artifacts_surface_information_model_and_processed_record.md |
 | [adr_031_local_ai_usage_event_store_and_sectioned_ai_view](architecture/adr_031_local_ai_usage_event_store_and_sectioned_ai_view.md) | Local AI usage event store and sectioned AI View | Accepted |  | architecture/adr_031_local_ai_usage_event_store_and_sectioned_ai_view.md |
+| [adr_032_integrate_analyze_enrichment_fields_into_bishop_retrieval_scoring](architecture/adr_032_integrate_analyze_enrichment_fields_into_bishop_retrieval_scoring.md) | Integrate analyze enrichment fields into Bishop retrieval scoring | Accepted |  | architecture/adr_032_integrate_analyze_enrichment_fields_into_bishop_retrieval_scoring.md |
 
 ## Product briefs
 
@@ -43,9 +44,10 @@
 | [prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar](product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md) | Add a discrete light and dark theme switch in the sidebar | Proposed |  | product/prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar.md |
 | [prod_008_make_ingestion_and_live_export_operable_across_app_and_cli](product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md) | Make ingestion and live export operable across app and CLI | Proposed |  | product/prod_008_make_ingestion_and_live_export_operable_across_app_and_cli.md |
 | [prod_009_enable_bishop_generated_document_artifacts](product/prod_009_enable_bishop_generated_document_artifacts.md) | Enable Bishop generated document artifacts | Active |  | product/prod_009_enable_bishop_generated_document_artifacts.md |
-| [prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment](product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Add a post-ingest AI analysis command for corpus enrichment | Proposed |  | product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
+| [prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment](product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Add a post-ingest AI analysis command for corpus enrichment | Validated | 100% | product/prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
 | [prod_011_add_an_artifacts_visualization_surface_for_generated_outputs](product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md) | Add an Artifacts visualization surface for generated outputs | Proposed |  | product/prod_011_add_an_artifacts_visualization_surface_for_generated_outputs.md |
 | [prod_012_add_ai_consumption_observability_and_sectioned_ai_view](product/prod_012_add_ai_consumption_observability_and_sectioned_ai_view.md) | Add AI consumption observability and a sectioned AI View | Proposed |  | product/prod_012_add_ai_consumption_observability_and_sectioned_ai_view.md |
+| [prod_013_make_application_configuration_exportable_and_importable](product/prod_013_make_application_configuration_exportable_and_importable.md) | Make application configuration exportable and importable | Validated | 100% | product/prod_013_make_application_configuration_exportable_and_importable.md |
 
 ## Requests
 
@@ -67,6 +69,7 @@
 | [req_014_move_runtime_under_sync_status](request/req_014_move_runtime_under_sync_status.md) | Move runtime under Sync status | Done |  | request/req_014_move_runtime_under_sync_status.md |
 | [req_015_architecture_robustness_and_product_improvements](request/req_015_architecture_robustness_and_product_improvements.md) | Architecture, robustesse et évolution produit | Done |  | request/req_015_architecture_robustness_and_product_improvements.md |
 | [req_016_pwa_install_and_offline_first](request/req_016_pwa_install_and_offline_first.md) | PWA : installation, mise à jour et fonctionnement hors-ligne | Done |  | request/req_016_pwa_install_and_offline_first.md |
+| [req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability](request/req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability.md) | Post-v1.3 consolidation: close the enrichment loop, add automated CI, and make configuration portable | In progress |  | request/req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability.md |
 
 ## Backlog
 
@@ -128,9 +131,12 @@
 | [item_057_pwa_update_banner](backlog/item_057_pwa_update_banner.md) | PWA: update banner | Done | 100% | backlog/item_057_pwa_update_banner.md |
 | [item_058_pwa_offline_cache_and_mock_fallback](backlog/item_058_pwa_offline_cache_and_mock_fallback.md) | PWA: offline cache and mock corpus fallback | Done | 100% | backlog/item_058_pwa_offline_cache_and_mock_fallback.md |
 | [item_068_deliver_bishop_first_wave_generated_artifact_contract](backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md) | Deliver Bishop first-wave generated artifact contract | Done | 100% | backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md |
-| [item_069_ship_bounded_post_ingest_analysis_command](backlog/item_069_ship_bounded_post_ingest_analysis_command.md) | Ship bounded post-ingest analysis command | In Progress | 82% | backlog/item_069_ship_bounded_post_ingest_analysis_command.md |
+| [item_069_ship_bounded_post_ingest_analysis_command](backlog/item_069_ship_bounded_post_ingest_analysis_command.md) | Ship bounded post-ingest analysis command | Done | 100% | backlog/item_069_ship_bounded_post_ingest_analysis_command.md |
 | [item_070_ship_artifacts_inspection_surface](backlog/item_070_ship_artifacts_inspection_surface.md) | Ship Artifacts inspection surface | Done | 100% | backlog/item_070_ship_artifacts_inspection_surface.md |
 | [item_071_ship_ai_usage_store_and_sectioned_ai_view](backlog/item_071_ship_ai_usage_store_and_sectioned_ai_view.md) | Ship AI usage store and sectioned AI View | Done | 100% | backlog/item_071_ship_ai_usage_store_and_sectioned_ai_view.md |
+| [item_077_integrate_analyze_enrichment_into_bishop_scoring](backlog/item_077_integrate_analyze_enrichment_into_bishop_scoring.md) | Integrate analyze enrichment fields into Bishop retrieval scoring | Done | 100% | backlog/item_077_integrate_analyze_enrichment_into_bishop_scoring.md |
+| [item_078_add_github_actions_ci_workflow](backlog/item_078_add_github_actions_ci_workflow.md) | Add GitHub Actions CI workflow | In Progress | 85% | backlog/item_078_add_github_actions_ci_workflow.md |
+| [item_079_add_configuration_export_and_import_to_settings](backlog/item_079_add_configuration_export_and_import_to_settings.md) | Add configuration export and import to the Settings panel | Done | 100% | backlog/item_079_add_configuration_export_and_import_to_settings.md |
 
 ## Tasks
 
@@ -155,9 +161,10 @@
 | [task_022_pwa_progressive_web_app_delivery](tasks/task_022_pwa_progressive_web_app_delivery.md) | PWA progressive web app delivery | Done | 100% | tasks/task_022_pwa_progressive_web_app_delivery.md |
 | [task_025_non_v2_delivery_orchestration_and_validation_hardening](tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md) | Wave map | Done | 100% | tasks/task_025_non_v2_delivery_orchestration_and_validation_hardening.md |
 | [task_036_orchestrate_bishop_generated_document_artifacts](tasks/task_036_orchestrate_bishop_generated_document_artifacts.md) | Orchestrate Bishop generated document artifacts | Done | 100% | tasks/task_036_orchestrate_bishop_generated_document_artifacts.md |
-| [task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment](tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Orchestrate post-ingest AI analysis command for corpus enrichment | In Progress | 82% | tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
+| [task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment](tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md) | Orchestrate post-ingest AI analysis command for corpus enrichment | Done | 100% | tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md |
 | [task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs](tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md) | Orchestrate Artifacts visualization surface for generated outputs | Done | 100% | tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md |
 | [task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view](tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md) | Orchestrate AI consumption observability and a sectioned AI View | Done | 100% | tasks/task_039_orchestrate_ai_consumption_observability_and_sectioned_ai_view.md |
+| [task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability](tasks/task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability.md) | Orchestrate post-v1.3 consolidation: enrichment loop, CI, and configuration portability | In Progress | 91% | tasks/task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability.md |
 
 ## Specs
 
