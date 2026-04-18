@@ -7,6 +7,7 @@ from worker.app.config import get_settings
 from worker.app.infra.runtime_store import get_runtime_store
 from worker.app.services.bishop_service import BishopService
 from worker.app.services.corpus_service import CorpusService
+from worker.app.services.live_export_service import LiveExportService
 from worker.app.infra.runtime_store import RuntimeStore
 from worker.cli.commands import jobs
 from worker.app.services.system_service import SystemService
@@ -32,11 +33,13 @@ def build_jobs_service() -> JobsService:
     runtime_store = RuntimeStore(settings.runtime_data_dir)
     corpus_service = CorpusService(settings=settings)
     bishop_service = BishopService(settings=settings, corpus_service=corpus_service)
+    live_export_service = LiveExportService(settings=settings, runtime_store=runtime_store, corpus_service=corpus_service)
     return JobsService(
         settings=settings,
         runtime_store=runtime_store,
         corpus_service=corpus_service,
         bishop_service=bishop_service,
+        live_export_service=live_export_service,
     )
 
 
@@ -55,6 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
     jobs_subparsers = jobs_parser.add_subparsers(dest="jobs_command", required=True)
     jobs_run_parser = jobs_subparsers.add_parser("run")
     jobs_run_parser.add_argument("job_type", choices=["ingest", "analyze", "evaluate", "export-live"])
+    jobs_run_parser.add_argument("--resume", action="store_true")
     jobs_status_parser = jobs_subparsers.add_parser("status")
     jobs_status_parser.add_argument("job_id")
     corpus_parser = subparsers.add_parser("corpus")
@@ -97,7 +101,7 @@ def main() -> int:
             return 2
     elif args.command == "jobs":
         if args.jobs_command == "run":
-            payload = jobs.run(jobs_service, job_type=args.job_type)
+            payload = jobs.run(jobs_service, job_type=args.job_type, resume=getattr(args, "resume", False))
         elif args.jobs_command == "status":
             payload = jobs.status(jobs_service, job_id=args.job_id)
         else:

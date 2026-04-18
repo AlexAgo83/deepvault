@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
-import json
 import threading
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
@@ -14,6 +12,7 @@ from worker.app.infra.runtime_store import RuntimeStore
 from worker.app.infra.time import utc_now_iso
 from worker.app.services.bishop_service import BishopService
 from worker.app.services.corpus_service import CorpusService
+from worker.app.services.live_export_service import LiveExportService
 
 
 SUPPORTED_JOB_TYPES = {"ingest", "analyze", "evaluate", "export-live"}
@@ -66,11 +65,13 @@ class JobsService:
         runtime_store: RuntimeStore,
         corpus_service: CorpusService,
         bishop_service: BishopService,
+        live_export_service: LiveExportService,
     ) -> None:
         self._settings = settings
         self._runtime_store = runtime_store
         self._corpus_service = corpus_service
         self._bishop_service = bishop_service
+        self._live_export_service = live_export_service
         self._lock = threading.Lock()
         self._threads: Dict[str, threading.Thread] = {}
 
@@ -611,173 +612,15 @@ class JobsService:
 
     def _run_export_live_job(self, job_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         env = options.get("env", {}) if isinstance(options, dict) else {}
-        mode = "live" if env.get("DEEPVAULT_DATA_MODE") == "live" else "mock"
-        input_path = env.get("DEEPVAULT_CORPUS_PATH")
-
-        self._append_event(
-            job_id,
-            "progress",
-            {
-                "step": "resolve-source",
-                "pct": 15,
-                "message": f"Resolving {mode} export source...",
-            },
-        )
-        source_path, source_kind = self._resolve_export_live_source(mode=mode, input_path=input_path)
-        corpus = json.loads(source_path.read_text(encoding="utf-8"))
-
-        self._append_event(
-            job_id,
-            "progress",
-            {
-                "step": "publish-live-corpus",
-                "pct": 55,
-                "message": f"Publishing live corpus from {source_kind}...",
-            },
-        )
-        live_corpus_path = self._runtime_store.live_corpus_path()
-        self._runtime_store.write_json_artifact(live_corpus_path, corpus)
-
-        synced_at = utc_now_iso()
-        checkpoint_path = self._runtime_store.live_export_checkpoint_path()
-        checkpoint_payload = {**corpus, "syncedAt": synced_at}
-        self._append_event(
-            job_id,
-            "progress",
-            {
-                "step": "write-checkpoint",
-                "pct": 80,
-                "message": "Writing live export checkpoint...",
-            },
-        )
-        self._runtime_store.write_json_artifact(checkpoint_path, checkpoint_payload)
-
-        self._append_event(
-            job_id,
-            "progress",
-            {
-                "step": "write-sync-state",
-                "pct": 95,
-                "message": "Refreshing live sync snapshot...",
-            },
-        )
-        sync_payload = self._build_sync_state_payload(corpus=corpus, mode="live", corpus_path=live_corpus_path)
-        sync_state_path = self._runtime_store.write_sync_state(sync_payload, mode="live")
-
-        documents = corpus.get("documents", []) if isinstance(corpus.get("documents"), list) else []
-        sites = corpus.get("sites", []) if isinstance(corpus.get("sites"), list) else []
-        analyzed_count = sum(
-            1
-            for document in documents
-            if isinstance(document, dict)
-            and isinstance(document.get("analysis"), dict)
-            and document["analysis"].get("status") == "analyzed"
-        )
-
-        return {
-            "summary": (
-                f"Export-live completed: published {len(documents)} documents to {live_corpus_path.name} "
-                f"from {source_kind}."
+        return self._live_export_service.run_export(
+            env=env,
+            report_progress=lambda step, pct, message: self._append_event(
+                job_id,
+                "progress",
+                {"step": step, "pct": pct, "message": message},
             ),
-            "mode": mode,
-            "sourceKind": source_kind,
-            "sourcePath": str(source_path),
-            "outputPath": str(live_corpus_path),
-            "checkpointPath": str(checkpoint_path),
-            "syncStatePath": str(sync_state_path),
-            "documentCount": len(documents),
-            "siteCount": len(sites),
-            "analyzedCount": analyzed_count,
-        }
-
-    def _resolve_export_live_source(self, *, mode: str, input_path: Optional[str]) -> tuple[Path, str]:
-        if input_path:
-            path = self._corpus_service.resolve_job_corpus_path(mode=mode, input_path=input_path)
-            if not path.exists():
-                raise FileNotFoundError(f"Export-live source not found at {path}.")
-            return path, "explicit-input"
-
-        analyzed_corpus_path = self._runtime_store.analyzed_corpus_path()
-        if analyzed_corpus_path.exists():
-            return analyzed_corpus_path, "analyzed-runtime"
-
-        checkpoint_path = self._runtime_store.live_export_checkpoint_path()
-        if checkpoint_path.exists():
-            return checkpoint_path, "checkpoint"
-
-        mock_corpus_path = self._corpus_service.resolve_job_corpus_path(mode="mock")
-        if mock_corpus_path.exists():
-            return mock_corpus_path, "mock-baseline"
-
-        raise FileNotFoundError("No export-live source was found. Run analyze first or provide DEEPVAULT_CORPUS_PATH.")
-
-    def _build_sync_state_payload(self, *, corpus: Dict[str, Any], mode: str, corpus_path: Path) -> Dict[str, Any]:
-        role = str(corpus.get("defaultUserRole") or "analyst")
-        documents = corpus.get("documents", []) if isinstance(corpus.get("documents"), list) else []
-        permitted_documents = [
-            document
-            for document in documents
-            if isinstance(document, dict)
-            and (role in document.get("access", []) or "all" in document.get("access", []))
-        ]
-        sync_runs = corpus.get("syncRuns", [])
-        last_run = None
-        if isinstance(sync_runs, list) and sync_runs:
-            last_run = max(sync_runs, key=lambda run: str(run.get("finishedAt", "")))
-
-        site_summaries = []
-        sites = corpus.get("sites", []) if isinstance(corpus.get("sites"), list) else []
-        for site in sites:
-            if not isinstance(site, dict):
-                continue
-            site_documents = [document for document in documents if document.get("siteId") == site.get("id")]
-            permitted_site_documents = [
-                document
-                for document in site_documents
-                if role in document.get("access", []) or "all" in document.get("access", [])
-            ]
-            latest_sync = None
-            if isinstance(sync_runs, list) and sync_runs:
-                matching_runs = [run for run in sync_runs if site.get("id") in run.get("siteIds", [])]
-                if matching_runs:
-                    latest_sync = max(matching_runs, key=lambda run: str(run.get("finishedAt", "")))
-
-            site_summaries.append(
-                {
-                    **site,
-                    "documentCount": len(site_documents),
-                    "permittedDocumentCount": len(permitted_site_documents),
-                    "chunkCount": len(permitted_site_documents) * 6,
-                    "lastRefresh": latest_sync.get("finishedAt") if latest_sync else None,
-                    "lastRefreshStatus": latest_sync.get("status") if latest_sync else "pending",
-                }
-            )
-
-        sync_overview = {
-            "siteSummaries": site_summaries,
-            "documentCount": len(permitted_documents),
-            "chunkCount": len(permitted_documents) * 6,
-            "syncedSites": len([site for site in site_summaries if site.get("status") == "synced"]),
-            "restrictedSites": len([site for site in site_summaries if site.get("status") == "restricted"]),
-            "providerReadiness": corpus.get("providers", []),
-            "lastRun": last_run,
-            "refreshPolicy": "Incremental daily refresh with manual refresh on demand",
-        }
-        summary = {
-            **sync_overview,
-            "sourcesIndexed": len(documents),
-            "visibleSources": len(permitted_documents),
-            "deniedSources": len(documents) - len(permitted_documents),
-        }
-
-        return {
-            "generatedAt": utc_now_iso(),
-            "mode": mode,
-            "corpusPath": str(corpus_path),
-            "summary": summary,
-            "syncOverview": sync_overview,
-            "sites": site_summaries,
-        }
+            check_cancelled=lambda: self._raise_if_cancelled(job_id),
+        )
 
     def _build_content_hash(self, document: Dict[str, Any]) -> str:
         payload = "\n".join(
@@ -894,6 +737,11 @@ class JobsService:
             return
         job.update(patch)
         self._runtime_store.write_job_metadata(job_id, job)
+
+    def _raise_if_cancelled(self, job_id: str) -> None:
+        current_job = self._runtime_store.read_job_metadata(job_id) or {}
+        if current_job.get("status") == "cancelled" or current_job.get("cancelRequested") is True:
+            raise JobCancelledError()
 
     def _append_event(self, job_id: str, event: str, data: Dict[str, Any]) -> None:
         self._runtime_store.append_job_event(

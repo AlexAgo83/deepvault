@@ -10,6 +10,7 @@ from worker.app.infra.runtime_store import RuntimeStore
 from worker.app.services.bishop_service import BishopService
 from worker.app.services.corpus_service import CorpusService
 from worker.app.services.jobs_service import JobsService
+from worker.app.services.live_export_service import LiveExportService
 from worker.main import app
 
 
@@ -21,11 +22,13 @@ def build_jobs_service(tmp_path) -> JobsService:
     runtime_store = RuntimeStore(settings.runtime_data_dir)
     corpus_service = CorpusService(settings=settings)
     bishop_service = BishopService(settings=settings, corpus_service=corpus_service)
+    live_export_service = LiveExportService(settings=settings, runtime_store=runtime_store, corpus_service=corpus_service)
     return JobsService(
         settings=settings,
         runtime_store=runtime_store,
         corpus_service=corpus_service,
         bishop_service=bishop_service,
+        live_export_service=live_export_service,
     )
 
 
@@ -124,24 +127,27 @@ def test_jobs_service_runs_export_live_and_writes_live_artifacts(tmp_path) -> No
     assert (tmp_path / "sync-state.live.json").exists()
 
 
-def test_jobs_service_export_live_prefers_analyzed_runtime_artifact(tmp_path) -> None:
+def test_jobs_service_export_live_accepts_explicit_input_override(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
-    analyzed_corpus_path = tmp_path / "analyzed-corpus.json"
-    analyzed_corpus = service._corpus_service.load_corpus_payload()
-    analyzed_corpus["documents"][0]["analysis"] = {
+    explicit_corpus_path = tmp_path / "explicit-live-corpus.json"
+    explicit_corpus = service._corpus_service.load_corpus_payload()
+    explicit_corpus["documents"][0]["analysis"] = {
         "status": "analyzed",
         "summary": "Worker-generated analysis.",
     }
-    analyzed_corpus_path.write_text(json.dumps(analyzed_corpus), encoding="utf-8")
+    explicit_corpus_path.write_text(json.dumps(explicit_corpus), encoding="utf-8")
 
-    started = service.start_job(job_type="export-live", options={"env": {"DEEPVAULT_DATA_MODE": "live"}})
+    started = service.start_job(
+        job_type="export-live",
+        options={"env": {"DEEPVAULT_DATA_MODE": "live", "DEEPVAULT_CORPUS_PATH": str(explicit_corpus_path)}},
+    )
     completed = wait_for_terminal_status(service, started["jobId"])
 
     published_corpus = (tmp_path.parent.parent / "public" / "live-corpus.json").read_text(encoding="utf-8")
     checkpoint = (tmp_path / "live-export-checkpoint.json").read_text(encoding="utf-8")
 
     assert completed["status"] == "succeeded"
-    assert completed["result"]["sourceKind"] == "analyzed-runtime"
+    assert completed["result"]["sourceKind"] == "explicit-input"
     assert '"status": "analyzed"' in published_corpus
     assert '"syncedAt":' in checkpoint
 
