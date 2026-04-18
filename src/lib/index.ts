@@ -1,5 +1,3 @@
-export { buildBishopPrompt, groundQuestion as bishopGroundQuestion } from './bishop'
-export type { BishopOrchestrationOptions, BishopOrchestrationResult, BishopPromptContext } from './bishop'
 export * from './ai-usage'
 export * from './corpus-mode'
 export * from './deepvault'

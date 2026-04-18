@@ -10,6 +10,6 @@ describe('barrel exports', () => {
     expect(hooks.useAppModel).toBeTypeOf('function')
     expect(hooks.useBishopConversation).toBeTypeOf('function')
     expect(lib.getDocumentScore).toBeTypeOf('function')
-    expect(lib.bishopGroundQuestion).toBeTypeOf('function')
+    expect('bishopGroundQuestion' in lib).toBe(false)
   })
 })
