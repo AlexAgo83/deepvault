@@ -29,6 +29,12 @@ class RuntimeStore:
             return self.runtime_dir / "sync-state.live.json"
         return self.runtime_dir / "sync-state.json"
 
+    def analyzed_corpus_path(self) -> Path:
+        return self.runtime_dir / "analyzed-corpus.json"
+
+    def analyze_report_path(self) -> Path:
+        return self.runtime_dir / "analyze-report.json"
+
     def job_metadata_path(self, job_id: str) -> Path:
         return self.jobs_dir() / f"{job_id}.json"
 
@@ -65,6 +71,11 @@ class RuntimeStore:
     def write_sync_state(self, payload: Dict[str, Any], mode: str = "mock") -> Path:
         self.ensure_runtime_dirs()
         path = self.sync_state_path(mode)
+        path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
+        return path
+
+    def write_json_artifact(self, path: Path, payload: Dict[str, Any]) -> Path:
+        self.ensure_runtime_dirs()
         path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
         return path
 

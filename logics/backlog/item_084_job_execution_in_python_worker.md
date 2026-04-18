@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 97%
-> Progress: 68%
+> Progress: 80%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -58,9 +58,10 @@
 
 - Wave 5 has started with a first worker-native job slice: the FastAPI worker now exposes `POST /api/jobs`, `GET /api/jobs/{id}`, and `GET /api/jobs/{id}/events`, and persists canonical metadata plus append-only event logs under `data/runtime/jobs/`.
 - The first-party CLI now calls the same `JobsService` as the HTTP routes through `worker jobs run ...` and `worker jobs status <id>`, with `run` executing synchronously so the process does not exit before the worker-owned lifecycle is persisted.
-- The worker-native job implementations now cover `evaluate` and `ingest`. `ingest` builds the sync overview from the selected corpus source and writes `data/runtime/sync-state.json` or `data/runtime/sync-state.live.json` directly from the Python worker.
+- The worker-native job implementations now cover `evaluate`, `ingest`, and `analyze`. `ingest` builds the sync overview from the selected corpus source and writes `data/runtime/sync-state.json` or `data/runtime/sync-state.live.json` directly from the Python worker.
+- `analyze` now writes `data/runtime/analyzed-corpus.json` and `data/runtime/analyze-report.json` from the Python worker, with analysis reuse, bounded run budget, exclusion/stale states, and local heuristic fallback when a provider is requested but not yet wired on the worker.
 - The browser Sync runtime now uses the worker-native jobs endpoints (`/api/jobs`, `/api/jobs/{id}/cancel`, `/api/jobs/{id}/events`) instead of the legacy `/api/worker/jobs` contract, with a compatibility adapter preserving the existing UI status and console model during the migration.
-- The main remaining scope is now the actual worker-side porting of `analyze` and `export-live`.
+- The main remaining scope is now the worker-side porting of `export-live`.
 - Validation for this first slice:
   - `rtk python3 -m pytest worker/tests/test_jobs.py -v`
   - `rtk python3 -m pytest worker/tests/test_app_routes.py worker/tests/test_bishop.py worker/tests/test_jobs.py -v`
