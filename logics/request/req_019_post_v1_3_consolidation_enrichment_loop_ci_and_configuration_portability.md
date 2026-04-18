@@ -1,10 +1,10 @@
 ## req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability - Post-v1.3 consolidation: close the enrichment loop, add automated CI, and make configuration portable
 
-> From version: 1.3.0
+> From version: 1.4.0
 > Schema version: 1.0
-> Status: In progress
-> Understanding: 99%
-> Confidence: 97%
+> Status: Done
+> Understanding: 100%
+> Confidence: 99%
 > Complexity: High
 > Theme: Quality / Operational / Product
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -80,9 +80,9 @@ flowchart TD
 - Wave 1 is shipped: Bishop retrieval scoring now consumes fresh analyze enrichment fields in `worker/scoring.py`, with bounded confidence boosting and static fallback for unenriched documents.
 - The delivery also closed a confidence-format mismatch: analyze emits confidence on a `55..95` scale, so scoring now normalizes both that shipped scale and older `0..1` fixtures before applying trust thresholds.
 - Wave 2 implementation is now in place locally: GitHub Actions is split into `frontend`, `worker`, and `contracts` jobs, evaluate can run hermetically without writing to `data/eval/`, and a dedicated anti-zombie guard blocks the reintroduction of retired runtime paths.
-- The first live GitHub Actions pass remains pending because it cannot be observed from the local environment.
+- The first clean live GitHub Actions pass has now been observed on run `24609268556`, with `frontend`, `worker`, and `contracts` green on `main`.
 - Wave 3 is now shipped: Settings can export the full browser-stored configuration to JSON, import it back through schema validation and explicit overwrite confirmation, and display an inline plaintext-secrets warning before export.
-- Only the final Wave 2 GitHub-run confirmation remains open under `task_041`.
+- The three waves are now closed under `task_041`.
 
 # Companion docs
 
