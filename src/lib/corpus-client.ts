@@ -1,4 +1,4 @@
-import type { Corpus } from './deepvault'
+import type { Corpus } from './runtime-types'
 import { getMockCorpus } from './mock-corpus'
 
 export interface CorpusBundle {

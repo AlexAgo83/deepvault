@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import type { ChatMessage, SourceRecord } from '../lib/deepvault'
+import type { ChatMessage, SourceRecord } from '../lib/runtime-types'
 import { downloadTextFile } from '../lib/file-download'
 
 export type PillTone = 'neutral' | 'accent' | 'success' | 'danger'

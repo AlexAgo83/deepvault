@@ -159,5 +159,6 @@ stateDiagram-v2
 - `src/data/corpus.ts` is now removed and callers use the new corpus client / mock corpus split instead of the old mixed browser helper.
 - Wave 4 is now materially advanced: the worker exposes the Bishop proxy plus matching CLI command, the browser uses `/api/bishop/query` by default, and the worker performs server-side dispatch for OpenAI, Gemini, and Anthropic.
 - The active browser Bishop runtime now goes through a dedicated HTTP client instead of importing `src/lib/bishop.ts`, while keeping a thin local fallback path to avoid regressions during migration.
+- Browser-safe modules now consume a dedicated `runtime-types` boundary instead of importing shared types through `deepvault.ts`, reducing the browser dependency footprint on legacy business-logic modules.
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
 - The current checkpoint is the final browser bundle cleanup around `deepvault.ts`, `scoring.ts`, and removal of the legacy `src/lib/bishop.ts` module before Wave 4 can close.

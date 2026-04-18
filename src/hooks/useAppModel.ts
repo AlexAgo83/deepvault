@@ -5,11 +5,8 @@ import {
   buildSyncOverview,
   resolveSharePointFileUrl,
   summarizeCorpus,
-  type Corpus,
-  type CorpusDocument,
-  type ProviderId,
-  type UserRole,
 } from '../lib/deepvault'
+import type { Corpus, CorpusDocument, ProviderId, UserRole } from '../lib/runtime-types'
 import { useBishopConversation } from './useBishopConversation'
 import { useAIUsage } from './useAIUsage'
 import { useLiveCorpus } from './useLiveCorpus'

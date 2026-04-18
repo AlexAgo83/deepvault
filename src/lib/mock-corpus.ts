@@ -1,5 +1,5 @@
 import mockCorpus from '../../data/pilot-corpus.json'
-import type { Corpus } from './deepvault'
+import type { Corpus } from './runtime-types'
 
 export function getMockCorpus(): Corpus {
   return mockCorpus as Corpus

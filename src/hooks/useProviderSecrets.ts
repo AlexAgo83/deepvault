@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { ProviderId } from '../lib/deepvault'
+import type { ProviderId } from '../lib/runtime-types'
 
 export const PROVIDER_SECRETS_STORAGE_KEY = 'deepvault_provider_secrets'
 

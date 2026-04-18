@@ -1,4 +1,4 @@
-import type { EvaluationRow } from './deepvault'
+import type { EvaluationRow } from './runtime-types'
 
 export function buildEvaluationRows(): EvaluationRow[] {
   return [
