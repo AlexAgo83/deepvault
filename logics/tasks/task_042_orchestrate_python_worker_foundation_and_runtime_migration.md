@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 96%
 > Confidence: 95%
-> Progress: 35%
+> Progress: 41%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -156,4 +156,5 @@ stateDiagram-v2
 - Wave 1 implementation is in progress on top of `1.4.0`: the Python worker skeleton now exists with shared services, foundation routes, CLI parity for health/config mode, pinned dependencies, Dockerfile, tests, and Vite proxy wiring.
 - Wave 2 is now complete: the worker has a Python scoring module with enrichment-aware ranking, worker-side tests, a TypeScript spot-check on the static path, and a passing evaluate gate.
 - Wave 3 is in progress: the worker corpus service, `GET /api/corpus`, CLI corpus inspection, frontend `/api/corpus` fetch path, and `ETag` reuse are now landed.
-- The current checkpoint is closing the remaining browser bundle cleanup and running-app verification for the offline/reconnect experience before Wave 3 can be marked done.
+- `src/data/corpus.ts` is now removed and callers use the new corpus client / mock corpus split instead of the old mixed browser helper.
+- The current checkpoint is closing the remaining browser bundle cleanup around `deepvault.ts` / `scoring.ts` and running-app verification for the offline/reconnect experience before Wave 3 can be marked done.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getMockCorpusBundle } from '../src/data/corpus'
+import { getMockCorpusBundle } from '../src/lib/corpus-client'
 import {
   answerQuestion,
   buildEvaluationRows,

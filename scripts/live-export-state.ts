@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { isCorpusLike } from '../src/data/corpus'
+import { isCorpusLike } from '../src/lib/corpus-client'
 import { type CorpusLike, type DeepVaultExportConfig } from './deepvault-graph'
 
 export const liveCheckpointPath = resolve('data/runtime/live-export-checkpoint.json')

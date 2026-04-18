@@ -1,11 +1,11 @@
 ## item_082_corpus_endpoint_and_browser_bundle_cleanup - Corpus endpoint and browser bundle cleanup
 
-> From version: 1.3.0
+> From version: 1.4.0
 > Schema version: 1.0
 > Status: In Progress
-> Understanding: 98%
-> Confidence: 97%
-> Progress: 45%
+> Understanding: 99%
+> Confidence: 98%
+> Progress: 65%
 > Complexity: Medium
 > Theme: Architecture / Performance
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -61,5 +61,6 @@ flowchart LR
 
 - The worker now exposes `GET /api/corpus` with `ETag` support and local-mode loading from `data/mock/corpus.json`.
 - The worker CLI now supports `worker corpus show` and `worker corpus validate` over the same corpus service as the HTTP route.
-- The browser fetch path now targets `/api/corpus`, reuses `ETag` on repeat fetches, preserves the last successful fetch timestamp to make worker-offline states more explicit, and now runs through `src/lib/corpus-client.ts` instead of `src/data/corpus.ts` on the app path.
-- The remaining work in this item is the full browser bundle cleanup (`src/data/corpus.ts`, `src/lib/scoring.ts`, and `src/lib/deepvault.ts` removal from the production path) plus final offline UX verification in the running app.
+- The browser fetch path now targets `/api/corpus`, reuses `ETag` on repeat fetches, preserves the last successful fetch timestamp to make worker-offline states more explicit, and now runs through `src/lib/corpus-client.ts`.
+- `src/data/corpus.ts` has been removed and callers now import the corpus client or mock corpus directly.
+- The remaining work in this item is the deeper browser bundle cleanup around `src/lib/scoring.ts` and `src/lib/deepvault.ts`, plus final offline UX verification in the running app.

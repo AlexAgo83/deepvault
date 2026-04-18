@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { getMockCorpusBundle } from '../src/data/corpus'
+import { getMockCorpusBundle } from '../src/lib/corpus-client'
 import { useLiveCorpus } from '../src/hooks/useLiveCorpus'
 
 function LiveCorpusProbe({ mode }: { mode: string }) {
