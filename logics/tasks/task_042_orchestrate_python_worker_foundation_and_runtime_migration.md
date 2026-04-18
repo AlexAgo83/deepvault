@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 96%
 > Confidence: 95%
-> Progress: 26%
+> Progress: 35%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -71,8 +71,8 @@ stateDiagram-v2
 - [x] 3a. Wave 2 — implement functional parity with the TypeScript scoring contract rather than bit-perfect parity, and freeze the first-wave enrichment tuning at confidence threshold `0.7` with a bounded score bonus capped at `+15%`.
 - [x] 4. Wave 2 — add Python unit tests covering unenriched, high-confidence, and low-confidence ranking cases; confirm parity with the existing TypeScript contract before deletion.
 - [x] CHECKPOINT: leave Wave 2 commit-ready and run focused worker scoring tests plus the evaluate gate.
-- [ ] 5. Wave 3 — implement `GET /api/corpus` with `ETag` support and local-mode mock corpus serving from the worker.
-- [ ] 5a. Wave 3 — expose `worker corpus show` and `worker corpus validate` over the same corpus service used by `GET /api/corpus`.
+- [x] 5. Wave 3 — implement `GET /api/corpus` with `ETag` support and local-mode mock corpus serving from the worker.
+- [x] 5a. Wave 3 — expose `worker corpus show` and `worker corpus validate` over the same corpus service used by `GET /api/corpus`.
 - [ ] 6. Wave 3 — move the browser corpus loading path to the worker endpoint, remove browser references to `src/data/corpus.ts`, `src/lib/scoring.ts`, and `src/lib/deepvault.ts`, and ship the explicit offline error state.
 - [ ] CHECKPOINT: leave Wave 3 commit-ready and verify the browser fetch path plus bundle cleanup.
 - [ ] 7. Wave 4 — implement `POST /api/bishop/query` in `worker/bishop.py`, including grounding, prompt assembly, provider dispatch, and structured response parity with `adr_020`.
@@ -155,4 +155,5 @@ stateDiagram-v2
 
 - Wave 1 implementation is in progress on top of `1.4.0`: the Python worker skeleton now exists with shared services, foundation routes, CLI parity for health/config mode, pinned dependencies, Dockerfile, tests, and Vite proxy wiring.
 - Wave 2 is now complete: the worker has a Python scoring module with enrichment-aware ranking, worker-side tests, a TypeScript spot-check on the static path, and a passing evaluate gate.
-- The current checkpoint is closing the remaining direct bind/proxy validation for Wave 1, then moving to Wave 3 (`GET /api/corpus` and browser bundle cleanup).
+- Wave 3 is in progress: the worker corpus service, `GET /api/corpus`, CLI corpus inspection, frontend `/api/corpus` fetch path, and `ETag` reuse are now landed.
+- The current checkpoint is closing the remaining browser bundle cleanup and running-app verification for the offline/reconnect experience before Wave 3 can be marked done.

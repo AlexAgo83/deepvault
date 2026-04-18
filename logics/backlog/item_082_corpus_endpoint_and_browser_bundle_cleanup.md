@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 97%
-> Confidence: 96%
-> Progress: 0%
+> Status: In Progress
+> Understanding: 98%
+> Confidence: 97%
+> Progress: 45%
 > Complexity: Medium
 > Theme: Architecture / Performance
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -15,6 +15,15 @@
 - The corpus is currently loaded from a bundled TypeScript file (`src/data/corpus.ts`) or a static JSON file. This couples the corpus to the build and prevents shared access across users.
 - `src/lib/scoring.ts`, `src/lib/deepvault.ts`, and `src/data/corpus.ts` are browser-side modules that must be removed from the bundle now that the worker owns all business logic.
 - The browser has no standard mechanism to detect that the worker is unreachable and show an appropriate offline state.
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|corpus-endpoint-and-browser-bundle-clean|req-020-host-nexus-as-a-shared-multi-use|the-corpus-is-currently-loaded-from|ac1-get-api-corpus-returns-the
+flowchart LR
+    Problem[Bundled corpus path couples data to the build] --> Endpoint[Serve corpus from worker API]
+    Endpoint --> Client[Fetch corpus from browser via /api/corpus]
+    Client --> Cleanup[Remove legacy browser-side corpus paths]
+```
 
 # Scope
 
@@ -47,3 +56,10 @@
 - `rtk python3 -m worker.cli.main corpus validate`
 - `npm run build` → bundle contains no `corpus.ts`, `scoring.ts`, or `deepvault.ts` references (`grep -r "scoring" dist/`)
 - Browser devtools: network tab shows corpus fetched from `/api/corpus`; kill worker → offline state shown
+
+## Progress notes
+
+- The worker now exposes `GET /api/corpus` with `ETag` support and local-mode loading from `data/mock/corpus.json`.
+- The worker CLI now supports `worker corpus show` and `worker corpus validate` over the same corpus service as the HTTP route.
+- The browser fetch path now targets `/api/corpus`, reuses `ETag` on repeat fetches, and preserves the last successful fetch timestamp to make worker-offline states more explicit.
+- The remaining work in this item is the full browser bundle cleanup (`src/data/corpus.ts`, `src/lib/scoring.ts`, and `src/lib/deepvault.ts` removal from the production path) plus final offline UX verification in the running app.

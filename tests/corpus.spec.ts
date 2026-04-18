@@ -3,6 +3,7 @@ import { fetchLiveCorpus, getMockCorpusBundle, isCorpusLike, normalizeRequestedC
 
 describe('corpus helpers', () => {
   afterEach(() => {
+    window.localStorage.clear()
     vi.unstubAllGlobals()
     vi.restoreAllMocks()
   })
@@ -26,13 +27,15 @@ describe('corpus helpers', () => {
     const { corpus } = getMockCorpusBundle()
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
+      status: 200,
+      headers: { get: vi.fn().mockReturnValue('etag-1') },
       json: async () => corpus,
     })
 
     vi.stubGlobal('fetch', fetchMock)
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({ status: 'loaded', corpus })
-    expect(fetchMock).toHaveBeenCalledWith('/live-corpus.json', { cache: 'no-store' })
+    expect(fetchMock).toHaveBeenCalledWith('/api/corpus', { cache: 'no-store', headers: {} })
   })
 
   it('returns the fallback state when the live corpus is missing', async () => {
@@ -48,7 +51,7 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'missing',
-      detail: 'Live corpus missing, fallback to mock',
+      detail: 'Worker corpus missing, fallback to mock',
     })
   })
 
@@ -65,7 +68,7 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'missing',
-      detail: 'Live corpus missing, fallback to mock',
+      detail: 'Worker corpus missing, fallback to mock',
     })
   })
 
@@ -82,7 +85,7 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'error',
-      detail: 'Live corpus error: request failed with status 500',
+      detail: 'Worker corpus error: request failed with status 500',
     })
   })
 
@@ -93,7 +96,7 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'offline',
-      detail: 'Live corpus unavailable offline, fallback to mock',
+      detail: 'Worker corpus unavailable offline and no successful fetch is cached yet',
     })
   })
 
@@ -104,7 +107,7 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'error',
-      detail: 'Live corpus error: request failed before a response was returned',
+      detail: 'Worker corpus request failed before a response was returned',
     })
   })
 
@@ -120,7 +123,7 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'error',
-      detail: 'Live corpus error: response body could not be parsed',
+      detail: 'Worker corpus error: response body could not be parsed',
     })
   })
 
@@ -147,7 +150,35 @@ describe('corpus helpers', () => {
 
     await expect(fetchLiveCorpus()).resolves.toMatchObject({
       status: 'error',
-      detail: 'Live corpus error: response payload was not a valid corpus',
+      detail: 'Worker corpus error: response payload was not a valid corpus',
+    })
+  })
+
+  it('reuses the cached corpus when the worker responds 304 not modified', async () => {
+    const { corpus } = getMockCorpusBundle()
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: { get: vi.fn().mockReturnValue('etag-304') },
+        json: async () => corpus,
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 304,
+        headers: { get: vi.fn().mockReturnValue('etag-304') },
+        json: async () => {
+          throw new Error('should not be called')
+        },
+      })
+
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(fetchLiveCorpus()).resolves.toMatchObject({ status: 'loaded', detail: 'Worker corpus loaded' })
+    await expect(fetchLiveCorpus()).resolves.toMatchObject({ status: 'loaded', detail: 'Live corpus unchanged', corpus })
+    expect(fetchMock).toHaveBeenNthCalledWith(2, '/api/corpus', {
+      cache: 'no-store',
+      headers: { 'If-None-Match': 'etag-304' },
     })
   })
 

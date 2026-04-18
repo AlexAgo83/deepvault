@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     worker_host: str = Field(default="0.0.0.0", alias="WORKER_HOST")
     worker_port: int = Field(default=8000, alias="WORKER_PORT")
     runtime_data_dir: Path = Field(default=ROOT_DIR / "data" / "runtime", alias="WORKER_RUNTIME_DATA_DIR")
+    mock_corpus_path: Path = Field(default=ROOT_DIR / "data" / "mock" / "corpus.json", alias="WORKER_MOCK_CORPUS_PATH")
 
 
 @lru_cache(maxsize=1)
