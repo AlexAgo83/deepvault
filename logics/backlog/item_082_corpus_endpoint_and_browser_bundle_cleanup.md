@@ -61,5 +61,5 @@ flowchart LR
 
 - The worker now exposes `GET /api/corpus` with `ETag` support and local-mode loading from `data/mock/corpus.json`.
 - The worker CLI now supports `worker corpus show` and `worker corpus validate` over the same corpus service as the HTTP route.
-- The browser fetch path now targets `/api/corpus`, reuses `ETag` on repeat fetches, and preserves the last successful fetch timestamp to make worker-offline states more explicit.
+- The browser fetch path now targets `/api/corpus`, reuses `ETag` on repeat fetches, preserves the last successful fetch timestamp to make worker-offline states more explicit, and now runs through `src/lib/corpus-client.ts` instead of `src/data/corpus.ts` on the app path.
 - The remaining work in this item is the full browser bundle cleanup (`src/data/corpus.ts`, `src/lib/scoring.ts`, and `src/lib/deepvault.ts` removal from the production path) plus final offline UX verification in the running app.
