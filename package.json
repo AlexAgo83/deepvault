@@ -12,7 +12,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "e2e": "node scripts/run-with-cleanup.mjs playwright test --grep-invert \"DeepVault PWA refresh behavior\"",
+    "e2e": "node scripts/run-with-cleanup.mjs playwright test --config playwright.e2e.config.js",
     "e2e:pwa-refresh": "node scripts/run-with-cleanup.mjs playwright test --config playwright.pwa-refresh.config.js",
     "ingest": "node scripts/run-with-cleanup.mjs tsx scripts/ingest.ts",
     "ingest:live": "node scripts/run-with-cleanup.mjs tsx scripts/ingest.ts --mode live",
