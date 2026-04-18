@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 67%
+> Progress: 69%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -162,5 +162,6 @@ stateDiagram-v2
 - Browser-safe modules now consume a dedicated `runtime-types` boundary instead of importing shared types through `deepvault.ts`, reducing the browser dependency footprint on legacy business-logic modules.
 - The app model now uses browser-safe corpus view helpers from `corpus-view.ts` instead of pulling those view helpers from `deepvault.ts`.
 - The local Bishop fallback path is now isolated in `src/lib/corpus-grounding.ts`, removing the final browser-runtime value import of `deepvault.ts` while keeping Node-side tests and scripts compatible through re-exports.
+- The `live` corpus path now stays worker-backed even when `/api/corpus` is missing or the worker is offline: the app shows an explicit empty/error state plus reconnect guidance instead of silently switching back to mock data.
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
 - The current checkpoint is the remaining browser bundle cleanup around `scoring.ts`, offline-state verification, and final retirement of the legacy `src/lib/bishop.ts` module before Wave 4 can close.

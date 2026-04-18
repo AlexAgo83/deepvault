@@ -432,7 +432,7 @@ describe('DeepVault app', () => {
     )
   })
 
-  it('shows the live fallback badge when live corpus data is missing', async () => {
+  it('shows the live corpus missing badge when live corpus data is missing', async () => {
     const user = userEvent.setup()
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
@@ -447,11 +447,11 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
-    expect(await screen.findByText('Live fallback')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Live fallback/ })).toBeInTheDocument()
+    expect(await screen.findByText('Live corpus missing')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Live corpus missing/ })).toBeInTheDocument()
   })
 
-  it('shows the offline corpus fallback indicator when live mode is selected without network', async () => {
+  it('shows the offline worker indicator when live mode is selected without network', async () => {
     const user = userEvent.setup()
     const fetchMock = vi.fn().mockRejectedValue(new Error('network down'))
 
@@ -461,10 +461,10 @@ describe('DeepVault app', () => {
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
-    expect(await screen.findByText('Offline — corpus mock')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Offline — corpus mock/ })).toBeInTheDocument()
+    expect(await screen.findByText('Offline — worker unreachable')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Offline — worker unreachable/ })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Explorer' }))
-    expect(screen.getByText('No strong matches found.')).toBeInTheDocument()
+    expect(screen.getByText('No permitted sources matched this search.')).toBeInTheDocument()
   })
 
   it('renders sync run notes and counts in the sync panel', async () => {
