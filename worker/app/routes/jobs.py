@@ -36,6 +36,11 @@ def get_job(job_id: str, jobs_service: JobsService = Depends(get_jobs_service)) 
     return JobSummaryResponse(**jobs_service.get_job(job_id))
 
 
+@router.post("/api/jobs/{job_id}/cancel", response_model=JobSummaryResponse)
+def cancel_job(job_id: str, jobs_service: JobsService = Depends(get_jobs_service)) -> JobSummaryResponse:
+    return JobSummaryResponse(**jobs_service.cancel_job(job_id))
+
+
 @router.get("/api/jobs/{job_id}/events")
 async def get_job_events(job_id: str, jobs_service: JobsService = Depends(get_jobs_service)) -> EventSourceResponse:
     return EventSourceResponse(jobs_service.stream_job_events(job_id))

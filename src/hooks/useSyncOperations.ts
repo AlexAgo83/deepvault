@@ -423,7 +423,7 @@ export function useSyncOperations({
 
     es.onmessage = (event: MessageEvent<string>) => {
       attachJobWatchdog(persisted.jobId, persisted.serverJobId, def.label, def.summary, closeStream)
-      const data = JSON.parse(event.data) as { type: string; text?: string; isError?: boolean; exitCode?: number }
+      const data = JSON.parse(event.data) as { type: string; text?: string; isError?: boolean; exitCode?: number; pct?: number }
       if (data.type === 'line' && data.text) {
         lineCount++
         const progress = Math.min(95, Math.round((lineCount / def.estimatedLines) * 100))
@@ -432,10 +432,19 @@ export function useSyncOperations({
           progress,
           lines: trimJobLines([...current.lines, makeLine(data.text!, detectLineTone(data.text!, data.isError ?? false))]),
         }))
+      } else if (data.type === 'progress' && data.text) {
+        patchActiveJob(persisted.jobId, (current) => ({
+          ...current,
+          progress: typeof data.pct === 'number' ? Math.max(current.progress, data.pct) : current.progress,
+          lines: trimJobLines([...current.lines, makeLine(data.text!, detectLineTone(data.text!, data.isError ?? false))]),
+        }))
       } else if (data.type === 'done') {
-        const success = data.exitCode === 0
         clearPersistedJob()
-        finalizeJob(persisted.jobId, success ? 'completed' : 'failed', success ? def.summary : `${def.label} failed.`)
+        finalizeJob(
+          persisted.jobId,
+          data.exitCode === 0 ? 'completed' : data.exitCode === 130 ? 'cancelled' : 'failed',
+          data.exitCode === 0 ? def.summary : data.text?.trim() || (data.exitCode === 130 ? `${def.label} cancelled.` : `${def.label} failed.`),
+        )
         closeStream()
       }
     }
@@ -503,10 +512,15 @@ export function useSyncOperations({
     def: typeof LIVE_OP_DEFS[LiveOpKind],
     exitCode?: number,
   ) => {
-    const success = exitCode === 0
-    if (success) {
+    if (exitCode === 0) {
       clearPersistedJob()
       finalizeJob(jobId, 'completed', def.summary)
+      return
+    }
+
+    if (exitCode === 130) {
+      clearPersistedJob()
+      finalizeJob(jobId, 'cancelled', `${def.label} cancelled.`)
       return
     }
 
@@ -699,7 +713,7 @@ export function useSyncOperations({
 
       es.onmessage = (event: MessageEvent<string>) => {
         attachJobWatchdog(jobId, serverJobId, def.label, def.summary, closeStream)
-        const data = JSON.parse(event.data) as { type: string; text?: string; isError?: boolean; exitCode?: number }
+        const data = JSON.parse(event.data) as { type: string; text?: string; isError?: boolean; exitCode?: number; pct?: number }
 
         if (data.type === 'line' && data.text) {
           lineCount++
@@ -708,6 +722,13 @@ export function useSyncOperations({
           patchActiveJob(jobId, (current) => ({
             ...current,
             progress,
+            lines: trimJobLines([...current.lines, makeLine(data.text!, tone)]),
+          }))
+        } else if (data.type === 'progress' && data.text) {
+          const tone = detectLineTone(data.text, data.isError ?? false)
+          patchActiveJob(jobId, (current) => ({
+            ...current,
+            progress: typeof data.pct === 'number' ? Math.max(current.progress, data.pct) : current.progress,
             lines: trimJobLines([...current.lines, makeLine(data.text!, tone)]),
           }))
         } else if (data.type === 'done') {

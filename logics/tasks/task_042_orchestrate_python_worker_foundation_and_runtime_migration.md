@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 100%
 > Confidence: 99%
-> Progress: 86%
+> Progress: 90%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -169,5 +169,6 @@ stateDiagram-v2
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
 - Explicit non-browser imports now point to `src/lib/bishop-orchestration.ts`, and `src/lib/bishop.ts` has been removed from the codebase.
 - Wave 5 has now started with a worker-native job orchestration slice: `POST /api/jobs`, `GET /api/jobs/{id}`, `GET /api/jobs/{id}/events`, canonical runtime persistence, and `worker jobs run|status` are landed over a shared `JobsService`.
-- The first worker-native job implementation is `evaluate`, which persists progress events and a structured summary result; `ingest`, `analyze`, and `export-live` still fail explicitly as not implemented, so the Sync panel migration and the remaining pipeline ports stay open.
-- The current checkpoint is the rest of Wave 5: port the remaining job types, move the Sync panel to the worker contract, and then close the task once the legacy Node execution path is fully disconnected.
+- The Sync panel/browser worker client now talks to the worker-native jobs contract (`/api/jobs` and `/api/jobs/{id}/cancel`) instead of the legacy `/api/worker/jobs` path, while preserving the existing UI console/status model through a browser-side compatibility adapter.
+- The first worker-native job implementation is `evaluate`, which persists progress events and a structured summary result; `ingest`, `analyze`, and `export-live` still fail explicitly as not implemented, so the remaining open scope is the pipeline porting itself rather than the browser transport.
+- The current checkpoint is the rest of Wave 5: port the remaining job types, then remove the residual legacy Node execution path and close the task once worker-native execution is complete end to end.

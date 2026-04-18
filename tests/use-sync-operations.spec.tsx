@@ -295,9 +295,11 @@ describe('useSyncOperations', () => {
     await act(async () => {})
 
     const ingestBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
-      env: Record<string, string>
+      type: string
+      options: { env: Record<string, string> }
     }
-    expect(ingestBody.env).toEqual({
+    expect(ingestBody.type).toBe('ingest')
+    expect(ingestBody.options.env).toEqual({
       DEEPVAULT_DATA_MODE: 'live',
     })
 
@@ -313,9 +315,11 @@ describe('useSyncOperations', () => {
     await act(async () => {})
 
     const evaluateBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
-      env: Record<string, string>
+      type: string
+      options: { env: Record<string, string> }
     }
-    expect(evaluateBody.env).toEqual({
+    expect(evaluateBody.type).toBe('evaluate')
+    expect(evaluateBody.options.env).toEqual({
       DEEPVAULT_DATA_MODE: 'live',
       OPENAI_API_KEY: 'openai-key',
       GEMINI_API_KEY: 'gemini-key',
@@ -334,9 +338,11 @@ describe('useSyncOperations', () => {
     await act(async () => {})
 
     const analyzeBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
-      env: Record<string, string>
+      type: string
+      options: { env: Record<string, string> }
     }
-    expect(analyzeBody.env).toEqual({
+    expect(analyzeBody.type).toBe('analyze')
+    expect(analyzeBody.options.env).toEqual({
       DEEPVAULT_DATA_MODE: 'live',
       OPENAI_API_KEY: 'openai-key',
       GEMINI_API_KEY: 'gemini-key',
@@ -357,11 +363,11 @@ describe('useSyncOperations', () => {
     await act(async () => {})
 
     const publishBody = JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body)) as {
-      kind: string
-      env: Record<string, string>
+      type: string
+      options: { env: Record<string, string> }
     }
-    expect(publishBody.kind).toBe('publish-analysis')
-    expect(publishBody.env).toEqual({
+    expect(publishBody.type).toBe('analyze')
+    expect(publishBody.options.env).toEqual({
       DEEPVAULT_DATA_MODE: 'live',
     })
   })
