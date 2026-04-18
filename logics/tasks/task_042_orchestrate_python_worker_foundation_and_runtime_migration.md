@@ -1,11 +1,11 @@
 ## task_042_orchestrate_python_worker_foundation_and_runtime_migration - Orchestrate Python worker foundation and runtime migration
 
-> From version: 1.3.0
+> From version: 1.4.0
 > Schema version: 1.0
 > Status: In Progress
-> Understanding: 99%
-> Confidence: 98%
-> Progress: 64%
+> Understanding: 100%
+> Confidence: 99%
+> Progress: 67%
 > Complexity: High
 > Theme: Architecture / Infrastructure
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -161,5 +161,6 @@ stateDiagram-v2
 - The active browser Bishop runtime now goes through a dedicated HTTP client instead of importing `src/lib/bishop.ts`, while keeping a thin local fallback path to avoid regressions during migration.
 - Browser-safe modules now consume a dedicated `runtime-types` boundary instead of importing shared types through `deepvault.ts`, reducing the browser dependency footprint on legacy business-logic modules.
 - The app model now uses browser-safe corpus view helpers from `corpus-view.ts` instead of pulling those view helpers from `deepvault.ts`.
+- The local Bishop fallback path is now isolated in `src/lib/corpus-grounding.ts`, removing the final browser-runtime value import of `deepvault.ts` while keeping Node-side tests and scripts compatible through re-exports.
 - Worker-side Bishop coverage now includes successful provider-dispatched answers and graceful fallback when keys are missing or upstream provider calls fail.
-- The current checkpoint is the final browser bundle cleanup around `deepvault.ts`, `scoring.ts`, and removal of the legacy `src/lib/bishop.ts` module before Wave 4 can close.
+- The current checkpoint is the remaining browser bundle cleanup around `scoring.ts`, offline-state verification, and final retirement of the legacy `src/lib/bishop.ts` module before Wave 4 can close.

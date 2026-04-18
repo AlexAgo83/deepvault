@@ -6,7 +6,7 @@ import type {
   SourceRecord,
   UserRole,
 } from './deepvault'
-import { answerQuestion } from './deepvault'
+import { answerQuestion } from './corpus-grounding'
 
 export interface BishopConversationTurn {
   role: 'user' | 'assistant'

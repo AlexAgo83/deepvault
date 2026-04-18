@@ -1,10 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk'
 import {
-  answerQuestion,
   type BishopArtifact,
   type BishopArtifactFormat,
   type BishopArtifactStatus,
-  groundQuestion as buildGrounding,
   type ChatMessage,
   type AnswerResult,
   type Corpus,
@@ -13,6 +11,7 @@ import {
   type SourceRecord,
   type UserRole,
 } from './deepvault'
+import { answerQuestion, groundQuestion as buildGrounding } from './corpus-grounding'
 import { extractMeaningfulTokens } from './scoring'
 
 export interface BishopPromptContext {
