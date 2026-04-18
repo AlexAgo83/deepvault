@@ -1,10 +1,10 @@
 ## req_020_host_nexus_as_a_shared_multi_user_web_application - Host Nexus as a shared multi-user web application
 
-> From version: 1.3.0
+> From version: 1.4.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 97%
-> Confidence: 96%
+> Status: In Progress
+> Understanding: 98%
+> Confidence: 97%
 > Complexity: High
 > Theme: Architecture / Product / Operational
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -120,3 +120,8 @@ flowchart TD
 - `item_086_operator_allowlist_and_access_log` — OPERATOR_ALLOWLIST gate + structured JSON access log
 - `item_087_hosted_mode_ui` — Identity display, Shared label, sign-out, hide API key inputs, operator-gated panels
 - `item_088_docker_compose_deployment_package` — docker-compose.yml, Caddyfile, .env.example, operator runbook
+
+## Progress notes
+
+- Execution has started with `item_080`: the repo now contains the initial Python FastAPI worker foundation, local `/api` proxy wiring in Vite, and minimal CLI parity for worker health/config inspection.
+- The request remains open while validation completes and the subsequent worker migration waves (`item_081` onward) replace browser-owned scoring, corpus, Bishop, and job execution paths.
