@@ -68,7 +68,7 @@ def test_high_confidence_enrichment_boosts_rank_with_preferred_fields() -> None:
             "summary": "Budget approval and operating reserve guidance",
             "keywords": ["budget", "approval"],
             "sections": [{"heading": "Operating Reserve", "content": "Budget approval target is six percent."}],
-            "confidence": 0.95,
+            "confidence": 88,
         },
     }
 
@@ -91,7 +91,7 @@ def test_low_confidence_enrichment_does_not_apply_bonus_or_preferred_fields() ->
             "summary": "Budget approval and operating reserve guidance",
             "keywords": ["budget", "approval"],
             "sections": [{"heading": "Operating Reserve", "content": "Budget approval target is six percent."}],
-            "confidence": ANALYSIS_CONFIDENCE_THRESHOLD - 0.05,
+            "confidence": 65,
         },
     }
     plain = {
@@ -107,3 +107,23 @@ def test_low_confidence_enrichment_does_not_apply_bonus_or_preferred_fields() ->
         plain,
         "budget approval operating reserve",
     )
+
+
+def test_ratio_confidence_payloads_remain_supported_for_compatibility() -> None:
+    ratio_confidence = {
+        "id": "ratio-confidence",
+        "title": "Quarterly planning memo",
+        "summary": "General planning notes",
+        "content": "Generic planning content",
+        "tags": ["planning"],
+        "path": "/Documents/planning-memo.docx",
+        "analysis": {
+            "status": "analyzed",
+            "summary": "Budget approval and operating reserve guidance",
+            "keywords": ["budget", "approval"],
+            "sections": [{"heading": "Operating Reserve", "content": "Budget approval target is six percent."}],
+            "confidence": 0.95,
+        },
+    }
+
+    assert get_document_score(ratio_confidence, "budget approval operating reserve") > 0

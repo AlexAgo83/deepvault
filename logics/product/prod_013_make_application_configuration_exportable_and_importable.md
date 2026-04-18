@@ -1,12 +1,14 @@
 ## prod_013_make_application_configuration_exportable_and_importable - Make application configuration exportable and importable
 
 > Date: 2026-04-18
-> Status: Proposed
+> Status: Validated
 > Related request: `logics/request/req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability.md`
 > Related backlog: `logics/backlog/item_079_add_configuration_export_and_import_to_settings.md`
 > Related task: `logics/tasks/task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability.md`
 > Related architecture: `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
+
+> Delivery status: Export/import is now shipped in the Settings panel through `item_079`; broader consolidation work continues in `task_041` until the CI wave is fully closed.
 
 # Overview
 

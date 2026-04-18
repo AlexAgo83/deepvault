@@ -22,7 +22,10 @@ const today = new Date().toISOString().slice(0, 10)
 const outputDir = resolve('data/eval')
 const mode = readArg('--mode') || 'mock'
 const inputPath = readArg('--input') || (mode === 'live' ? process.env.DEEPVAULT_CORPUS_PATH : undefined)
-const outputPath = resolveSnapshotPath(resolve(outputDir, `v1_baseline_${today}.json`), mode === 'live' ? 'live' : 'mock')
+const explicitOutputPath = readArg('--output') || process.env.DEEPVAULT_EVAL_OUTPUT_PATH
+const outputPath = explicitOutputPath
+  ? resolve(explicitOutputPath)
+  : resolveSnapshotPath(resolve(outputDir, `v1_baseline_${today}.json`), mode === 'live' ? 'live' : 'mock')
 const strict = readFlag('--strict') || process.env.DEEPVAULT_EVAL_STRICT === '1'
 const minPassRateRaw = readArg('--min-pass-rate') || process.env.DEEPVAULT_EVAL_MIN_PASS_RATE
 const minPassRate = Number(minPassRateRaw || (mode === 'live' ? 0.9 : 1))

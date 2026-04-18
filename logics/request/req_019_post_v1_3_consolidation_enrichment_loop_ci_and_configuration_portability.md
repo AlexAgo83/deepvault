@@ -2,9 +2,9 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 97%
-> Confidence: 96%
+> Status: In progress
+> Understanding: 99%
+> Confidence: 97%
 > Complexity: High
 > Theme: Quality / Operational / Product
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -74,6 +74,15 @@ flowchart TD
 - AC7: importing configuration overwrites sensitive values (API keys) — user confirmation and schema validation are mandatory before any `localStorage` write.
 - AC5: confirm that `npm run evaluate` remains hermetic in GitHub Actions (no dependency on ambient provider environment variables) — this was already addressed locally but must be verified in the Actions context.
 - AC5b: anti-zombie checks should not be enabled prematurely for modules that are still legitimately present before the corresponding migration wave closes.
+
+# Delivery update
+
+- Wave 1 is shipped: Bishop retrieval scoring now consumes fresh analyze enrichment fields in `worker/scoring.py`, with bounded confidence boosting and static fallback for unenriched documents.
+- The delivery also closed a confidence-format mismatch: analyze emits confidence on a `55..95` scale, so scoring now normalizes both that shipped scale and older `0..1` fixtures before applying trust thresholds.
+- Wave 2 implementation is now in place locally: GitHub Actions is split into `frontend`, `worker`, and `contracts` jobs, evaluate can run hermetically without writing to `data/eval/`, and a dedicated anti-zombie guard blocks the reintroduction of retired runtime paths.
+- The first live GitHub Actions pass remains pending because it cannot be observed from the local environment.
+- Wave 3 is now shipped: Settings can export the full browser-stored configuration to JSON, import it back through schema validation and explicit overwrite confirmation, and display an inline plaintext-secrets warning before export.
+- Only the final Wave 2 GitHub-run confirmation remains open under `task_041`.
 
 # Companion docs
 

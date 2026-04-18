@@ -1,11 +1,13 @@
 ## prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment - Add a post-ingest AI analysis command for corpus enrichment
 > Date: 2026-04-18
-> Status: Active
+> Status: Validated
 > Related request: operator trust in provider-backed analyze runs, explicit publish promotion, and token visibility in AI View
 > Related backlog: `logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md`
 > Related task: `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`
 > Related architecture: `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md`
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the command separate from baseline ingestion unless a later decision explicitly merges them, keep provider observability truthful, keep the published corpus boundary explicit, and keep AI View token usage aligned with real analyze runs.
+
+> Delivery status: First-wave product scope is shipped through `item_069` and `task_037`; follow-on scoring, CI, and configuration portability work continues separately under `task_041`.
 
 # Overview
 Add a dedicated command that runs after ingest and enriches the corpus through bounded AI analysis only when it is needed.

@@ -2,15 +2,24 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 95%
-> Progress: 0%
+> Status: Done
+> Understanding: 100%
+> Confidence: 97%
+> Progress: 100%
 > Complexity: Low
 > Theme: Product / Operational
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
 
 # Problem
+
+```mermaid
+%% logics-kind: backlog
+%% logics-signature: backlog|add-configuration-export-and-import-to-t|req-019-post-v1-3-consolidation-enrichme|mermaid|ac1-export-configuration-generates-and-d
+flowchart LR
+    LocalOnly[Settings live only in browser storage] --> Transfer[Export and import configuration in Settings]
+    Transfer --> Confirm[Schema validation plus explicit overwrite confirmation]
+    Confirm --> Outcome[Operators can move setups without manual re-entry]
+```
 
 - API keys, Entra settings, worker URLs, and Bishop tuning parameters are stored in `localStorage` — lost when the user switches machine, browser, or clears storage.
 - There is no way to share a working configuration across operators or between environments, which is a concrete blocker for team use.
@@ -38,3 +47,13 @@
 
 - `rtk npm run test -- tests/settings-panel.spec.tsx`
 - `rtk npm run check`
+
+# Delivery update
+
+- Settings now exposes a dedicated configuration transfer section in the Worker view with `Export configuration` and `Import configuration` actions.
+- Export is fully client-side and downloads a timestamped JSON file that includes runtime preferences, conversation-context state, Bishop tuning, provider secrets, Entra settings, and worker settings.
+- Import now validates the JSON schema before any write, shows a confirmation dialog before overwrite, and applies the full configuration atomically only after confirmation.
+- The export UI now displays an inline plaintext warning that the downloaded file contains secrets and must be treated as sensitive.
+- Shared transfer logic now lives in `src/lib/settings-transfer.ts`, which normalizes and validates import payloads before the UI applies them.
+- Validation completed with `rtk npm run test -- tests/settings-panel.spec.tsx`, `rtk npm run typecheck`, and `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`.
+- `rtk npm run evaluate` was rerun separately and still passes after the Settings changes. Full `rtk npm run check` remains partially blocked in the sandbox because `e2e` preview binding and sandboxed `tsx` IPC are not permitted locally.

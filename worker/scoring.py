@@ -143,12 +143,23 @@ def _normalize_sections(sections: Optional[Sequence[Dict[str, Any]]]) -> List[Tu
 
 
 def _confidence_bonus_ratio(confidence: float) -> float:
-    if confidence < ANALYSIS_CONFIDENCE_THRESHOLD:
+    normalized_confidence = _normalize_confidence(confidence)
+    if normalized_confidence < ANALYSIS_CONFIDENCE_THRESHOLD:
         return 0.0
 
-    scaled = (confidence - ANALYSIS_CONFIDENCE_THRESHOLD) / (1.0 - ANALYSIS_CONFIDENCE_THRESHOLD)
+    scaled = (normalized_confidence - ANALYSIS_CONFIDENCE_THRESHOLD) / (
+        1.0 - ANALYSIS_CONFIDENCE_THRESHOLD
+    )
     bounded = max(0.0, min(scaled, 1.0))
     return bounded * MAX_ENRICHMENT_BONUS_RATIO
+
+
+def _normalize_confidence(confidence: float) -> float:
+    # The analyze pipeline writes confidence on a 55-95 scale, but older tests and
+    # transitional payloads may still provide a 0..1 ratio. Accept both formats.
+    if confidence > 1.0:
+        return max(0.0, min(confidence / 100.0, 1.0))
+    return max(0.0, min(confidence, 1.0))
 
 
 def _enrichment_ready(document: Dict[str, Any]) -> bool:
@@ -161,7 +172,7 @@ def _enrichment_ready(document: Dict[str, Any]) -> bool:
     return (
         status == ANALYSIS_STATUS_FRESH
         and isinstance(confidence, (int, float))
-        and float(confidence) >= ANALYSIS_CONFIDENCE_THRESHOLD
+        and _normalize_confidence(float(confidence)) >= ANALYSIS_CONFIDENCE_THRESHOLD
     )
 
 
@@ -174,6 +185,9 @@ def prepare_document_for_scoring(document: Dict[str, Any]) -> Dict[str, Any]:
     analysis = document.get("analysis")
 
     if _enrichment_ready(document) and isinstance(analysis, dict):
+        # Prefer fresh enrichment fields only when the analyze confidence is high
+        # enough to trust. Unenriched or low-confidence documents keep the static
+        # field path unchanged.
         analysis_summary = str(analysis.get("summary") or "").strip()
         analysis_keywords = analysis.get("keywords") or []
         analysis_sections = analysis.get("sections") or []
@@ -228,6 +242,8 @@ def get_document_score(document: Dict[str, Any], query: str) -> float:
 
     analysis = document.get("analysis")
     if score > 0 and _enrichment_ready(document) and isinstance(analysis, dict):
+        # The confidence multiplier is intentionally bounded so enriched documents
+        # can outrank equivalent plain matches without overwhelming better raw hits.
         confidence = float(analysis["confidence"])
         score += score * _confidence_bonus_ratio(confidence)
 

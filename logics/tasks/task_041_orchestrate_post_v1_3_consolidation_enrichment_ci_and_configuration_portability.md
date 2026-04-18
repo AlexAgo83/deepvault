@@ -2,10 +2,10 @@
 
 > From version: 1.3.0
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 95%
-> Progress: 0%
+> Status: In Progress
+> Understanding: 99%
+> Confidence: 97%
+> Progress: 91%
 > Complexity: High
 > Theme: Quality / Operational / Product
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -49,21 +49,21 @@ stateDiagram-v2
 
 # Plan
 
-- [ ] 1. Wave 1 — validate that the `confidence` field and enriched keywords/summary are stable and present in a published analyzed corpus before modifying scoring.
-- [ ] 2. Wave 1 — update `worker/scoring.py` to incorporate enriched fields when available; document the new weight logic inline; keep a clean fallback to static weights for unenriched documents.
-- [ ] 3. Wave 1 — add unit tests covering: unenriched document, document with high confidence, document with low confidence — confirm all three produce explainable differential ranks in `worker/tests/test_scoring.py`.
-- [ ] 4. Wave 1 — run `rtk npm run evaluate` to confirm the quality gate still passes after the scoring change.
-- [ ] CHECKPOINT: leave Wave 1 commit-ready and run `rtk python3 -m pytest worker/tests/test_scoring.py` and `rtk npm run evaluate` before continuing.
-- [ ] 5. Wave 2 — create `.github/workflows/ci.yml` with a `frontend` job (`rtk npm run typecheck`, `rtk npm run check`, build), a `worker` job (`pip install -r worker/requirements.txt`, `rtk python3 -m pytest worker/tests -q`), and a `contracts` smoke job that starts the worker and validates `/api/health` plus `/api/config/mode`.
-- [ ] 6. Wave 2 — keep CI hermetic: evaluate runs in mock mode with no ambient provider keys and no live corpus files; cache the Playwright browser download to keep CI run times reasonable; keep E2E as optional/separate if runner capacity supports it.
-- [ ] 7. Wave 2 — add an anti-zombie migration guard so CI can fail when runtime-active code still references legacy modules that a closed migration wave should have removed.
+- [x] 1. Wave 1 — validate that the `confidence` field and enriched keywords/summary are stable and present in a published analyzed corpus before modifying scoring.
+- [x] 2. Wave 1 — update `worker/scoring.py` to incorporate enriched fields when available; document the new weight logic inline; keep a clean fallback to static weights for unenriched documents.
+- [x] 3. Wave 1 — add unit tests covering: unenriched document, document with high confidence, document with low confidence — confirm all three produce explainable differential ranks in `worker/tests/test_scoring.py`.
+- [x] 4. Wave 1 — run `rtk npm run evaluate` to confirm the quality gate still passes after the scoring change.
+- [x] CHECKPOINT: leave Wave 1 commit-ready and run `rtk python3 -m pytest worker/tests/test_scoring.py` and `rtk npm run evaluate` before continuing.
+- [x] 5. Wave 2 — create `.github/workflows/ci.yml` with a `frontend` job (`rtk npm run typecheck`, `rtk npm run check`, build), a `worker` job (`pip install -r worker/requirements.txt`, `rtk python3 -m pytest worker/tests -q`), and a `contracts` smoke job that starts the worker and validates `/api/health` plus `/api/config/mode`.
+- [x] 6. Wave 2 — keep CI hermetic: evaluate runs in mock mode with no ambient provider keys and no live corpus files; cache the Playwright browser download to keep CI run times reasonable; keep E2E as optional/separate if runner capacity supports it.
+- [x] 7. Wave 2 — add an anti-zombie migration guard so CI can fail when runtime-active code still references legacy modules that a closed migration wave should have removed.
 - [ ] 8. Wave 2 — confirm the workflow passes on a clean branch with no local environment variables set.
 - [ ] CHECKPOINT: leave Wave 2 commit-ready; verify the Actions run passes on GitHub before continuing.
-- [ ] 9. Wave 3 — implement the "Export configuration" button in the Settings panel; confirm the downloaded JSON contains all persisted parameters and is generated entirely client-side.
-- [ ] 10. Wave 3 — implement the "Import configuration" button with schema validation, explicit user confirmation dialog, and full overwrite only on confirmed valid import.
-- [ ] 11. Wave 3 — add a visible plaintext warning on the export UI.
-- [ ] 12. Wave 3 — add unit tests covering the export shape and the import validation failure path (malformed file → clear error, no partial write).
-- [ ] CHECKPOINT: leave Wave 3 commit-ready and run `rtk npm run test -- tests/settings-panel.spec.tsx` and `rtk npm run check` before continuing.
+- [x] 9. Wave 3 — implement the "Export configuration" button in the Settings panel; confirm the downloaded JSON contains all persisted parameters and is generated entirely client-side.
+- [x] 10. Wave 3 — implement the "Import configuration" button with schema validation, explicit user confirmation dialog, and full overwrite only on confirmed valid import.
+- [x] 11. Wave 3 — add a visible plaintext warning on the export UI.
+- [x] 12. Wave 3 — add unit tests covering the export shape and the import validation failure path (malformed file → clear error, no partial write).
+- [x] CHECKPOINT: leave Wave 3 commit-ready and run `rtk npm run test -- tests/settings-panel.spec.tsx` and `rtk npm run check` before continuing.
 - [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
 - [ ] FINAL: update request, backlog, and task docs once all waves are closed.
 
@@ -126,3 +126,15 @@ stateDiagram-v2
 - [ ] Linked request, backlog, and task docs updated during completed waves and at closure.
 - [ ] Each completed wave left a commit-ready checkpoint.
 - [ ] Status moved to `Done` and progress to `100%`.
+
+# Delivery update
+
+- Wave 1 is complete. Published analyzed corpora already preserve the additive `analysis` block, and the scoring path now consumes fresh enrichment fields without breaking the static fallback for unenriched documents.
+- The main technical fix in this wave was contract alignment: analyze writes confidence on a `55..95` scale, while the worker scoring threshold is ratio-based. `worker/scoring.py` now normalizes both `55..95` and legacy `0..1` confidence payloads before deciding whether to trust enrichment and how much bonus to apply.
+- Validation completed for Wave 1 with `rtk python3 -m pytest worker/tests/test_scoring.py -q`, `rtk npm run typecheck`, and `rtk npm run evaluate` (100% pass rate, quality gate pass on 20 mock queries).
+- Wave 2 implementation is now landed locally: `.github/workflows/ci.yml` is split into `frontend`, `worker`, and `contracts` jobs, hermetic evaluate output is redirected outside the repo tree, the worker HTTP smoke check is scripted, and an anti-zombie migration guard protects the browser runtime boundary.
+- Local Wave 2 validation completed with `rtk npm run ci:anti-zombie`, `rtk npm run typecheck`, `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`, `rtk python3 -m pytest worker/tests -q`, and `rtk python3 scripts/worker-contract-smoke.py`.
+- Wave 2 is not fully closed yet because the first clean GitHub Actions run still needs to be observed on a pushed branch.
+- Wave 3 is now complete. Settings can export a full browser-side configuration snapshot as JSON, import it back through schema validation plus explicit confirmation, and warn clearly that exported files contain plaintext secrets.
+- Wave 3 validation completed with `rtk npm run test -- tests/settings-panel.spec.tsx`, `rtk npm run typecheck`, `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`, and a separate `rtk npm run evaluate` rerun.
+- Full local `rtk npm run check` still hits sandbox limits on E2E preview port binding and sandboxed `tsx` IPC; this does not reflect a product regression in the shipped Settings transfer flow.
