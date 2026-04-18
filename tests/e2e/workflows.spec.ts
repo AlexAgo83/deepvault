@@ -59,4 +59,37 @@ test.describe('DeepVault workflows', () => {
     await page.getByRole('button', { name: 'Knowledge', exact: true }).click()
     await expect(visibleSources).not.toHaveText('0')
   })
+
+  test('keeps an explicit live offline state when the worker is unreachable', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(window.navigator, 'onLine', {
+        configurable: true,
+        get: () => false,
+      })
+    })
+
+    await page.route('**/api/corpus', async (route) => {
+      await route.abort('failed')
+    })
+
+    await openApp(page)
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
+    await runtimeSelect(page, 'Data mode').selectOption('live')
+
+    await expect(page.getByText('Offline — worker unreachable')).toBeVisible()
+    await expect(page.getByRole('button', { name: /Offline — worker unreachable/ })).toHaveAttribute(
+      'title',
+      /Worker corpus unavailable offline/,
+    )
+
+    await page.getByRole('button', { name: 'Knowledge', exact: true }).click()
+    const visibleSources = page
+      .locator('.sync-config-pill')
+      .filter({ has: page.locator('.sync-config-pill-label', { hasText: 'Visible sources' }) })
+      .locator('.sync-config-pill-value')
+    await expect(visibleSources).toHaveText('0')
+
+    await page.getByRole('button', { name: 'Explorer', exact: true }).click()
+    await expect(page.getByText('No permitted sources matched this search.')).toBeVisible()
+  })
 })
