@@ -26,8 +26,11 @@ function toDockerPath(p) {
 
 const mountSrc = toDockerPath(runtimePath)
 
+const CONTAINER_NAME = 'deepvault-worker-dev'
+
 const args = [
   'run', '--rm',
+  '--name', CONTAINER_NAME,
   '-p', '8001:8000',
   '-e', 'WORKER_MODE=local',
   '-e', 'WORKER_HOST=0.0.0.0',
@@ -37,8 +40,9 @@ const args = [
   'deepvault-worker',
 ]
 
-console.log(`\nStarting worker container on http://localhost:8001`)
-console.log(`Runtime volume: ${runtimePath}\n`)
+console.log(`\nStarting worker container "${CONTAINER_NAME}" on http://localhost:8001`)
+console.log(`Runtime volume: ${runtimePath}`)
+console.log(`Stop with: npm run docker:stop\n`)
 
 const result = spawnSync('docker', args, { stdio: 'inherit' })
 process.exit(result.status ?? 0)

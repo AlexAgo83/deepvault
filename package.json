@@ -15,6 +15,7 @@
     "prod:logs": "docker compose logs -f",
     "docker:build": "docker build -f worker/Dockerfile -t deepvault-worker .",
     "docker:worker": "node scripts/docker-worker.mjs",
+    "docker:stop": "docker stop deepvault-worker-dev",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
