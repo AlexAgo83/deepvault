@@ -45,7 +45,23 @@ describe('useWorkerHealth', () => {
     const { result } = renderHook(() => useWorkerHealth({ ...REMOTE_SETTINGS, workerUrl: 'http://worker.example.com' }))
 
     expect(result.current.status).toBe('misconfigured')
-    expect(result.current.detail).toMatch(/https worker URL/)
+    expect(result.current.detail).toMatch(/localhost for local Docker testing/)
+  })
+
+  it('accepts a localhost http remote URL for local Docker testing', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        status: 'ok',
+        workerVersion: '1.5.0',
+        mode: 'remote',
+        timestamp: '2026-04-19T00:00:00Z',
+      }),
+    }))
+
+    const { result } = renderHook(() => useWorkerHealth({ ...REMOTE_SETTINGS, workerUrl: 'http://localhost:8001' }))
+
+    await waitFor(() => expect(result.current.status).toBe('reachable'))
   })
 
   it('flags a missing remote token as misconfigured', () => {

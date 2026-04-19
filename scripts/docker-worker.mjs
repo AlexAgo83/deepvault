@@ -8,6 +8,7 @@
  *   npm run docker:worker
  *
  * Then open Settings → Worker mode: remote · Worker URL: http://localhost:8001
+ * and set VITE_WORKER_PROXY_TARGET=http://localhost:8001 before npm run dev.
  */
 
 import { spawnSync } from 'child_process'

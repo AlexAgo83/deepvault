@@ -165,12 +165,22 @@ describe('createWorkerClient — remote mode', () => {
   it('rejects remote worker configs without https or token when the client is used', async () => {
     const insecureClient = createWorkerClient({ ...REMOTE_CONFIG, workerUrl: 'http://worker.example.com' })
     await expect(insecureClient.checkHealth()).rejects.toThrow(
-      'Remote worker mode requires an https workerUrl.',
+      'Remote worker mode requires an https workerUrl, or http://localhost for local Docker testing.',
     )
 
     const missingTokenClient = createWorkerClient({ ...REMOTE_CONFIG, workerToken: '' })
     await expect(missingTokenClient.checkHealth()).rejects.toThrow(
       'Remote worker mode requires a workerToken.',
+    )
+  })
+
+  it('accepts a localhost http workerUrl for local Docker testing', async () => {
+    mockFetch({ status: 'ok', workerVersion: '1.0.0', mode: 'remote', timestamp: '2026-04-18T00:00:00Z' })
+    const client = createWorkerClient({ ...REMOTE_CONFIG, workerUrl: 'http://localhost:8001' })
+    await client.checkHealth()
+    expect(vi.mocked(fetch)).toHaveBeenCalledWith(
+      'http://localhost:8001/api/health',
+      expect.anything(),
     )
   })
 

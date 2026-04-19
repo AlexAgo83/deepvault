@@ -28,6 +28,19 @@ function buildMisconfiguredState(detail: string): WorkerHealthState {
   }
 }
 
+function isPermittedLocalHttpRemoteUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    return parsed.protocol === 'http:' && (
+      parsed.hostname === 'localhost' ||
+      parsed.hostname === '127.0.0.1' ||
+      parsed.hostname === '::1'
+    )
+  } catch {
+    return false
+  }
+}
+
 export function useWorkerHealth(workerSettings: WorkerSettings, dataMode?: string): WorkerHealthState {
   const [workerHealth, setWorkerHealth] = useState<WorkerHealthState>(() => buildLocalState())
   const {
@@ -57,8 +70,8 @@ export function useWorkerHealth(workerSettings: WorkerSettings, dataMode?: strin
         active = false
       }
     }
-    if (!/^https:\/\//i.test(trimmedWorkerUrl)) {
-      setWorkerHealth(buildMisconfiguredState('Remote worker mode requires an https worker URL.'))
+    if (!/^https:\/\//i.test(trimmedWorkerUrl) && !isPermittedLocalHttpRemoteUrl(trimmedWorkerUrl)) {
+      setWorkerHealth(buildMisconfiguredState('Remote worker mode requires an https worker URL, or http://localhost for local Docker testing.'))
       return () => {
         active = false
       }
