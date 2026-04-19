@@ -7,6 +7,8 @@ interface ImportMetaEnv {
   readonly VITE_BISHOP_LLM_ENDPOINT?: string
   readonly VITE_BISHOP_MODEL?: string
   readonly VITE_DEEPVAULT_DATA_MODE?: string
+  readonly VITE_WORKER_MODE?: string
+  readonly VITE_WORKER_URL?: string
 }
 
 interface BeforeInstallPromptEvent extends Event {

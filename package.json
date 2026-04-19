@@ -13,6 +13,8 @@
     "prod:up": "docker compose up -d",
     "prod:down": "docker compose down",
     "prod:logs": "docker compose logs -f",
+    "docker:build": "docker build -f worker/Dockerfile -t deepvault-worker .",
+    "docker:worker": "node scripts/docker-worker.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
