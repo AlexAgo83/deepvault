@@ -17,27 +17,22 @@ describe('changelog helpers', () => {
 
   it('parses release date, intro, and highlights from markdown', () => {
     const parsed = parseChangelogMarkdown(`
-# CHANGELOGS_1_4_0
+# Changelog (\`1.3.0 -> 1.4.0\`)
 
 Release date: 2026-04-17
 
-## DeepVault Nexus 1.4.0
-
-First summary line
-continues on the next line.
-
-### At a glance
+## Major Highlights
 - Added **coverage** guardrails
 - Linked the \`ubuntu\` workflow
 Plain text that should not become a highlight
 
-### Details
+## Validation and Regression Evidence
 - This item belongs to a later section
 `)
 
     expect(parsed).toEqual({
       releaseDate: '2026-04-17',
-      intro: 'First summary line continues on the next line.',
+      intro: 'Added **coverage** guardrails',
       highlights: ['Added **coverage** guardrails', 'Linked the `ubuntu` workflow'],
     })
   })
