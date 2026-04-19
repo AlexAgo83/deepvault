@@ -26,7 +26,7 @@ Release date: 2026-04-17
 - Linked the \`ubuntu\` workflow
 Plain text that should not become a highlight
 
-## Validation and Regression Evidence
+### Validation and Regression Evidence
 - This item belongs to a later section
 `)
 

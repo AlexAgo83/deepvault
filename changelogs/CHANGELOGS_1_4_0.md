@@ -10,15 +10,13 @@ Release date: 2026-04-18
 - CI is expanded into explicit `frontend`, `worker`, and `contracts` smoke jobs, with an anti-zombie migration guard added to the local validation path.
 - The current app baseline is revalidated with lint, typecheck, coverage, build, evaluate, e2e, and Logics lint before the release is cut.
 
-## Generated Commit Summary
-
-## Release and Migration Planning
+### Release and Migration Planning
 
 - Added the missing orchestration tasks and cross-links for `req_020` so the migration plan is reviewable as a single delivery graph.
 - Aligned the active Logics package around the hosted worker direction and the next large migration wave.
 - Kept the release intentionally focused on baseline freeze and planning rather than starting the Python worker implementation.
 
-## Validation and CI
+### Validation and CI
 
 - Expanded the CI plan from a generic workflow note to explicit `frontend`, `worker`, and `contracts` smoke jobs.
 - Added the anti-zombie migration guard to catch runaway local processes during validation.
