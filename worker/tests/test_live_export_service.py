@@ -24,7 +24,7 @@ def test_live_export_service_runs_graph_export_and_publishes_artifacts(tmp_path,
     service = build_service(tmp_path)
     progress: list[tuple[str, int, str]] = []
 
-    monkeypatch.setattr(service, "acquire_graph_access_token", lambda config: "test-token")
+    monkeypatch.setattr(service, "acquire_graph_access_token", lambda config, report_text=None: "test-token")
 
     def fake_export_site_corpus(*args, **kwargs):
         return {
@@ -154,7 +154,7 @@ def test_live_export_service_resume_uses_checkpoint_timestamp_and_reconciles_doc
     }
     (tmp_path / "live-export-checkpoint.json").write_text(json.dumps(checkpoint_payload), encoding="utf-8")
 
-    monkeypatch.setattr(service, "acquire_graph_access_token", lambda config: "test-token")
+    monkeypatch.setattr(service, "acquire_graph_access_token", lambda config, report_text=None: "test-token")
 
     observed: Dict[str, Optional[str]] = {}
 
