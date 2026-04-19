@@ -80,8 +80,8 @@ describe('SettingsChangelogPanel', () => {
     fireEvent.click(collapsibleSummary)
 
     expect(collapsibleSection).toHaveAttribute('open')
-    expect(within(collapsibleSection as HTMLElement).getByText((_, element) => {
-      return element?.textContent?.includes('Local UI for') ?? false
-    })).toBeInTheDocument()
+    expect(
+      within(collapsibleSection as HTMLElement).getByText('Local UI for', { selector: 'li' }),
+    ).toBeInTheDocument()
   })
 })
