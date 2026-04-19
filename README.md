@@ -97,8 +97,10 @@ pip install -r worker/requirements.txt
 |---|---|
 | **Dev — frontend only** (mock corpus, no worker) | `npm run dev` |
 | **Dev — full stack** (worker + Vite, one terminal) | `npm run dev:all` |
+| **Dev — stop full stack** | `Ctrl+C` in the terminal |
 | **Dev — worker only** (attach your own Vite) | `npm run dev:worker` |
 | **Dev — worker in Docker** (remote mode) | `npm run docker:build` then `npm run docker:worker` |
+| **Dev — stop Docker worker** | `npm run docker:stop` (from any terminal) |
 | **Prod — build + start stack** | `npm run prod` |
 | **Prod — start existing containers** | `npm run prod:up` |
 | **Prod — stop containers** | `npm run prod:down` |
@@ -182,9 +184,17 @@ npm run docker:build
 npm run docker:worker
 ```
 
-This mounts `data/runtime` from the repo so the containerised worker shares job artifacts and corpus files with the local Vite dev server. The worker listens on **port 8001**.
+This mounts `data/runtime` from the repo so the containerised worker shares job artifacts and corpus files with the local Vite dev server. The worker listens on **port 8001** under the name `deepvault-worker-dev`.
 
-### 3. Configure Settings
+### 3. Stop the container
+
+```bash
+npm run docker:stop
+```
+
+Works from any terminal — no need to find the container ID.
+
+### 4. Configure Settings
 
 In the app, go to **Settings → Worker**:
 
