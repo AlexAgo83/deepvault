@@ -152,6 +152,38 @@ def test_jobs_service_export_live_accepts_explicit_input_override(tmp_path) -> N
     assert '"syncedAt":' in checkpoint
 
 
+def test_jobs_service_runs_publish_analysis_after_analyze(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+
+    analyze = service.start_job(
+        job_type="analyze",
+        options={"env": {"DEEPVAULT_DATA_MODE": "mock", "DEEPVAULT_ANALYZE_LIMIT": "3"}},
+    )
+    wait_for_terminal_status(service, analyze["jobId"])
+    assert (tmp_path / "analyzed-corpus.json").exists()
+
+    publish = service.start_job(job_type="publish-analysis", options={"env": {"DEEPVAULT_DATA_MODE": "mock"}})
+    completed = wait_for_terminal_status(service, publish["jobId"])
+
+    assert completed["status"] == "succeeded"
+    assert completed["result"]["analyzedCount"] >= 1
+    published_path = tmp_path.parent.parent / "public" / "live-corpus.json"
+    assert published_path.exists()
+    published = json.loads(published_path.read_text(encoding="utf-8"))
+    analyzed_docs = [doc for doc in published["documents"] if isinstance(doc.get("analysis"), dict) and doc["analysis"].get("status") == "analyzed"]
+    assert len(analyzed_docs) >= 1
+
+
+def test_jobs_service_publish_analysis_fails_without_analyzed_corpus(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+
+    started = service.start_job(job_type="publish-analysis", options={})
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    assert completed["status"] == "failed"
+    assert "Analyzed corpus not found" in completed["error"]
+
+
 def test_jobs_service_run_job_blocks_until_terminal_status(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
 

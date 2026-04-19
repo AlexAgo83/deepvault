@@ -458,9 +458,27 @@ export function useSyncOperations({
     }
 
     es.onerror = () => {
-      clearPersistedJob()
-      finalizeJob(persisted.jobId, 'failed', `Could not reconnect to ${def.label}.`)
-      closeStream()
+      setTimeout(() => {
+        if (activeJobRef.current?.id !== persisted.jobId || activeJobRef.current?.status !== 'running') {
+          closeStream()
+          return
+        }
+        clearPersistedJob()
+        void workerClient.getJob(persisted.serverJobId)
+          .then((state) => {
+            if (state.status === 'completed') {
+              finalizeJob(persisted.jobId, 'completed', state.notes || def.summary)
+            } else if (state.status === 'cancelled') {
+              finalizeJob(persisted.jobId, 'cancelled', `${def.label} cancelled.`)
+            } else {
+              finalizeJob(persisted.jobId, 'failed', state.notes?.trim() || `Could not reconnect to ${def.label}.`)
+            }
+          })
+          .catch(() => {
+            finalizeJob(persisted.jobId, 'failed', `Could not reconnect to ${def.label}.`)
+          })
+          .finally(() => closeStream())
+      }, 0)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only reconnect effect
   }, []) // intentionally runs once on mount only
@@ -748,9 +766,27 @@ export function useSyncOperations({
       }
 
       es.onerror = () => {
-        clearPersistedJob()
-        finalizeJob(jobId, 'failed', `${def.label} failed.`)
-        closeStream()
+        setTimeout(() => {
+          if (activeJobRef.current?.id !== jobId || activeJobRef.current?.status !== 'running') {
+            closeStream()
+            return
+          }
+          clearPersistedJob()
+          void workerClient.getJob(serverJobId)
+            .then((state) => {
+              if (state.status === 'completed') {
+                finalizeJob(jobId, 'completed', state.notes || def.summary)
+              } else if (state.status === 'cancelled') {
+                finalizeJob(jobId, 'cancelled', `${def.label} cancelled.`)
+              } else {
+                finalizeJob(jobId, 'failed', state.notes?.trim() || `${def.label} failed.`)
+              }
+            })
+            .catch(() => {
+              finalizeJob(jobId, 'failed', `${def.label} failed.`)
+            })
+            .finally(() => closeStream())
+        }, 0)
       }
     }
 
