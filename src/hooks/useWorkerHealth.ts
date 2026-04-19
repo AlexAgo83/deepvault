@@ -30,32 +30,40 @@ function buildMisconfiguredState(detail: string): WorkerHealthState {
 
 export function useWorkerHealth(workerSettings: WorkerSettings, dataMode?: string): WorkerHealthState {
   const [workerHealth, setWorkerHealth] = useState<WorkerHealthState>(() => buildLocalState())
+  const {
+    workerMode,
+    workerUrl,
+    workerToken,
+    workerFallbackMode,
+    workerTimeoutSeconds,
+    analyzeLimit,
+  } = workerSettings
 
   useEffect(() => {
     let active = true
 
-    if (workerSettings.workerMode !== 'remote') {
+    if (workerMode !== 'remote') {
       setWorkerHealth(buildLocalState())
       return () => {
         active = false
       }
     }
 
-    const workerUrl = workerSettings.workerUrl.trim()
-    const workerToken = workerSettings.workerToken.trim()
-    if (!workerUrl) {
+    const trimmedWorkerUrl = workerUrl.trim()
+    const trimmedWorkerToken = workerToken.trim()
+    if (!trimmedWorkerUrl) {
       setWorkerHealth(buildMisconfiguredState('Add an https worker URL to run the startup health check.'))
       return () => {
         active = false
       }
     }
-    if (!/^https:\/\//i.test(workerUrl)) {
+    if (!/^https:\/\//i.test(trimmedWorkerUrl)) {
       setWorkerHealth(buildMisconfiguredState('Remote worker mode requires an https worker URL.'))
       return () => {
         active = false
       }
     }
-    if (!workerToken) {
+    if (!trimmedWorkerToken) {
       setWorkerHealth(buildMisconfiguredState('Add a worker token to validate remote worker availability at startup.'))
       return () => {
         active = false
@@ -70,7 +78,12 @@ export function useWorkerHealth(workerSettings: WorkerSettings, dataMode?: strin
     })
 
     const client = createWorkerClient({
-      ...workerSettings,
+      workerMode,
+      workerUrl,
+      workerToken,
+      workerFallbackMode,
+      workerTimeoutSeconds,
+      analyzeLimit,
       dataMode,
     })
 
@@ -101,7 +114,7 @@ export function useWorkerHealth(workerSettings: WorkerSettings, dataMode?: strin
     return () => {
       active = false
     }
-  }, [dataMode, workerSettings])
+  }, [analyzeLimit, dataMode, workerFallbackMode, workerMode, workerTimeoutSeconds, workerToken, workerUrl])
 
   return workerHealth
 }
