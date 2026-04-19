@@ -50,6 +50,7 @@ export interface WorkerJob {
   launchedBy?: string
   client?: string
   effectiveConfig?: WorkerEffectiveConfig
+  result?: Record<string, unknown>
 }
 
 export type WorkerReachability = 'reachable' | 'unreachable' | 'unknown'
@@ -280,6 +281,9 @@ function mapWorkerJob(payload: Record<string, unknown>): WorkerJob {
     client: typeof payload.client === 'string' ? payload.client : undefined,
     effectiveConfig: typeof payload.effectiveConfig === 'object' && payload.effectiveConfig !== null
       ? payload.effectiveConfig as WorkerEffectiveConfig
+      : undefined,
+    result: typeof payload.result === 'object' && payload.result !== null
+      ? payload.result as Record<string, unknown>
       : undefined,
   }
 }

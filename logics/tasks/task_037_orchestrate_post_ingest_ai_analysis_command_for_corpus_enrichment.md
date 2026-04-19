@@ -125,5 +125,6 @@ stateDiagram-v2
 - `analyze-report.json` now includes `providerAttempts`, `providerSuccesses`, `providerFallbacks`, and grouped `providerFailureReasons`, and the CLI prints those counters at the end of the run.
 - The CLI now emits periodic progress lines during long runs (`analyzed N/limit`) with elapsed time, average milliseconds per analyzed document, and live provider success/fallback counts.
 - Completed `analyze` runs with real provider token counts now flow into the shared local AI usage store, so the AI View token charts and provider split include post-ingest analysis consumption alongside Bishop usage.
+- The Python worker `analyze` job now emits explicit completion summary lines for provider, model, token mode, actual input/output tokens, and provider success/fallback counts, so the hosted/live UI can ingest the same analysis usage metrics as the CLI path.
 - Wave 4 validation set added: 9 targeted tests covering binary exclusion, empty content, oversized files, weak extraction, priority file types, missing structure, budget cap, cross-run reuse, and estimated token mode. All 275 tests pass.
 - T37 is complete across all four waves.

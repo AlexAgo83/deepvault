@@ -370,7 +370,7 @@ describe('useSyncOperations', () => {
       type: string
       options: { env: Record<string, string> }
     }
-    expect(publishBody.type).toBe('analyze')
+    expect(publishBody.type).toBe('publish-analysis')
     expect(publishBody.options.env).toEqual({
       DEEPVAULT_DATA_MODE: 'live',
     })
@@ -464,11 +464,33 @@ describe('useSyncOperations', () => {
       return mockEs
     }))
 
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      status: 201,
-      json: () => Promise.resolve({ jobId: 'job-analyze-usage' }),
-    }))
+    vi.stubGlobal('fetch', vi.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: () => Promise.resolve({ jobId: 'job-analyze-usage' }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({
+          jobId: 'job-analyze-usage',
+          type: 'analyze',
+          status: 'succeeded',
+          startedAt: '2026-04-19T12:00:00.000Z',
+          finishedAt: '2026-04-19T12:00:05.000Z',
+          summary: 'Analyze completed.',
+          result: {
+            provider: 'openai',
+            model: 'gpt-5.4-mini',
+            tokenCountMode: 'actual',
+            actualInputTokens: 120,
+            actualOutputTokens: 45,
+            providerSuccesses: 1,
+            providerFallbacks: 0,
+          },
+        }),
+      }))
 
     const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
 
@@ -496,6 +518,77 @@ describe('useSyncOperations', () => {
     expect(events[0]).toMatchObject({
       source: 'analyze',
       sourceEventId: expect.stringContaining('analyze-job-analyze-'),
+      provider: 'openai',
+      model: 'gpt-5.4-mini',
+      status: 'analyze_completed',
+      usageKind: 'provider',
+      inputTokenCount: 120,
+      outputTokenCount: 45,
+      totalTokenCount: 165,
+    })
+  })
+
+  it('records analyze token usage when metric lines and completion arrive in the same flush', async () => {
+    type MockEventSource = {
+      onmessage: ((_e: MessageEvent) => void) | null
+      onerror: (() => void) | null
+      close: ReturnType<typeof vi.fn>
+    }
+
+    let mockEs: MockEventSource | null = null
+
+    vi.stubGlobal('EventSource', vi.fn(() => {
+      mockEs = { onmessage: null, onerror: null, close: vi.fn() }
+      return mockEs
+    }))
+
+    vi.stubGlobal('fetch', vi.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: () => Promise.resolve({ jobId: 'job-analyze-same-flush' }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({
+          jobId: 'job-analyze-same-flush',
+          type: 'analyze',
+          status: 'succeeded',
+          startedAt: '2026-04-19T12:00:00.000Z',
+          finishedAt: '2026-04-19T12:00:05.000Z',
+          summary: 'Analyze completed.',
+          result: {
+            provider: 'openai',
+            model: 'gpt-5.4-mini',
+            tokenCountMode: 'actual',
+            actualInputTokens: 120,
+            actualOutputTokens: 45,
+            providerSuccesses: 1,
+            providerFallbacks: 0,
+          },
+        }),
+      }))
+
+    const { result } = renderHook(() => useSyncOperations(DEFAULT_OPTIONS))
+
+    await act(async () => {
+      result.current.startAnalyze()
+    })
+    await act(async () => {})
+
+    await act(async () => {
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'line', text: 'Model: gpt-5.4-mini' }) } as MessageEvent)
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'line', text: 'Actual input tokens: 120' }) } as MessageEvent)
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'line', text: 'Actual output tokens: 45' }) } as MessageEvent)
+      mockEs?.onmessage?.({ data: JSON.stringify({ type: 'done', exitCode: 0 }) } as MessageEvent)
+    })
+    await act(async () => {})
+
+    const events = listAIUsageEvents()
+    expect(events).toHaveLength(1)
+    expect(events[0]).toMatchObject({
+      source: 'analyze',
       provider: 'openai',
       model: 'gpt-5.4-mini',
       status: 'analyze_completed',
@@ -534,6 +627,9 @@ describe('useSyncOperations', () => {
     await act(async () => {
       mockEs?.onerror?.()
     })
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    })
 
     expect(result.current.activeJob?.status).toBe('failed')
     expect(result.current.activeJob?.summary).toBe('Could not reconnect to Ingest.')
@@ -570,6 +666,9 @@ describe('useSyncOperations', () => {
 
     await act(async () => {
       mockEs?.onerror?.()
+    })
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0))
     })
 
     expect(result.current.activeJob?.status).toBe('failed')
