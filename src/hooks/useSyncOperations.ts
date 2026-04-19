@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { appendAIUsageEvent } from '../lib/ai-usage'
+import type { WorkerJob } from '../lib/worker-client'
 import { createWorkerClient, type WorkerEventStream } from '../lib/worker-client'
 import type { WorkerSettings } from './useWorkerSettings'
 import { WORKER_SETTINGS_DEFAULTS } from './useWorkerSettings'
@@ -334,6 +335,23 @@ function ingestAnalyzeUsage(job: SyncOperationJob) {
   })
 }
 
+function buildAnalyzeCompletionLines(job: WorkerJob): SyncConsoleLine[] {
+  const result = job.result
+  if (!result || job.kind !== 'analyze') {
+    return []
+  }
+
+  const lines: SyncConsoleLine[] = []
+  if (typeof result.provider === 'string') lines.push(makeLine(`Provider: ${result.provider}`, 'normal'))
+  if (typeof result.model === 'string') lines.push(makeLine(`Model: ${result.model}`, 'normal'))
+  if (typeof result.tokenCountMode === 'string') lines.push(makeLine(`Token count mode: ${result.tokenCountMode}`, 'normal'))
+  if (typeof result.actualInputTokens === 'number') lines.push(makeLine(`Actual input tokens: ${result.actualInputTokens}`, 'normal'))
+  if (typeof result.actualOutputTokens === 'number') lines.push(makeLine(`Actual output tokens: ${result.actualOutputTokens}`, 'normal'))
+  if (typeof result.providerSuccesses === 'number') lines.push(makeLine(`Provider successes: ${result.providerSuccesses}`, 'normal'))
+  if (typeof result.providerFallbacks === 'number') lines.push(makeLine(`Provider fallbacks: ${result.providerFallbacks}`, 'normal'))
+  return lines
+}
+
 export function useSyncOperations({
   activeScopeLabel,
   authToken,
@@ -499,7 +517,7 @@ export function useSyncOperations({
   }, [])
 
   const finalizeJob = useCallback(
-    (jobId: string, status: SyncOperationStatus, summary: string) => {
+    (jobId: string, status: SyncOperationStatus, summary: string, extraLines: SyncConsoleLine[] = []) => {
       const current = activeJobRef.current
       if (!current || current.id !== jobId) {
         return
@@ -515,21 +533,21 @@ export function useSyncOperations({
         finishedAt: new Date().toISOString(),
         durationMs: Date.now() - new Date(current.startedAt).getTime(),
         summary,
-        lines: trimJobLines(appendFinalStatusLine(current.lines, status, summary)),
+        lines: trimJobLines(appendFinalStatusLine([...current.lines, ...extraLines], status, summary)),
       }
 
-    if (status === 'completed') {
-      ingestAnalyzeUsage(finalized)
-    }
+      if (status === 'completed') {
+        ingestAnalyzeUsage(finalized)
+      }
 
-    setActiveJob(finalized)
-    setJobHistory((currentHistory) => {
-      const nextHistory = [finalized, ...currentHistory.filter((job) => job.id !== jobId)].slice(0, JOB_HISTORY_LIMIT)
-      persistJobHistory(nextHistory)
-      return nextHistory
-    })
-  },
-  [],
+      setActiveJob(finalized)
+      setJobHistory((currentHistory) => {
+        const nextHistory = [finalized, ...currentHistory.filter((job) => job.id !== jobId)].slice(0, JOB_HISTORY_LIMIT)
+        persistJobHistory(nextHistory)
+        return nextHistory
+      })
+    },
+    [],
   )
 
   const finalizeLiveWorkerJob = useCallback(async (
@@ -540,7 +558,12 @@ export function useSyncOperations({
   ) => {
     if (exitCode === 0) {
       clearPersistedJob()
-      finalizeJob(jobId, 'completed', def.summary)
+      try {
+        const state = await workerClient.getJob(serverJobId)
+        finalizeJob(jobId, 'completed', state.notes || def.summary, buildAnalyzeCompletionLines(state))
+      } catch {
+        finalizeJob(jobId, 'completed', def.summary)
+      }
       return
     }
 

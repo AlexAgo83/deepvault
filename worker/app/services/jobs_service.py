@@ -3,9 +3,13 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import re
 import threading
-from typing import Any, Dict, List, Optional
+import time
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
+
+import httpx
 
 from worker.app.config import Settings
 from worker.app.errors import http_error
@@ -27,6 +31,15 @@ DEFAULT_PROVIDER_MODELS = {
     "gemini": "gemini-2.0-flash",
     "anthropic": "claude-3-5-sonnet-latest",
 }
+ANALYSIS_PROMPT_CONTENT_LIMIT = 600
+ANALYSIS_MAX_OUTPUT_TOKENS = 350
+PROVIDER_COST_PER_1K_TOKENS: Dict[str, Dict[str, float]] = {
+    "openai":    {"input": 0.005,  "output": 0.015},
+    "anthropic": {"input": 0.004,  "output": 0.012},
+    "gemini":    {"input": 0.0025, "output": 0.0075},
+    "local":     {"input": 0.0,    "output": 0.0},
+}
+PROVIDER_CALL_TIMEOUT = 30.0
 
 
 def build_evaluation_rows() -> List[Dict[str, Any]]:
@@ -449,13 +462,23 @@ class JobsService:
         limit = max(1, int(env.get("DEEPVAULT_ANALYZE_LIMIT") or DEFAULT_ANALYZE_LIMIT))
         model = DEFAULT_PROVIDER_MODELS.get(provider, DEFAULT_PROVIDER_MODELS["local"])
 
+        # Resolve API key for the requested provider
+        api_key = ""
+        if provider == "anthropic":
+            api_key = str(env.get("ANTHROPIC_API_KEY") or self._settings.anthropic_api_key).strip()
+        elif provider == "openai":
+            api_key = str(env.get("OPENAI_API_KEY") or self._settings.openai_api_key).strip()
+        elif provider == "gemini":
+            api_key = str(env.get("GEMINI_API_KEY") or self._settings.gemini_api_key).strip()
+        use_provider = provider != "local" and bool(api_key)
+
         self._append_event(
             job_id,
             "progress",
             {
                 "step": "load-corpus",
                 "pct": 10,
-                "message": f"Loading {mode} corpus for analysis...",
+                "message": f"Loading {mode} corpus for analysis ({provider}{'' if use_provider else ' — no API key, using local heuristic'})...",
             },
         )
         corpus_path = self._corpus_service.resolve_job_corpus_path(mode=mode, input_path=input_path)
@@ -468,9 +491,16 @@ class JobsService:
         excluded = 0
         reused = 0
         stale = 0
+        actual_input_tokens = 0
+        actual_output_tokens = 0
+        provider_attempts = 0
+        provider_successes = 0
+        provider_fallbacks = 0
+        provider_failure_reasons: Dict[str, int] = {}
         selection_reasons: Dict[str, int] = {}
         exclusion_reasons: Dict[str, int] = {}
         analyzed_documents: List[Dict[str, Any]] = []
+        job_started_at = time.monotonic()
 
         for index, document in enumerate(documents):
             current_job = self._runtime_store.read_job_metadata(job_id) or {}
@@ -520,7 +550,34 @@ class JobsService:
                 analyzed += 1
                 selection_reason = self._select_analysis_candidate_reason(document)
                 selection_reasons[selection_reason] = selection_reasons.get(selection_reason, 0) + 1
-                analysis = self._build_local_analysis(document, provider=provider, model=model, content_hash=content_hash)
+
+                if use_provider:
+                    provider_attempts += 1
+                    provider_result, in_tok, out_tok, failure_reason = self._run_provider_analysis(
+                        document, provider, model, api_key, content_hash
+                    )
+                    actual_input_tokens += in_tok
+                    actual_output_tokens += out_tok
+                    if provider_result is not None:
+                        analysis = provider_result
+                        provider_successes += 1
+                    else:
+                        fallback_reason = failure_reason or "provider_analysis_unavailable"
+                        provider_failure_reasons[fallback_reason] = provider_failure_reasons.get(fallback_reason, 0) + 1
+                        provider_fallbacks += 1
+                        heuristic = self._build_local_analysis(document, provider=provider, model=model, content_hash=content_hash)
+                        analysis = {
+                            **heuristic,
+                            "provider": "local",
+                            "model": DEFAULT_PROVIDER_MODELS["local"],
+                            "requestedProvider": provider,
+                            "requestedModel": model,
+                            "providerStatus": "fallback",
+                            "fallbackReason": fallback_reason,
+                        }
+                else:
+                    analysis = self._build_local_analysis(document, provider=provider, model=model, content_hash=content_hash)
+
                 analyzed_documents.append({**document, "analysis": analysis})
             except Exception as exc:
                 failed += 1
@@ -539,13 +596,16 @@ class JobsService:
 
             pct = 10 + round(((index + 1) / max(total_documents, 1)) * 75)
             if analyzed > 0 and (analyzed == limit or analyzed % 5 == 0):
+                progress_msg = f"Analyzed {analyzed}/{limit} documents."
+                if use_provider:
+                    progress_msg += f" (provider: {provider_successes} ok, {provider_fallbacks} fallback)"
                 self._append_event(
                     job_id,
                     "progress",
                     {
                         "step": "analyze-documents",
                         "pct": min(pct, 90),
-                        "message": f"Analyzed {analyzed}/{limit} documents.",
+                        "message": progress_msg,
                     },
                 )
 
@@ -564,6 +624,15 @@ class JobsService:
             self._runtime_store.analyzed_corpus_path(),
             analyzed_corpus,
         )
+        elapsed_ms = round((time.monotonic() - job_started_at) * 1000)
+        estimated_input_tokens = analyzed * 900
+        estimated_output_tokens = analyzed * 220
+        has_actual_tokens = actual_input_tokens > 0 or actual_output_tokens > 0
+        token_count_mode = "actual" if has_actual_tokens else "estimated"
+        pricing = PROVIDER_COST_PER_1K_TOKENS.get(provider if use_provider else "local", PROVIDER_COST_PER_1K_TOKENS["local"])
+        in_tok = actual_input_tokens if has_actual_tokens else estimated_input_tokens
+        out_tok = actual_output_tokens if has_actual_tokens else estimated_output_tokens
+        estimated_cost_usd = round((in_tok / 1000) * pricing["input"] + (out_tok / 1000) * pricing["output"], 6)
         report = {
             "schemaVersion": "1.0",
             "analysisVersion": ANALYSIS_VERSION,
@@ -584,20 +653,83 @@ class JobsService:
             "stale": stale,
             "exclusionReasons": exclusion_reasons,
             "selectionReasons": selection_reasons,
-            "estimatedInputTokens": analyzed * 900,
-            "estimatedOutputTokens": analyzed * 220,
-            "estimatedCostUsd": 0,
-            "actualInputTokens": 0,
-            "actualOutputTokens": 0,
-            "tokenCountMode": "estimated",
-            "providerAttempts": 0 if provider == "local" else analyzed,
-            "providerSuccesses": 0,
-            "providerFallbacks": analyzed if provider != "local" else 0,
-            "providerFailureReasons": {} if provider == "local" else {"provider_not_wired_on_worker_yet": analyzed},
-            "elapsedMs": 0,
-            "averageDocumentMs": 0,
+            "estimatedInputTokens": estimated_input_tokens,
+            "estimatedOutputTokens": estimated_output_tokens,
+            "estimatedCostUsd": estimated_cost_usd,
+            "actualInputTokens": actual_input_tokens,
+            "actualOutputTokens": actual_output_tokens,
+            "tokenCountMode": token_count_mode,
+            "providerAttempts": provider_attempts,
+            "providerSuccesses": provider_successes,
+            "providerFallbacks": provider_fallbacks,
+            "providerFailureReasons": provider_failure_reasons,
+            "elapsedMs": elapsed_ms,
+            "averageDocumentMs": round(elapsed_ms / analyzed) if analyzed > 0 else 0,
         }
         report_path = self._runtime_store.write_json_artifact(self._runtime_store.analyze_report_path(), report)
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "analysis-summary",
+                "pct": 98,
+                "message": f"Provider: {provider}",
+            },
+        )
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "analysis-summary",
+                "pct": 98,
+                "message": f"Model: {model}",
+            },
+        )
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "analysis-summary",
+                "pct": 98,
+                "message": f"Token count mode: {token_count_mode}",
+            },
+        )
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "analysis-summary",
+                "pct": 98,
+                "message": f"Actual input tokens: {actual_input_tokens}",
+            },
+        )
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "analysis-summary",
+                "pct": 98,
+                "message": f"Actual output tokens: {actual_output_tokens}",
+            },
+        )
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "analysis-summary",
+                "pct": 98,
+                "message": f"Provider successes: {provider_successes}",
+            },
+        )
+        self._append_event(
+            job_id,
+            "progress",
+            {
+                "step": "analysis-summary",
+                "pct": 98,
+                "message": f"Provider fallbacks: {provider_fallbacks}",
+            },
+        )
         return {
             "summary": f"Analyze completed: wrote {analyzed_corpus_path.name} and {report_path.name}.",
             "mode": mode,
@@ -611,6 +743,12 @@ class JobsService:
             "reused": reused,
             "stale": stale,
             "failed": failed,
+            "actualInputTokens": actual_input_tokens,
+            "actualOutputTokens": actual_output_tokens,
+            "tokenCountMode": token_count_mode,
+            "providerAttempts": provider_attempts,
+            "providerSuccesses": provider_successes,
+            "providerFallbacks": provider_fallbacks,
         }
 
     def _run_publish_analysis_job(self, job_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -745,6 +883,190 @@ class JobsService:
         if provider != "local":
             analysis["fallbackReason"] = "provider_not_wired_on_worker_yet"
         return analysis
+
+    # ------------------------------------------------------------------
+    # Provider-backed analysis
+    # ------------------------------------------------------------------
+
+    def _build_provider_prompt(self, document: Dict[str, Any]) -> str:
+        content_snippet = str(document.get("content", ""))[:ANALYSIS_PROMPT_CONTENT_LIMIT].strip()
+        tags = document.get("tags", [])
+        tags_str = ", ".join(str(t) for t in tags) if isinstance(tags, list) and tags else "none"
+        return "\n".join([
+            "Analyze the document below and return a JSON object with these exact fields:",
+            '- "summary": 1-2 sentence summary (string)',
+            '- "keywords": up to 8 relevant keywords (array of strings)',
+            '- "sections": up to 4 sections each with "heading" (string) and "content" (string) (array)',
+            '- "documentType": document type such as report, policy, spreadsheet, presentation (string)',
+            '- "confidence": confidence score 55-95 (number)',
+            "Return only the JSON object, no other text.",
+            "",
+            f"Title: {document.get('title', '')}",
+            f"Tags: {tags_str}",
+            f"Content snippet:\n{content_snippet}",
+        ])
+
+    def _parse_provider_response(
+        self,
+        raw_text: str,
+        document: Dict[str, Any],
+        content_hash: str,
+        provider: str,
+        model: str,
+    ) -> Optional[Dict[str, Any]]:
+        match = re.search(r"\{[\s\S]*\}", raw_text)
+        if not match:
+            return None
+        try:
+            parsed = json.loads(match.group(0))
+        except (json.JSONDecodeError, ValueError):
+            return None
+        summary = str(parsed.get("summary", "")).strip()
+        if not summary:
+            return None
+        raw_keywords = parsed.get("keywords", [])
+        keywords = [k for k in raw_keywords if isinstance(k, str)][:8] or self._build_keywords(document)
+        raw_sections = parsed.get("sections", [])
+        sections = [
+            s for s in raw_sections
+            if isinstance(s, dict) and isinstance(s.get("heading"), str) and isinstance(s.get("content"), str)
+        ][:4] or self._build_analysis_sections(document)
+        document_type = str(parsed.get("documentType") or self._infer_document_type(document))
+        try:
+            confidence = max(55, min(95, int(parsed["confidence"])))
+        except (KeyError, TypeError, ValueError):
+            confidence = 75
+        return {
+            "status": "analyzed",
+            "version": ANALYSIS_VERSION,
+            "provider": provider,
+            "requestedProvider": provider,
+            "model": model,
+            "requestedModel": model,
+            "analyzedAt": utc_now_iso(),
+            "contentHash": content_hash,
+            "summary": summary,
+            "keywords": keywords,
+            "sections": sections,
+            "documentType": document_type,
+            "confidence": confidence,
+            "providerStatus": "provider",
+        }
+
+    def _call_anthropic(
+        self, prompt: str, model: str, api_key: str
+    ) -> Tuple[Optional[str], int, int, Optional[str]]:
+        try:
+            response = httpx.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={
+                    "x-api-key": api_key,
+                    "anthropic-version": "2023-06-01",
+                    "content-type": "application/json",
+                },
+                json={
+                    "model": model,
+                    "max_tokens": ANALYSIS_MAX_OUTPUT_TOKENS,
+                    "temperature": 0,
+                    "messages": [{"role": "user", "content": prompt}],
+                },
+                timeout=PROVIDER_CALL_TIMEOUT,
+            )
+            if not response.is_success:
+                return None, 0, 0, f"http_{response.status_code}"
+            data = response.json()
+            text = " ".join(
+                block.get("text", "") for block in data.get("content", []) if block.get("type") == "text"
+            ).strip()
+            usage = data.get("usage", {})
+            return text or None, usage.get("input_tokens", 0), usage.get("output_tokens", 0), None
+        except Exception as exc:
+            return None, 0, 0, str(exc)
+
+    def _call_openai(
+        self, prompt: str, model: str, api_key: str
+    ) -> Tuple[Optional[str], int, int, Optional[str]]:
+        try:
+            response = httpx.post(
+                "https://api.openai.com/v1/responses",
+                headers={"Authorization": f"Bearer {api_key}", "content-type": "application/json"},
+                json={
+                    "model": model,
+                    "reasoning": {"effort": "low"},
+                    "max_output_tokens": ANALYSIS_MAX_OUTPUT_TOKENS,
+                    "input": [{"role": "user", "content": prompt}],
+                },
+                timeout=PROVIDER_CALL_TIMEOUT,
+            )
+            if not response.is_success:
+                return None, 0, 0, f"http_{response.status_code}"
+            data = response.json()
+            text: Optional[str] = None
+            for item in data.get("output", []):
+                for part in item.get("content", []):
+                    if part.get("type") == "output_text" and part.get("text"):
+                        text = str(part["text"]).strip()
+                        break
+            if not text:
+                text = str(data.get("output_text", "")).strip() or None
+            usage = data.get("usage", {})
+            return text, usage.get("input_tokens", 0), usage.get("output_tokens", 0), None if text else "empty_response"
+        except Exception as exc:
+            return None, 0, 0, str(exc)
+
+    def _call_gemini(
+        self, prompt: str, model: str, api_key: str
+    ) -> Tuple[Optional[str], int, int, Optional[str]]:
+        try:
+            response = httpx.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+                headers={"content-type": "application/json", "x-goog-api-key": api_key},
+                json={
+                    "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                    "generationConfig": {"temperature": 0, "maxOutputTokens": ANALYSIS_MAX_OUTPUT_TOKENS},
+                },
+                timeout=PROVIDER_CALL_TIMEOUT,
+            )
+            if not response.is_success:
+                return None, 0, 0, f"http_{response.status_code}"
+            data = response.json()
+            candidates = data.get("candidates", [])
+            text: Optional[str] = None
+            if candidates:
+                parts = candidates[0].get("content", {}).get("parts", [])
+                text = " ".join(p.get("text", "") for p in parts).strip() or None
+            metadata = data.get("usageMetadata", {})
+            failure = None if text else "empty_response"
+            return text, metadata.get("promptTokenCount", 0), metadata.get("candidatesTokenCount", 0), failure
+        except Exception as exc:
+            return None, 0, 0, str(exc)
+
+    def _run_provider_analysis(
+        self,
+        document: Dict[str, Any],
+        provider: str,
+        model: str,
+        api_key: str,
+        content_hash: str,
+    ) -> Tuple[Optional[Dict[str, Any]], int, int, Optional[str]]:
+        """Call the requested AI provider and return (analysis, input_tokens, output_tokens, failure_reason)."""
+        prompt = self._build_provider_prompt(document)
+        if provider == "anthropic":
+            text, input_tok, output_tok, err = self._call_anthropic(prompt, model, api_key)
+        elif provider == "openai":
+            text, input_tok, output_tok, err = self._call_openai(prompt, model, api_key)
+        elif provider == "gemini":
+            text, input_tok, output_tok, err = self._call_gemini(prompt, model, api_key)
+        else:
+            return None, 0, 0, "unsupported_provider"
+
+        if err or not text:
+            return None, input_tok, output_tok, err or "empty_response"
+
+        analysis = self._parse_provider_response(text, document, content_hash, provider, model)
+        if analysis is None:
+            return None, input_tok, output_tok, "invalid_json_response"
+        return analysis, input_tok, output_tok, None
 
     def _should_reuse_existing_analysis(self, analysis: Any, content_hash: str) -> bool:
         if not isinstance(analysis, dict):

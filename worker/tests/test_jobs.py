@@ -114,6 +114,83 @@ def test_jobs_service_analyze_falls_back_to_local_when_provider_requested(tmp_pa
     assert '"providerStatus": "fallback"' in analyzed_corpus
 
 
+def test_jobs_service_analyze_uses_provider_when_key_is_configured(tmp_path, monkeypatch) -> None:
+    service = build_jobs_service(tmp_path)
+
+    class FakeResponse:
+        status_code = 200
+        is_success = True
+
+        def json(self) -> dict:
+            return {
+                "output": [
+                    {
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": json.dumps(
+                                    {
+                                        "summary": "Provider summary.",
+                                        "keywords": ["budget", "q3"],
+                                        "sections": [{"heading": "Overview", "content": "Provider-generated overview."}],
+                                        "documentType": "report",
+                                        "confidence": 87,
+                                    }
+                                ),
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 120,
+                    "output_tokens": 45,
+                },
+            }
+
+    monkeypatch.setattr("worker.app.services.jobs_service.httpx.post", lambda *args, **kwargs: FakeResponse())
+
+    started = service.start_job(
+        job_type="analyze",
+        options={
+            "env": {
+                "DEEPVAULT_DATA_MODE": "mock",
+                "DEEPVAULT_ANALYZE_PROVIDER": "openai",
+                "OPENAI_API_KEY": "test-openai-key",
+                "DEEPVAULT_ANALYZE_LIMIT": "1",
+            }
+        },
+    )
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    assert completed["status"] == "succeeded"
+    assert completed["result"]["provider"] == "openai"
+    assert completed["result"]["actualInputTokens"] == 120
+    assert completed["result"]["actualOutputTokens"] == 45
+    assert completed["result"]["tokenCountMode"] == "actual"
+    assert completed["result"]["providerSuccesses"] == 1
+    assert completed["result"]["providerFallbacks"] == 0
+
+    analyzed_corpus = json.loads((tmp_path / "analyzed-corpus.json").read_text(encoding="utf-8"))
+    first_analysis = analyzed_corpus["documents"][0]["analysis"]
+    assert first_analysis["provider"] == "openai"
+    assert first_analysis["providerStatus"] == "provider"
+    assert first_analysis["summary"] == "Provider summary."
+
+    report = json.loads((tmp_path / "analyze-report.json").read_text(encoding="utf-8"))
+    assert report["actualInputTokens"] == 120
+    assert report["actualOutputTokens"] == 45
+    assert report["tokenCountMode"] == "actual"
+    assert report["providerSuccesses"] == 1
+    assert report["providerFallbacks"] == 0
+
+    events = service._runtime_store.read_job_events(started["jobId"])
+    lines = [event["data"]["message"] for event in events if event.get("event") == "progress" and isinstance(event.get("data"), dict)]
+    assert "Provider: openai" in lines
+    assert "Model: gpt-5.4-mini" in lines
+    assert "Actual input tokens: 120" in lines
+    assert "Actual output tokens: 45" in lines
+
+
 def test_jobs_service_runs_export_live_and_writes_live_artifacts(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
 
