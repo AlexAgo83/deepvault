@@ -4,6 +4,8 @@
 .DS_Store
 node_modules/
 .venv-worker/
+__pycache__/
+*.pyc
 .claude/
 .code-review-graph/
 dist/
