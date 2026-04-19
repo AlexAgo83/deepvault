@@ -162,11 +162,14 @@ describe('createWorkerClient — remote mode', () => {
     expect((options.headers as Record<string, string>)['Authorization']).toBeUndefined()
   })
 
-  it('rejects remote worker configs without https or token', () => {
-    expect(() => createWorkerClient({ ...REMOTE_CONFIG, workerUrl: 'http://worker.example.com' })).toThrow(
+  it('rejects remote worker configs without https or token when the client is used', async () => {
+    const insecureClient = createWorkerClient({ ...REMOTE_CONFIG, workerUrl: 'http://worker.example.com' })
+    await expect(insecureClient.checkHealth()).rejects.toThrow(
       'Remote worker mode requires an https workerUrl.',
     )
-    expect(() => createWorkerClient({ ...REMOTE_CONFIG, workerToken: '' })).toThrow(
+
+    const missingTokenClient = createWorkerClient({ ...REMOTE_CONFIG, workerToken: '' })
+    await expect(missingTokenClient.checkHealth()).rejects.toThrow(
       'Remote worker mode requires a workerToken.',
     )
   })

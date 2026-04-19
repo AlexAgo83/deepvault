@@ -18,9 +18,9 @@
     "docker:stop": "docker stop deepvault-worker-dev",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest",
+    "test": "vitest run --configLoader runner",
+    "test:coverage": "vitest run --configLoader runner --coverage",
+    "test:watch": "vitest --configLoader runner",
     "e2e": "node scripts/run-with-cleanup.mjs playwright test --config playwright.e2e.config.js",
     "e2e:pwa-refresh": "node scripts/run-with-cleanup.mjs playwright test --config playwright.pwa-refresh.config.js",
     "ingest": "node scripts/run-with-cleanup.mjs tsx scripts/ingest.ts",
@@ -60,7 +60,7 @@
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.1",
     "vite": "^6.3.5",
-    "vite-plugin-pwa": "^1.0.3",
+    "vite-plugin-pwa": "^0.19.8",
     "vitest": "^3.2.4"
   }
 }

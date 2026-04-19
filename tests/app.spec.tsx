@@ -574,7 +574,9 @@ describe('DeepVault app', () => {
       mockEs?.onerror?.()
     })
 
-    expect(screen.getAllByText('failed').length).toBeGreaterThan(0)
+    await waitFor(() => {
+      expect(screen.getByText('Ingest failed.')).toBeInTheDocument()
+    })
   })
 
   it('cancels a running job and sends the cancel request to the server', async () => {
