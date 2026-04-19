@@ -202,7 +202,6 @@ export function AppSidebar({
   onRequestCloseMobileMenu: () => void
   showArtifactsTab: boolean
 }) {
-  const appBuildLabel = __APP_BUILD_ID__.slice(0, 16).replace('T', ' ')
   const navSections = NAV_SECTIONS.map((section) => ({
     ...section,
     items: section.items.filter((item) => (item.id === 'artifacts' ? showArtifactsTab : true)),
@@ -288,7 +287,6 @@ export function AppSidebar({
       <div className="sidebar-version" aria-label="App version">
         <span>Nexus</span>
         <span>v{__APP_VERSION__}</span>
-        <span>{appBuildLabel}</span>
         <span>© {new Date().getFullYear()}</span>
       </div>
     </aside>

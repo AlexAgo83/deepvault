@@ -109,11 +109,10 @@ function validateRemoteConfig(config: WorkerClientConfig) {
 }
 
 function resolveBase(config: WorkerClientConfig): string {
-  validateRemoteConfig(config)
   if (config.workerMode === 'remote' && config.workerUrl) {
     return config.workerUrl.replace(/\/$/, '')
   }
-  // local mode: same origin
+  // local mode (or remote not yet configured): same origin
   return ''
 }
 
@@ -244,8 +243,7 @@ async function streamRemoteEvents(
   }
 }
 
-function mapJobKind(kind: WorkerJobKind): 'ingest' | 'analyze' | 'evaluate' | 'export-live' {
-  if (kind === 'publish-analysis') return 'analyze'
+function mapJobKind(kind: WorkerJobKind): 'ingest' | 'analyze' | 'publish-analysis' | 'evaluate' | 'export-live' {
   if (kind === 'export-live-resume') return 'export-live'
   return kind
 }
@@ -287,7 +285,10 @@ function mapWorkerJob(payload: Record<string, unknown>): WorkerJob {
 }
 
 export function createWorkerClient(config: WorkerClientConfig) {
-  const base = resolveBase(config)
+  function getBase(): string {
+    validateRemoteConfig(config)
+    return resolveBase(config)
+  }
   const auditContext: WorkerAuditContext = {
     launchedBy: 'deepvault-app-shell',
     client: 'deepvault-app-shell',
@@ -304,12 +305,14 @@ export function createWorkerClient(config: WorkerClientConfig) {
   const timeoutMs = config.workerTimeoutSeconds * 1000
 
   async function checkHealth(): Promise<WorkerHealth> {
+    const base = getBase()
     const res = await fetchWithTimeout(`${base}/api/health`, { headers }, timeoutMs)
     if (!res.ok) throw await buildResponseError(res, `Worker health check failed: ${res.status}`)
     return res.json() as Promise<WorkerHealth>
   }
 
   async function getEffectiveConfig(): Promise<WorkerEffectiveConfig> {
+    const base = getBase()
     const res = await fetchWithTimeout(`${base}/api/config/mode`, { headers }, timeoutMs)
     if (!res.ok) throw await buildResponseError(res, `Failed to fetch effective config: ${res.status}`)
     const payload = await res.json() as {
@@ -328,6 +331,7 @@ export function createWorkerClient(config: WorkerClientConfig) {
   }
 
   async function startJob(payload: WorkerStartJobPayload): Promise<WorkerStartJobResponse> {
+    const base = getBase()
     const res = await fetchWithTimeout(
       `${base}/api/jobs`,
       {
@@ -347,17 +351,20 @@ export function createWorkerClient(config: WorkerClientConfig) {
   }
 
   async function getJob(jobId: string): Promise<WorkerJob> {
+    const base = getBase()
     const res = await fetchWithTimeout(`${base}/api/jobs/${jobId}`, { headers }, timeoutMs)
     if (!res.ok) throw await buildResponseError(res, `Failed to fetch job ${jobId}: ${res.status}`)
     return mapWorkerJob(await res.json() as Record<string, unknown>)
   }
 
   async function cancelJob(jobId: string): Promise<void> {
+    const base = getBase()
     const res = await fetchWithTimeout(`${base}/api/jobs/${jobId}/cancel`, { method: 'POST', headers }, timeoutMs)
     if (!res.ok) throw await buildResponseError(res, `Failed to cancel job ${jobId}: ${res.status}`)
   }
 
   function openJobEvents(jobId: string): WorkerEventStream {
+    const base = getBase()
     if (config.workerMode !== 'remote') {
       return new EventSource(`${base}/api/jobs/${jobId}/events`) as unknown as WorkerEventStream
     }

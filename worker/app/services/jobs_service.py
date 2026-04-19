@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import json
 import threading
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
@@ -15,8 +16,8 @@ from worker.app.services.corpus_service import CorpusService
 from worker.app.services.live_export_service import LiveExportService
 
 
-SUPPORTED_JOB_TYPES = {"ingest", "analyze", "evaluate", "export-live"}
-ALL_JOB_TYPES = {"ingest", "analyze", "evaluate", "export-live"}
+SUPPORTED_JOB_TYPES = {"ingest", "analyze", "publish-analysis", "evaluate", "export-live"}
+ALL_JOB_TYPES = {"ingest", "analyze", "publish-analysis", "evaluate", "export-live"}
 TERMINAL_STATUSES = {"succeeded", "failed", "cancelled"}
 ANALYSIS_VERSION = "1.0"
 DEFAULT_ANALYZE_LIMIT = 12
@@ -237,6 +238,8 @@ class JobsService:
                 result = self._run_ingest_job(job_id, options)
             elif job_type == "analyze":
                 result = self._run_analyze_job(job_id, options)
+            elif job_type == "publish-analysis":
+                result = self._run_publish_analysis_job(job_id, options)
             elif job_type == "evaluate":
                 result = self._run_evaluate_job(job_id)
             elif job_type == "export-live":
@@ -608,6 +611,46 @@ class JobsService:
             "reused": reused,
             "stale": stale,
             "failed": failed,
+        }
+
+    def _run_publish_analysis_job(self, job_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        env = options.get("env", {}) if isinstance(options, dict) else {}
+        mode = "live" if env.get("DEEPVAULT_DATA_MODE") == "live" else "mock"
+
+        analyzed_path = self._runtime_store.analyzed_corpus_path()
+        if not analyzed_path.exists():
+            raise FileNotFoundError(
+                f"Analyzed corpus not found at {analyzed_path}. Run Analyze first."
+            )
+
+        self._append_event(job_id, "progress", {"step": "load-analyzed", "pct": 20, "message": "Loading analyzed corpus..."})
+        corpus = json.loads(analyzed_path.read_text(encoding="utf-8"))
+
+        self._append_event(job_id, "progress", {"step": "publish-live-corpus", "pct": 55, "message": "Publishing analyzed corpus to live-corpus.json..."})
+        live_corpus_path = self._runtime_store.live_corpus_path()
+        self._runtime_store.write_json_artifact(live_corpus_path, corpus)
+
+        self._append_event(job_id, "progress", {"step": "write-sync-state", "pct": 85, "message": "Refreshing sync snapshot..."})
+        from worker.app.services.live_export_service import LiveExportService
+        sync_payload = LiveExportService(
+            settings=self._settings,
+            runtime_store=self._runtime_store,
+            corpus_service=self._corpus_service,
+        )._build_sync_state_payload(corpus=corpus, mode=mode, corpus_path=live_corpus_path)
+        self._runtime_store.write_sync_state(sync_payload, mode=mode)
+
+        documents = corpus.get("documents", []) if isinstance(corpus.get("documents"), list) else []
+        analyzed_count = sum(
+            1 for doc in documents
+            if isinstance(doc, dict) and isinstance(doc.get("analysis"), dict) and doc["analysis"].get("status") == "analyzed"
+        )
+        return {
+            "summary": f"Publish-analysis completed: {analyzed_count}/{len(documents)} documents analyzed in {live_corpus_path.name}.",
+            "mode": mode,
+            "inputPath": str(analyzed_path),
+            "outputPath": str(live_corpus_path),
+            "documentCount": len(documents),
+            "analyzedCount": analyzed_count,
         }
 
     def _run_export_live_job(self, job_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
