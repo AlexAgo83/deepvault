@@ -33,6 +33,20 @@ def test_config_mode_route_returns_runtime_projection() -> None:
     assert payload["timestamp"].endswith("Z")
 
 
+def test_cors_preflight_is_allowed_when_worker_auth_is_disabled() -> None:
+    response = client.options(
+        "/api/health",
+        headers={
+            "Origin": "http://localhost:4173",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "authorization",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "*"
+
+
 def test_corpus_route_returns_mock_corpus_with_etag() -> None:
     response = client.get("/api/corpus")
 
