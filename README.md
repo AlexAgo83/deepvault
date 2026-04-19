@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4C8BF5" alt="MIT License" /></a>
-  <img src="https://img.shields.io/badge/version-v1.4.0-4C8BF5" alt="Version 1.4.0" />
+  <img src="https://img.shields.io/badge/version-v1.5.0-4C8BF5" alt="Version 1.5.0" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript Strict" />
   <img src="https://img.shields.io/badge/local--first-deepvault-0F766E" alt="Local first" />
@@ -18,12 +18,12 @@ DeepVault Nexus is the web platform used to administer and validate that solutio
 ```mermaid
 flowchart LR
     subgraph Browser["Browser (PWA)"]
-        UI["React UI\nExplorer · Bishop · Knowledge\nArtifacts · AI View · Settings"]
+        UI["React UI\nExplorer / Bishop / Knowledge\nArtifacts / AI View / Settings"]
     end
 
     subgraph Worker["Python Worker (FastAPI :8000)"]
         API["REST API + SSE streams"]
-        Jobs["Job engine\ningest · analyze · publish-analysis\nevaluate · export-live"]
+        Jobs["Job engine\ningest / analyze / publish-analysis\nevaluate / export-live"]
     end
 
     subgraph Sources["Data sources"]
@@ -31,7 +31,7 @@ flowchart LR
         Mock["Mock corpus\ndata/mock/"]
     end
 
-    Browser -->|"/api/* — local proxy\nor remote HTTPS"| Worker
+    Browser -->|"/api/* - local proxy\nor remote HTTPS"| Worker
     Worker --> SP
     Worker --> Mock
     Worker -->|"writes"| Corpus["public/live-corpus.json"]
@@ -51,7 +51,7 @@ flowchart TD
     LC -->|"analyze job"| AC["data/runtime/analyzed-corpus.json"]
     AC -->|"publish-analysis job"| LC2["public/live-corpus.json\n(with analysis enrichment)"]
 
-    LC -->|"browser loads"| UI["Explorer · Bishop · Knowledge · AI View"]
+    LC -->|"browser loads"| UI["Explorer / Bishop / Knowledge / AI View"]
     LC2 -->|"browser loads"| UI
     SS -->|"browser loads"| UI
     SSL -->|"browser loads"| UI
@@ -59,24 +59,24 @@ flowchart TD
 
 ## What You Get
 
-- **Explorer** — browse sources, inspect documents, filter by site and role
-- **Bishop** — permission-aware grounded Q&A with source traces
-- **Knowledge** — coverage, refresh timing, provenance, and the streamed operations console
-- **Artifacts** — generated-output inspection, processed-file drill-down, debugging records
-- **AI View** — response confidence, recent answers, inputs that would have improved the answer
-- **Settings** — runtime scope, assistant-context tuning, role selection, provider selection, worker connection
+- **Explorer** - browse sources, inspect documents, filter by site and role
+- **Bishop** - permission-aware grounded Q&A with source traces
+- **Knowledge** - coverage, refresh timing, provenance, and the streamed operations console
+- **Artifacts** - generated-output inspection, processed-file drill-down, debugging records
+- **AI View** - response confidence, recent answers, inputs that would have improved the answer
+- **Settings** - runtime scope, assistant-context tuning, role selection, provider selection, worker connection
 
 ## Requirements
 
 - Node 22 + npm
 - Python 3.9+ (for local worker)
-- Docker Desktop (optional — for running the worker as a container)
+- Docker Desktop (optional - for running the worker as a container)
 
 ## Install
 
 ```bash
 npm install
-cp .env.exemple .env.local   # Windows: copy .env.exemple .env.local
+cp .env.example .env.local   # Windows: copy .env.example .env.local
 ```
 
 Edit `.env.local` with your values. Never commit it.
@@ -95,16 +95,16 @@ pip install -r worker/requirements.txt
 
 | Goal | Command |
 |---|---|
-| **Dev — frontend only** (mock corpus, no worker) | `npm run dev` |
-| **Dev — full stack** (worker + Vite, one terminal) | `npm run dev:all` |
-| **Dev — stop full stack** | `Ctrl+C` in the terminal |
-| **Dev — worker only** (attach your own Vite) | `npm run dev:worker` |
-| **Dev — worker in Docker** (remote mode) | `npm run docker:build` then `npm run docker:worker`; set `VITE_WORKER_PROXY_TARGET=http://localhost:8001` before `npm run dev` |
-| **Dev — stop Docker worker** | `npm run docker:stop` (from any terminal) |
-| **Prod — build + start stack** | `npm run prod` |
-| **Prod — start existing containers** | `npm run prod:up` |
-| **Prod — stop containers** | `npm run prod:down` |
-| **Prod — follow logs** | `npm run prod:logs` |
+| **Dev - frontend only** (mock corpus, no worker) | `npm run dev` |
+| **Dev - full stack** (worker + Vite, one terminal) | `npm run dev:all` |
+| **Dev - stop full stack** | `Ctrl+C` in the terminal |
+| **Dev - worker only** (attach your own Vite) | `npm run dev:worker` |
+| **Dev - worker in Docker** (remote mode) | `npm run docker:build` then `npm run docker:worker`; set `VITE_WORKER_PROXY_TARGET=http://localhost:8001` before `npm run dev` |
+| **Dev - stop Docker worker** | `npm run docker:stop` (from any terminal) |
+| **Prod - build + start stack** | `npm run prod` |
+| **Prod - start existing containers** | `npm run prod:up` |
+| **Prod - stop containers** | `npm run prod:down` |
+| **Prod - follow logs** | `npm run prod:logs` |
 | Export live corpus from SharePoint | `npm run export:live` |
 | Ingest mock corpus | `npm run ingest` |
 | Ingest live corpus | `npm run ingest:live -- --input public/live-corpus.json` |
@@ -119,7 +119,7 @@ pip install -r worker/requirements.txt
 
 ## Running Locally
 
-### Option A — one terminal (recommended)
+### Option A - one terminal (recommended)
 
 Starts the Python worker and the Vite dev server together, with prefixed, colour-coded output:
 
@@ -135,22 +135,22 @@ Worker only (attach your own Vite separately):
 npm run dev:worker
 ```
 
-### Option B — two terminals
+### Option B - two terminals
 
-Terminal 1 — Python worker:
+Terminal 1 - Python worker:
 
 ```bash
 . .venv-worker/bin/activate
 python3 -m uvicorn worker.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Terminal 2 — Vite dev server:
+Terminal 2 - Vite dev server:
 
 ```bash
 npm run dev
 ```
 
-Vite proxies `/api/*` to `http://localhost:8000` automatically.
+Vite proxies `/api/*` to `http://localhost:8000` automatically, unless `VITE_WORKER_PROXY_TARGET` is set.
 
 ### Mock corpus (default)
 
@@ -170,7 +170,7 @@ The app loads `public/live-corpus.json`. Falls back to mock if the file is missi
 
 ## Running the Worker in Docker (remote mode)
 
-Use this to test the `remote` worker mode — the frontend connects to the worker over HTTP instead of the same-origin proxy.
+Use this to test the `remote` worker mode - the frontend connects to the worker over HTTP instead of the same-origin proxy.
 
 ### 1. Build the image
 
@@ -193,17 +193,17 @@ When the frontend runs locally against that container, set `VITE_WORKER_PROXY_TA
 npm run docker:stop
 ```
 
-Works from any terminal — no need to find the container ID.
+Works from any terminal - no need to find the container ID.
 
 ### 4. Configure Settings
 
-In the app, go to **Settings → Worker**:
+In the app, go to **Settings -> Worker**:
 
 | Field | Value |
 |---|---|
 | Worker mode | `remote` |
 | Worker URL | `http://localhost:8001` |
-| Worker token | *(leave blank — no auth in dev)* |
+| Worker token | any non-empty value, for example `dev-token` |
 
 Or pre-seed these values in `.env.local` so Settings opens pre-filled on first load:
 
@@ -218,7 +218,7 @@ Then run the frontend against the Docker worker:
 npm run dev
 ```
 
-> **Note:** `VITE_WORKER_MODE` and `VITE_WORKER_URL` only seed the defaults the first time Settings is loaded on a given device. Once saved, localStorage takes precedence. The worker token is never read from env — enter it manually in Settings.
+> **Note:** `VITE_WORKER_MODE` and `VITE_WORKER_URL` only seed the defaults the first time Settings is loaded on a given device. Once saved, localStorage takes precedence. The worker token is never read from env - enter it manually in Settings, and use any non-empty value for local Docker dev.
 
 ---
 
@@ -237,11 +237,11 @@ DEEPVAULT_ENTRA_SITES=https://yourtenant.sharepoint.com/sites/site1
 DEEPVAULT_PILOT_SITE_NAMES=Site 1
 ```
 
-See [`.env.exemple`](./.env.exemple) for the full reference.
+See [`.env.example`](./.env.example) for the full reference.
 
 ### 2. Run Start Sync from the app (recommended)
 
-Open **Knowledge → Operations** and press **Start Sync**. The streamed log shows progress, and in delegated mode it prints the device-code URL in both the terminal and the operations console so you can authenticate.
+Open **Knowledge -> Operations** and press **Start Sync**. The streamed log shows progress, and in delegated mode it prints the device-code URL in both the terminal and the operations console so you can authenticate.
 
 ### 3. Or export from the CLI
 
@@ -269,19 +269,19 @@ flowchart TD
     AN --> PA["Publish Analysis\nmerge enrichment back to live corpus"]
     PA --> R
 
-    R --> UI["Explorer · Bishop · Knowledge · AI View\nupdated with latest data"]
+    R --> UI["Explorer / Bishop / Knowledge / AI View\nupdated with latest data"]
     I --> UI
     EV --> REPORT["Evaluation report\ndata/eval/"]
 ```
 
 Recommended sequence after a full live sync:
 
-1. **Start Sync** — generate the latest live corpus
-2. **Refresh** — load it into the current browser session
-3. **Ingest** — write the derived live sync snapshot
-4. **Analyze** — enrich documents with LLM summaries
-5. **Publish Analysis** — merge enrichment back to `public/live-corpus.json`
-6. **Evaluate** — validate retrieval quality on the enriched corpus
+1. **Start Sync** - generate the latest live corpus
+2. **Refresh** - load it into the current browser session
+3. **Ingest** - write the derived live sync snapshot
+4. **Analyze** - enrich documents with LLM summaries
+5. **Publish Analysis** - merge enrichment back to `public/live-corpus.json`
+6. **Evaluate** - validate retrieval quality on the enriched corpus
 
 ---
 
@@ -337,8 +337,8 @@ npm run ci:local
 ## Security Notes
 
 - Provider API keys entered in Settings are browser-scoped local values, not server-side secrets.
-- `VITE_*` variables are bundled into the frontend JavaScript — never put tokens or secrets in them.
-- The worker token (for remote mode) is kept in `sessionStorage` and must be entered manually in Settings.
+- `VITE_*` variables are bundled into the frontend JavaScript - never put tokens or secrets in them.
+- The worker token (for remote mode) is kept in `sessionStorage` and must be entered manually in Settings. For local Docker dev, any non-empty value works.
 - Worker jobs receive only the environment variables required for the selected operation.
 - Bishop conversation history lives in `localStorage` on the current device until you clear it.
 - Prefer `.env.local` and CLI workflows for higher-trust live export and evaluation runs.
@@ -369,6 +369,6 @@ These files can contain exported business content and must remain local.
 | Browser shows mock corpus in live mode | `public/live-corpus.json` missing | Run **Start Sync** or `npm run export:live` |
 | Device code URL not visible | Check both the `[worker]` terminal and the Operations console log | The URL appears in both after the latest fix |
 | Settings reset after browser clear | localStorage cleared | Re-enter Settings or set `VITE_WORKER_MODE` / `VITE_WORKER_URL` in `.env.local` |
-| Docker worker not reachable | Image not built | Run `npm run docker:build` first |
+| Docker worker not reachable | Image not built or proxy target not set | Run `npm run docker:build` first, then set `VITE_WORKER_PROXY_TARGET=http://localhost:8001` before `npm run dev` |
 | PWA showing stale build | Service worker cached old version | Run `npm run e2e -- tests/e2e/pwa-refresh.spec.ts` |
 | `npm run export:live` reuses old content | `--resume` flag active | Omit `--resume` to force a full fresh export |
