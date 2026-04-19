@@ -63,7 +63,10 @@ function extractFirstParagraph(lines: string[], startIndex: number): string {
 }
 
 function extractHighlights(lines: string[]): string[] {
-  const headlineIndex = lines.findIndex((line) => line.trim() === '### At a glance')
+  const headlineIndex = lines.findIndex((line) => {
+    const trimmed = line.trim()
+    return /^#{2,3}\s+(Major Highlights|Highlights|At a glance)$/i.test(trimmed)
+  })
   if (headlineIndex < 0) {
     return []
   }
@@ -82,12 +85,17 @@ function extractHighlights(lines: string[]): string[] {
 export function parseChangelogMarkdown(markdown: string): ParsedChangelog {
   const lines = markdown.split(/\r?\n/)
   const releaseDateLine = lines.find((line) => line.startsWith('Release date:'))
-  const titleIndex = lines.findIndex((line) => line.startsWith('## '))
-  const intro = titleIndex >= 0 ? extractFirstParagraph(lines, titleIndex + 1) : ''
+  const highlights = extractHighlights(lines)
+  const titleIndex = lines.findIndex((line) => {
+    const trimmed = line.trim()
+    return /^#{1,2}\s+(Changelog(?:\s*\(.+\))?|CHANGELOGS_[0-9_]+|DeepVault Nexus \d+\.\d+\.\d+)$/i.test(trimmed)
+  })
+  const introStart = titleIndex >= 0 ? titleIndex + 1 : 0
+  const intro = extractFirstParagraph(lines, introStart) || highlights[0] || ''
 
   return {
     releaseDate: releaseDateLine ? releaseDateLine.replace(/^Release date:\s*/, '').trim() || null : null,
     intro,
-    highlights: extractHighlights(lines),
+    highlights,
   }
 }
