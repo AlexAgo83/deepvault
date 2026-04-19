@@ -10,21 +10,19 @@ Release date: 2026-04-16
 - Getting started cards now carry per-panel icons so the onboarding modal matches the main navigation language.
 - The release adds `npm run ci:local` so lint, typecheck, coverage, build, evaluation, Playwright install, and e2e can be reproduced locally in one command.
 
-## Generated Commit Summary
-
-## Settings and Shell
+### Settings and Shell
 
 - Compacted the `Settings` layout by removing redundant summary cards and panel titles.
 - Fixed action rows so controls keep their natural height.
 - Added a top-level section switcher so the shell behaves more like a focused control surface.
 
-## AI View
+### AI View
 
 - Refined response cards with visible response identifiers and hidden unnecessary hover text.
 - Persisted reveal and hide state across rows.
 - Added a pinned `AI needs` donut above the scrollable detail list.
 
-## Validation and Tooling
+### Validation and Tooling
 
 - Added `npm run ci:local` so the local validation path mirrors the CI lane more closely.
 - Removed an obsolete `BishopPanel` prop.
