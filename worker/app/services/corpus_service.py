@@ -14,6 +14,9 @@ class CorpusService:
 
     def resolve_corpus_path(self) -> Path:
         if self._settings.worker_mode == "local":
+            live_path = self._settings.runtime_data_dir.parent.parent / "public" / "live-corpus.json"
+            if live_path.exists():
+                return live_path
             return self._settings.mock_corpus_path
         return self._settings.runtime_data_dir / "corpus-published.json"
 
