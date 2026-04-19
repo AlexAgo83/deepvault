@@ -18,6 +18,10 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './tests/setup.ts',
     globals: true,
+    pool: 'threads',
+    fileParallelism: false,
+    maxWorkers: 1,
+    minWorkers: 1,
     include: ['tests/**/*.spec.ts', 'tests/**/*.spec.tsx'],
     exclude: ['tests/e2e/**'],
     coverage: {
