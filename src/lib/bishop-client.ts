@@ -7,6 +7,7 @@ import type {
   UserRole,
 } from './deepvault'
 import { answerQuestion } from './corpus-grounding'
+import { resolveArtifactFields } from './bishop-orchestration'
 
 export interface BishopConversationTurn {
   role: 'user' | 'assistant'
@@ -85,6 +86,7 @@ function fallbackResult(
       limit: options.limit,
       candidateLimit: options.candidateLimit,
     })
+    const artifactFields = resolveArtifactFields(query, local.answer, local.status, local.sources)
     return {
       ...local,
       mode: local.status === 'answered' ? 'fallback' : 'grounded-only',
@@ -97,6 +99,7 @@ function fallbackResult(
         deniedSources: local.deniedSources,
         chunkCount: local.chunkCount,
       }),
+      ...artifactFields,
     }
   }
 
@@ -227,15 +230,15 @@ export async function askBishop(
         deniedSources,
         chunkCount: typeof payload.chunkCount === 'number' ? payload.chunkCount : 0,
       }),
-      artifactStatus:
-        payload.artifactStatus === 'none' ||
-        payload.artifactStatus === 'ready' ||
-        payload.artifactStatus === 'unsupported_format' ||
-        payload.artifactStatus === 'generation_failed'
-          ? payload.artifactStatus
-          : undefined,
-      artifactNotice: typeof payload.artifactNotice === 'string' ? payload.artifactNotice : undefined,
-      artifact: isRecord(payload.artifact) ? (payload.artifact as unknown as BishopArtifact) : undefined,
+      ...resolveArtifactFields(
+        query,
+        typeof payload.answer === 'string' && payload.answer.trim() ? payload.answer : '',
+        payload.status === 'answered' || payload.status === 'no_permitted_sources' || payload.status === 'no_answer'
+          ? (payload.status as string)
+          : 'no_answer',
+        sources,
+        isRecord(payload.artifact) ? payload.artifact : undefined,
+      ),
     }
   } catch {
     return fallbackResult(query, provider, 'request failed', { corpus, role, limit, candidateLimit })

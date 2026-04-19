@@ -512,6 +512,38 @@ function resolveArtifactOutcome(
   }
 }
 
+export function resolveArtifactFields(
+  query: string,
+  answer: string,
+  status: string,
+  sources: SourceRecord[],
+  remoteArtifact?: unknown,
+): { artifact?: BishopArtifact; artifactStatus: BishopArtifactStatus; artifactNotice?: string } {
+  if (isArtifactLike(remoteArtifact)) {
+    return { artifact: remoteArtifact, artifactStatus: 'ready', artifactNotice: `Artifact ready: ${remoteArtifact.filename}` }
+  }
+  const intent = inferArtifactIntent(query)
+  if (!intent.requested) return { artifactStatus: 'none' }
+  if (intent.unsupportedFormat) {
+    return {
+      artifactStatus: 'unsupported_format',
+      artifactNotice: `Unsupported format .${intent.unsupportedFormat}. Bishop supports .txt, .md, .json, and .csv.`,
+    }
+  }
+  if (!intent.format || status !== 'answered' || !answer.trim()) {
+    return {
+      artifactStatus: 'generation_failed',
+      artifactNotice: 'No grounded answer was available to package into a downloadable artifact.',
+    }
+  }
+  const packaged = buildArtifactFromAnswer(query, answer, sources, intent.format, intent.filename)
+  return {
+    artifact: packaged.artifact,
+    artifactStatus: 'ready',
+    artifactNotice: `Artifact ready: ${packaged.artifact.filename}`,
+  }
+}
+
 function withArtifactOutcome(
   query: string,
   result: BishopOrchestrationResult,

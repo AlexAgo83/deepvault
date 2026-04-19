@@ -72,10 +72,9 @@ function BishopIcon() {
 function SyncIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M10 4.3a5.7 5.7 0 0 1 4.8 2.6" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
-      <path d="m13.8 4.8 1.7 2.4-2.9.5" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M10 15.7a5.7 5.7 0 0 1-4.8-2.6" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
-      <path d="m6.2 15.2-1.7-2.4 2.9-.5" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+      <ellipse cx="10" cy="5.5" rx="4.8" ry="1.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M5.2 5.5v9c0 .83 2.15 1.5 4.8 1.5s4.8-.67 4.8-1.5v-9" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M5.2 10c0 .83 2.15 1.5 4.8 1.5s4.8-.67 4.8-1.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
     </svg>
   )
 }
@@ -83,8 +82,12 @@ function SyncIcon() {
 function SettingsIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <circle cx="10" cy="10" r="2.2" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <path d="M10 4.5v1.3m0 8.4v1.3M4.5 10h1.3m8.4 0h1.3m-8.2-4 1 1m6 6 1 1m0-8-1 1m-6 6-1 1" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M3.5 6h13" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M3.5 10h13" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M3.5 14h13" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <circle cx="7.5" cy="6" r="1.7" fill="none" stroke="currentColor" strokeWidth="1.3" />
+      <circle cx="12.5" cy="10" r="1.7" fill="none" stroke="currentColor" strokeWidth="1.3" />
+      <circle cx="7.5" cy="14" r="1.7" fill="none" stroke="currentColor" strokeWidth="1.3" />
     </svg>
   )
 }
@@ -128,8 +131,8 @@ function PwaInstallIcon() {
 function InfoIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <circle cx="10" cy="10" r="6.3" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <path d="M10 8.2v4.3M10 6.1h.01" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M10 8.5v5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M10 6h.01" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   )
 }
@@ -137,9 +140,8 @@ function InfoIcon() {
 function QuestionIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M7.7 7.7a2.5 2.5 0 1 1 4 2c-.7.5-1.3 1.1-1.3 2" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M10 14.3h.01" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
-      <circle cx="10" cy="10" r="6.3" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <path d="M7.5 7.5a2.7 2.7 0 1 1 4.3 2.2c-.8.55-1.3 1.2-1.3 2.1" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10 14.8h.01" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   )
 }
@@ -147,8 +149,8 @@ function QuestionIcon() {
 function StatsToggleIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <rect x="3.5" y="4.5" width="13" height="11" rx="1.6" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <path d="M6.2 13V9.6m3.1 3.4V7.4m3.1 5.6v-2.4m3.1 2.4V8.2" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M5.5 13.5h9" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M7 13V10.5m2.5 2.5V7.5m2.5 5.5V9.5m2.5 3.5V6.5" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
     </svg>
   )
 }
@@ -156,9 +158,9 @@ function StatsToggleIcon() {
 function ArtifactsIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <rect x="3" y="8.5" width="14" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <rect x="2" y="5.5" width="16" height="3.5" rx="1" fill="none" stroke="currentColor" strokeWidth="1.35" />
-      <path d="M8 5.5V4.5a2 2 0 0 1 4 0v1" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+      <path d="M5.5 3.5h7l3 3v10a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinejoin="round" />
+      <path d="M12.5 3.5v3h3" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M7.5 10.5h5M7.5 13h3" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
     </svg>
   )
 }

@@ -48,10 +48,10 @@ function readRightPanelState(): RightPanelState {
 
 function readStatsHeaderState(): StatsHeaderState {
   const defaultState: StatsHeaderState = {
-    settings: true,
-    sync: true,
-    'ai-stats': true,
-    artifacts: true,
+    settings: false,
+    sync: false,
+    'ai-stats': false,
+    artifacts: false,
   }
 
   try {

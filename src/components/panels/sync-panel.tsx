@@ -27,8 +27,8 @@ const OPS_CONFIG: Record<OpsKey, {
   analyze: {
     label: 'Analyze',
     tooltip: 'Post-ingest corpus enrichment with additive analysis blocks',
-    description: 'Scans the current corpus, selects bounded candidates, and writes additive analysis metadata to a derived runtime artifact.',
-    warning: 'This uses the bounded analysis path. Provider-backed enrichment is optional, but current local settings still affect the run.',
+    description: 'Scans the current corpus, selects bounded candidates, and calls the configured AI provider to enrich each document with summary and classification metadata. Results are written to data/runtime/analyzed-corpus.json.',
+    warning: 'This makes API calls to your configured provider (OpenAI, Gemini, or Anthropic) and will consume tokens. Cost depends on corpus size and provider rates. Make sure a valid API key is set in Settings before running.',
     confirmLabel: 'Analyze',
   },
   publishAnalysis: {
@@ -530,16 +530,16 @@ export function SyncPanel({
               </div>
               <div className="detail-row">
                 <span>Progress</span>
-                <strong>{currentJob ? `${currentJob.progress}%` : '0%'}</strong>
-              </div>
-              <div className="detail-row">
-                <span>Duration</span>
                 <strong>
-                  {currentJob?.status === 'running'
-                    ? formatDuration(elapsed)
-                    : currentJob?.durationMs != null
-                      ? formatDuration(currentJob.durationMs)
-                      : '—'}
+                  {currentJob
+                    ? `${currentJob.progress}%${
+                        currentJob.status === 'running'
+                          ? ` (${formatDuration(elapsed)})`
+                          : currentJob.durationMs != null
+                            ? ` (${formatDuration(currentJob.durationMs)})`
+                            : ''
+                      }`
+                    : '0%'}
                 </strong>
               </div>
             </div>

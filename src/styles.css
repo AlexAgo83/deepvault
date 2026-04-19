@@ -867,6 +867,17 @@ select:focus-visible {
   transform: translateX(-50%) translateY(0);
 }
 
+.sync-controls-actions [data-tooltip]::before {
+  left: 0;
+  transform: translateY(3px);
+}
+
+.sync-controls-actions [data-tooltip]:hover::before,
+.sync-controls-actions [data-tooltip]:focus-visible::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ── Confirm modal ─────────────────────────────────────────────── */
 
 .confirm-backdrop {
@@ -3029,7 +3040,7 @@ th {
 
 .ai-view-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
   gap: 18px;
   align-items: stretch;
   flex: 1 1 auto;
