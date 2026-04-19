@@ -175,7 +175,10 @@ class LiveExportService:
         seed_from_checkpoint, updated_after = self._resolve_resume_state(resume_requested, checkpoint)
 
         report_progress("auth", 10, f"Authenticating against Microsoft Graph ({config.auth_mode})...")
-        access_token = self.acquire_graph_access_token(config)
+        access_token = self.acquire_graph_access_token(
+            config,
+            report_text=lambda msg: report_progress("auth", 10, msg),
+        )
         client = GraphClient(base_url=config.base_url, access_token=access_token, timeout_seconds=config.timeout_seconds)
 
         started_at = utc_now_iso()
@@ -339,7 +342,11 @@ class LiveExportService:
             secret_value=env.get("DEEPVAULT_ENTRA_SECRET_VALUE") or "",
         )
 
-    def acquire_graph_access_token(self, config: LiveExportConfig) -> str:
+    def acquire_graph_access_token(
+        self,
+        config: LiveExportConfig,
+        report_text: Optional[Callable[[str], None]] = None,
+    ) -> str:
         if not config.app_id or not config.tenant_id:
             raise ValueError("DEEPVAULT_ENTRA_APP_ID and DEEPVAULT_ENTRA_TENANT_ID are required.")
 
@@ -349,7 +356,7 @@ class LiveExportService:
             return self._acquire_client_credentials_token(config)
 
         try:
-            return self._acquire_delegated_token(config)
+            return self._acquire_delegated_token(config, report_text=report_text)
         except RuntimeError as exc:
             if config.secret_value and "AADSTS7000218" in str(exc):
                 return self._acquire_client_credentials_token(config)
@@ -376,7 +383,11 @@ class LiveExportService:
             raise RuntimeError("Auth response did not include an access token.")
         return access_token
 
-    def _acquire_delegated_token(self, config: LiveExportConfig) -> str:
+    def _acquire_delegated_token(
+        self,
+        config: LiveExportConfig,
+        report_text: Optional[Callable[[str], None]] = None,
+    ) -> str:
         base = f"https://login.microsoftonline.com/{config.tenant_id}/oauth2/v2.0"
         device_code_response = httpx.post(
             f"{base}/devicecode",
@@ -395,6 +406,12 @@ class LiveExportService:
         device_code = payload.get("device_code")
         if not isinstance(device_code, str) or not device_code:
             raise RuntimeError("Device code flow failed: device_code missing.")
+
+        auth_message = payload.get("message", "")
+        if auth_message:
+            print(auth_message, flush=True)
+            if report_text:
+                report_text(auth_message)
 
         while time.time() < deadline:
             time.sleep(poll_interval)
