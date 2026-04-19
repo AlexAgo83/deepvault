@@ -166,7 +166,6 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'AI View' }))
 
     expect(screen.getByRole('heading', { name: 'AI View' })).toBeInTheDocument()
-    expect(screen.getByText('Responses')).toBeInTheDocument()
     expect(screen.getByText('What would help next')).toBeInTheDocument()
 
     const responseCard = screen.getAllByRole('button', { name: /what is the budget for q3 2025\?/i })[0]
@@ -211,6 +210,7 @@ describe('DeepVault app', () => {
     expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
+    await user.click(screen.getByRole('button', { name: 'Show stats headers' }))
     const kpiGrid = document.querySelector('.kpi-grid')
     expect(kpiGrid).not.toBeNull()
     expect(kpiGrid).toHaveTextContent('Sites in scope')
@@ -368,6 +368,7 @@ describe('DeepVault app', () => {
     await user.click(screen.getByRole('button', { name: 'AI providers' }))
     await user.type(screen.getByLabelText('OpenAI API key'), 'test-openai-key')
     await user.click(screen.getByRole('button', { name: 'Knowledge' }))
+    await user.click(screen.getByRole('button', { name: 'Show stats headers' }))
 
     const kpiGrid = document.querySelector('.kpi-grid')
     expect(kpiGrid).not.toBeNull()
@@ -533,7 +534,7 @@ describe('DeepVault app', () => {
       mockEs?.onmessage?.({ data: JSON.stringify({ type: 'done', exitCode: 0 }) } as MessageEvent)
     })
 
-    expect(screen.getAllByText('100%').length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/100%/).length).toBeGreaterThan(0)
     expect(screen.getAllByText('completed').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Ingest').length).toBeGreaterThan(0)
 
@@ -997,24 +998,45 @@ describe('DeepVault app', () => {
     const user = userEvent.setup()
     render(<App />)
 
+    // Explorer has no stats toggle
     expect(screen.queryByRole('button', { name: 'Hide stats headers' })).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Settings' }))
-    expect(screen.getByRole('button', { name: 'Hide stats headers' })).toBeInTheDocument()
-    expect(screen.getByText('Sites in scope')).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Hide stats headers' }))
+    // Stats are hidden by default on Settings
+    await user.click(screen.getByRole('button', { name: 'Settings' }))
+    expect(screen.getByRole('button', { name: 'Show stats headers' })).toBeInTheDocument()
     expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
+    // Enable stats on Settings
+    await user.click(screen.getByRole('button', { name: 'Show stats headers' }))
     expect(screen.getByRole('button', { name: 'Hide stats headers' })).toBeInTheDocument()
     expect(screen.getByText('Sites in scope')).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'AI View' }))
+    // Knowledge has independent state — still hidden
+    await user.click(screen.getByRole('button', { name: 'Knowledge' }))
+    expect(screen.getByRole('button', { name: 'Show stats headers' })).toBeInTheDocument()
+    expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
+
+    // Enable stats on Knowledge
+    await user.click(screen.getByRole('button', { name: 'Show stats headers' }))
     expect(screen.getByRole('button', { name: 'Hide stats headers' })).toBeInTheDocument()
+    expect(screen.getByText('Sites in scope')).toBeInTheDocument()
+
+    // AI View has independent state — still hidden
+    await user.click(screen.getByRole('button', { name: 'AI View' }))
+    expect(screen.getByRole('button', { name: 'Show stats headers' })).toBeInTheDocument()
+
+    // Enable stats on AI View and verify its KPIs
+    await user.click(screen.getByRole('button', { name: 'Show stats headers' }))
     expect(await screen.findByText('Responses')).toBeInTheDocument()
     expect(screen.getByText('Need hints')).toBeInTheDocument()
 
+    // Back to Settings — previously enabled, still showing
     await user.click(screen.getByRole('button', { name: 'Settings' }))
+    expect(screen.getByRole('button', { name: 'Hide stats headers' })).toBeInTheDocument()
+    expect(screen.getByText('Sites in scope')).toBeInTheDocument()
+
+    // Hide stats on Settings
+    await user.click(screen.getByRole('button', { name: 'Hide stats headers' }))
     expect(screen.getByRole('button', { name: 'Show stats headers' })).toBeInTheDocument()
     expect(screen.queryByText('Sites in scope')).not.toBeInTheDocument()
   })
