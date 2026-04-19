@@ -99,7 +99,7 @@ pip install -r worker/requirements.txt
 | **Dev — full stack** (worker + Vite, one terminal) | `npm run dev:all` |
 | **Dev — stop full stack** | `Ctrl+C` in the terminal |
 | **Dev — worker only** (attach your own Vite) | `npm run dev:worker` |
-| **Dev — worker in Docker** (remote mode) | `npm run docker:build` then `npm run docker:worker` |
+| **Dev — worker in Docker** (remote mode) | `npm run docker:build` then `npm run docker:worker`; set `VITE_WORKER_PROXY_TARGET=http://localhost:8001` before `npm run dev` |
 | **Dev — stop Docker worker** | `npm run docker:stop` (from any terminal) |
 | **Prod — build + start stack** | `npm run prod` |
 | **Prod — start existing containers** | `npm run prod:up` |
@@ -185,6 +185,7 @@ npm run docker:worker
 ```
 
 This mounts `data/runtime` from the repo so the containerised worker shares job artifacts and corpus files with the local Vite dev server. The worker listens on **port 8001** under the name `deepvault-worker-dev`.
+When the frontend runs locally against that container, set `VITE_WORKER_PROXY_TARGET=http://localhost:8001` so the Vite `/api` proxy points at the Docker worker instead of the default local-worker port.
 
 ### 3. Stop the container
 

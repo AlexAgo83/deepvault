@@ -101,8 +101,20 @@ function validateRemoteConfig(config: WorkerClientConfig) {
   if (!config.workerUrl.trim()) {
     throw new Error('Remote worker mode requires a workerUrl.')
   }
-  if (!/^https:\/\//i.test(config.workerUrl.trim())) {
-    throw new Error('Remote worker mode requires an https workerUrl.')
+  const trimmedWorkerUrl = config.workerUrl.trim()
+  let parsedUrl: URL | null = null
+  try {
+    parsedUrl = new URL(trimmedWorkerUrl)
+  } catch {
+    parsedUrl = null
+  }
+  const isPermittedLocalHttp = parsedUrl?.protocol === 'http:' && (
+    parsedUrl.hostname === 'localhost' ||
+    parsedUrl.hostname === '127.0.0.1' ||
+    parsedUrl.hostname === '::1'
+  )
+  if (!/^https:\/\//i.test(trimmedWorkerUrl) && !isPermittedLocalHttp) {
+    throw new Error('Remote worker mode requires an https workerUrl, or http://localhost for local Docker testing.')
   }
   if (!config.workerToken.trim()) {
     throw new Error('Remote worker mode requires a workerToken.')
