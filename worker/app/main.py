@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
@@ -36,6 +37,14 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
     app.state.access_logger = AccessLogger(resolved_settings.access_log_dir)
     if settings is not None:
         app.dependency_overrides[get_settings] = lambda: resolved_settings
+
+    if not resolved_settings.worker_auth_enabled:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
 
     @app.middleware("http")
     async def auth_middleware(request: Request, call_next):

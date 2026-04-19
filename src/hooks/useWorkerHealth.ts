@@ -41,6 +41,13 @@ function isPermittedLocalHttpRemoteUrl(url: string): boolean {
   }
 }
 
+function formatWorkerHealthTimestamp(value: string): string {
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value))
+}
+
 export function useWorkerHealth(workerSettings: WorkerSettings, dataMode?: string): WorkerHealthState {
   const [workerHealth, setWorkerHealth] = useState<WorkerHealthState>(() => buildLocalState())
   const {
@@ -108,7 +115,7 @@ export function useWorkerHealth(workerSettings: WorkerSettings, dataMode?: strin
       setWorkerHealth({
         status: health.status === 'degraded' ? 'degraded' : 'reachable',
         label: health.status === 'degraded' ? 'Worker degraded' : 'Worker reachable',
-        detail: `Worker ${health.workerVersion} responded in ${health.mode} mode at ${health.timestamp}.`,
+        detail: `Worker ${health.workerVersion} responded in ${health.mode} mode at ${formatWorkerHealthTimestamp(health.timestamp)}.`,
         tone: health.status === 'degraded' ? 'accent' : 'success',
       })
     }).catch((error: unknown) => {
