@@ -1,39 +1,30 @@
-# CHANGELOGS_1_4_0
+# Changelog (`1.3.0 -> 1.4.0`)
 
 Release date: 2026-04-18
 
-## DeepVault Nexus 1.4.0
+## Major Highlights
 
-DeepVault Nexus 1.4.0 is a stabilization release that freezes the current local-first product state and locks the documentation baseline before the larger hosted worker and corpus-logics migration begins.
+- DeepVault Nexus 1.4.0 stabilizes the current local-first product state and freezes the documentation baseline before the hosted worker and corpus-logics migration begins.
+- The release closes the loop on the `req_020` migration slices so request, backlog, task, product, and architecture docs now point to the same delivery graph.
+- First-wave worker contracts are normalized around folder layout, shared-vs-local state ownership, file-backed runtime artifacts, API/CLI parity, stable job lifecycle, `config/mode`, and the standard error envelope.
+- CI is expanded into explicit `frontend`, `worker`, and `contracts` smoke jobs, with an anti-zombie migration guard added to the local validation path.
+- The current app baseline is revalidated with lint, typecheck, coverage, build, evaluate, e2e, and Logics lint before the release is cut.
 
-### At a glance
+## Generated Commit Summary
 
-- Aligned the active Logics package around the hosted worker direction: Python/FastAPI worker, Caddy reverse proxy, Entra SSO, and a browser that becomes a UI-only client
-- Added the missing orchestration tasks and cross-links for the `req_020` migration slices so request, backlog, task, product, and architecture docs now point to the same delivery graph
-- Normalized the first-wave worker contracts: worker folder layout, shared-vs-local state ownership, file-backed runtime artifacts, API/CLI parity, stable job lifecycle, `config/mode` payload, and standard error envelope
-- Expanded the CI plan from a generic workflow note to an explicit first-wave pipeline with separate `frontend`, `worker`, and `contracts` smoke jobs plus an anti-zombie migration guard
-- Revalidated the current app baseline with lint, typecheck, coverage, build, evaluate, end-to-end tests, and Logics lint before cutting the release
+## Release and Migration Planning
 
-### Why it matters
+- Added the missing orchestration tasks and cross-links for `req_020` so the migration plan is reviewable as a single delivery graph.
+- Aligned the active Logics package around the hosted worker direction and the next large migration wave.
+- Kept the release intentionally focused on baseline freeze and planning rather than starting the Python worker implementation.
 
-- The repo now has a stable and reviewable handoff point before the heavy hosted-worker implementation and the next large corpus/logics wave begin.
-- Product, architecture, and delivery docs describe the same target state, which reduces the risk of opening the migration with contradictory instructions.
-- The current application baseline remains green, so the next phase can focus on implementation rather than untangling release drift.
+## Validation and CI
 
-### Validation
+- Expanded the CI plan from a generic workflow note to explicit `frontend`, `worker`, and `contracts` smoke jobs.
+- Added the anti-zombie migration guard to catch runaway local processes during validation.
+- Revalidated the baseline with lint, typecheck, coverage, build, evaluate, e2e, and Logics lint.
 
-```bash
-rtk npm run lint
-rtk npm run typecheck
-rtk npm run test:coverage
-rtk npm run build
-rtk npm run evaluate
-rtk npm run e2e
-rtk npm run e2e:pwa-refresh
-rtk python3 logics/skills/logics.py lint --require-status
-```
+## Notes
 
-### Notes
-
-- This release intentionally does not start the Python worker implementation yet; it freezes the baseline and the migration plan first.
-- The Logics lint still reports known non-blocking warnings around Mermaid hygiene in older docs, but the active package is structurally coherent.
+- This release intentionally does not start the Python worker implementation yet.
+- The Logics lint still reports known non-blocking Mermaid hygiene warnings in older docs.

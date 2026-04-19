@@ -246,12 +246,37 @@ function renderMarkdown(markdown: string): ReactNode[] {
 
 function stripChangelogHeader(markdown: string): string {
   const lines = markdown.split(/\r?\n/)
-  const startIndex = lines.findIndex((line) => /^##\s+DeepVault Nexus \d+\.\d+\.\d+$/i.test(line.trim()))
-  if (startIndex < 0) {
-    return markdown
+  let startIndex = 0
+
+  while (startIndex < lines.length && !lines[startIndex].trim()) {
+    startIndex += 1
   }
 
-  return lines.slice(startIndex + 1).join('\n').replace(/^\s+/, '')
+  if (
+    startIndex < lines.length &&
+    /^#\s+(Changelog\s*\(.+\)|CHANGELOGS_[0-9_]+|DeepVault Nexus \d+\.\d+\.\d+)$/i.test(lines[startIndex].trim())
+  ) {
+    startIndex += 1
+  }
+
+  while (startIndex < lines.length && !lines[startIndex].trim()) {
+    startIndex += 1
+  }
+
+  if (startIndex < lines.length && /^Release date:/i.test(lines[startIndex].trim())) {
+    startIndex += 1
+  }
+
+  while (startIndex < lines.length && !lines[startIndex].trim()) {
+    startIndex += 1
+  }
+
+  const firstSectionIndex = lines.findIndex((line, index) => index >= startIndex && /^##\s+/.test(line.trim()))
+  if (firstSectionIndex >= 0) {
+    return lines.slice(firstSectionIndex).join('\n').replace(/^\s+/, '')
+  }
+
+  return lines.slice(startIndex).join('\n').replace(/^\s+/, '')
 }
 
 function ChangelogCard({ entry, scrollRoot }: { entry: ChangelogEntry; scrollRoot: HTMLDivElement | null }) {
