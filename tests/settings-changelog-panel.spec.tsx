@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { SettingsChangelogPanel } from '../src/components/panels/settings-changelog-panel'
 
@@ -70,13 +70,8 @@ describe('SettingsChangelogPanel', () => {
       expect(head?.lastElementChild).toHaveTextContent('1.0.0')
     })
 
-    const glanceSummary = within(card).getByText('At a glance')
-    const glanceSection = glanceSummary.closest('details')
-    expect(glanceSection).not.toBeNull()
-    expect(glanceSection).not.toHaveAttribute('open')
-
-    fireEvent.click(glanceSummary)
-
-    expect(glanceSection).toHaveAttribute('open')
+    expect(within(card).getByRole('heading', { name: 'Major Highlights' })).toBeInTheDocument()
+    expect(within(card).getByRole('heading', { name: 'Generated Commit Summary' })).toBeInTheDocument()
+    expect(within(card).getByText('DeepVault Nexus 1.0.0 is the first release of the local V1 workspace and the live SharePoint export pipeline.')).toBeInTheDocument()
   })
 })

@@ -74,7 +74,7 @@ function extractHighlights(lines: string[]): string[] {
   const highlights: string[] = []
   for (let index = headlineIndex + 1; index < lines.length; index += 1) {
     const line = lines[index].trim()
-    if (line.startsWith('### ')) break
+    if (line.startsWith('#')) break
     if (line.startsWith('- ')) {
       highlights.push(line.slice(2).trim())
     }
@@ -90,8 +90,24 @@ export function parseChangelogMarkdown(markdown: string): ParsedChangelog {
     const trimmed = line.trim()
     return /^#{1,2}\s+(Changelog(?:\s*\(.+\))?|CHANGELOGS_[0-9_]+|DeepVault Nexus \d+\.\d+\.\d+)$/i.test(trimmed)
   })
-  const introStart = titleIndex >= 0 ? titleIndex + 1 : 0
-  const intro = extractFirstParagraph(lines, introStart) || highlights[0] || ''
+  let introCandidate = ''
+  if (titleIndex >= 0) {
+    let introStart = titleIndex + 1
+    while (introStart < lines.length && !lines[introStart].trim()) {
+      introStart += 1
+    }
+    if (introStart < lines.length && lines[introStart].trim().startsWith('Release date:')) {
+      introStart += 1
+      while (introStart < lines.length && !lines[introStart].trim()) {
+        introStart += 1
+      }
+    }
+
+    if (introStart < lines.length && !lines[introStart].trim().startsWith('#')) {
+      introCandidate = extractFirstParagraph(lines, introStart)
+    }
+  }
+  const intro = introCandidate || highlights[0] || ''
 
   return {
     releaseDate: releaseDateLine ? releaseDateLine.replace(/^Release date:\s*/, '').trim() || null : null,
