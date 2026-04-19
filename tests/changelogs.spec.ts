@@ -6,13 +6,13 @@ describe('changelog helpers', () => {
     const first = getChangelogEntries()
     const second = getChangelogEntries()
 
-    expect(first).toHaveLength(5)
-    expect(second).toHaveLength(5)
+    expect(first).toHaveLength(6)
+    expect(second).toHaveLength(6)
     expect(first).not.toBe(second)
-    expect(first[0]?.version).toBe('1.4.0')
+    expect(first[0]?.version).toBe('1.5.0')
 
     first.pop()
-    expect(getChangelogEntries()).toHaveLength(5)
+    expect(getChangelogEntries()).toHaveLength(6)
   })
 
   it('parses release date, intro, and highlights from markdown', () => {
