@@ -247,9 +247,9 @@ export function useAppModel(): AppModel {
     if (entraSettings.secretValue) env.DEEPVAULT_ENTRA_SECRET_VALUE = entraSettings.secretValue
     if (entraSettings.sites) env.DEEPVAULT_ENTRA_SITES = entraSettings.sites
     if (entraSettings.siteNames) env.DEEPVAULT_PILOT_SITE_NAMES = entraSettings.siteNames
-    if (entraSettings.dataMode) env.DEEPVAULT_DATA_MODE = entraSettings.dataMode
+    env.DEEPVAULT_DATA_MODE = requestedCorpusMode
     return env
-  }, [providerSecrets, entraSettings])
+  }, [providerSecrets, entraSettings, requestedCorpusMode])
 
   const syncOperations = useSyncOperations({
     activeScopeLabel,
