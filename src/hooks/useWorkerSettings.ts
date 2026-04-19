@@ -17,8 +17,8 @@ export interface WorkerSettings {
 }
 
 export const WORKER_SETTINGS_DEFAULTS: WorkerSettings = {
-  workerMode: 'local',
-  workerUrl: '',
+  workerMode: import.meta.env.VITE_WORKER_MODE === 'remote' ? 'remote' : 'local',
+  workerUrl: import.meta.env.VITE_WORKER_URL?.trim() || '',
   workerToken: '',
   workerTimeoutSeconds: 30,
   workerFallbackMode: 'read_only',
