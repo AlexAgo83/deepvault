@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { getMockCorpusBundle } from '../src/lib/corpus-client'
 import type { Corpus, CorpusDocument } from '../src/lib/deepvault'
 import { analyzeCorpusDocuments, buildAnalysisRunReport } from '../scripts/analyze-corpus'
@@ -27,6 +30,16 @@ function makeCorpus(documents: CorpusDocument[]): Corpus {
     sites: [],
     syncRuns: [],
     documents,
+  }
+}
+
+function makeExtractionQuality() {
+  return {
+    full_text: 0,
+    partial_text: 0,
+    metadata_only: 0,
+    unreadable: 0,
+    unknown: 0,
   }
 }
 
@@ -78,6 +91,7 @@ describe('analyze corpus script helpers', () => {
         providerSuccesses: 0,
         providerFallbacks: 0,
         providerFailureReasons: {},
+        extractionQuality: makeExtractionQuality(),
       },
     })
 
@@ -93,6 +107,7 @@ describe('analyze corpus script helpers', () => {
     expect(report.actualInputTokens).toBe(0)
     expect(report.actualOutputTokens).toBe(0)
     expect(report.tokenCountMode).toBe('estimated')
+    expect(report.extractionQuality.unknown).toBe(0)
   })
 })
 
@@ -129,6 +144,58 @@ describe('analyze corpus Wave 4 — difficult-file validation', () => {
 
     expect(result.metrics.excluded).toBe(2)
     expect(result.documents.every((doc) => doc.analysis?.excludedReason === 'unreadable_content')).toBe(true)
+  })
+
+  it('uses extract-backed body text before corpus placeholder content', async () => {
+    const tempDir = await mkdtemp(join(tmpdir(), 'deepvault-extract-'))
+    const extractPath = join(tempDir, 'doc.json')
+    await writeFile(
+      extractPath,
+      JSON.stringify({ text: 'Real extracted body text. It contains actual policy obligations and review owners.' }),
+    )
+
+    try {
+      const corpus = makeCorpus([
+        makeDoc({
+          id: 'extract-backed-1',
+          path: 'policy.docx',
+          fileType: 'document',
+          content: 'Source: policy.docx. Path: /Policies/policy.docx.',
+          extractionStatus: 'full_text',
+          extractPath,
+        }),
+      ])
+
+      const result = await analyzeCorpusDocuments(corpus, { ...BASE_OPTS, mode: 'all' })
+      const analysis = result.documents[0]?.analysis
+
+      expect(analysis?.status).toBe('analyzed')
+      expect(analysis?.sections?.[0]?.content).toContain('Real extracted body text')
+      expect(analysis?.sections?.[0]?.content).not.toMatch(/^Source:/)
+      expect(result.metrics.extractionQuality.full_text).toBe(1)
+    } finally {
+      await rm(tempDir, { recursive: true, force: true })
+    }
+  })
+
+  it('keeps metadata-only documents conservative instead of analyzing placeholders', async () => {
+    const corpus = makeCorpus([
+      makeDoc({
+        id: 'metadata-only-1',
+        path: 'deck.pptx',
+        fileType: 'presentation',
+        content: 'Source: deck.pptx. Path: /Decks/deck.pptx.',
+        extractionStatus: 'metadata_only',
+        extractionReason: 'unsupported_file_type',
+        extractPath: 'extracts/site-test/metadata-only-1.json',
+      }),
+    ])
+
+    const result = await analyzeCorpusDocuments(corpus, { ...BASE_OPTS, mode: 'all' })
+
+    expect(result.documents[0]?.analysis?.status).toBe('excluded')
+    expect(result.documents[0]?.analysis?.excludedReason).toBe('metadata_only_extract')
+    expect(result.metrics.extractionQuality.metadata_only).toBe(1)
   })
 
   it('excludes oversized files with file_too_large', async () => {

@@ -499,6 +499,13 @@ class JobsService:
         provider_failure_reasons: Dict[str, int] = {}
         selection_reasons: Dict[str, int] = {}
         exclusion_reasons: Dict[str, int] = {}
+        extraction_quality: Dict[str, int] = {
+            "full_text": 0,
+            "partial_text": 0,
+            "metadata_only": 0,
+            "unreadable": 0,
+            "unknown": 0,
+        }
         analyzed_documents: List[Dict[str, Any]] = []
         job_started_at = time.monotonic()
 
@@ -507,14 +514,17 @@ class JobsService:
             if current_job.get("status") == "cancelled" or current_job.get("cancelRequested") is True:
                 raise JobCancelledError()
 
-            content_hash = self._build_content_hash(document)
+            analysis_input = self._resolve_analysis_input(document)
+            extraction_status = str(analysis_input.get("extractionStatus") or "unknown")
+            extraction_quality[extraction_status] = extraction_quality.get(extraction_status, 0) + 1
+            content_hash = self._build_content_hash(document, str(analysis_input.get("text") or ""))
             existing_analysis = document.get("analysis")
             if self._should_reuse_existing_analysis(existing_analysis, content_hash):
                 reused += 1
                 analyzed_documents.append(document)
                 continue
 
-            exclusion_reason = self._get_analysis_exclusion_reason(document)
+            exclusion_reason = self._get_analysis_exclusion_reason(document, analysis_input)
             if exclusion_reason:
                 excluded += 1
                 exclusion_reasons[exclusion_reason] = exclusion_reasons.get(exclusion_reason, 0) + 1
@@ -548,13 +558,13 @@ class JobsService:
 
             try:
                 analyzed += 1
-                selection_reason = self._select_analysis_candidate_reason(document)
+                selection_reason = self._select_analysis_candidate_reason(document, analysis_input)
                 selection_reasons[selection_reason] = selection_reasons.get(selection_reason, 0) + 1
 
                 if use_provider:
                     provider_attempts += 1
                     provider_result, in_tok, out_tok, failure_reason = self._run_provider_analysis(
-                        document, provider, model, api_key, content_hash
+                        document, analysis_input, provider, model, api_key, content_hash
                     )
                     actual_input_tokens += in_tok
                     actual_output_tokens += out_tok
@@ -565,7 +575,13 @@ class JobsService:
                         fallback_reason = failure_reason or "provider_analysis_unavailable"
                         provider_failure_reasons[fallback_reason] = provider_failure_reasons.get(fallback_reason, 0) + 1
                         provider_fallbacks += 1
-                        heuristic = self._build_local_analysis(document, provider=provider, model=model, content_hash=content_hash)
+                        heuristic = self._build_local_analysis(
+                            document,
+                            analysis_input=analysis_input,
+                            provider=provider,
+                            model=model,
+                            content_hash=content_hash,
+                        )
                         analysis = {
                             **heuristic,
                             "provider": "local",
@@ -576,7 +592,13 @@ class JobsService:
                             "fallbackReason": fallback_reason,
                         }
                 else:
-                    analysis = self._build_local_analysis(document, provider=provider, model=model, content_hash=content_hash)
+                    analysis = self._build_local_analysis(
+                        document,
+                        analysis_input=analysis_input,
+                        provider=provider,
+                        model=model,
+                        content_hash=content_hash,
+                    )
 
                 analyzed_documents.append({**document, "analysis": analysis})
             except Exception as exc:
@@ -663,6 +685,7 @@ class JobsService:
             "providerSuccesses": provider_successes,
             "providerFallbacks": provider_fallbacks,
             "providerFailureReasons": provider_failure_reasons,
+            "extractionQuality": extraction_quality,
             "elapsedMs": elapsed_ms,
             "averageDocumentMs": round(elapsed_ms / analyzed) if analyzed > 0 else 0,
         }
@@ -749,6 +772,7 @@ class JobsService:
             "providerAttempts": provider_attempts,
             "providerSuccesses": provider_successes,
             "providerFallbacks": provider_fallbacks,
+            "extractionQuality": extraction_quality,
         }
 
     def _run_publish_analysis_job(self, job_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -803,28 +827,67 @@ class JobsService:
             check_cancelled=lambda: self._raise_if_cancelled(job_id),
         )
 
-    def _build_content_hash(self, document: Dict[str, Any]) -> str:
+    def _build_content_hash(self, document: Dict[str, Any], input_text: Optional[str] = None) -> str:
         payload = "\n".join(
             [
                 str(document.get("updatedAt", "")),
                 str(document.get("summary", "")),
-                str(document.get("content", "")),
+                str(input_text if input_text is not None else document.get("content", "")),
                 str(document.get("directAnswer", "")),
+                str(document.get("extractionStatus", "")),
+                str(document.get("extractionReason", "")),
+                str(document.get("extractPath", "")),
             ]
         )
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
+    def _resolve_analysis_input(self, document: Dict[str, Any]) -> Dict[str, Any]:
+        extract_path = str(document.get("extractPath") or "").strip()
+        if extract_path:
+            try:
+                path = self._runtime_store.runtime_dir / extract_path
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                text = str(payload.get("text") or "").strip() if isinstance(payload, dict) else ""
+                if text:
+                    return {
+                        "text": text,
+                        "source": "extract",
+                        "extractionStatus": document.get("extractionStatus") or "full_text",
+                        "extractionReason": document.get("extractionReason") or "",
+                    }
+            except Exception:
+                pass
+
+        content = str(document.get("content") or "")
+        if document.get("extractionStatus") in {"metadata_only", "unreadable"} or self._is_metadata_only_content(content):
+            return {
+                "text": "",
+                "source": "metadata_only",
+                "extractionStatus": document.get("extractionStatus") or "metadata_only",
+                "extractionReason": document.get("extractionReason") or "",
+            }
+
+        return {
+            "text": content.strip(),
+            "source": "corpus",
+            "extractionStatus": document.get("extractionStatus") or "unknown",
+            "extractionReason": document.get("extractionReason") or "",
+        }
+
+    def _is_metadata_only_content(self, value: str) -> bool:
+        return bool(re.match(r"^Source:\s", value.strip(), flags=re.IGNORECASE) and re.search(r"\bPath:\s", value))
+
     def _infer_document_type(self, document: Dict[str, Any]) -> str:
         return str(document.get("fileType") or document.get("kind") or str(document.get("path", "")).split(".")[-1] or "document")
 
-    def _build_analysis_sections(self, document: Dict[str, Any]) -> List[Dict[str, str]]:
+    def _build_analysis_sections(self, document: Dict[str, Any], analysis_input: Dict[str, Any]) -> List[Dict[str, str]]:
         sections = document.get("sections")
-        if isinstance(sections, list) and sections:
+        if not str(analysis_input.get("text") or "").strip() and isinstance(sections, list) and sections:
             return [section for section in sections[:4] if isinstance(section, dict)]
 
         sentences = [
             sentence.strip()
-            for sentence in str(document.get("content", "")).replace("\n", " ").split(".")
+            for sentence in str(analysis_input.get("text") or "").replace("\n", " ").split(".")
             if sentence.strip()
         ][:3]
         return [
@@ -855,11 +918,12 @@ class JobsService:
         self,
         document: Dict[str, Any],
         *,
+        analysis_input: Dict[str, Any],
         provider: str,
         model: str,
         content_hash: str,
     ) -> Dict[str, Any]:
-        sections = self._build_analysis_sections(document)
+        sections = self._build_analysis_sections(document, analysis_input)
         summary = str(document.get("summary") or (sections[0].get("content") if sections else "") or document.get("title") or "").strip()
         confidence = max(55, min(92, 58 + (len(sections) * 8) + (6 if document.get("tags") else 0)))
         effective_provider = "local"
@@ -888,8 +952,8 @@ class JobsService:
     # Provider-backed analysis
     # ------------------------------------------------------------------
 
-    def _build_provider_prompt(self, document: Dict[str, Any]) -> str:
-        content_snippet = str(document.get("content", ""))[:ANALYSIS_PROMPT_CONTENT_LIMIT].strip()
+    def _build_provider_prompt(self, document: Dict[str, Any], analysis_input: Dict[str, Any]) -> str:
+        content_snippet = str(analysis_input.get("text") or "")[:ANALYSIS_PROMPT_CONTENT_LIMIT].strip()
         tags = document.get("tags", [])
         tags_str = ", ".join(str(t) for t in tags) if isinstance(tags, list) and tags else "none"
         return "\n".join([
@@ -903,6 +967,7 @@ class JobsService:
             "",
             f"Title: {document.get('title', '')}",
             f"Tags: {tags_str}",
+            f"Extraction status: {analysis_input.get('extractionStatus') or 'unknown'}",
             f"Content snippet:\n{content_snippet}",
         ])
 
@@ -927,10 +992,11 @@ class JobsService:
         raw_keywords = parsed.get("keywords", [])
         keywords = [k for k in raw_keywords if isinstance(k, str)][:8] or self._build_keywords(document)
         raw_sections = parsed.get("sections", [])
+        analysis_input = {"text": str(document.get("content") or "")}
         sections = [
             s for s in raw_sections
             if isinstance(s, dict) and isinstance(s.get("heading"), str) and isinstance(s.get("content"), str)
-        ][:4] or self._build_analysis_sections(document)
+        ][:4] or self._build_analysis_sections(document, analysis_input)
         document_type = str(parsed.get("documentType") or self._infer_document_type(document))
         try:
             confidence = max(55, min(95, int(parsed["confidence"])))
@@ -1044,13 +1110,14 @@ class JobsService:
     def _run_provider_analysis(
         self,
         document: Dict[str, Any],
+        analysis_input: Dict[str, Any],
         provider: str,
         model: str,
         api_key: str,
         content_hash: str,
     ) -> Tuple[Optional[Dict[str, Any]], int, int, Optional[str]]:
         """Call the requested AI provider and return (analysis, input_tokens, output_tokens, failure_reason)."""
-        prompt = self._build_provider_prompt(document)
+        prompt = self._build_provider_prompt(document, analysis_input)
         if provider == "anthropic":
             text, input_tok, output_tok, err = self._call_anthropic(prompt, model, api_key)
         elif provider == "openai":
@@ -1073,11 +1140,11 @@ class JobsService:
             return False
         return analysis.get("status") == "analyzed" and analysis.get("version") == ANALYSIS_VERSION and analysis.get("contentHash") == content_hash
 
-    def _select_analysis_candidate_reason(self, document: Dict[str, Any]) -> str:
+    def _select_analysis_candidate_reason(self, document: Dict[str, Any], analysis_input: Dict[str, Any]) -> str:
         file_type = str(document.get("fileType") or "")
         if file_type in {"pdf", "document", "presentation"}:
             return "priority_file_type"
-        content = str(document.get("content", "")).strip()
+        content = str(analysis_input.get("text") or "").strip()
         summary = str(document.get("summary", "")).strip()
         if not summary or len(content) < 280:
             return "weak_local_extraction"
@@ -1086,13 +1153,15 @@ class JobsService:
             return "missing_structure"
         return "all_documents"
 
-    def _get_analysis_exclusion_reason(self, document: Dict[str, Any]) -> Optional[str]:
+    def _get_analysis_exclusion_reason(self, document: Dict[str, Any], analysis_input: Dict[str, Any]) -> Optional[str]:
         path = str(document.get("path", "")).lower()
         if any(path.endswith(ext) for ext in (".zip", ".exe", ".dmg", ".mp4", ".mov", ".png", ".jpg", ".jpeg")):
             return "unsupported_file_type"
-        if not str(document.get("content", "")).strip() and not str(document.get("summary", "")).strip():
+        if analysis_input.get("source") == "metadata_only":
+            return "unreadable_extract" if analysis_input.get("extractionStatus") == "unreadable" else "metadata_only_extract"
+        if not str(analysis_input.get("text") or "").strip() and not str(document.get("summary", "")).strip():
             return "unreadable_content"
-        if len(str(document.get("content", ""))) > 18000:
+        if len(str(analysis_input.get("text") or "")) > 18000:
             return "file_too_large"
         return None
 

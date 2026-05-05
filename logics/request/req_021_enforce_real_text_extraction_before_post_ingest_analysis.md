@@ -1,9 +1,9 @@
 ## req_021_enforce_real_text_extraction_before_post_ingest_analysis - Enforce real text extraction before post-ingest analysis
-> From version: 1.5.1
+> From version: 1.5.2
 > Schema version: 1.0
-> Status: Ready
-> Understanding: 96%
-> Confidence: 94%
+> Status: Done
+> Understanding: 99%
+> Confidence: 97%
 > Complexity: High
 > Theme: Architecture / Product / Operational
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -80,6 +80,12 @@ flowchart TD
 - Should metadata-only documents remain searchable in the main corpus view, or should they be visually separated from full-text documents?
 - Should OCR for scanned files be part of the first wave, or explicitly deferred until the normal text-extraction path is stable?
 - Should backfilling old placeholder documents happen automatically after the extract pipeline lands, or as a separate operator-triggered job?
+
+# Delivery evidence
+- Worker live export now writes durable extract artifacts and corpus rows expose `extractionStatus`, `extractionReason`, and `extractPath`.
+- Corpus validators, artifact diagnostics, retrieval, and Bishop source assembly understand metadata-only and unreadable extraction states.
+- `npm run analyze` and worker-backed analyze both prefer extract-backed text and exclude metadata-only placeholders conservatively.
+- Validation covered worker extraction, corpus contract, artifacts diagnostics, Bishop guardrails, analyze input selection, and Logics lint.
 
 # Backlog
 - [item_089_worker_text_extract_artifacts_for_sharepoint_documents](logics/backlog/item_089_worker_text_extract_artifacts_for_sharepoint_documents.md)

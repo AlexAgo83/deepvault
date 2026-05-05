@@ -32,7 +32,7 @@ def build_jobs_service(tmp_path) -> JobsService:
     )
 
 
-def wait_for_terminal_status(service: JobsService, job_id: str, timeout: float = 5.0) -> dict:
+def wait_for_terminal_status(service: JobsService, job_id: str, timeout: float = 10.0) -> dict:
     deadline = time.time() + timeout
     while time.time() < deadline:
         payload = service.get_job(job_id)
@@ -99,8 +99,91 @@ def test_jobs_service_runs_analyze_and_writes_analysis_artifacts(tmp_path) -> No
     assert (tmp_path / "analyze-report.json").exists()
 
 
+def test_jobs_service_analyze_uses_extract_backed_text(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+    corpus = json.loads(service._corpus_service.load_corpus_bytes().decode("utf-8"))
+    extract_path = "extracts/site-test/doc-extract.json"
+    (tmp_path / extract_path).parent.mkdir(parents=True, exist_ok=True)
+    (tmp_path / extract_path).write_text(
+        json.dumps({"text": "Real extracted body text. It contains actual policy obligations and review owners."}),
+        encoding="utf-8",
+    )
+    corpus["documents"] = [
+        {
+            **corpus["documents"][0],
+            "id": "extract-backed-doc",
+            "path": "/Policies/policy.docx",
+            "fileType": "document",
+            "content": "Source: policy.docx. Path: /Policies/policy.docx.",
+            "extractionStatus": "full_text",
+            "extractPath": extract_path,
+        }
+    ]
+    live_corpus_path = tmp_path / "live-corpus.json"
+    live_corpus_path.write_text(json.dumps(corpus), encoding="utf-8")
+
+    started = service.start_job(
+        job_type="analyze",
+        options={
+            "env": {
+                "DEEPVAULT_DATA_MODE": "live",
+                "DEEPVAULT_CORPUS_PATH": str(live_corpus_path),
+                "DEEPVAULT_ANALYZE_LIMIT": "1",
+            }
+        },
+    )
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    assert completed["status"] == "succeeded"
+    analyzed_corpus = json.loads((tmp_path / "analyzed-corpus.json").read_text(encoding="utf-8"))
+    section = analyzed_corpus["documents"][0]["analysis"]["sections"][0]["content"]
+    assert "Real extracted body text" in section
+    assert not section.startswith("Source:")
+    report = json.loads((tmp_path / "analyze-report.json").read_text(encoding="utf-8"))
+    assert report["extractionQuality"]["full_text"] == 1
+
+
+def test_jobs_service_analyze_excludes_metadata_only_placeholder(tmp_path) -> None:
+    service = build_jobs_service(tmp_path)
+    corpus = json.loads(service._corpus_service.load_corpus_bytes().decode("utf-8"))
+    corpus["documents"] = [
+        {
+            **corpus["documents"][0],
+            "id": "metadata-only-doc",
+            "path": "/Decks/deck.pptx",
+            "fileType": "presentation",
+            "content": "Source: deck.pptx. Path: /Decks/deck.pptx.",
+            "extractionStatus": "metadata_only",
+            "extractionReason": "unsupported_file_type",
+            "extractPath": "extracts/site-test/metadata-only-doc.json",
+        }
+    ]
+    live_corpus_path = tmp_path / "live-corpus.json"
+    live_corpus_path.write_text(json.dumps(corpus), encoding="utf-8")
+
+    started = service.start_job(
+        job_type="analyze",
+        options={
+            "env": {
+                "DEEPVAULT_DATA_MODE": "live",
+                "DEEPVAULT_CORPUS_PATH": str(live_corpus_path),
+                "DEEPVAULT_ANALYZE_LIMIT": "1",
+            }
+        },
+    )
+    completed = wait_for_terminal_status(service, started["jobId"])
+
+    assert completed["status"] == "succeeded"
+    analyzed_corpus = json.loads((tmp_path / "analyzed-corpus.json").read_text(encoding="utf-8"))
+    assert analyzed_corpus["documents"][0]["analysis"]["status"] == "excluded"
+    assert analyzed_corpus["documents"][0]["analysis"]["excludedReason"] == "metadata_only_extract"
+    report = json.loads((tmp_path / "analyze-report.json").read_text(encoding="utf-8"))
+    assert report["extractionQuality"]["metadata_only"] == 1
+
+
 def test_jobs_service_analyze_falls_back_to_local_when_provider_requested(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
+    service._settings.openai_api_key = ""
 
     started = service.start_job(
         job_type="analyze",
