@@ -2,10 +2,10 @@
 
 > From version: 1.5.1
 > Schema version: 1.0
-> Status: In Progress
+> Status: Done
 > Understanding: 96%
 > Confidence: 93%
-> Progress: 66%
+> Progress: 100%
 > Complexity: High
 > Theme: Data / Worker / Analysis
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -56,17 +56,17 @@ stateDiagram-v2
 - [x] 3. Wave 2 — extend the corpus contract with extraction quality metadata and update validation.
 - [x] 4. Wave 2 — surface extraction quality in artifact diagnostics and prevent placeholder text from being treated as body evidence in retrieval/Bishop assembly.
 - [x] CHECKPOINT: leave Wave 2 commit-ready with corpus validation and artifact diagnostics coverage.
-- [ ] 5. Wave 3 — update `npm run analyze` and worker-backed analyze to prefer extract-backed text.
-- [ ] 6. Wave 3 — add fixtures proving full-text analysis is body-grounded and metadata-only analysis remains conservative.
-- [ ] 7. Wave 3 — add analyze report metrics for full-text, partial-text, metadata-only, and unreadable inputs.
-- [ ] GATE: do not close a wave until tests and linked Logics docs are updated.
-- [ ] FINAL: update request, backlog, task, spec, product, and architecture docs once all extraction-backed analysis waves are closed.
+- [x] 5. Wave 3 — update `npm run analyze` and worker-backed analyze to prefer extract-backed text.
+- [x] 6. Wave 3 — add fixtures proving full-text analysis is body-grounded and metadata-only analysis remains conservative.
+- [x] 7. Wave 3 — add analyze report metrics for full-text, partial-text, metadata-only, and unreadable inputs.
+- [x] GATE: do not close a wave until tests and linked Logics docs are updated.
+- [x] FINAL: update request, backlog, task, spec, product, and architecture docs once all extraction-backed analysis waves are closed.
 
 # Delivery checkpoints
 
 - After Wave 1: supported documents can produce durable extract artifacts with traceable metadata. Validation: `rtk python3 -m pytest worker/tests/test_live_export_service.py`.
 - After Wave 2: corpus consumers can tell whether a document is full-text, partial, metadata-only, or unreadable. Validation: `rtk npm run test -- tests/corpus.spec.ts tests/artifacts-panel.spec.tsx tests/deepvault.spec.ts`, `rtk python3 -m pytest worker/tests/test_bishop.py`, and `rtk npm run typecheck`.
-- After Wave 3: analysis no longer produces substantive summaries from placeholder source/path text.
+- After Wave 3: analysis no longer produces substantive summaries from placeholder source/path text. Validation: `rtk npm run test -- tests/analyze-corpus.spec.ts`, `rtk python3 -m pytest worker/tests/test_jobs.py`, and `rtk npm run typecheck`.
 
 # AC Traceability
 
@@ -111,8 +111,8 @@ stateDiagram-v2
 
 # Definition of Done (DoD)
 
-- [ ] All three backlog items implemented and acceptance criteria covered.
-- [ ] Validation commands executed and results captured per wave.
-- [ ] Linked request, backlog, product, architecture, spec, and task docs updated.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status moved to `Done` and progress to `100%`.
+- [x] All three backlog items implemented and acceptance criteria covered.
+- [x] Validation commands executed and results captured per wave.
+- [x] Linked request, backlog, product, architecture, spec, and task docs updated.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status moved to `Done` and progress to `100%`.

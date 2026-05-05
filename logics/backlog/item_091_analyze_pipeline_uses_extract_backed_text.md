@@ -2,10 +2,10 @@
 
 > From version: 1.5.1
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 94%
 > Confidence: 91%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Analysis / Worker / Quality
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -56,6 +56,7 @@ flowchart LR
 
 # Validation evidence
 
-- Analyze unit tests for full-text, metadata-only, and mixed corpus inputs.
-- Analyze report fixture showing extraction-quality counts.
-- Provider prompt or local heuristic fixture proving placeholder content is not treated as body evidence.
+- `npm run analyze` resolves an analysis input by reading `extractPath` first, then uses corpus content only when it is not metadata-only placeholder text.
+- Worker-backed analyze uses the same extract-first input selection and excludes `metadata_only` / `unreadable` placeholder rows conservatively.
+- Analyze reports now include `extractionQuality` counts for `full_text`, `partial_text`, `metadata_only`, `unreadable`, and `unknown`.
+- Validation passed: `rtk npm run test -- tests/analyze-corpus.spec.ts`, `rtk python3 -m pytest worker/tests/test_jobs.py`, and `rtk npm run typecheck`.

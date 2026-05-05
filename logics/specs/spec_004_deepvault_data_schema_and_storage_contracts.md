@@ -150,6 +150,7 @@ Fields:
 The Nexus live corpus mirrors this extraction contract with camelCase document fields: `extractionStatus`, `extractionReason`, and `extractPath`.
 `extractPath` is relative to the configured runtime store, for example `extracts/{site_id}/{source_id}.json`.
 Consumers must treat `metadata_only` and `unreadable` as traceable source metadata, not as evidence that body text was available.
+Analyze reports must aggregate these document states under `extractionQuality` so operators can distinguish full-text, partial-text, metadata-only, unreadable, and unknown inputs for each run.
 
 # Chunk file schema (`chunks/{site_id}/{source_id}/{chunk_index}.json`)
 

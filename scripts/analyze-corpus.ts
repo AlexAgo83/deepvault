@@ -1,9 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { createHash } from 'node:crypto'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Corpus, CorpusDocument, CorpusSection, DocumentAnalysis } from '../src/lib/deepvault'
+import type { Corpus, CorpusDocument, CorpusSection, DocumentAnalysis, ExtractionStatus } from '../src/lib/deepvault'
 import { loadCorpus } from './corpus-loader'
 
 const ANALYSIS_VERSION = '1.0'
@@ -40,6 +40,7 @@ export interface AnalysisRunReport {
   providerSuccesses: number
   providerFallbacks: number
   providerFailureReasons: Record<string, number>
+  extractionQuality: Record<ExtractionStatus | 'unknown', number>
   elapsedMs: number
   averageDocumentMs: number
 }
@@ -53,6 +54,7 @@ const PROVIDER_COST_PER_1K_TOKENS: Record<string, { input: number; output: numbe
 
 const ANALYSIS_PROMPT_CONTENT_LIMIT = 600
 const ANALYSIS_MAX_OUTPUT_TOKENS = 350
+const DEFAULT_RUNTIME_PATH = 'data/runtime'
 const DEFAULT_PROVIDER_MODELS: Record<string, string> = {
   local: 'heuristic-v1',
   openai: 'gpt-5.4-mini',
@@ -60,8 +62,54 @@ const DEFAULT_PROVIDER_MODELS: Record<string, string> = {
   anthropic: 'claude-3-5-sonnet-latest',
 }
 
-function buildProviderPrompt(document: CorpusDocument): string {
-  const contentSnippet = document.content.slice(0, ANALYSIS_PROMPT_CONTENT_LIMIT).trim()
+interface AnalysisInput {
+  text: string
+  extractionStatus: ExtractionStatus | 'unknown'
+  extractionReason?: string
+  source: 'extract' | 'corpus' | 'metadata_only'
+}
+
+function isMetadataOnlyContent(value: string): boolean {
+  return /^Source:\s/i.test(value.trim()) && /\bPath:\s/i.test(value)
+}
+
+async function resolveAnalysisInput(document: CorpusDocument): Promise<AnalysisInput> {
+  if (document.extractPath) {
+    try {
+      const extractPath = document.extractPath.startsWith('/') ? document.extractPath : resolve(DEFAULT_RUNTIME_PATH, document.extractPath)
+      const payload = JSON.parse(await readFile(extractPath, 'utf8')) as { text?: unknown }
+      if (typeof payload.text === 'string' && payload.text.trim()) {
+        return {
+          text: payload.text.trim(),
+          extractionStatus: document.extractionStatus || 'full_text',
+          extractionReason: document.extractionReason,
+          source: 'extract',
+        }
+      }
+    } catch {
+      // Missing extract files are handled conservatively below using corpus metadata.
+    }
+  }
+
+  if (document.extractionStatus === 'metadata_only' || document.extractionStatus === 'unreadable' || isMetadataOnlyContent(document.content)) {
+    return {
+      text: '',
+      extractionStatus: document.extractionStatus || 'metadata_only',
+      extractionReason: document.extractionReason,
+      source: 'metadata_only',
+    }
+  }
+
+  return {
+    text: document.content.trim(),
+    extractionStatus: document.extractionStatus || 'unknown',
+    extractionReason: document.extractionReason,
+    source: 'corpus',
+  }
+}
+
+function buildProviderPrompt(document: CorpusDocument, analysisInput: AnalysisInput): string {
+  const contentSnippet = analysisInput.text.slice(0, ANALYSIS_PROMPT_CONTENT_LIMIT).trim()
   return [
     'Analyze the document below and return a JSON object with these exact fields:',
     '- "summary": 1-2 sentence summary (string)',
@@ -73,6 +121,7 @@ function buildProviderPrompt(document: CorpusDocument): string {
     '',
     `Title: ${document.title}`,
     `Tags: ${document.tags.join(', ') || 'none'}`,
+    `Extraction status: ${analysisInput.extractionStatus}`,
     `Content snippet:\n${contentSnippet}`,
   ].join('\n')
 }
@@ -101,6 +150,7 @@ interface AnalyzeProgressSnapshot {
 function parseProviderAnalysisResponse(
   rawText: string,
   document: CorpusDocument,
+  analysisInput: AnalysisInput,
   options: ProviderAnalysisOptions,
 ): DocumentAnalysis | null {
   const match = rawText.match(/\{[\s\S]*\}/)
@@ -123,7 +173,7 @@ function parseProviderAnalysisResponse(
               typeof (s as Record<string, unknown>).content === 'string',
           )
           .slice(0, 4)
-      : buildAnalysisSections(document)
+      : buildAnalysisSections(document, analysisInput.text)
 
     const documentType =
       typeof parsed.documentType === 'string' ? parsed.documentType : inferDocumentType(document)
@@ -304,9 +354,10 @@ interface ProviderAnalysisResult {
 
 async function runProviderAnalysis(
   document: CorpusDocument,
+  analysisInput: AnalysisInput,
   options: ProviderAnalysisOptions,
 ): Promise<ProviderAnalysisResult> {
-  const prompt = buildProviderPrompt(document)
+  const prompt = buildProviderPrompt(document, analysisInput)
   let callResult: ProviderCallResult = { text: null, inputTokens: 0, outputTokens: 0, failureReason: null }
 
   try {
@@ -335,7 +386,7 @@ async function runProviderAnalysis(
     }
   }
 
-  const parsedAnalysis = parseProviderAnalysisResponse(callResult.text, document, options)
+  const parsedAnalysis = parseProviderAnalysisResponse(callResult.text, document, analysisInput, options)
   if (!parsedAnalysis) {
     return {
       analysis: null,
@@ -368,9 +419,17 @@ function normalizeMode(value: string | null | undefined): 'off' | 'necessary' | 
   return 'necessary'
 }
 
-function buildContentHash(document: CorpusDocument): string {
+function buildContentHash(document: CorpusDocument, inputText = document.content): string {
   return createHash('sha256')
-    .update([document.updatedAt, document.summary, document.content, document.directAnswer].join('\n'))
+    .update([
+      document.updatedAt,
+      document.summary,
+      inputText,
+      document.directAnswer,
+      document.extractionStatus || '',
+      document.extractionReason || '',
+      document.extractPath || '',
+    ].join('\n'))
     .digest('hex')
 }
 
@@ -378,12 +437,12 @@ function inferDocumentType(document: CorpusDocument): string {
   return document.fileType || document.kind || document.path.split('.').pop() || 'document'
 }
 
-function buildAnalysisSections(document: CorpusDocument): CorpusSection[] {
-  if (document.sections?.length) {
+function buildAnalysisSections(document: CorpusDocument, analysisText: string): CorpusSection[] {
+  if (!analysisText.trim() && document.sections?.length) {
     return document.sections.slice(0, 4)
   }
 
-  const sentences = document.content
+  const sentences = analysisText
     .split(/(?<=[.!?])\s+/)
     .map((value) => value.trim())
     .filter(Boolean)
@@ -405,8 +464,8 @@ function buildKeywords(document: CorpusDocument): string[] {
   return [...new Set(tokens)].slice(0, 8)
 }
 
-function selectCandidateReason(document: CorpusDocument): string | null {
-  const contentLength = document.content.trim().length
+function selectCandidateReason(document: CorpusDocument, analysisInput: AnalysisInput): string | null {
+  const contentLength = analysisInput.text.trim().length
   if (['pdf', 'document', 'presentation'].includes(document.fileType || '')) {
     return 'priority_file_type'
   }
@@ -419,23 +478,26 @@ function selectCandidateReason(document: CorpusDocument): string | null {
   return null
 }
 
-function getExclusionReason(document: CorpusDocument): string | null {
+function getExclusionReason(document: CorpusDocument, analysisInput: AnalysisInput): string | null {
   const path = document.path.toLowerCase()
   if (/\.(zip|exe|dmg|mp4|mov|png|jpg|jpeg)$/.test(path)) {
     return 'unsupported_file_type'
   }
-  if (!document.content.trim() && !document.summary.trim()) {
+  if (analysisInput.source === 'metadata_only') {
+    return analysisInput.extractionStatus === 'unreadable' ? 'unreadable_extract' : 'metadata_only_extract'
+  }
+  if (!analysisInput.text.trim() && !document.summary.trim()) {
     return 'unreadable_content'
   }
-  if (document.content.length > 18000) {
+  if (analysisInput.text.length > 18000) {
     return 'file_too_large'
   }
   return null
 }
 
-function buildAnalysis(document: CorpusDocument, provider: string, model: string): DocumentAnalysis {
-  const contentHash = buildContentHash(document)
-  const sections = buildAnalysisSections(document)
+function buildAnalysis(document: CorpusDocument, provider: string, model: string, analysisInput: AnalysisInput): DocumentAnalysis {
+  const contentHash = buildContentHash(document, analysisInput.text)
+  const sections = buildAnalysisSections(document, analysisInput.text)
   const summary = document.summary.trim() || sections[0]?.content || document.title
   return {
     status: 'analyzed',
@@ -455,11 +517,11 @@ function buildAnalysis(document: CorpusDocument, provider: string, model: string
   }
 }
 
-function shouldReuseExistingAnalysis(document: CorpusDocument): boolean {
+function shouldReuseExistingAnalysis(document: CorpusDocument, contentHash: string): boolean {
   if (document.analysis?.status !== 'analyzed') {
     return false
   }
-  return document.analysis.version === ANALYSIS_VERSION && document.analysis.contentHash === buildContentHash(document)
+  return document.analysis.version === ANALYSIS_VERSION && document.analysis.contentHash === contentHash
 }
 
 export async function analyzeCorpusDocuments(
@@ -489,6 +551,13 @@ export async function analyzeCorpusDocuments(
   const exclusionReasons: Record<string, number> = {}
   const selectionReasons: Record<string, number> = {}
   const providerFailureReasons: Record<string, number> = {}
+  const extractionQuality: Record<ExtractionStatus | 'unknown', number> = {
+    full_text: 0,
+    partial_text: 0,
+    metadata_only: 0,
+    unreadable: 0,
+    unknown: 0,
+  }
   const useProvider = options.provider !== 'local' && Boolean(options.apiKey)
   const reportProgress = () => {
     options.onProgress?.({
@@ -509,15 +578,18 @@ export async function analyzeCorpusDocuments(
 
   for (const document of corpus.documents) {
     scanned += 1
+    const analysisInput = await resolveAnalysisInput(document)
+    extractionQuality[analysisInput.extractionStatus] += 1
+    const contentHash = buildContentHash(document, analysisInput.text)
 
-    if (shouldReuseExistingAnalysis(document)) {
+    if (shouldReuseExistingAnalysis(document, contentHash)) {
       reused += 1
       documents.push(document)
       reportProgress()
       continue
     }
 
-    const exclusionReason = getExclusionReason(document)
+    const exclusionReason = getExclusionReason(document, analysisInput)
     if (exclusionReason) {
       excluded += 1
       exclusionReasons[exclusionReason] = (exclusionReasons[exclusionReason] || 0) + 1
@@ -526,7 +598,7 @@ export async function analyzeCorpusDocuments(
         analysis: {
           status: 'excluded' as const,
           version: ANALYSIS_VERSION,
-          contentHash: buildContentHash(document),
+          contentHash,
           excludedReason: exclusionReason,
         },
       })
@@ -534,14 +606,14 @@ export async function analyzeCorpusDocuments(
       continue
     }
 
-    const selectionReason = selectCandidateReason(document)
+    const selectionReason = selectCandidateReason(document, analysisInput)
     if (options.mode === 'necessary' && !selectionReason) {
       documents.push({
         ...document,
         analysis: {
           status: 'excluded' as const,
           version: ANALYSIS_VERSION,
-          contentHash: buildContentHash(document),
+          contentHash,
           excludedReason: 'insufficient_expected_value',
         },
       })
@@ -556,7 +628,7 @@ export async function analyzeCorpusDocuments(
         analysis: {
           status: 'stale' as const,
           version: ANALYSIS_VERSION,
-          contentHash: buildContentHash(document),
+          contentHash,
           failureReason: 'run_budget_reached',
         },
       })
@@ -572,12 +644,11 @@ export async function analyzeCorpusDocuments(
         selectionReasons.all_documents = (selectionReasons.all_documents || 0) + 1
       }
 
-      const contentHash = buildContentHash(document)
-      let analysisOutput = buildAnalysis(document, options.provider, options.model)
+      let analysisOutput = buildAnalysis(document, options.provider, options.model, analysisInput)
 
       if (useProvider) {
         providerAttempts += 1
-        const providerResult = await runProviderAnalysis(document, {
+        const providerResult = await runProviderAnalysis(document, analysisInput, {
           provider: options.provider,
           model: options.model,
           apiKey: options.apiKey as string,
@@ -624,7 +695,7 @@ export async function analyzeCorpusDocuments(
         analysis: {
           status: 'failed' as const,
           version: ANALYSIS_VERSION,
-          contentHash: buildContentHash(document),
+          contentHash,
           failureReason: error instanceof Error ? error.message : 'analysis_failed',
         },
       })
@@ -650,6 +721,7 @@ export async function analyzeCorpusDocuments(
       providerSuccesses,
       providerFallbacks,
       providerFailureReasons,
+      extractionQuality,
     },
   }
 }
@@ -708,6 +780,7 @@ export function buildAnalysisRunReport(options: {
     providerSuccesses: options.metrics.providerSuccesses,
     providerFallbacks: options.metrics.providerFallbacks,
     providerFailureReasons: options.metrics.providerFailureReasons,
+    extractionQuality: options.metrics.extractionQuality,
     elapsedMs,
     averageDocumentMs,
   }
@@ -834,6 +907,9 @@ async function main() {
   console.log(`Provider attempts: ${report.providerAttempts}`)
   console.log(`Provider successes: ${report.providerSuccesses}`)
   console.log(`Provider fallbacks: ${report.providerFallbacks}`)
+  console.log(
+    `Extraction quality: full_text=${report.extractionQuality.full_text}, partial_text=${report.extractionQuality.partial_text}, metadata_only=${report.extractionQuality.metadata_only}, unreadable=${report.extractionQuality.unreadable}, unknown=${report.extractionQuality.unknown}`,
+  )
   console.log(`Elapsed: ${formatDuration(report.elapsedMs)}`)
   console.log(`Average per analyzed document: ${report.averageDocumentMs} ms`)
   if (report.providerFallbacks > 0) {

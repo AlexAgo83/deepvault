@@ -1,11 +1,11 @@
 ## prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment - Add a post-ingest AI analysis command for corpus enrichment
-> Date: 2026-04-18
+> Date: 2026-05-05
 > Status: Validated
-> Related request: operator trust in provider-backed analyze runs, explicit publish promotion, and token visibility in AI View
-> Related backlog: `logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md`
-> Related task: `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`
+> Related request: operator trust in provider-backed analyze runs, explicit publish promotion, token visibility in AI View, and `logics/request/req_021_enforce_real_text_extraction_before_post_ingest_analysis.md`
+> Related backlog: `logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md`, `logics/backlog/item_091_analyze_pipeline_uses_extract_backed_text.md`
+> Related task: `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`, `logics/tasks/task_044_orchestrate_extract_backed_analysis_pipeline.md`
 > Related architecture: `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`, `logics/architecture/adr_003_hybrid_knowledge_store_and_retrieval_model.md`, `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`, `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`, `logics/architecture/adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts.md`, `logics/architecture/adr_029_bound_post_ingest_analysis_contract_and_runtime_output.md`
-> Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc. Keep the command separate from baseline ingestion unless a later decision explicitly merges them, keep provider observability truthful, keep the published corpus boundary explicit, and keep AI View token usage aligned with real analyze runs.
+> Reminder: Updated for extract-backed analysis input; keep the command separate from baseline ingestion unless a later decision explicitly merges them, keep provider observability truthful, keep the published corpus boundary explicit, keep extraction-quality reporting visible, and keep AI View token usage aligned with real analyze runs.
 
 > Delivery status: First-wave product scope is shipped through `item_069` and `task_037`; follow-on scoring, CI, and configuration portability work continues separately under `task_041`.
 
@@ -98,6 +98,7 @@ The product needs a separate command that can enrich the corpus after ingest wit
 
 # Reanalysis policy
 - Reanalysis should key primarily off a stable content hash, with `updatedAt` used as a secondary freshness signal when a reliable content hash cannot be produced.
+- When a durable extract exists, the content hash should include the extract-backed analysis input and extraction state so changes to the real body text invalidate stale analysis.
 - A document should be reanalyzed when its content hash changes, when the stored analysis version changes, when the previous status is `failed` and a retry policy allows another attempt, or when the previous status is `stale`.
 - The first-wave processing states should be `not_analyzed`, `analyzed`, `excluded`, `failed`, and `stale`.
 - `stale` means the document has prior analysis data that no longer matches the current content or analysis contract and must not be treated as fresh.
@@ -127,6 +128,7 @@ The product needs a separate command that can enrich the corpus after ingest wit
 
 # Exclusion policy expectations
 - Hard exclusions should apply before provider routing for files that are above a maximum size limit, use a known unsupported MIME type or extension, are binary-only, are encrypted or access-protected, or are otherwise known to be unreadable by the product.
+- Metadata-only and unreadable extract states should be treated conservatively: keep the source traceable, but do not ask a provider to infer body-level summary or sections from `Source:` / `Path:` placeholders.
 - Soft exclusions should skip AI analysis when the expected value is too low for the current mode, such as files whose local extraction is already good enough or documents that exceed the standard cost envelope without being in an explicitly elevated mode.
 - Every skipped file should carry a persisted exclusion reason so operators can distinguish `file_too_large`, `unsupported_file_type`, `binary_only`, `encrypted_or_protected`, `unreadable_content`, `insufficient_expected_value`, and similar categories without reading raw logs.
 - The command should report exclusion totals alongside analyzed and failed totals so cost-control behavior is visible by default.
@@ -179,6 +181,7 @@ The product needs a separate command that can enrich the corpus after ingest wit
 - The analyze sidecar now also writes `data/runtime/analyze-report.json` with bounded run metrics for `selected`, `analyzed`, `excluded`, `failed`, `reused`, `stale`, and heuristic token/cost estimates.
 - The analysis contract now distinguishes the requested provider/model from the provider/model actually used. Successful remote runs persist `providerStatus: provider`; local fallback persists `provider: local`, `providerStatus: fallback`, and a `fallbackReason`.
 - The analyze report now records `providerAttempts`, `providerSuccesses`, `providerFallbacks`, and grouped `providerFailureReasons`, so fast runs can be audited instead of inferred from provider labels alone.
+- Analyze now prefers durable extract artifacts before corpus fallback content, excludes metadata-only placeholders conservatively, and reports `extractionQuality` counts for full-text, partial-text, metadata-only, unreadable, and unknown inputs.
 - The OpenAI provider path now targets the Responses API with response-shape-compatible parsing and records the upstream error detail on non-OK responses, improving operator trust when provider-backed runs degrade to local fallback.
 - Long analyze runs now emit periodic progress and timing telemetry so operators can tell the difference between a slow provider-backed run and a stalled command.
 - Provider-backed analyze runs with actual token counts now contribute to the local AI View usage rollups, making post-ingest analysis cost visible in the same product surface as Bishop provider usage.
