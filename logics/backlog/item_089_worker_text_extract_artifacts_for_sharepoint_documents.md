@@ -3,8 +3,8 @@
 > From version: 1.5.1
 > Schema version: 1.0
 > Status: Done
-> Understanding: 94%
-> Confidence: 91%
+> Understanding: 98%
+> Confidence: 94%
 > Progress: 100%
 > Complexity: High
 > Theme: Data / Worker / Corpus
@@ -57,4 +57,5 @@ flowchart LR
 
 - Implemented `RuntimeStore.extract_artifact_relative_path(...)` and worker live export extract artifact writing under the configured runtime store.
 - Corpus documents now carry `extractionStatus`, `extractionReason`, and `extractPath` when exported from the Graph worker path.
+- Extended worker extraction beyond text-like files by downloading bounded binary content and extracting OOXML body text for DOCX/PPTX/XLSX, with optional PDF text extraction through `pypdf`.
 - `rtk python3 -m pytest worker/tests/test_live_export_service.py` passed with coverage for successful text extract, metadata-only unsupported source, and empty text download classified as unreadable.

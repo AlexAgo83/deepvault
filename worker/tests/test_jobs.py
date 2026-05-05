@@ -17,7 +17,7 @@ from worker.main import app
 def build_jobs_service(tmp_path) -> JobsService:
     settings = Settings(
         WORKER_MODE="local",
-        WORKER_RUNTIME_DATA_DIR=tmp_path,
+        WORKER_RUNTIME_DATA_DIR=tmp_path / "data" / "runtime",
     )
     runtime_store = RuntimeStore(settings.runtime_data_dir)
     corpus_service = CorpusService(settings=settings)
@@ -53,8 +53,8 @@ def test_jobs_service_runs_evaluate_and_persists_files(tmp_path) -> None:
     completed = wait_for_terminal_status(service, started["jobId"])
     assert completed["status"] == "succeeded"
     assert completed["result"]["passCount"] >= 1
-    assert (tmp_path / "jobs" / f"{started['jobId']}.json").exists()
-    assert (tmp_path / "jobs" / f"{started['jobId']}.events.jsonl").exists()
+    assert (service._runtime_store.jobs_dir() / f"{started['jobId']}.json").exists()
+    assert (service._runtime_store.jobs_dir() / f"{started['jobId']}.events.jsonl").exists()
 
 
 def test_jobs_service_runs_ingest_and_writes_sync_state(tmp_path) -> None:
@@ -65,7 +65,7 @@ def test_jobs_service_runs_ingest_and_writes_sync_state(tmp_path) -> None:
 
     assert completed["status"] == "succeeded"
     assert completed["result"]["mode"] == "mock"
-    assert (tmp_path / "sync-state.json").exists()
+    assert (service._runtime_store.sync_state_path()).exists()
 
 
 def test_jobs_service_runs_ingest_in_live_mode_when_corpus_path_is_provided(tmp_path) -> None:
@@ -81,7 +81,7 @@ def test_jobs_service_runs_ingest_in_live_mode_when_corpus_path_is_provided(tmp_
 
     assert completed["status"] == "succeeded"
     assert completed["result"]["mode"] == "live"
-    assert (tmp_path / "sync-state.live.json").exists()
+    assert (service._runtime_store.sync_state_path("live")).exists()
 
 
 def test_jobs_service_runs_analyze_and_writes_analysis_artifacts(tmp_path) -> None:
@@ -95,16 +95,16 @@ def test_jobs_service_runs_analyze_and_writes_analysis_artifacts(tmp_path) -> No
 
     assert completed["status"] == "succeeded"
     assert completed["result"]["analyzed"] == 5
-    assert (tmp_path / "analyzed-corpus.json").exists()
-    assert (tmp_path / "analyze-report.json").exists()
+    assert (service._runtime_store.analyzed_corpus_path()).exists()
+    assert (service._runtime_store.analyze_report_path()).exists()
 
 
 def test_jobs_service_analyze_uses_extract_backed_text(tmp_path) -> None:
     service = build_jobs_service(tmp_path)
     corpus = json.loads(service._corpus_service.load_corpus_bytes().decode("utf-8"))
     extract_path = "extracts/site-test/doc-extract.json"
-    (tmp_path / extract_path).parent.mkdir(parents=True, exist_ok=True)
-    (tmp_path / extract_path).write_text(
+    (service._runtime_store.runtime_dir / extract_path).parent.mkdir(parents=True, exist_ok=True)
+    (service._runtime_store.runtime_dir / extract_path).write_text(
         json.dumps({"text": "Real extracted body text. It contains actual policy obligations and review owners."}),
         encoding="utf-8",
     )
@@ -135,11 +135,11 @@ def test_jobs_service_analyze_uses_extract_backed_text(tmp_path) -> None:
     completed = wait_for_terminal_status(service, started["jobId"])
 
     assert completed["status"] == "succeeded"
-    analyzed_corpus = json.loads((tmp_path / "analyzed-corpus.json").read_text(encoding="utf-8"))
+    analyzed_corpus = json.loads((service._runtime_store.analyzed_corpus_path()).read_text(encoding="utf-8"))
     section = analyzed_corpus["documents"][0]["analysis"]["sections"][0]["content"]
     assert "Real extracted body text" in section
     assert not section.startswith("Source:")
-    report = json.loads((tmp_path / "analyze-report.json").read_text(encoding="utf-8"))
+    report = json.loads((service._runtime_store.analyze_report_path()).read_text(encoding="utf-8"))
     assert report["extractionQuality"]["full_text"] == 1
 
 
@@ -174,10 +174,10 @@ def test_jobs_service_analyze_excludes_metadata_only_placeholder(tmp_path) -> No
     completed = wait_for_terminal_status(service, started["jobId"])
 
     assert completed["status"] == "succeeded"
-    analyzed_corpus = json.loads((tmp_path / "analyzed-corpus.json").read_text(encoding="utf-8"))
+    analyzed_corpus = json.loads((service._runtime_store.analyzed_corpus_path()).read_text(encoding="utf-8"))
     assert analyzed_corpus["documents"][0]["analysis"]["status"] == "excluded"
     assert analyzed_corpus["documents"][0]["analysis"]["excludedReason"] == "metadata_only_extract"
-    report = json.loads((tmp_path / "analyze-report.json").read_text(encoding="utf-8"))
+    report = json.loads((service._runtime_store.analyze_report_path()).read_text(encoding="utf-8"))
     assert report["extractionQuality"]["metadata_only"] == 1
 
 
@@ -193,7 +193,7 @@ def test_jobs_service_analyze_falls_back_to_local_when_provider_requested(tmp_pa
 
     assert completed["status"] == "succeeded"
     assert completed["result"]["provider"] == "openai"
-    analyzed_corpus = (tmp_path / "analyzed-corpus.json").read_text(encoding="utf-8")
+    analyzed_corpus = (service._runtime_store.analyzed_corpus_path()).read_text(encoding="utf-8")
     assert '"providerStatus": "fallback"' in analyzed_corpus
 
 
@@ -253,13 +253,13 @@ def test_jobs_service_analyze_uses_provider_when_key_is_configured(tmp_path, mon
     assert completed["result"]["providerSuccesses"] == 1
     assert completed["result"]["providerFallbacks"] == 0
 
-    analyzed_corpus = json.loads((tmp_path / "analyzed-corpus.json").read_text(encoding="utf-8"))
+    analyzed_corpus = json.loads((service._runtime_store.analyzed_corpus_path()).read_text(encoding="utf-8"))
     first_analysis = analyzed_corpus["documents"][0]["analysis"]
     assert first_analysis["provider"] == "openai"
     assert first_analysis["providerStatus"] == "provider"
     assert first_analysis["summary"] == "Provider summary."
 
-    report = json.loads((tmp_path / "analyze-report.json").read_text(encoding="utf-8"))
+    report = json.loads((service._runtime_store.analyze_report_path()).read_text(encoding="utf-8"))
     assert report["actualInputTokens"] == 120
     assert report["actualOutputTokens"] == 45
     assert report["tokenCountMode"] == "actual"
@@ -282,9 +282,9 @@ def test_jobs_service_runs_export_live_and_writes_live_artifacts(tmp_path) -> No
 
     assert completed["status"] == "succeeded"
     assert completed["result"]["sourceKind"] == "mock-baseline"
-    assert (tmp_path.parent.parent / "public" / "live-corpus.json").exists()
-    assert (tmp_path / "live-export-checkpoint.json").exists()
-    assert (tmp_path / "sync-state.live.json").exists()
+    assert (service._runtime_store.live_corpus_path()).exists()
+    assert (service._runtime_store.live_export_checkpoint_path()).exists()
+    assert (service._runtime_store.sync_state_path("live")).exists()
 
 
 def test_jobs_service_export_live_accepts_explicit_input_override(tmp_path) -> None:
@@ -303,8 +303,8 @@ def test_jobs_service_export_live_accepts_explicit_input_override(tmp_path) -> N
     )
     completed = wait_for_terminal_status(service, started["jobId"])
 
-    published_corpus = (tmp_path.parent.parent / "public" / "live-corpus.json").read_text(encoding="utf-8")
-    checkpoint = (tmp_path / "live-export-checkpoint.json").read_text(encoding="utf-8")
+    published_corpus = (service._runtime_store.live_corpus_path()).read_text(encoding="utf-8")
+    checkpoint = (service._runtime_store.live_export_checkpoint_path()).read_text(encoding="utf-8")
 
     assert completed["status"] == "succeeded"
     assert completed["result"]["sourceKind"] == "explicit-input"
@@ -320,14 +320,14 @@ def test_jobs_service_runs_publish_analysis_after_analyze(tmp_path) -> None:
         options={"env": {"DEEPVAULT_DATA_MODE": "mock", "DEEPVAULT_ANALYZE_LIMIT": "3"}},
     )
     wait_for_terminal_status(service, analyze["jobId"])
-    assert (tmp_path / "analyzed-corpus.json").exists()
+    assert (service._runtime_store.analyzed_corpus_path()).exists()
 
     publish = service.start_job(job_type="publish-analysis", options={"env": {"DEEPVAULT_DATA_MODE": "mock"}})
     completed = wait_for_terminal_status(service, publish["jobId"])
 
     assert completed["status"] == "succeeded"
     assert completed["result"]["analyzedCount"] >= 1
-    published_path = tmp_path.parent.parent / "public" / "live-corpus.json"
+    published_path = service._runtime_store.live_corpus_path()
     assert published_path.exists()
     published = json.loads(published_path.read_text(encoding="utf-8"))
     analyzed_docs = [doc for doc in published["documents"] if isinstance(doc.get("analysis"), dict) and doc["analysis"].get("status") == "analyzed"]
@@ -352,7 +352,7 @@ def test_jobs_service_run_job_blocks_until_terminal_status(tmp_path) -> None:
     assert completed["status"] == "succeeded"
     assert completed["launchedBy"] == "worker-cli"
     assert completed["client"] == "worker-cli"
-    assert (tmp_path / "jobs" / f"{completed['jobId']}.json").exists()
+    assert (service._runtime_store.jobs_dir() / f"{completed['jobId']}.json").exists()
 
 
 def test_jobs_service_can_cancel_running_job(tmp_path) -> None:

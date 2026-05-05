@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import hashlib
 import html
+import io
 import json
 import os
 import re
 import time
+import zipfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,6 +25,9 @@ from worker.app.services.corpus_service import CorpusService
 TEXTUAL_MIME_PREFIXES = ("text/", "application/json", "application/xml", "application/xhtml+xml")
 TEXTUAL_EXTENSIONS = {"txt", "md", "markdown", "csv", "tsv", "json", "xml", "html", "htm", "aspx"}
 MAX_TEXT_DOWNLOAD_BYTES = 256 * 1024
+MAX_BINARY_EXTRACT_BYTES = 15 * 1024 * 1024
+OOXML_EXTENSIONS = {"docx", "pptx", "xlsx"}
+PDF_EXTENSIONS = {"pdf"}
 
 
 @dataclass
@@ -79,6 +84,13 @@ class GraphClient:
             raise RuntimeError(f"Graph content request failed ({response.status_code})")
         content_type = response.headers.get("content-type", "")
         return response.text, content_type
+
+    def get_bytes(self, path_or_url: str) -> Tuple[bytes, str]:
+        response = self._request("GET", path_or_url)
+        if response.status_code >= 400:
+            raise RuntimeError(f"Graph content request failed ({response.status_code})")
+        content_type = response.headers.get("content-type", "")
+        return response.content, content_type
 
     def list_all(
         self,
@@ -568,11 +580,19 @@ class LiveExportService:
             raw_text = ""
             extraction_reason = ""
             is_textual_item = self._is_textual_item(item_name, mime_type)
+            is_binary_extractable = self._is_binary_extractable_item(item_name, mime_type)
             if is_textual_item and (not isinstance(item_size, int) or item_size <= MAX_TEXT_DOWNLOAD_BYTES):
                 raw_text = self._try_download_text(client, f"/drives/{drive['id']}/items/{item['id']}")
                 if not raw_text:
                     extraction_reason = "text_download_empty"
-            elif isinstance(item_size, int) and item_size > MAX_TEXT_DOWNLOAD_BYTES:
+            elif is_binary_extractable and (not isinstance(item_size, int) or item_size <= MAX_BINARY_EXTRACT_BYTES):
+                raw_text, extraction_reason = self._try_download_binary_extract(
+                    client,
+                    f"/drives/{drive['id']}/items/{item['id']}",
+                    item_name,
+                    mime_type,
+                )
+            elif isinstance(item_size, int) and item_size > (MAX_BINARY_EXTRACT_BYTES if is_binary_extractable else MAX_TEXT_DOWNLOAD_BYTES):
                 extraction_reason = "file_too_large"
                 report_text(f"[{site_name}] {drive_name}{current_path} over size limit ({item_size} bytes), keeping metadata only")
             else:
@@ -585,7 +605,7 @@ class LiveExportService:
             extracted_text = raw_text if raw_text and not self._is_metadata_only_text(raw_text) else ""
             extraction_status = self._classify_extraction_status(
                 text=extracted_text,
-                attempted_text_download=is_textual_item and extraction_reason != "file_too_large",
+                attempted_text_download=(is_textual_item or is_binary_extractable) and extraction_reason != "file_too_large",
                 reason=extraction_reason,
             )
             if extracted_text:
@@ -649,6 +669,75 @@ class LiveExportService:
                 return self._normalize_html_to_text(text)
             return text.replace("\u0000", "").strip()
         return ""
+
+    def _try_download_binary_extract(self, client: GraphClient, item_path: str, name: str, mime_type: str) -> Tuple[str, str]:
+        try:
+            content, downloaded_mime_type = client.get_bytes(f"{item_path}/content")
+        except Exception:
+            return "", "binary_download_failed"
+
+        if not content:
+            return "", "binary_download_empty"
+        if len(content) > MAX_BINARY_EXTRACT_BYTES:
+            return "", "file_too_large"
+
+        effective_mime_type = downloaded_mime_type or mime_type
+        text = self._extract_plain_text_from_binary(name, effective_mime_type, content)
+        if text:
+            return text, ""
+        return "", "binary_text_extraction_failed"
+
+    def _extract_plain_text_from_binary(self, name: str, mime_type: str, content: bytes) -> str:
+        extension = name.rsplit(".", 1)[-1].lower() if "." in name else ""
+        if extension in OOXML_EXTENSIONS or "officedocument" in mime_type:
+            return self._extract_ooxml_text(content)
+        if extension in PDF_EXTENSIONS or mime_type == "application/pdf":
+            return self._extract_pdf_text(content)
+        return ""
+
+    def _extract_ooxml_text(self, content: bytes) -> str:
+        try:
+            with zipfile.ZipFile(io.BytesIO(content)) as archive:
+                text_parts: List[str] = []
+                for name in archive.namelist():
+                    if not self._is_ooxml_text_part(name):
+                        continue
+                    try:
+                        raw_xml = archive.read(name).decode("utf-8", errors="ignore")
+                    except Exception:
+                        continue
+                    text = self._xml_to_text(raw_xml)
+                    if text:
+                        text_parts.append(text)
+                return self._normalize_extracted_text(" ".join(text_parts))
+        except Exception:
+            return ""
+
+    def _is_ooxml_text_part(self, name: str) -> bool:
+        return (
+            (name.startswith("word/") and name.endswith(".xml")) or
+            (name.startswith("ppt/slides/") and name.endswith(".xml")) or
+            name == "xl/sharedStrings.xml"
+        )
+
+    def _xml_to_text(self, value: str) -> str:
+        text = re.sub(r"<[^>]+>", " ", value)
+        return html.unescape(text)
+
+    def _extract_pdf_text(self, content: bytes) -> str:
+        try:
+            from pypdf import PdfReader  # type: ignore[import-not-found]
+        except Exception:
+            return ""
+        try:
+            reader = PdfReader(io.BytesIO(content))
+            text_parts = [(page.extract_text() or "") for page in reader.pages[:80]]
+            return self._normalize_extracted_text(" ".join(text_parts))
+        except Exception:
+            return ""
+
+    def _normalize_extracted_text(self, value: str) -> str:
+        return re.sub(r"\s+", " ", value.replace("\u0000", " ")).strip()
 
     def _classify_extraction_status(self, *, text: str, attempted_text_download: bool, reason: str) -> str:
         if text.strip():
@@ -885,6 +974,10 @@ class LiveExportService:
         if extension in TEXTUAL_EXTENSIONS:
             return True
         return any(mime_type.startswith(prefix) for prefix in TEXTUAL_MIME_PREFIXES)
+
+    def _is_binary_extractable_item(self, name: str, mime_type: str) -> bool:
+        extension = name.rsplit(".", 1)[-1].lower() if "." in name else ""
+        return extension in OOXML_EXTENSIONS or extension in PDF_EXTENSIONS or "officedocument" in mime_type or mime_type == "application/pdf"
 
     def _infer_file_type(self, name: str, mime_type: str) -> str:
         extension = name.rsplit(".", 1)[-1].lower() if "." in name else ""

@@ -1,6 +1,7 @@
 fastapi==0.118.0
 httpx==0.28.1
 pydantic-settings==2.11.0
+pypdf==6.2.0
 python-jose[cryptography]==3.5.0
 pytest==8.4.2
 pytest-asyncio==1.2.0
