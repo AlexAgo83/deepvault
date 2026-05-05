@@ -1,9 +1,9 @@
 ## req_021_enforce_real_text_extraction_before_post_ingest_analysis - Enforce real text extraction before post-ingest analysis
 > From version: 1.5.1
 > Schema version: 1.0
-> Status: Proposed
-> Understanding: 94%
-> Confidence: 92%
+> Status: Ready
+> Understanding: 96%
+> Confidence: 94%
 > Complexity: High
 > Theme: Architecture / Product / Operational
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
@@ -43,7 +43,7 @@ flowchart TD
 - [x] Scope boundaries (in/out) are explicit.
 - [x] Acceptance criteria are testable.
 - [x] Dependencies and known risks are listed.
-- [ ] Backlog items to be created before starting.
+- [x] Backlog items to be created before starting.
 
 # Scope
 **In scope**
@@ -80,3 +80,11 @@ flowchart TD
 - Should metadata-only documents remain searchable in the main corpus view, or should they be visually separated from full-text documents?
 - Should OCR for scanned files be part of the first wave, or explicitly deferred until the normal text-extraction path is stable?
 - Should backfilling old placeholder documents happen automatically after the extract pipeline lands, or as a separate operator-triggered job?
+
+# Backlog
+- [item_089_worker_text_extract_artifacts_for_sharepoint_documents](logics/backlog/item_089_worker_text_extract_artifacts_for_sharepoint_documents.md)
+- [item_090_corpus_contract_for_extract_quality_and_metadata_only_sources](logics/backlog/item_090_corpus_contract_for_extract_quality_and_metadata_only_sources.md)
+- [item_091_analyze_pipeline_uses_extract_backed_text](logics/backlog/item_091_analyze_pipeline_uses_extract_backed_text.md)
+
+# Tasks
+- [task_044_orchestrate_extract_backed_analysis_pipeline](logics/tasks/task_044_orchestrate_extract_backed_analysis_pipeline.md)
