@@ -76,8 +76,13 @@ export interface CorpusDocument {
   source: string
   sections?: CorpusSection[]
   fileType?: string
+  extractionStatus?: ExtractionStatus
+  extractionReason?: string
+  extractPath?: string
   analysis?: DocumentAnalysis
 }
+
+export type ExtractionStatus = 'full_text' | 'partial_text' | 'metadata_only' | 'unreadable'
 
 export interface Corpus {
   schemaVersion?: string
@@ -107,6 +112,8 @@ export interface SourceRecord {
   source: string
   sectionHint?: string
   fileType?: string
+  extractionStatus?: ExtractionStatus
+  extractionReason?: string
 }
 
 export type BishopArtifactFormat = 'txt' | 'md' | 'json' | 'csv'

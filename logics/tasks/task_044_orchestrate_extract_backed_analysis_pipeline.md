@@ -5,7 +5,7 @@
 > Status: In Progress
 > Understanding: 96%
 > Confidence: 93%
-> Progress: 33%
+> Progress: 66%
 > Complexity: High
 > Theme: Data / Worker / Analysis
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
@@ -53,9 +53,9 @@ stateDiagram-v2
 - [x] 1. Wave 1 — implement worker-side extract artifact creation for supported SharePoint files.
 - [x] 2. Wave 1 — preserve Graph source metadata in extract artifacts and classify extraction outcomes.
 - [x] CHECKPOINT: leave Wave 1 commit-ready with worker tests proving successful extraction and metadata-only fallback.
-- [ ] 3. Wave 2 — extend the corpus contract with extraction quality metadata and update validation.
-- [ ] 4. Wave 2 — surface extraction quality in artifact diagnostics and prevent placeholder text from being treated as body evidence in retrieval/Bishop assembly.
-- [ ] CHECKPOINT: leave Wave 2 commit-ready with corpus validation and artifact diagnostics coverage.
+- [x] 3. Wave 2 — extend the corpus contract with extraction quality metadata and update validation.
+- [x] 4. Wave 2 — surface extraction quality in artifact diagnostics and prevent placeholder text from being treated as body evidence in retrieval/Bishop assembly.
+- [x] CHECKPOINT: leave Wave 2 commit-ready with corpus validation and artifact diagnostics coverage.
 - [ ] 5. Wave 3 — update `npm run analyze` and worker-backed analyze to prefer extract-backed text.
 - [ ] 6. Wave 3 — add fixtures proving full-text analysis is body-grounded and metadata-only analysis remains conservative.
 - [ ] 7. Wave 3 — add analyze report metrics for full-text, partial-text, metadata-only, and unreadable inputs.
@@ -65,7 +65,7 @@ stateDiagram-v2
 # Delivery checkpoints
 
 - After Wave 1: supported documents can produce durable extract artifacts with traceable metadata. Validation: `rtk python3 -m pytest worker/tests/test_live_export_service.py`.
-- After Wave 2: corpus consumers can tell whether a document is full-text, partial, metadata-only, or unreadable.
+- After Wave 2: corpus consumers can tell whether a document is full-text, partial, metadata-only, or unreadable. Validation: `rtk npm run test -- tests/corpus.spec.ts tests/artifacts-panel.spec.tsx tests/deepvault.spec.ts`, `rtk python3 -m pytest worker/tests/test_bishop.py`, and `rtk npm run typecheck`.
 - After Wave 3: analysis no longer produces substantive summaries from placeholder source/path text.
 
 # AC Traceability

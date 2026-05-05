@@ -52,6 +52,10 @@ function isSectionArray(value: unknown): boolean {
     )
 }
 
+function isExtractionStatus(value: unknown): boolean {
+  return value === 'full_text' || value === 'partial_text' || value === 'metadata_only' || value === 'unreadable'
+}
+
 function isAnalysisLike(value: unknown): boolean {
   if (!isRecord(value)) {
     return false
@@ -141,6 +145,10 @@ export function isCorpusLike(value: unknown): value is Corpus {
         typeof document.source === 'string' &&
         (typeof document.webUrl === 'string' || typeof document.webUrl === 'undefined') &&
         (typeof document.sections === 'undefined' || isSectionArray(document.sections)) &&
+        (typeof document.fileType === 'string' || typeof document.fileType === 'undefined') &&
+        (typeof document.extractionStatus === 'undefined' || isExtractionStatus(document.extractionStatus)) &&
+        (typeof document.extractionReason === 'string' || typeof document.extractionReason === 'undefined') &&
+        (typeof document.extractPath === 'string' || typeof document.extractPath === 'undefined') &&
         (typeof document.analysis === 'undefined' || isAnalysisLike(document.analysis)),
     )
 }

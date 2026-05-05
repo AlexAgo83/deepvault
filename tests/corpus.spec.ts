@@ -163,6 +163,36 @@ describe('corpus helpers', () => {
     })
   })
 
+  it('accepts extraction quality metadata on live corpus documents', () => {
+    const { corpus } = getMockCorpusBundle()
+
+    expect(isCorpusLike({
+      ...corpus,
+      documents: [
+        {
+          ...corpus.documents[0],
+          extractionStatus: 'metadata_only',
+          extractionReason: 'unsupported_file_type',
+          extractPath: 'extracts/site-a/doc-1.json',
+        },
+      ],
+    })).toBe(true)
+  })
+
+  it('rejects unknown extraction status values', () => {
+    const { corpus } = getMockCorpusBundle()
+
+    expect(isCorpusLike({
+      ...corpus,
+      documents: [
+        {
+          ...corpus.documents[0],
+          extractionStatus: 'placeholder',
+        },
+      ],
+    })).toBe(false)
+  })
+
   it('reuses the cached corpus when the worker responds 304 not modified', async () => {
     const { corpus } = getMockCorpusBundle()
     const fetchMock = vi.fn()

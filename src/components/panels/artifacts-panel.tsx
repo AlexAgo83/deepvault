@@ -374,6 +374,9 @@ function buildArtifactRecords(
     diagnostics: [
       `Kind: ${document.kind}`,
       `File type: ${inferFileType(document)}`,
+      document.extractionStatus ? `Extraction: ${document.extractionStatus}` : '',
+      document.extractionReason ? `Extraction reason: ${document.extractionReason}` : '',
+      document.extractPath ? `Extract path: ${document.extractPath}` : '',
       `Source: ${document.source}`,
       document.analysis?.excludedReason ? `Excluded: ${document.analysis.excludedReason}` : '',
       document.analysis?.failureReason ? `Failure: ${document.analysis.failureReason}` : '',

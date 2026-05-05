@@ -93,9 +93,17 @@ export interface CorpusDocument {
   sections?: CorpusSection[]
   /** Explicit file type derived from the source path extension (e.g. "document", "spreadsheet", "markdown"). */
   fileType?: string
+  /** Quality state for the durable text extract backing this corpus row. */
+  extractionStatus?: ExtractionStatus
+  /** Machine-readable reason when extraction produced no usable body text. */
+  extractionReason?: string
+  /** Runtime-store relative path to the durable extract JSON artifact. */
+  extractPath?: string
   /** Additive analysis block produced by the post-ingest enrichment path. */
   analysis?: DocumentAnalysis
 }
+
+export type ExtractionStatus = 'full_text' | 'partial_text' | 'metadata_only' | 'unreadable'
 
 export interface Corpus {
   schemaVersion?: string
@@ -127,6 +135,10 @@ export interface SourceRecord {
   sectionHint?: string
   /** Explicit file type from the source document (e.g. "document", "spreadsheet", "markdown"). */
   fileType?: string
+  /** Quality state for the durable text extract backing this source. */
+  extractionStatus?: ExtractionStatus
+  /** Machine-readable reason when extraction produced no usable body text. */
+  extractionReason?: string
 }
 
 export type BishopArtifactFormat = 'txt' | 'md' | 'json' | 'csv'

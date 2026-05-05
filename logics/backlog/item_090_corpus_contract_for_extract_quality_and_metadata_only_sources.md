@@ -2,10 +2,10 @@
 
 > From version: 1.5.1
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 93%
 > Confidence: 90%
-> Progress: 0%
+> Progress: 100%
 > Complexity: Medium
 > Theme: Data Contract / Retrieval / Artifacts
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -55,6 +55,7 @@ flowchart LR
 
 # Validation evidence
 
-- Corpus shape tests for valid and invalid extraction metadata.
-- Artifact panel or API response fixture showing extraction quality.
-- A retrieval/Bishop fixture proving metadata-only placeholders are not treated as authoritative body text.
+- Added `extractionStatus`, `extractionReason`, and `extractPath` to the TypeScript corpus contract and live corpus validator.
+- Artifact diagnostics now show extraction state, reason, and extract path for processed documents.
+- Retrieval and Bishop source assembly keep metadata-only documents visible while replacing placeholder snippets with the document summary or title.
+- Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/artifacts-panel.spec.tsx tests/deepvault.spec.ts`, `rtk python3 -m pytest worker/tests/test_bishop.py`, and `rtk npm run typecheck`.

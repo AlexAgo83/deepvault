@@ -52,6 +52,33 @@ def test_bishop_query_handles_no_answer() -> None:
     assert payload["sources"] == []
 
 
+def test_bishop_source_snippet_hides_metadata_only_placeholder() -> None:
+    service = build_service()
+    document = {
+        "id": "doc-1",
+        "title": "Metadata Only Policy",
+        "siteId": "site-1",
+        "path": "/Policies/Metadata Only Policy.docx",
+        "updatedAt": "2026-04-18T12:00:00Z",
+        "author": "Pilot Site A",
+        "summary": "Body text is unavailable for this source.",
+        "directAnswer": "Source: Metadata Only Policy.docx. Path: /Policies/Metadata Only Policy.docx.",
+        "content": "Source: Metadata Only Policy.docx. Path: /Policies/Metadata Only Policy.docx.",
+        "tags": ["metadata", "policy"],
+        "access": ["analyst"],
+        "source": "SharePoint",
+        "extractionStatus": "metadata_only",
+        "extractionReason": "unsupported_file_type",
+    }
+
+    source = service._build_source(document, 1.0, {"sites": [{"id": "site-1", "name": "Pilot Site A"}]}, query="policy")
+
+    assert source["snippet"] == "Body text is unavailable for this source."
+    assert not source["snippet"].startswith("Source:")
+    assert source["extractionStatus"] == "metadata_only"
+    assert source["extractionReason"] == "unsupported_file_type"
+
+
 def test_bishop_service_uses_openai_provider_when_configured(monkeypatch) -> None:
     service = build_service(OPENAI_API_KEY="test-openai-key", BISHOP_MODEL="gpt-test-model")
 
