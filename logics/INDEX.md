@@ -176,7 +176,7 @@
 | [item_087_hosted_mode_ui](backlog/item_087_hosted_mode_ui.md) | Hosted mode UI (identity display, Shared label, sign-out, API key inputs hidden) | Done | 100% | backlog/item_087_hosted_mode_ui.md |
 | [item_088_docker_compose_deployment_package](backlog/item_088_docker_compose_deployment_package.md) | Docker Compose deployment package (Caddy + Python worker, Windows) | Done | 100% | backlog/item_088_docker_compose_deployment_package.md |
 | [item_089_worker_text_extract_artifacts_for_sharepoint_documents](backlog/item_089_worker_text_extract_artifacts_for_sharepoint_documents.md) | Worker text extract artifacts for SharePoint documents | Done | 100% | backlog/item_089_worker_text_extract_artifacts_for_sharepoint_documents.md |
-| [item_090_corpus_contract_for_extract_quality_and_metadata_only_sources](backlog/item_090_corpus_contract_for_extract_quality_and_metadata_only_sources.md) | Corpus contract for extract quality and metadata-only sources | Ready | 0% | backlog/item_090_corpus_contract_for_extract_quality_and_metadata_only_sources.md |
+| [item_090_corpus_contract_for_extract_quality_and_metadata_only_sources](backlog/item_090_corpus_contract_for_extract_quality_and_metadata_only_sources.md) | Corpus contract for extract quality and metadata-only sources | Done | 100% | backlog/item_090_corpus_contract_for_extract_quality_and_metadata_only_sources.md |
 | [item_091_analyze_pipeline_uses_extract_backed_text](backlog/item_091_analyze_pipeline_uses_extract_backed_text.md) | Analyze pipeline uses extract-backed text | Ready | 0% | backlog/item_091_analyze_pipeline_uses_extract_backed_text.md |
 
 ## Tasks
@@ -219,4 +219,4 @@
 | [task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability](tasks/task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability.md) | Wave map | Done | 100% | tasks/task_041_orchestrate_post_v1_3_consolidation_enrichment_ci_and_configuration_portability.md |
 | [task_042_orchestrate_python_worker_foundation_and_runtime_migration](tasks/task_042_orchestrate_python_worker_foundation_and_runtime_migration.md) | Progress notes | Done | 100% | tasks/task_042_orchestrate_python_worker_foundation_and_runtime_migration.md |
 | [task_043_orchestrate_hosted_auth_access_and_deployment](tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md) | Progress notes | Done | 100% | tasks/task_043_orchestrate_hosted_auth_access_and_deployment.md |
-| [task_044_orchestrate_extract_backed_analysis_pipeline](tasks/task_044_orchestrate_extract_backed_analysis_pipeline.md) | Orchestrate extract-backed analysis pipeline | In Progress | 33% | tasks/task_044_orchestrate_extract_backed_analysis_pipeline.md |
+| [task_044_orchestrate_extract_backed_analysis_pipeline](tasks/task_044_orchestrate_extract_backed_analysis_pipeline.md) | Orchestrate extract-backed analysis pipeline | In Progress | 66% | tasks/task_044_orchestrate_extract_backed_analysis_pipeline.md |

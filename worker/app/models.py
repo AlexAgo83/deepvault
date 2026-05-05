@@ -72,6 +72,8 @@ class BishopSourceResponse(BaseModel):
     source: str
     sectionHint: Optional[str] = None
     fileType: Optional[str] = None
+    extractionStatus: Optional[str] = None
+    extractionReason: Optional[str] = None
 
 
 class BishopTraceResponse(BaseModel):

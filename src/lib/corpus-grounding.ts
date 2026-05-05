@@ -72,6 +72,21 @@ function findSectionHint(document: CorpusDocument, query: string): string | unde
   return matched?.heading
 }
 
+function isMetadataOnlyContent(value: string): boolean {
+  return /^Source:\s/i.test(value.trim()) && /\bPath:\s/i.test(value)
+}
+
+function buildSourceSnippet(document: CorpusDocument): string {
+  if (
+    document.extractionStatus === 'metadata_only' ||
+    document.extractionStatus === 'unreadable' ||
+    isMetadataOnlyContent(document.content)
+  ) {
+    return document.summary || document.title
+  }
+  return document.directAnswer || document.summary
+}
+
 function buildSource(document: CorpusDocument, score: number, corpusData: Corpus, query?: string): SourceRecord {
   return {
     id: document.id,
@@ -86,10 +101,12 @@ function buildSource(document: CorpusDocument, score: number, corpusData: Corpus
     summary: getPreferredSummary(document),
     tags: [...document.tags, ...getPreferredKeywords(document)],
     access: document.access,
-    snippet: document.directAnswer || document.summary,
+    snippet: buildSourceSnippet(document),
     source: document.source,
     sectionHint: query ? findSectionHint(document, query) : undefined,
     fileType: document.fileType,
+    extractionStatus: document.extractionStatus,
+    extractionReason: document.extractionReason,
   }
 }
 

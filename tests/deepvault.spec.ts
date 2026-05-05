@@ -263,6 +263,33 @@ describe('deepvault helpers', () => {
     expect(riskSource?.fileType).toBe('spreadsheet')
   })
 
+  it('groundQuestion does not expose metadata-only placeholders as source snippets', () => {
+    const metadataOnlyCorpus: Corpus = {
+      ...corpus,
+      documents: [
+        {
+          ...corpus.documents[0],
+          id: 'metadata-only-doc',
+          title: 'Metadata Only Policy',
+          summary: 'Body text is unavailable for this source.',
+          directAnswer: 'Source: Metadata Only Policy.docx. Path: /Policies/Metadata Only Policy.docx.',
+          content: 'Source: Metadata Only Policy.docx. Path: /Policies/Metadata Only Policy.docx.',
+          extractionStatus: 'metadata_only',
+          extractionReason: 'unsupported_file_type',
+          extractPath: 'extracts/site-a/metadata-only-doc.json',
+        },
+      ],
+    }
+
+    const result = groundQuestion(metadataOnlyCorpus, 'metadata only policy', { role: 'analyst' })
+
+    expect(result.status).toBe('answered')
+    expect(result.sources[0].snippet).toBe('Body text is unavailable for this source.')
+    expect(result.sources[0].snippet).not.toMatch(/^Source:/)
+    expect(result.sources[0].extractionStatus).toBe('metadata_only')
+    expect(result.sources[0].extractionReason).toBe('unsupported_file_type')
+  })
+
   it('ranks documents with section heading match higher than flat content match for the same query', () => {
     // "Operating Reserve" is a section heading in q3-budget but does not appear in any title
     const results = searchDocuments(corpus, 'operating reserve', { role: 'analyst' })

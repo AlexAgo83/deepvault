@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Any, Dict, List, Optional, Sequence
 
 import httpx
@@ -602,10 +603,12 @@ class BishopService:
             "summary": self._preferred_summary(document),
             "tags": [*(document.get("tags") or []), *self._preferred_keywords(document)],
             "access": document.get("access") or [],
-            "snippet": document.get("directAnswer") or document.get("summary") or "",
+            "snippet": self._source_snippet(document),
             "source": document.get("source") or "",
             "sectionHint": self._find_section_hint(document, query),
             "fileType": document.get("fileType"),
+            "extractionStatus": document.get("extractionStatus"),
+            "extractionReason": document.get("extractionReason"),
         }
 
     def _get_site_name(self, corpus: Dict[str, Any], site_id: str) -> str:
@@ -619,6 +622,15 @@ class BishopService:
         if analysis.get("status") == "analyzed" and str(analysis.get("summary") or "").strip():
             return str(analysis["summary"]).strip()
         return str(document.get("summary") or "")
+
+    def _source_snippet(self, document: Dict[str, Any]) -> str:
+        content = str(document.get("content") or "")
+        if document.get("extractionStatus") in {"metadata_only", "unreadable"} or self._is_metadata_only_content(content):
+            return str(document.get("summary") or document.get("title") or "")
+        return str(document.get("directAnswer") or document.get("summary") or "")
+
+    def _is_metadata_only_content(self, value: str) -> bool:
+        return bool(re.match(r"^Source:\s", value.strip(), flags=re.IGNORECASE) and re.search(r"\bPath:\s", value))
 
     def _preferred_keywords(self, document: Dict[str, Any]) -> List[str]:
         analysis = document.get("analysis") or {}

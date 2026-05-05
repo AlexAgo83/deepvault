@@ -124,6 +124,8 @@ Azure Blob containers:
   "last_modified": "2025-09-14T10:32:00Z",
   "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "extracted_at": "2026-04-10T02:05:00Z",
+  "extraction_status": "full_text",
+  "extraction_reason": "",
   "text": "<full plain-text extraction of the document content>"
 }
 ```
@@ -141,7 +143,13 @@ Fields:
 | `last_modified` | string | No | ISO 8601 UTC timestamp from SharePoint |
 | `content_type` | string | Yes | MIME type of the source. Null for list items. |
 | `extracted_at` | string | No | ISO 8601 UTC timestamp when text was extracted |
+| `extraction_status` | string | No | `"full_text"`, `"partial_text"`, `"metadata_only"`, or `"unreadable"` |
+| `extraction_reason` | string | Yes | Empty for successful full-text extraction; otherwise machine-readable reason such as `unsupported_file_type`, `file_too_large`, or `text_download_empty` |
 | `text` | string | No | Full plain-text content. No HTML, no markdown. Whitespace normalized. |
+
+The Nexus live corpus mirrors this extraction contract with camelCase document fields: `extractionStatus`, `extractionReason`, and `extractPath`.
+`extractPath` is relative to the configured runtime store, for example `extracts/{site_id}/{source_id}.json`.
+Consumers must treat `metadata_only` and `unreadable` as traceable source metadata, not as evidence that body text was available.
 
 # Chunk file schema (`chunks/{site_id}/{source_id}/{chunk_index}.json`)
 

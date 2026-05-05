@@ -164,6 +164,9 @@ describe('ArtifactsPanel', () => {
           documents: [
             {
               ...corpus.documents[0],
+              extractionStatus: 'metadata_only',
+              extractionReason: 'unsupported_file_type',
+              extractPath: 'extracts/site-a/doc-1.json',
               analysis: {
                 status: 'analyzed',
                 version: '1.0',
@@ -202,8 +205,14 @@ describe('ArtifactsPanel', () => {
     expect(screen.getByText('Processed record')).toBeInTheDocument()
     expect(screen.getByText('Kind')).toBeInTheDocument()
     expect(screen.getByText('File type')).toBeInTheDocument()
+    expect(screen.getByText('Extraction')).toBeInTheDocument()
+    expect(screen.getByText('Extraction reason')).toBeInTheDocument()
+    expect(screen.getByText('Extract path')).toBeInTheDocument()
     expect(within(screen.getByText('Kind').closest('.artifacts-detail-meta-row') as HTMLElement).getByText('document')).toBeInTheDocument()
     expect(within(screen.getByText('File type').closest('.artifacts-detail-meta-row') as HTMLElement).getByText('document')).toBeInTheDocument()
+    expect(within(screen.getByText('Extraction').closest('.artifacts-detail-meta-row') as HTMLElement).getByText('metadata_only')).toBeInTheDocument()
+    expect(within(screen.getByText('Extraction reason').closest('.artifacts-detail-meta-row') as HTMLElement).getByText('unsupported_file_type')).toBeInTheDocument()
+    expect(within(screen.getByText('Extract path').closest('.artifacts-detail-meta-row') as HTMLElement).getByText('extracts/site-a/doc-1.json')).toBeInTheDocument()
     expect(screen.getByText('Enriched summary')).toBeInTheDocument()
     expect(screen.getByText('analysis summary')).toBeInTheDocument()
   })

@@ -63,6 +63,7 @@ Rules:
 - Sources are numbered sequentially starting at 1. The number corresponds to the citation the LLM should use.
 - Each source header includes: title (from `chunk.display_name`), site name (resolved from `chunk.site_id`), and last modified date (from `chunk.last_modified`, formatted as YYYY-MM-DD).
 - Chunk text is inserted as-is (plain text, no markdown, no HTML). The backend must strip any formatting before injection.
+- Sources marked `metadata_only` or `unreadable` by the extraction contract may remain searchable by title/path/metadata, but their `Source: ... Path: ...` fallback text must not be injected or displayed as body evidence.
 - The local Nexus runtime currently caps the final grounded source count to 8 and the retrieval candidate pool to 20. If fewer eligible chunks are available after permission filtering and score thresholding, the number of sources is the actual available count.
 - The `[/SOURCES]` tag closes the context block. Everything after it and before `[/QUESTION]` is empty.
 
