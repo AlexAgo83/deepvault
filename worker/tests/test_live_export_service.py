@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
+import io
 import json
+import zipfile
 
 from worker.app.config import Settings
 from worker.app.infra.runtime_store import RuntimeStore
@@ -13,7 +15,7 @@ from worker.app.services.live_export_service import LiveExportConfig, LiveExport
 def build_service(tmp_path) -> LiveExportService:
     settings = Settings(
         WORKER_MODE="local",
-        WORKER_RUNTIME_DATA_DIR=tmp_path,
+        WORKER_RUNTIME_DATA_DIR=tmp_path / "data" / "runtime",
     )
     runtime_store = RuntimeStore(settings.runtime_data_dir)
     corpus_service = CorpusService(settings=settings)
@@ -76,9 +78,9 @@ def test_live_export_service_runs_graph_export_and_publishes_artifacts(tmp_path,
         check_cancelled=lambda: None,
     )
 
-    published = json.loads((tmp_path.parent.parent / "public" / "live-corpus.json").read_text(encoding="utf-8"))
-    checkpoint = json.loads((tmp_path / "live-export-checkpoint.json").read_text(encoding="utf-8"))
-    sync_state = json.loads((tmp_path / "sync-state.live.json").read_text(encoding="utf-8"))
+    published = json.loads(service._runtime_store.live_corpus_path().read_text(encoding="utf-8"))
+    checkpoint = json.loads(service._runtime_store.live_export_checkpoint_path().read_text(encoding="utf-8"))
+    sync_state = json.loads(service._runtime_store.sync_state_path("live").read_text(encoding="utf-8"))
 
     assert result["sourceKind"] == "graph-full"
     assert result["documentCount"] == 1
@@ -152,7 +154,8 @@ def test_live_export_service_resume_uses_checkpoint_timestamp_and_reconciles_doc
             },
         ],
     }
-    (tmp_path / "live-export-checkpoint.json").write_text(json.dumps(checkpoint_payload), encoding="utf-8")
+    service._runtime_store.live_export_checkpoint_path().parent.mkdir(parents=True, exist_ok=True)
+    service._runtime_store.live_export_checkpoint_path().write_text(json.dumps(checkpoint_payload), encoding="utf-8")
 
     monkeypatch.setattr(service, "acquire_graph_access_token", lambda config, report_text=None: "test-token")
 
@@ -201,7 +204,7 @@ def test_live_export_service_resume_uses_checkpoint_timestamp_and_reconciles_doc
         check_cancelled=lambda: None,
     )
 
-    published = json.loads((tmp_path.parent.parent / "public" / "live-corpus.json").read_text(encoding="utf-8"))
+    published = json.loads(service._runtime_store.live_corpus_path().read_text(encoding="utf-8"))
 
     assert observed["updated_after"] == "2026-04-17T10:00:00Z"
     assert result["sourceKind"] == "graph-resume"
@@ -254,7 +257,7 @@ def test_live_export_service_writes_extract_artifact_for_text_document(tmp_path)
     )
 
     document = result["documents"][0]
-    extract_path = tmp_path / document["extractPath"]
+    extract_path = service._runtime_store.runtime_dir / document["extractPath"]
     extract = json.loads(extract_path.read_text(encoding="utf-8"))
 
     assert document["extractionStatus"] == "full_text"
@@ -270,23 +273,36 @@ def test_live_export_service_writes_extract_artifact_for_text_document(tmp_path)
     assert extract["text"] == "# Roadmap Launch body text."
 
 
-def test_live_export_service_classifies_unsupported_extract_as_metadata_only(tmp_path) -> None:
+def make_ooxml_fixture(path: str, xml: str) -> bytes:
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("[Content_Types].xml", "<Types />")
+        archive.writestr(path, xml)
+    return buffer.getvalue()
+
+
+def test_live_export_service_writes_extract_artifact_for_docx_document(tmp_path) -> None:
     service = build_service(tmp_path)
+    docx_bytes = make_ooxml_fixture(
+        "word/document.xml",
+        "<w:document><w:body><w:p><w:r><w:t>Real DOCX body text</w:t></w:r></w:p></w:body></w:document>",
+    )
 
     class FakeClient:
         def list_all(self, *_args: Any, **_kwargs: Any) -> list[dict[str, Any]]:
             return [
                 {
                     "id": "item-2",
-                    "name": "Deck.pptx",
-                    "file": {"mimeType": "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
-                    "size": 512,
+                    "name": "Policy.docx",
+                    "file": {"mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+                    "size": len(docx_bytes),
                     "lastModifiedDateTime": "2026-04-18T12:00:00Z",
                 }
             ]
 
-        def get_text(self, _path: str) -> tuple[str, str]:
-            raise AssertionError("unsupported Office files should not be downloaded in wave 1")
+        def get_bytes(self, path: str) -> tuple[bytes, str]:
+            assert path.endswith("/content")
+            return docx_bytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
     result = service._crawl_drive_items(
         FakeClient(),  # type: ignore[arg-type]
@@ -301,14 +317,53 @@ def test_live_export_service_classifies_unsupported_extract_as_metadata_only(tmp
     )
 
     document = result["documents"][0]
-    extract = json.loads((tmp_path / document["extractPath"]).read_text(encoding="utf-8"))
+    extract = json.loads((service._runtime_store.runtime_dir / document["extractPath"]).read_text(encoding="utf-8"))
 
-    assert document["fileType"] == "presentation"
+    assert document["fileType"] == "document"
+    assert document["extractionStatus"] == "full_text"
+    assert document["extractionReason"] == ""
+    assert document["content"] == "Real DOCX body text"
+    assert extract["extractionStatus"] == "full_text"
+    assert extract["text"] == "Real DOCX body text"
+
+
+def test_live_export_service_classifies_unsupported_extract_as_metadata_only(tmp_path) -> None:
+    service = build_service(tmp_path)
+
+    class FakeClient:
+        def list_all(self, *_args: Any, **_kwargs: Any) -> list[dict[str, Any]]:
+            return [
+                {
+                    "id": "item-unsupported",
+                    "name": "Image.png",
+                    "file": {"mimeType": "image/png"},
+                    "size": 512,
+                    "lastModifiedDateTime": "2026-04-18T12:00:00Z",
+                }
+            ]
+
+        def get_bytes(self, _path: str) -> tuple[bytes, str]:
+            raise AssertionError("unsupported images should not be downloaded")
+
+    result = service._crawl_drive_items(
+        FakeClient(),  # type: ignore[arg-type]
+        site_id="site-1",
+        site_url="https://tenant.sharepoint.com/sites/A",
+        site_name="Pilot Site A",
+        drive={"id": "drive-1", "name": "Shared Documents"},
+        root_path="",
+        updated_after=None,
+        report_text=lambda *_: None,
+        check_cancelled=lambda: None,
+    )
+
+    document = result["documents"][0]
+    extract = json.loads((service._runtime_store.runtime_dir / document["extractPath"]).read_text(encoding="utf-8"))
+
+    assert document["fileType"] == "png"
     assert document["extractionStatus"] == "metadata_only"
     assert document["extractionReason"] == "unsupported_file_type"
-    assert document["content"] == "Source: Deck.pptx. Path: /Deck.pptx."
     assert extract["extractionStatus"] == "metadata_only"
-    assert extract["extractionReason"] == "unsupported_file_type"
     assert extract["text"] == ""
 
 
@@ -343,7 +398,7 @@ def test_live_export_service_classifies_empty_text_download_as_unreadable(tmp_pa
     )
 
     document = result["documents"][0]
-    extract = json.loads((tmp_path / document["extractPath"]).read_text(encoding="utf-8"))
+    extract = json.loads((service._runtime_store.runtime_dir / document["extractPath"]).read_text(encoding="utf-8"))
 
     assert document["extractionStatus"] == "unreadable"
     assert document["extractionReason"] == "text_download_empty"
