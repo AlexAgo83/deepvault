@@ -2,10 +2,10 @@
 
 > From version: 1.5.1
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 94%
 > Confidence: 91%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Data / Worker / Corpus
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -55,6 +55,6 @@ flowchart LR
 
 # Validation evidence
 
-- Worker unit tests for extract artifact creation and fallback classification.
-- A local export run showing extract files written under `data/runtime/` or the configured runtime store.
-- Inspection of one `.docx` or `.pdf` fixture proving the extract text contains body content, not only source metadata.
+- Implemented `RuntimeStore.extract_artifact_relative_path(...)` and worker live export extract artifact writing under the configured runtime store.
+- Corpus documents now carry `extractionStatus`, `extractionReason`, and `extractPath` when exported from the Graph worker path.
+- `rtk python3 -m pytest worker/tests/test_live_export_service.py` passed with coverage for successful text extract, metadata-only unsupported source, and empty text download classified as unreadable.

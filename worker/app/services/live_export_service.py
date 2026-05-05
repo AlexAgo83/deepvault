@@ -470,6 +470,7 @@ class LiveExportService:
             nested = self._crawl_drive_items(
                 client,
                 site_id=site["id"],
+                site_url=site_url,
                 site_name=site_name or site.get("displayName", ""),
                 drive=drive,
                 root_path="",
@@ -504,6 +505,7 @@ class LiveExportService:
         client: GraphClient,
         *,
         site_id: str,
+        site_url: str,
         site_name: str,
         drive: Dict[str, Any],
         root_path: str,
@@ -532,6 +534,7 @@ class LiveExportService:
                 nested = self._crawl_drive_items(
                     client,
                     site_id=site_id,
+                    site_url=site_url,
                     site_name=site_name,
                     drive=drive,
                     root_path=current_path,
@@ -563,15 +566,48 @@ class LiveExportService:
             mime_type = str(file_payload.get("mimeType") or "")
             item_size = item.get("size")
             raw_text = ""
-            if self._is_textual_item(item_name, mime_type) and (not isinstance(item_size, int) or item_size <= MAX_TEXT_DOWNLOAD_BYTES):
+            extraction_reason = ""
+            is_textual_item = self._is_textual_item(item_name, mime_type)
+            if is_textual_item and (not isinstance(item_size, int) or item_size <= MAX_TEXT_DOWNLOAD_BYTES):
                 raw_text = self._try_download_text(client, f"/drives/{drive['id']}/items/{item['id']}")
+                if not raw_text:
+                    extraction_reason = "text_download_empty"
             elif isinstance(item_size, int) and item_size > MAX_TEXT_DOWNLOAD_BYTES:
+                extraction_reason = "file_too_large"
                 report_text(f"[{site_name}] {drive_name}{current_path} over size limit ({item_size} bytes), keeping metadata only")
+            else:
+                extraction_reason = "unsupported_file_type"
 
             fallback_text = f"Source: {item_name}. Path: {current_path}."
             text = raw_text or fallback_text
             normalized_path = re.sub(r"/+", "/", f"/{drive_name}/{current_path}")
             title = item_name.rsplit(".", 1)[0] if "." in item_name else item_name
+            extracted_text = raw_text if raw_text and not self._is_metadata_only_text(raw_text) else ""
+            extraction_status = self._classify_extraction_status(
+                text=extracted_text,
+                attempted_text_download=is_textual_item and extraction_reason != "file_too_large",
+                reason=extraction_reason,
+            )
+            if extracted_text:
+                extraction_reason = ""
+            elif not extraction_reason:
+                extraction_reason = "no_extractable_text"
+            extract_path = self._write_extract_artifact(
+                source_id=document_id,
+                source_type="document",
+                site_id=site_id,
+                site_url=site_url,
+                display_name=item_name,
+                library_path=normalized_path,
+                author=site_name,
+                created_by=self._get_graph_person_name(item.get("createdBy")),
+                last_modified_by=self._get_graph_person_name(item.get("lastModifiedBy")),
+                last_modified=updated_at or utc_now_iso(),
+                content_type=mime_type,
+                extraction_status=extraction_status,
+                extraction_reason=extraction_reason,
+                text=extracted_text,
+            )
             documents.append(
                 {
                     "id": document_id,
@@ -585,6 +621,9 @@ class LiveExportService:
                     "createdBy": self._get_graph_person_name(item.get("createdBy")),
                     "lastModifiedBy": self._get_graph_person_name(item.get("lastModifiedBy")),
                     "updatedAt": updated_at or utc_now_iso(),
+                    "extractionStatus": extraction_status,
+                    "extractionReason": extraction_reason,
+                    "extractPath": extract_path,
                     "summary": self._build_summary(text, title),
                     "directAnswer": self._build_direct_answer(text, title),
                     "content": text[:4000],
@@ -610,6 +649,55 @@ class LiveExportService:
                 return self._normalize_html_to_text(text)
             return text.replace("\u0000", "").strip()
         return ""
+
+    def _classify_extraction_status(self, *, text: str, attempted_text_download: bool, reason: str) -> str:
+        if text.strip():
+            return "full_text"
+        if attempted_text_download and reason == "text_download_empty":
+            return "unreadable"
+        return "metadata_only"
+
+    def _write_extract_artifact(
+        self,
+        *,
+        source_id: str,
+        source_type: str,
+        site_id: str,
+        site_url: str,
+        display_name: str,
+        library_path: str,
+        author: str,
+        created_by: str,
+        last_modified_by: str,
+        last_modified: str,
+        content_type: str,
+        extraction_status: str,
+        extraction_reason: str,
+        text: str,
+    ) -> str:
+        relative_path = self._runtime_store.extract_artifact_relative_path(site_id, source_id)
+        self._runtime_store.write_json_artifact(
+            self._runtime_store.runtime_dir / relative_path,
+            {
+                "schemaVersion": "1.0",
+                "sourceId": source_id,
+                "sourceType": source_type,
+                "siteId": site_id,
+                "siteUrl": site_url,
+                "displayName": display_name,
+                "libraryPath": library_path,
+                "author": author,
+                "createdBy": created_by,
+                "lastModifiedBy": last_modified_by,
+                "lastModified": last_modified,
+                "contentType": content_type,
+                "extractedAt": utc_now_iso(),
+                "extractionStatus": extraction_status,
+                "extractionReason": extraction_reason,
+                "text": text,
+            },
+        )
+        return relative_path.as_posix()
 
     def _build_live_export_corpus(
         self,

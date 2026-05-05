@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import json
+import re
 from uuid import uuid4
 
 from worker.app.config import get_settings
@@ -41,6 +42,12 @@ class RuntimeStore:
 
     def live_corpus_path(self) -> Path:
         return self.runtime_dir.parent.parent / "public" / "live-corpus.json"
+
+    def extract_artifact_path(self, site_id: str, source_id: str) -> Path:
+        return self.runtime_dir / self.extract_artifact_relative_path(site_id, source_id)
+
+    def extract_artifact_relative_path(self, site_id: str, source_id: str) -> Path:
+        return Path("extracts") / self._safe_path_part(site_id) / f"{self._safe_path_part(source_id)}.json"
 
     def job_metadata_path(self, job_id: str) -> Path:
         return self.jobs_dir() / f"{job_id}.json"
@@ -92,6 +99,10 @@ class RuntimeStore:
         temp_path = path.with_name(f"{path.name}.{uuid4().hex}.tmp")
         temp_path.write_text(content, encoding="utf-8")
         temp_path.replace(path)
+
+    def _safe_path_part(self, value: str) -> str:
+        safe = re.sub(r"[^a-zA-Z0-9._-]+", "-", value.strip()).strip("-._")
+        return safe[:120] or "unknown"
 
 
 def get_runtime_store() -> RuntimeStore:
