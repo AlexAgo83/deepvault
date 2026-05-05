@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import json
 
@@ -217,6 +217,138 @@ def test_live_export_service_normalizes_file_type(tmp_path) -> None:
     assert service._infer_file_type("deck.pptx", "") == "presentation"
     assert service._infer_file_type("ledger.csv", "") == "spreadsheet"
     assert service._infer_file_type("notes", "text/plain") == "text"
+
+
+def test_live_export_service_writes_extract_artifact_for_text_document(tmp_path) -> None:
+    service = build_service(tmp_path)
+
+    class FakeClient:
+        def list_all(self, *_args: Any, **_kwargs: Any) -> list[dict[str, Any]]:
+            return [
+                {
+                    "id": "item-1",
+                    "name": "Roadmap.md",
+                    "file": {"mimeType": "text/markdown"},
+                    "size": 128,
+                    "lastModifiedDateTime": "2026-04-18T12:00:00Z",
+                    "createdBy": {"user": {"displayName": "Alice"}},
+                    "lastModifiedBy": {"user": {"displayName": "Bob"}},
+                    "webUrl": "https://tenant.sharepoint.com/Roadmap.md",
+                }
+            ]
+
+        def get_text(self, path: str) -> tuple[str, str]:
+            assert path.endswith("/content?format=html")
+            return "# Roadmap\n\nLaunch body text.", "text/markdown"
+
+    result = service._crawl_drive_items(
+        FakeClient(),  # type: ignore[arg-type]
+        site_id="tenant,site,abc",
+        site_url="https://tenant.sharepoint.com/sites/A",
+        site_name="Pilot Site A",
+        drive={"id": "drive-1", "name": "Shared Documents"},
+        root_path="",
+        updated_after=None,
+        report_text=lambda *_: None,
+        check_cancelled=lambda: None,
+    )
+
+    document = result["documents"][0]
+    extract_path = tmp_path / document["extractPath"]
+    extract = json.loads(extract_path.read_text(encoding="utf-8"))
+
+    assert document["extractionStatus"] == "full_text"
+    assert document["extractionReason"] == ""
+    assert document["extractPath"].startswith("extracts/tenant-site-abc/")
+    assert document["content"] == "# Roadmap Launch body text."
+    assert extract["sourceId"] == document["id"]
+    assert extract["sourceType"] == "document"
+    assert extract["siteUrl"] == "https://tenant.sharepoint.com/sites/A"
+    assert extract["libraryPath"] == "/Shared Documents/Roadmap.md"
+    assert extract["lastModifiedBy"] == "Bob"
+    assert extract["extractionStatus"] == "full_text"
+    assert extract["text"] == "# Roadmap Launch body text."
+
+
+def test_live_export_service_classifies_unsupported_extract_as_metadata_only(tmp_path) -> None:
+    service = build_service(tmp_path)
+
+    class FakeClient:
+        def list_all(self, *_args: Any, **_kwargs: Any) -> list[dict[str, Any]]:
+            return [
+                {
+                    "id": "item-2",
+                    "name": "Deck.pptx",
+                    "file": {"mimeType": "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
+                    "size": 512,
+                    "lastModifiedDateTime": "2026-04-18T12:00:00Z",
+                }
+            ]
+
+        def get_text(self, _path: str) -> tuple[str, str]:
+            raise AssertionError("unsupported Office files should not be downloaded in wave 1")
+
+    result = service._crawl_drive_items(
+        FakeClient(),  # type: ignore[arg-type]
+        site_id="site-1",
+        site_url="https://tenant.sharepoint.com/sites/A",
+        site_name="Pilot Site A",
+        drive={"id": "drive-1", "name": "Shared Documents"},
+        root_path="",
+        updated_after=None,
+        report_text=lambda *_: None,
+        check_cancelled=lambda: None,
+    )
+
+    document = result["documents"][0]
+    extract = json.loads((tmp_path / document["extractPath"]).read_text(encoding="utf-8"))
+
+    assert document["fileType"] == "presentation"
+    assert document["extractionStatus"] == "metadata_only"
+    assert document["extractionReason"] == "unsupported_file_type"
+    assert document["content"] == "Source: Deck.pptx. Path: /Deck.pptx."
+    assert extract["extractionStatus"] == "metadata_only"
+    assert extract["extractionReason"] == "unsupported_file_type"
+    assert extract["text"] == ""
+
+
+def test_live_export_service_classifies_empty_text_download_as_unreadable(tmp_path) -> None:
+    service = build_service(tmp_path)
+
+    class FakeClient:
+        def list_all(self, *_args: Any, **_kwargs: Any) -> list[dict[str, Any]]:
+            return [
+                {
+                    "id": "item-3",
+                    "name": "Empty.txt",
+                    "file": {"mimeType": "text/plain"},
+                    "size": 16,
+                    "lastModifiedDateTime": "2026-04-18T12:00:00Z",
+                }
+            ]
+
+        def get_text(self, _path: str) -> tuple[str, str]:
+            return "", "text/plain"
+
+    result = service._crawl_drive_items(
+        FakeClient(),  # type: ignore[arg-type]
+        site_id="site-1",
+        site_url="https://tenant.sharepoint.com/sites/A",
+        site_name="Pilot Site A",
+        drive={"id": "drive-1", "name": "Shared Documents"},
+        root_path="",
+        updated_after=None,
+        report_text=lambda *_: None,
+        check_cancelled=lambda: None,
+    )
+
+    document = result["documents"][0]
+    extract = json.loads((tmp_path / document["extractPath"]).read_text(encoding="utf-8"))
+
+    assert document["extractionStatus"] == "unreadable"
+    assert document["extractionReason"] == "text_download_empty"
+    assert extract["extractionStatus"] == "unreadable"
+    assert extract["text"] == ""
 
 
 def test_live_export_service_client_credentials_auth_posts_expected_form(monkeypatch, tmp_path) -> None:
