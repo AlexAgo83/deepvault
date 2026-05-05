@@ -210,6 +210,15 @@ def test_live_export_service_resume_uses_checkpoint_timestamp_and_reconciles_doc
     assert [document["id"] for document in published["documents"]] == ["doc-keep"]
 
 
+def test_live_export_service_normalizes_file_type(tmp_path) -> None:
+    service = build_service(tmp_path)
+
+    assert service._infer_file_type("policy.docx", "") == "document"
+    assert service._infer_file_type("deck.pptx", "") == "presentation"
+    assert service._infer_file_type("ledger.csv", "") == "spreadsheet"
+    assert service._infer_file_type("notes", "text/plain") == "text"
+
+
 def test_live_export_service_client_credentials_auth_posts_expected_form(monkeypatch, tmp_path) -> None:
     service = build_service(tmp_path)
     captured: Dict[str, object] = {}

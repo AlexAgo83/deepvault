@@ -51,6 +51,7 @@ export interface CorpusDocumentLike {
   id: string
   siteId: string
   kind: string
+  fileType?: string
   title: string
   path: string
   webUrl?: string
@@ -122,6 +123,47 @@ function contentHash(value: string): string {
 
 function stripExtension(name: string): string {
   return name.replace(/\.[^.]+$/, '')
+}
+
+function inferFileType(name: string, mimeType?: string): string {
+  const extension = name.includes('.') ? name.split('.').pop()?.toLowerCase() || '' : ''
+  const fileTypeMap: Record<string, string> = {
+    doc: 'document',
+    docx: 'document',
+    odt: 'document',
+    rtf: 'document',
+    pages: 'document',
+    pdf: 'pdf',
+    ppt: 'presentation',
+    pptx: 'presentation',
+    key: 'presentation',
+    xls: 'spreadsheet',
+    xlsx: 'spreadsheet',
+    csv: 'spreadsheet',
+    tsv: 'spreadsheet',
+    numbers: 'spreadsheet',
+    md: 'markdown',
+    markdown: 'markdown',
+    txt: 'text',
+    json: 'json',
+    xml: 'xml',
+    html: 'html',
+    htm: 'html',
+    aspx: 'html',
+    msg: 'email',
+    eml: 'email',
+  }
+
+  if (fileTypeMap[extension]) {
+    return fileTypeMap[extension]
+  }
+  if (mimeType?.startsWith('text/')) {
+    return 'text'
+  }
+  if (mimeType === 'application/pdf') {
+    return 'pdf'
+  }
+  return extension || 'file'
 }
 
 function buildSummary(text: string, fallback: string): string {
@@ -515,6 +557,7 @@ async function crawlDriveItems(
       id: documentId,
       siteId,
       kind: extension || 'file',
+      fileType: inferFileType(item.name, item.file?.mimeType),
       title,
       path: normalizedPath,
       webUrl: item.webUrl,

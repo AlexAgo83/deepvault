@@ -577,6 +577,7 @@ class LiveExportService:
                     "id": document_id,
                     "siteId": site_id,
                     "kind": extension or "file",
+                    "fileType": self._infer_file_type(item_name, mime_type),
                     "title": title,
                     "path": normalized_path,
                     "webUrl": item.get("webUrl"),
@@ -796,6 +797,43 @@ class LiveExportService:
         if extension in TEXTUAL_EXTENSIONS:
             return True
         return any(mime_type.startswith(prefix) for prefix in TEXTUAL_MIME_PREFIXES)
+
+    def _infer_file_type(self, name: str, mime_type: str) -> str:
+        extension = name.rsplit(".", 1)[-1].lower() if "." in name else ""
+        file_type_map = {
+            "doc": "document",
+            "docx": "document",
+            "odt": "document",
+            "rtf": "document",
+            "pages": "document",
+            "pdf": "pdf",
+            "ppt": "presentation",
+            "pptx": "presentation",
+            "key": "presentation",
+            "xls": "spreadsheet",
+            "xlsx": "spreadsheet",
+            "csv": "spreadsheet",
+            "tsv": "spreadsheet",
+            "numbers": "spreadsheet",
+            "md": "markdown",
+            "markdown": "markdown",
+            "txt": "text",
+            "json": "json",
+            "xml": "xml",
+            "html": "html",
+            "htm": "html",
+            "aspx": "html",
+            "msg": "email",
+            "eml": "email",
+        }
+
+        if extension in file_type_map:
+            return file_type_map[extension]
+        if mime_type.startswith("text/"):
+            return "text"
+        if mime_type == "application/pdf":
+            return "pdf"
+        return extension or "file"
 
     def _normalize_html_to_text(self, value: str) -> str:
         stripped = re.sub(r"<script[\s\S]*?</script>", " ", value, flags=re.IGNORECASE)
