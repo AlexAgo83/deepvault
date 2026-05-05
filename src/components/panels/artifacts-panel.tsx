@@ -188,6 +188,50 @@ function isTimestampValue(value: string): boolean {
   return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(value) && !Number.isNaN(Date.parse(value))
 }
 
+function inferFileType(document: AppModel['scopedCorpus']['documents'][number]): string {
+  if (document.fileType?.trim()) {
+    return document.fileType.trim()
+  }
+
+  const kind = document.kind.trim().toLowerCase()
+  const pathExtension = document.path.includes('.') ? document.path.split('.').pop()?.toLowerCase() || '' : ''
+  const fileTypeMap: Record<string, string> = {
+    doc: 'document',
+    docx: 'document',
+    odt: 'document',
+    rtf: 'document',
+    pages: 'document',
+    pdf: 'pdf',
+    ppt: 'presentation',
+    pptx: 'presentation',
+    key: 'presentation',
+    xls: 'spreadsheet',
+    xlsx: 'spreadsheet',
+    csv: 'spreadsheet',
+    tsv: 'spreadsheet',
+    numbers: 'spreadsheet',
+    md: 'markdown',
+    markdown: 'markdown',
+    txt: 'text',
+    json: 'json',
+    xml: 'xml',
+    html: 'html',
+    htm: 'html',
+    aspx: 'html',
+    msg: 'email',
+    eml: 'email',
+  }
+
+  if (fileTypeMap[kind]) {
+    return fileTypeMap[kind]
+  }
+  if (fileTypeMap[pathExtension]) {
+    return fileTypeMap[pathExtension]
+  }
+
+  return kind || pathExtension || 'file'
+}
+
 function renderMetadataList(lines: string[], key: string) {
   return (
     <dl key={key} className="artifacts-detail-meta-list">
@@ -329,7 +373,7 @@ function buildArtifactRecords(
     ],
     diagnostics: [
       `Kind: ${document.kind}`,
-      `File type: ${document.fileType || 'n/a'}`,
+      `File type: ${inferFileType(document)}`,
       `Source: ${document.source}`,
       document.analysis?.excludedReason ? `Excluded: ${document.analysis.excludedReason}` : '',
       document.analysis?.failureReason ? `Failure: ${document.analysis.failureReason}` : '',

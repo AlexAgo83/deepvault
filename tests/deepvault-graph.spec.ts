@@ -110,7 +110,7 @@ describe('GraphClient', () => {
     )
 
     expect(result.documents).toHaveLength(1)
-    expect(result.documents[0]).toMatchObject({ title: 'new', path: '/Docs/new.txt' })
+    expect(result.documents[0]).toMatchObject({ title: 'new', path: '/Docs/new.txt', kind: 'txt', fileType: 'text' })
     expect(result.currentDocumentIds).toHaveLength(2)
     expect(result.currentDocumentIds).toEqual(expect.arrayContaining([
       result.documents[0].id,
@@ -159,6 +159,7 @@ describe('GraphClient', () => {
 
     expect(result.documents[0]).toMatchObject({
       createdBy: 'Alice Martin',
+      fileType: 'text',
       lastModifiedBy: 'Bob Dupont',
     })
   })

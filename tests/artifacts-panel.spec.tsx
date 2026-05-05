@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach } from 'vitest'
 import { describe, expect, it, vi } from 'vitest'
@@ -200,6 +200,10 @@ describe('ArtifactsPanel', () => {
     expect(screen.getByRole('heading', { name: 'Artifacts' })).toBeInTheDocument()
     await user.click(screen.getAllByRole('button', { name: /q3 2025 budget approval/i })[0])
     expect(screen.getByText('Processed record')).toBeInTheDocument()
+    expect(screen.getByText('Kind')).toBeInTheDocument()
+    expect(screen.getByText('File type')).toBeInTheDocument()
+    expect(within(screen.getByText('Kind').closest('.artifacts-detail-meta-row') as HTMLElement).getByText('document')).toBeInTheDocument()
+    expect(within(screen.getByText('File type').closest('.artifacts-detail-meta-row') as HTMLElement).getByText('document')).toBeInTheDocument()
     expect(screen.getByText('Enriched summary')).toBeInTheDocument()
     expect(screen.getByText('analysis summary')).toBeInTheDocument()
   })
