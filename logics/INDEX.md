@@ -84,6 +84,7 @@
 | [req_018_post_v1_3_code_quality_security_and_maintainability_audit](request/req_018_post_v1_3_code_quality_security_and_maintainability_audit.md) | Progress notes | Done |  | request/req_018_post_v1_3_code_quality_security_and_maintainability_audit.md |
 | [req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability](request/req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability.md) | Post-v1.3 consolidation: close the enrichment loop, add automated CI, and make configuration portable | Done |  | request/req_019_post_v1_3_consolidation_enrichment_loop_ci_and_configuration_portability.md |
 | [req_020_host_nexus_as_a_shared_multi_user_web_application](request/req_020_host_nexus_as_a_shared_multi_user_web_application.md) | Progress notes | Done |  | request/req_020_host_nexus_as_a_shared_multi_user_web_application.md |
+| [req_021_enforce_real_text_extraction_before_post_ingest_analysis](request/req_021_enforce_real_text_extraction_before_post_ingest_analysis.md) | Enforce real text extraction before post-ingest analysis | Proposed |  | request/req_021_enforce_real_text_extraction_before_post_ingest_analysis.md |
 
 ## Backlog
 
