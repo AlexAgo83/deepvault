@@ -48,7 +48,7 @@ class GraphClient:
         self._base_url = base_url.rstrip("/")
         self._access_token = access_token
         self._timeout_seconds = timeout_seconds
-        self._client = httpx.Client(timeout=timeout_seconds)
+        self._client = httpx.Client(timeout=timeout_seconds, follow_redirects=True)
 
     def close(self) -> None:
         self._client.close()
