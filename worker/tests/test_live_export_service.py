@@ -9,7 +9,7 @@ import zipfile
 from worker.app.config import Settings
 from worker.app.infra.runtime_store import RuntimeStore
 from worker.app.services.corpus_service import CorpusService
-from worker.app.services.live_export_service import LiveExportConfig, LiveExportService
+from worker.app.services.live_export_service import GraphClient, LiveExportConfig, LiveExportService
 
 
 def build_service(tmp_path) -> LiveExportService:
@@ -20,6 +20,48 @@ def build_service(tmp_path) -> LiveExportService:
     runtime_store = RuntimeStore(settings.runtime_data_dir)
     corpus_service = CorpusService(settings=settings)
     return LiveExportService(settings=settings, runtime_store=runtime_store, corpus_service=corpus_service)
+
+
+def test_graph_client_follows_download_redirects(monkeypatch) -> None:
+    captured: Dict[str, object] = {}
+
+    class FakeResponse:
+        status_code = 200
+        text = "downloaded text"
+        content = b"downloaded bytes"
+        headers = {"content-type": "application/octet-stream"}
+
+        @staticmethod
+        def json() -> dict[str, object]:
+            return {}
+
+    class FakeHttpClient:
+        def __init__(self, *, timeout: int, follow_redirects: bool) -> None:
+            captured["timeout"] = timeout
+            captured["follow_redirects"] = follow_redirects
+
+        def request(self, method: str, url: str, headers: dict[str, str]) -> FakeResponse:
+            captured["method"] = method
+            captured["url"] = url
+            captured["headers"] = headers
+            return FakeResponse()
+
+        def close(self) -> None:
+            captured["closed"] = True
+
+    monkeypatch.setattr("worker.app.services.live_export_service.httpx.Client", FakeHttpClient)
+
+    client = GraphClient(base_url="https://graph.microsoft.com/v1.0", access_token="token", timeout_seconds=17)
+    content, content_type = client.get_bytes("/drives/drive-1/items/item-1/content")
+    client.close()
+
+    assert captured["follow_redirects"] is True
+    assert captured["timeout"] == 17
+    assert captured["url"] == "https://graph.microsoft.com/v1.0/drives/drive-1/items/item-1/content"
+    assert captured["headers"] == {"Authorization": "Bearer token"}
+    assert content == b"downloaded bytes"
+    assert content_type == "application/octet-stream"
+    assert captured["closed"] is True
 
 
 def test_live_export_service_runs_graph_export_and_publishes_artifacts(tmp_path, monkeypatch) -> None:

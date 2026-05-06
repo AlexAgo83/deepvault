@@ -1,11 +1,11 @@
 ## item_089_worker_text_extract_artifacts_for_sharepoint_documents - Worker text extract artifacts for SharePoint documents
 
-> From version: 1.5.1
+> From version: 1.5.2
 > Schema version: 1.0
 > Status: Done
-> Understanding: 98%
-> Confidence: 94%
-> Progress: 100%
+> Understanding: 99%
+> Confidence: 95%
+> Progress: 100% (release validation refreshed)
 > Complexity: High
 > Theme: Data / Worker / Corpus
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
@@ -58,4 +58,5 @@ flowchart LR
 - Implemented `RuntimeStore.extract_artifact_relative_path(...)` and worker live export extract artifact writing under the configured runtime store.
 - Corpus documents now carry `extractionStatus`, `extractionReason`, and `extractPath` when exported from the Graph worker path.
 - Extended worker extraction beyond text-like files by downloading bounded binary content and extracting OOXML body text for DOCX/PPTX/XLSX, with optional PDF text extraction through `pypdf`.
+- Patched `GraphClient` to follow Microsoft Graph content download redirects, with focused test coverage proving extract downloads use `follow_redirects=True`.
 - `rtk python3 -m pytest worker/tests/test_live_export_service.py` passed with coverage for successful text extract, metadata-only unsupported source, and empty text download classified as unreadable.

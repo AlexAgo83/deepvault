@@ -13,6 +13,12 @@ export interface ParsedChangelog {
 
 const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   {
+    version: '1.5.2',
+    title: 'DeepVault Nexus 1.5.2',
+    fileName: 'CHANGELOGS_1_5_2.md',
+    load: () => import('../../changelogs/CHANGELOGS_1_5_2.md?raw').then((module) => module.default as string),
+  },
+  {
     version: '1.5.1',
     title: 'DeepVault Nexus 1.5.1',
     fileName: 'CHANGELOGS_1_5_1.md',
