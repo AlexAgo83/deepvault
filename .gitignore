@@ -7,7 +7,6 @@ node_modules/
 __pycache__/
 *.pyc
 .claude/
-.code-review-graph/
 dist/
 coverage/
 playwright-report/
