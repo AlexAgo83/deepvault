@@ -1,0 +1,178 @@
+{
+  "title": "Complete semantic i18n adoption across remaining application panels",
+  "references": [
+    "src/components/settings-panel.tsx",
+    "src/components/settings-changelog-panel.tsx",
+    "src/components/sync-panel.tsx",
+    "src/components/explorer-panel.tsx",
+    "src/components/artifacts-panel.tsx",
+    "src/components/bishop-panel.tsx",
+    "src/components/ai-stats-panel.tsx"
+  ],
+  "request": {
+    "complexity": "High",
+    "theme": "Internationalization contract adoption",
+    "needs": [
+      "Every remaining product-owned panel label, instruction, action, status, placeholder, and accessibility attribute must use stable semantic catalog keys.",
+      "Runtime, provider, repository, artifact, corpus, and AI-generated values must remain data rather than becoming translation keys.",
+      "Dynamic status and result messages must use named placeholders with locale-aware formatting.",
+      "The repository must measure coverage and prevent new hardcoded product copy after migration."
+    ],
+    "context": [
+      "An initial convention slice established the repository i18n contract and migrated a representative application surface.",
+      "Settings, runtime, hosted-session, provider, worker, synchronization, explorer, artifact, assistant, AI view, and changelog panels still contain substantial hardcoded interface copy.",
+      "These panels mix stable product chrome with provider names, repository paths, document metadata, artifact content, remote status details, prompts, answers, traces, and user input.",
+      "Only stable product-owned framing belongs in locale catalogs; remote, configured, generated, technical, and user-owned values must be passed as data.",
+      "The target convention requires semantic keys, locale parity, placeholder parity, deterministic validation, and an explicit base-locale policy."
+    ],
+    "acceptance_criteria": [
+      "AC1: All remaining panel-owned product copy and accessibility text is catalog-driven through stable semantic keys with locale parity.",
+      "AC2: Dynamic messages use named placeholders and locale-aware formatting without raw sentences or rendered values as keys.",
+      "AC3: Provider names, paths, corpus content, document metadata, artifacts, prompts, generated answers, traces, remote messages, and user input remain untranslated data.",
+      "AC4: A source inventory and static guard detect unclassified or newly hardcoded product copy outside a reviewed allowlist.",
+      "AC5: Contract validation, unit and UI tests, type checks, and production build pass with representative panel coverage in every supported locale."
+    ]
+  },
+  "product": {
+    "title": "Complete localized panel experience",
+    "overview": "Finish semantic localization across the settings, synchronization, exploration, artifact, and assisted-work panels while preserving technical, remote, generated, and user-owned content as data.",
+    "goals": [
+      "Give every stable panel control and state an explicit semantic key.",
+      "Keep dynamic technical and content values outside locale catalogs.",
+      "Provide testable locale parity and placeholder semantics.",
+      "Prevent localization coverage from regressing as panels evolve."
+    ],
+    "non_goals": [
+      "Translating repository content, documents, artifacts, prompts, generated answers, traces, provider names, paths, or raw remote errors.",
+      "Changing provider, worker, synchronization, exploration, or AI behavior.",
+      "Adding a hosted translation-management service.",
+      "Redesigning panel layouts."
+    ]
+  },
+  "backlog_items": [
+    {
+      "title": "Migrate settings, runtime, provider, worker, and synchronization chrome",
+      "priority": "High",
+      "complexity": "High",
+      "theme": "Internationalization contract adoption",
+      "request_acs": ["AC1", "AC2", "AC3", "AC5"],
+      "problem": [
+        "Configuration and synchronization panels contain dense product instructions, actions, and statuses mixed with runtime and provider values.",
+        "The data boundary is ambiguous unless stable product framing and variable technical values are modeled separately."
+      ],
+      "scope_in": [
+        "Inventory and migrate settings navigation, runtime and hosted-session states, provider controls, worker controls, synchronization actions, confirmations, errors, placeholders, and accessibility labels.",
+        "Create semantic namespaces by user concept instead of component filename or English sentence.",
+        "Use named placeholders for counts, durations, provider references, connection states, and operation results.",
+        "Add tests proving provider names, endpoint details, paths, identifiers, and raw diagnostic details remain unchanged."
+      ],
+      "scope_out": [
+        "Provider or synchronization protocol changes.",
+        "Translation of configured provider data or raw remote diagnostics."
+      ],
+      "acceptance_criteria": [
+        "AC1: Targeted settings and synchronization surfaces use semantic keys for all product-owned copy.",
+        "AC2: Dynamic states use named placeholders and locale-aware formatting.",
+        "AC3: Technical and configured values remain identical across locale changes.",
+        "AC4: Representative configuration and synchronization tests pass in every locale."
+      ]
+    },
+    {
+      "title": "Migrate explorer and artifact panel chrome with strict content boundaries",
+      "priority": "High",
+      "complexity": "High",
+      "theme": "Internationalization contract adoption",
+      "request_acs": ["AC1", "AC2", "AC3", "AC5"],
+      "problem": [
+        "Explorer and artifact panels mix stable navigation and action labels with repository content, metadata, paths, export values, and artifact bodies.",
+        "A broad translation pass could corrupt content or incorrectly catalog remote values."
+      ],
+      "scope_in": [
+        "Migrate explorer and artifact headings, actions, filters, loading and empty states, metadata labels, export framing, dialogs, notifications, and accessibility attributes.",
+        "Use named placeholders for result counts, selected-item references, timestamps, sizes, and export summaries.",
+        "Keep paths, document titles, corpus text, artifact names and bodies, metadata values, and remote statuses as runtime data.",
+        "Add fixtures that switch locale around representative repository and artifact content without mutating that content."
+      ],
+      "scope_out": [
+        "Translation of files, corpus records, artifact bodies, metadata values, or exports.",
+        "Changes to exploration or export behavior."
+      ],
+      "acceptance_criteria": [
+        "AC1: Explorer and artifact product chrome is fully catalog-driven.",
+        "AC2: Dynamic summaries use named placeholders and locale-aware formatting.",
+        "AC3: Content-boundary fixtures remain byte-for-byte stable across locale switches.",
+        "AC4: Explorer and artifact UI tests pass in every supported locale."
+      ]
+    },
+    {
+      "title": "Migrate assisted-work, AI view, and changelog product chrome",
+      "priority": "High",
+      "complexity": "Medium",
+      "theme": "Internationalization contract adoption",
+      "request_acs": ["AC1", "AC2", "AC3", "AC5"],
+      "problem": [
+        "Assisted-work and AI panels combine product controls with prompts, generated answers, traces, statistics, and provider output.",
+        "Changelog framing is stable product copy while entry content may be supplied as versioned data."
+      ],
+      "scope_in": [
+        "Migrate assistant actions, labels, placeholders, answer-state framing, trace labels, AI statistics labels, changelog navigation, loading and empty states, and accessibility text.",
+        "Use named placeholders for counts, durations, token or usage summaries, versions, and selected references.",
+        "Keep prompts, generated answers, citations, traces, provider output, and changelog entry content as runtime data unless explicitly authored as stable product copy.",
+        "Add tests for empty, running, successful, failed, and populated states."
+      ],
+      "scope_out": [
+        "Translation of prompts, answers, traces, citations, provider output, or version-authored changelog bodies.",
+        "Changes to model invocation or statistics calculation."
+      ],
+      "acceptance_criteria": [
+        "AC1: Targeted product chrome uses semantic keys in every locale.",
+        "AC2: Dynamic summaries use named placeholders with locale-aware formatting.",
+        "AC3: Generated, provider, and versioned content remains unchanged.",
+        "AC4: State-focused UI tests cover visible and accessibility copy."
+      ]
+    },
+    {
+      "title": "Enforce panel catalog coverage and close the migration",
+      "priority": "High",
+      "complexity": "Medium",
+      "theme": "Internationalization contract adoption",
+      "request_acs": ["AC1", "AC2", "AC3", "AC4", "AC5"],
+      "problem": [
+        "Hidden panel states, notifications, placeholders, and accessibility attributes can escape manual localization review.",
+        "Without a guard, new panel work can reintroduce hardcoded product copy."
+      ],
+      "scope_in": [
+        "Run a final source inventory across panel branches, notifications, attributes, helpers, and error framing and classify every candidate.",
+        "Add a static guard with a reviewed allowlist for fixtures, technical literals, remote/configured/generated content, and user data.",
+        "Validate catalog parity, placeholder parity, unused-key policy, semantic key conventions, and content-boundary fixtures.",
+        "Run the full repository validation matrix and record coverage and closure evidence in the task journal."
+      ],
+      "scope_out": [
+        "Unrelated panel refactoring.",
+        "Translation-platform integration."
+      ],
+      "acceptance_criteria": [
+        "AC1: The inventory contains no unclassified product-owned copy.",
+        "AC2: A failing fixture proves the guard rejects new hardcoded panel copy.",
+        "AC3: Catalog, placeholder, and data-boundary checks pass.",
+        "AC4: Full validation passes and the Logics chain contains closure evidence."
+      ]
+    }
+  ],
+  "orchestration_task": {
+    "title": "Orchestrate completion of panel localization",
+    "plan": [
+      "Baseline remaining copy and classify stable product chrome versus configured, remote, generated, technical, and user-owned data.",
+      "Migrate settings, runtime, provider, worker, and synchronization surfaces first to establish common status and action vocabulary.",
+      "Migrate explorer and artifact panels next with explicit content-boundary fixtures.",
+      "Migrate assisted-work, AI view, and changelog framing while preserving generated and versioned content.",
+      "Run the final inventory, enable the hardcoded-copy guard, and execute contract and repository validation.",
+      "Update all Logics documents and close the request only with panel coverage and boundary evidence."
+    ]
+  },
+  "context_pack": {
+    "out": "logics/context-packs/complete-panel-i18n-adoption.json",
+    "mode": "summary-only",
+    "profile": "deep"
+  }
+}
