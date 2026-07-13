@@ -1,24 +1,25 @@
 import { useEffect, useRef } from 'react'
+import { t } from '../i18n'
 
 const GETTING_STARTED_ITEMS = [
   {
-    title: 'Explorer',
-    description: 'Browse the corpus, inspect documents, and read source-backed summaries.',
+    title: t('shell.explorer'),
+    description: t('onboarding.explorerDescription'),
     Icon: ExplorerIcon,
   },
   {
-    title: 'Bishop',
-    description: 'Ask permission-aware questions and inspect the answer trace.',
+    title: t('shell.bishop'),
+    description: t('onboarding.bishopDescription'),
     Icon: BishopIcon,
   },
   {
-    title: 'Knowledge',
-    description: 'Track ingestion coverage, refresh timing, and provider readiness.',
+    title: t('shell.knowledge'),
+    description: t('onboarding.knowledgeDescription'),
     Icon: SyncIcon,
   },
   {
-    title: 'AI View',
-    description: 'Review response confidence and the inputs that would help the next answer.',
+    title: t('shell.aiView'),
+    description: t('onboarding.aiViewDescription'),
     Icon: StatsIcon,
   },
 ] as const
@@ -68,12 +69,9 @@ export function GettingStartedModal({
         onClick={(event) => event.stopPropagation()}
         role="dialog"
       >
-        <div className="getting-started-eyebrow">Getting started</div>
-        <h2 id="getting-started-title">Getting started</h2>
-        <p id="getting-started-description">
-          DeepVault is a local-first command center for browsing documents, asking grounded questions with Bishop, and
-          monitoring sync status without depending on a hosted backend at day one.
-        </p>
+        <div className="getting-started-eyebrow">{t('onboarding.title')}</div>
+        <h2 id="getting-started-title">{t('onboarding.title')}</h2>
+        <p id="getting-started-description">{t('onboarding.description')}</p>
 
         <div className="getting-started-list">
           {GETTING_STARTED_ITEMS.map(({ title, description, Icon }) => (
@@ -90,11 +88,11 @@ export function GettingStartedModal({
         </div>
 
         <div className="getting-started-actions">
-          <button ref={closeButtonRef} type="button" className="primary-button" title="Start using DeepVault" onClick={onClose}>
-            Start exploring
+          <button ref={closeButtonRef} type="button" className="primary-button" title={t('onboarding.startTitle')} onClick={onClose}>
+            {t('onboarding.start')}
           </button>
-          <button type="button" className="secondary-button" title="Dismiss the getting started modal" onClick={onClose}>
-            Close
+          <button type="button" className="secondary-button" title={t('onboarding.closeTitle')} onClick={onClose}>
+            {t('onboarding.close')}
           </button>
         </div>
       </section>

@@ -1,9 +1,9 @@
 ## req_022_establish_shared_i18n_readiness_for_product_ui - Establish shared i18n readiness for product UI
 > From version: 1.5.2
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 100
-> Confidence: 94
+> Confidence: 99
 > Complexity: Medium
 > Theme: Internationalization readiness
 > Reminder: Update status/understanding/confidence and linked backlog/task references when you edit this doc.
@@ -71,3 +71,4 @@
 
 # Backlog
 - none
+- `item_092_establish_shared_i18n_readiness_for_product_ui`

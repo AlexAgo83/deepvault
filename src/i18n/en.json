@@ -1,0 +1,39 @@
+{
+  "shell": {
+    "navigation": "Navigation",
+    "primaryNavigation": "Primary navigation",
+    "application": "Application",
+    "applicationPanels": "Application panels",
+    "explorer": "Explorer",
+    "bishop": "Bishop",
+    "knowledge": "Knowledge",
+    "artifacts": "Artifacts",
+    "aiView": "AI View",
+    "settings": "Settings",
+    "openPanel": "Open {panel}",
+    "sidebar": "App sidebar",
+    "closeMenu": "Close menu",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "theme": "Theme",
+    "switchLight": "Switch to light mode",
+    "switchDark": "Switch to dark mode",
+    "appVersion": "App version"
+  },
+  "onboarding": {
+    "title": "Getting started",
+    "description": "DeepVault is a local-first command center for browsing documents, asking grounded questions with Bishop, and monitoring sync status without depending on a hosted backend at day one.",
+    "explorerDescription": "Browse the corpus, inspect documents, and read source-backed summaries.",
+    "bishopDescription": "Ask permission-aware questions and inspect the answer trace.",
+    "knowledgeDescription": "Track ingestion coverage, refresh timing, and provider readiness.",
+    "aiViewDescription": "Review response confidence and the inputs that would help the next answer.",
+    "start": "Start exploring",
+    "startTitle": "Start using DeepVault",
+    "close": "Close",
+    "closeTitle": "Dismiss the getting started modal"
+  },
+  "dialog": {
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { t } from '../i18n'
 
 export interface ConfirmModalProps {
   title: string
@@ -13,7 +14,7 @@ export function ConfirmModal({
   title,
   description,
   warning,
-  confirmLabel = 'Confirm',
+  confirmLabel = t('dialog.confirm'),
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
@@ -52,7 +53,7 @@ export function ConfirmModal({
             {confirmLabel}
           </button>
           <button type="button" className="secondary-button" onClick={onCancel}>
-            Cancel
+            {t('dialog.cancel')}
           </button>
         </div>
       </section>

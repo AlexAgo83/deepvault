@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "applicability": "applicable",
+  "source_locale": "en",
+  "default_locale": "en",
+  "fallback_locale": "en",
+  "locales": ["en"],
+  "catalog": { "path": "src/i18n/{locale}.json" }
+}

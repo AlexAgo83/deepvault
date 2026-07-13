@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactElement } from 'react'
 import { Pill } from './app-ui'
 import type { Theme } from '../hooks/useTheme'
 import type { AppModel, AppTab } from '../hooks/useAppModel'
+import { t } from '../i18n'
 
 type NavSection = {
   label: string
@@ -16,21 +17,21 @@ const TOPBAR_DETAILS_STORAGE_KEY = 'deepvault_topbar_details_expanded'
 
 const NAV_SECTIONS: ReadonlyArray<NavSection> = [
   {
-    label: 'Navigation',
-    ariaLabel: 'Primary navigation',
+    label: t('shell.navigation'),
+    ariaLabel: t('shell.primaryNavigation'),
     items: [
-      { id: 'explorer', label: 'Explorer', icon: ExplorerIcon },
-      { id: 'bishop', label: 'Bishop', icon: BishopIcon },
+      { id: 'explorer', label: t('shell.explorer'), icon: ExplorerIcon },
+      { id: 'bishop', label: t('shell.bishop'), icon: BishopIcon },
     ],
   },
   {
-    label: 'Application',
-    ariaLabel: 'Application panels',
+    label: t('shell.application'),
+    ariaLabel: t('shell.applicationPanels'),
     items: [
-      { id: 'sync', label: 'Knowledge', icon: SyncIcon },
-      { id: 'artifacts', label: 'Artifacts', icon: ArtifactsIcon },
-      { id: 'ai-stats', label: 'AI View', icon: StatsIcon },
-      { id: 'settings', label: 'Settings', icon: SettingsIcon },
+      { id: 'sync', label: t('shell.knowledge'), icon: SyncIcon },
+      { id: 'artifacts', label: t('shell.artifacts'), icon: ArtifactsIcon },
+      { id: 'ai-stats', label: t('shell.aiView'), icon: StatsIcon },
+      { id: 'settings', label: t('shell.settings'), icon: SettingsIcon },
     ],
   },
 ]
@@ -213,7 +214,7 @@ export function AppSidebar({
     <aside
       id="app-sidebar"
       className={`sidebar ${!isMobileViewport && isCollapsed ? 'sidebar-collapsed' : ''} ${isMobileMenuOpen ? 'sidebar-mobile-open' : ''}`}
-      aria-label="App sidebar"
+      aria-label={t('shell.sidebar')}
       aria-expanded={!isMobileViewport && !isCollapsed ? true : isMobileMenuOpen}
     >
       <div className="sidebar-brandline">
@@ -221,10 +222,10 @@ export function AppSidebar({
         <button
           type="button"
           className="sidebar-collapse-button"
-          aria-label={isMobileMenuOpen ? 'Close menu' : isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={isMobileMenuOpen ? t('shell.closeMenu') : isCollapsed ? t('shell.expandSidebar') : t('shell.collapseSidebar')}
           aria-pressed={isMobileMenuOpen ? true : isCollapsed}
           aria-controls="app-sidebar"
-          title={isMobileMenuOpen ? 'Close menu' : isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={isMobileMenuOpen ? t('shell.closeMenu') : isCollapsed ? t('shell.expandSidebar') : t('shell.collapseSidebar')}
           onClick={isMobileMenuOpen ? onRequestCloseMobileMenu : onToggleSidebar}
         >
           <MenuIcon />
@@ -241,7 +242,7 @@ export function AppSidebar({
                 type="button"
                 className={`nav-item ${activeTab === item.id ? 'nav-item-active' : ''}`}
                 aria-current={activeTab === item.id ? 'page' : undefined}
-                title={`Open ${item.label.toLowerCase()}`}
+                title={t('shell.openPanel', { panel: item.label.toLowerCase() })}
                 onClick={() => onTabChange(item.id)}
               >
                 <span className="nav-item-icon" aria-hidden="true">
@@ -273,20 +274,20 @@ export function AppSidebar({
       ) : null}
 
       <div className="theme-toggle">
-        <span className="theme-toggle-label">Theme</span>
+        <span className="theme-toggle-label">{t('shell.theme')}</span>
         <button
           type="button"
           className="theme-toggle-button"
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-label={theme === 'dark' ? t('shell.switchLight') : t('shell.switchDark')}
           aria-pressed={theme === 'dark'}
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'dark' ? t('shell.switchLight') : t('shell.switchDark')}
           onClick={onToggleTheme}
         >
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
       </div>
 
-      <div className="sidebar-version" aria-label="App version">
+      <div className="sidebar-version" aria-label={t('shell.appVersion')}>
         <span>Nexus</span>
         <span>v{__APP_VERSION__}</span>
         <span>© {new Date().getFullYear()}</span>
