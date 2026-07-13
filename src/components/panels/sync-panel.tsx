@@ -5,6 +5,7 @@ import { formatUpdatedAt } from '../../lib/deepvault'
 import type { AppModel } from '../../hooks/useAppModel'
 import type { WorkerSettings } from '../../hooks/useWorkerSettings'
 import { formatDuration } from './sync-panel-utils'
+import { t } from '../../i18n'
 
 type OpsKey = 'ingest' | 'analyze' | 'publishAnalysis' | 'evaluate' | 'refresh' | 'exportLive' | 'exportLiveResume'
 export type SyncView = 'status' | 'operations' | 'history' | 'config'
@@ -19,59 +20,59 @@ const OPS_CONFIG: Record<OpsKey, {
   confirmLabel: string
 }> = {
   ingest: {
-    label: 'Ingest',
-    tooltip: 'Write sync snapshot from current corpus',
-    description: 'Reads the current corpus and writes a new sync state snapshot to data/runtime/sync-state.json. Fast, local operation — no network calls.',
-    confirmLabel: 'Ingest',
+    label: t('sync.ingest'),
+    tooltip: t('sync.ingestTooltip'),
+    description: t('sync.ingestDescription'),
+    confirmLabel: t('sync.ingest'),
   },
   analyze: {
-    label: 'Analyze',
-    tooltip: 'Post-ingest corpus enrichment with additive analysis blocks',
-    description: 'Scans the current corpus, selects bounded candidates, and calls the configured AI provider to enrich each document with summary and classification metadata. Results are written to data/runtime/analyzed-corpus.json.',
-    warning: 'This makes API calls to your configured provider (OpenAI, Gemini, or Anthropic) and will consume tokens. Cost depends on corpus size and provider rates. Make sure a valid API key is set in Settings before running.',
-    confirmLabel: 'Analyze',
+    label: t('sync.analyze'),
+    tooltip: t('sync.analyzeTooltip'),
+    description: t('sync.analyzeDescription'),
+    warning: t('sync.analyzeWarning'),
+    confirmLabel: t('sync.analyze'),
   },
   publishAnalysis: {
-    label: 'Publish analysis',
-    tooltip: 'Promote the analyzed corpus into the live app snapshot',
-    description: 'Publishes data/runtime/analyzed-corpus.json into public/live-corpus.json so the app reads the analyzed snapshot as its live corpus.',
-    warning: 'This updates the published live corpus consumed by the app. Run Analyze first if you want fresh analysis results included.',
-    confirmLabel: 'Publish analysis',
+    label: t('sync.publish'),
+    tooltip: t('sync.publishTooltip'),
+    description: t('sync.publishDescription'),
+    warning: t('sync.publishWarning'),
+    confirmLabel: t('sync.publish'),
   },
   evaluate: {
-    label: 'Evaluate',
-    tooltip: 'Score retrieval quality against expected answers',
-    description: 'Runs the evaluation pipeline and scores retrieval quality against a set of expected answers. Writes a baseline report to data/eval/.',
-    warning: 'This makes API calls to OpenAI and may incur usage costs.',
-    confirmLabel: 'Evaluate',
+    label: t('sync.evaluate'),
+    tooltip: t('sync.evaluateTooltip'),
+    description: t('sync.evaluateDescription'),
+    warning: t('sync.evaluateWarning'),
+    confirmLabel: t('sync.evaluate'),
   },
   refresh: {
-    label: 'Refresh',
-    tooltip: 'Reload corpus state in the app',
-    description: 'Reloads the corpus state in the app and updates site coverage, freshness, and provider readiness signals. No files are written.',
-    confirmLabel: 'Refresh',
+    label: t('sync.refresh'),
+    tooltip: t('sync.refreshTooltip'),
+    description: t('sync.refreshDescription'),
+    confirmLabel: t('sync.refresh'),
   },
   exportLive: {
-    label: 'Start Sync',
-    tooltip: 'Full SharePoint export via Microsoft Graph',
-    description: 'Connects to SharePoint via Microsoft Graph and exports the full corpus from all configured sites. The existing checkpoint will be overwritten.',
-    warning: 'Full sync — may take several minutes depending on corpus size. Requires Entra credentials configured in Settings.',
-    confirmLabel: 'Start Sync',
+    label: t('sync.start'),
+    tooltip: t('sync.startTooltip'),
+    description: t('sync.startDescription'),
+    warning: t('sync.startWarning'),
+    confirmLabel: t('sync.start'),
   },
   exportLiveResume: {
-    label: 'Resume Sync',
-    tooltip: 'Delta sync from last checkpoint',
-    description: 'Resumes from the last checkpoint and only fetches documents modified since the previous export. Faster than a full export and preserves unchanged documents.',
-    warning: 'Requires a valid checkpoint on disk. If no checkpoint exists the export will fall back to a full run.',
-    confirmLabel: 'Resume Sync',
+    label: t('sync.resume'),
+    tooltip: t('sync.resumeTooltip'),
+    description: t('sync.resumeDescription'),
+    warning: t('sync.resumeWarning'),
+    confirmLabel: t('sync.resume'),
   },
 }
 
 const SYNC_VIEWS: { id: SyncView; label: string; detail: string }[] = [
-  { id: 'status', label: 'Status', detail: 'Coverage, freshness, and scope signals' },
-  { id: 'operations', label: 'Operations', detail: 'Launch ingest, evaluate, refresh, or sync' },
-  { id: 'history', label: 'History', detail: 'Recent runs and evaluation prep' },
-  { id: 'config', label: 'Worker', detail: 'Worker mode, fallback, and timeout' },
+  { id: 'status', label: t('sync.status'), detail: t('sync.statusDetail') },
+  { id: 'operations', label: t('sync.operations'), detail: t('sync.operationsDetail') },
+  { id: 'history', label: t('sync.history'), detail: t('sync.historyDetail') },
+  { id: 'config', label: t('sync.worker'), detail: t('sync.workerDetail') },
 ]
 
 function parseSyncView(hash: string): SyncView {
@@ -318,21 +319,21 @@ export function SyncPanel({
         />
       ) : null}
 
-      <article className="panel sync-view-switcher" aria-label="Knowledge View">
+      <article className="panel sync-view-switcher" aria-label={t('sync.viewLabel')}>
         <div className="sync-view-switcher-head">
           <div>
-            <h2>Knowledge View</h2>
-            <p>Switch between coverage, execution, history, and worker settings from one view.</p>
+            <h2>{t('sync.viewTitle')}</h2>
+            <p>{t('sync.viewDescription')}</p>
           </div>
-          <div className="sync-view-switcher-meta" aria-label="Current sync view summary">
+          <div className="sync-view-switcher-meta" aria-label={t('sync.currentSummary')}>
             <div className="sync-view-switcher-meta-card">
-              <span>Last job</span>
-              <strong>{currentJob ? currentJob.status : 'idle'}</strong>
+              <span>{t('sync.lastJob')}</span>
+              <strong>{currentJob ? currentJob.status : t('sync.idle')}</strong>
             </div>
           </div>
         </div>
 
-        <nav className="sync-subnav" aria-label="Knowledge View">
+        <nav className="sync-subnav" aria-label={t('sync.viewLabel')}>
           {SYNC_VIEWS.map(({ id, label, detail }) => (
             <button
               key={id}
@@ -349,8 +350,8 @@ export function SyncPanel({
               </span>
               <span className="sync-subnav-detail">{detail}</span>
               <span className="sync-subnav-status">
-                {id === 'operations' && syncOperations.isRunning ? 'Running' : null}
-                {id === 'history' && syncOperations.history.length > 0 ? `${syncOperations.history.length} runs` : null}
+                {id === 'operations' && syncOperations.isRunning ? t('sync.running') : null}
+                {id === 'history' && syncOperations.history.length > 0 ? t('sync.runCount', { count: syncOperations.history.length }) : null}
                 {id === 'status' && currentJob ? currentJob.status : null}
                 {id === 'config' ? workerSettings.workerMode : null}
               </span>
@@ -361,23 +362,23 @@ export function SyncPanel({
 
       {/* Status view — concise summary */}
       {syncView === 'status' ? (
-        <article id="sync-status-panel" className="panel sync-view-panel" aria-label="Knowledge summary">
-          <SectionHeading title="Knowledge" subtitleTooltip="Refresh state, ingestion coverage, and operational signals." />
-          <div className="sync-config-pills" aria-label="Knowledge summary statistics">
-            <div className="sync-config-pill" title="Sites currently in a synced state within the active scope.">
-              <span className="sync-config-pill-label">Synced sites</span>
+        <article id="sync-status-panel" className="panel sync-view-panel" aria-label={t('sync.summaryLabel')}>
+          <SectionHeading title={t('sync.knowledge')} subtitleTooltip={t('sync.knowledgeHelp')} />
+          <div className="sync-config-pills" aria-label={t('sync.summaryStats')}>
+            <div className="sync-config-pill" title={t('sync.syncedSitesHelp')}>
+              <span className="sync-config-pill-label">{t('sync.syncedSites')}</span>
               <strong className="sync-config-pill-value">{scopedSyncOverview.syncedSites}</strong>
             </div>
-            <div className="sync-config-pill" title="Sites visible only to privileged roles within the active scope.">
-              <span className="sync-config-pill-label">Restricted sites</span>
+            <div className="sync-config-pill" title={t('sync.restrictedSitesHelp')}>
+              <span className="sync-config-pill-label">{t('sync.restrictedSites')}</span>
               <strong className="sync-config-pill-value">{scopedSyncOverview.restrictedSites}</strong>
             </div>
-            <div className="sync-config-pill" title="Sources accessible to the selected role and scope.">
-              <span className="sync-config-pill-label">Visible sources</span>
+            <div className="sync-config-pill" title={t('sync.visibleSourcesHelp')}>
+              <span className="sync-config-pill-label">{t('sync.visibleSources')}</span>
               <strong className="sync-config-pill-value">{scopedCorpusSummary.visibleSources}</strong>
             </div>
-            <div className="sync-config-pill" title="Sources excluded by permission-aware retrieval in scope.">
-              <span className="sync-config-pill-label">Denied sources</span>
+            <div className="sync-config-pill" title={t('sync.deniedSourcesHelp')}>
+              <span className="sync-config-pill-label">{t('sync.deniedSources')}</span>
               <strong className="sync-config-pill-value">{scopedCorpusSummary.deniedSources}</strong>
             </div>
           </div>
@@ -386,11 +387,11 @@ export function SyncPanel({
             <table>
               <thead>
                 <tr>
-                  <th>Site</th>
-                  <th>Status</th>
-                  <th>Documents</th>
-                  <th>Chunks</th>
-                  <th>Last refresh</th>
+                  <th>{t('sync.site')}</th>
+                  <th>{t('sync.status')}</th>
+                  <th>{t('sync.documents')}</th>
+                  <th>{t('sync.chunks')}</th>
+                  <th>{t('sync.lastRefresh')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -403,7 +404,7 @@ export function SyncPanel({
                     <td>{site.lastRefreshStatus}</td>
                     <td>{site.permittedDocumentCount}</td>
                     <td>{site.chunkCount}</td>
-                    <td>{site.lastRefresh ? formatUpdatedAt(site.lastRefresh) : 'n/a'}</td>
+                    <td>{site.lastRefresh ? formatUpdatedAt(site.lastRefresh) : t('sync.notAvailable')}</td>
                   </tr>
                 ))}
               </tbody>
@@ -414,16 +415,16 @@ export function SyncPanel({
           {currentJob ? (
             <div className="sync-status-job-summary">
               <div className="detail-row">
-                <span>Last operation</span>
+                <span>{t('sync.lastOperation')}</span>
                 <strong>{currentJob.label}</strong>
               </div>
               <div className="detail-row">
-                <span>Status</span>
+                <span>{t('sync.status')}</span>
                 <Pill tone={getJobTone(currentJob.status)}>{currentJob.status}</Pill>
               </div>
               {currentJob.status === 'running' ? (
                 <div className="detail-row">
-                  <span>Progress</span>
+                  <span>{t('sync.progress')}</span>
                   <strong>{currentJob.progress}%</strong>
                 </div>
               ) : null}
@@ -432,7 +433,7 @@ export function SyncPanel({
                 className="secondary-button secondary-button-sm"
                 onClick={() => setSyncView('operations')}
               >
-                View operations
+                {t('sync.viewOperations')}
               </button>
             </div>
           ) : null}
@@ -442,10 +443,10 @@ export function SyncPanel({
       {/* Operations view — controls + console */}
       {syncView === 'operations' ? (
         <>
-          <article className="panel sync-controls-panel" aria-label="Sync operations controls">
+          <article className="panel sync-controls-panel" aria-label={t('sync.controlsLabel')}>
             <div className="sync-controls-panel-body">
               <div className="sync-controls-group">
-                <span className="sync-controls-label">Knowledge</span>
+                <span className="sync-controls-label">{t('sync.knowledgeGroup')}</span>
                 <div className="sync-controls-actions">
                   {canManageJobs ? (
                     (['refresh', 'exportLive', 'exportLiveResume'] as OpsKey[]).map((op) => (
@@ -466,7 +467,7 @@ export function SyncPanel({
                       </button>
                     ))
                   ) : (
-                    <p className="empty-state">Hosted team members can review status and history here, but only operators can launch knowledge jobs.</p>
+                    <p className="empty-state">{t('sync.operatorOnly')}</p>
                   )}
                 </div>
               </div>
@@ -474,7 +475,7 @@ export function SyncPanel({
               <div className="sync-controls-divider" />
 
               <div className="sync-controls-group">
-                <span className="sync-controls-label">Local pipeline</span>
+                <span className="sync-controls-label">{t('sync.localPipeline')}</span>
                 <div className="sync-controls-actions">
                   {canManageJobs
                     ? (['ingest', 'analyze', 'publishAnalysis', 'evaluate'] as OpsKey[]).map((op) => (
@@ -501,19 +502,19 @@ export function SyncPanel({
             </div>
           </article>
 
-          <article className="panel sync-ops-panel" aria-label="Operations console">
+          <article className="panel sync-ops-panel" aria-label={t('sync.consoleLabel')}>
             <SectionHeading
-              title="Operations console"
-              subtitleTooltip="Follow the streamed execution log for the active operation."
+              title={t('sync.consoleTitle')}
+              subtitleTooltip={t('sync.consoleHelp')}
               actions={
                 syncOperations.isRunning && canManageJobs ? (
                   <button
                     type="button"
                     className="secondary-button secondary-button-sm danger-button"
-                    data-tooltip="Stop the running operation"
+                    data-tooltip={t('sync.cancelTitle')}
                     onClick={syncOperations.cancelActiveJob}
                   >
-                    Cancel job
+                    {t('sync.cancel')}
                   </button>
                 ) : null
               }
@@ -521,15 +522,15 @@ export function SyncPanel({
 
             <div className="sync-ops-summary">
               <div className="detail-row">
-                <span>Status</span>
-                <strong>{currentJob?.status || 'idle'}</strong>
+                <span>{t('sync.status')}</span>
+                <strong>{currentJob?.status || t('sync.idle')}</strong>
               </div>
               <div className="detail-row">
-                <span>Command</span>
-                <strong>{currentJob?.command || 'No command running'}</strong>
+                <span>{t('sync.command')}</span>
+                <strong>{currentJob?.command || t('sync.noCommand')}</strong>
               </div>
               <div className="detail-row">
-                <span>Progress</span>
+                <span>{t('sync.progress')}</span>
                 <strong>
                   {currentJob
                     ? `${currentJob.progress}%${
@@ -544,17 +545,17 @@ export function SyncPanel({
               </div>
             </div>
 
-            <div className="sync-progress" aria-label="Sync operation progress">
+            <div className="sync-progress" aria-label={t('sync.progressLabel')}>
               <div className="sync-progress-track">
                 <span style={{ width: `${currentJob?.progress || 0}%` }} />
               </div>
               <div className="sync-progress-labels">
-                <span>{currentJob?.label || 'Idle'}</span>
-                <span>{currentJob?.summary || 'No sync job running yet.'}</span>
+                <span>{currentJob?.label || t('sync.idleTitle')}</span>
+                <span>{currentJob?.summary || t('sync.idleSummary')}</span>
               </div>
             </div>
 
-            <div className="sync-console" ref={consoleRef} aria-live="polite" aria-label="Sync console output">
+            <div className="sync-console" ref={consoleRef} aria-live="polite" aria-label={t('sync.consoleOutput')}>
               {currentLines.length ? (
                 currentLines.map((line) => (
                   <div key={line.id} className={`sync-console-line sync-console-line-${line.tone}`}>
@@ -563,7 +564,7 @@ export function SyncPanel({
                   </div>
                 ))
               ) : (
-                <div className="sync-console-empty">Launch a command to stream the execution log here.</div>
+                <div className="sync-console-empty">{t('sync.consoleEmpty')}</div>
               )}
             </div>
           </article>
@@ -572,12 +573,12 @@ export function SyncPanel({
 
       {/* History view — run list */}
       {syncView === 'history' ? (
-        <article className="panel sync-view-panel" aria-label="Sync run history">
+        <article className="panel sync-view-panel" aria-label={t('sync.historyLabel')}>
           <SectionHeading
-            title="Run history"
-            subtitleTooltip="Recent sync jobs and their results. Hover each run for the full note."
+            title={t('sync.historyTitle')}
+            subtitleTooltip={t('sync.historyHelp')}
             actions={(
-              <div className="sync-history-limit-picker" aria-label="Terminal log line limit">
+              <div className="sync-history-limit-picker" aria-label={t('sync.logLimit')}>
                 {[10, 20, 50].map((limit) => (
                   <button
                     key={limit}
@@ -607,12 +608,12 @@ export function SyncPanel({
                     </span>
                     <div className="sync-history-meta-stats">
                       <span className="sync-history-stat">
-                        <span className="sync-history-stat-label">Progress</span>
+                        <span className="sync-history-stat-label">{t('sync.progress')}</span>
                         <strong>{job.progress}%</strong>
                       </span>
                       {job.durationMs != null ? (
                         <span className="sync-history-stat">
-                          <span className="sync-history-stat-label">Duration</span>
+                          <span className="sync-history-stat-label">{t('sync.duration')}</span>
                           <strong>{formatDuration(job.durationMs)}</strong>
                         </span>
                       ) : null}
@@ -620,10 +621,10 @@ export function SyncPanel({
                   </div>
                   <details className="sync-history-details">
                     <summary className="sync-history-details-summary">
-                      <span>Terminal log</span>
+                      <span>{t('sync.terminalLog')}</span>
                       <span className="sync-history-details-toggle">
-                        <span className="sync-history-details-toggle-show">Show</span>
-                        <span className="sync-history-details-toggle-hide">Hide</span>
+                        <span className="sync-history-details-toggle-show">{t('sync.show')}</span>
+                        <span className="sync-history-details-toggle-hide">{t('sync.hide')}</span>
                       </span>
                     </summary>
                     <pre className="sync-history-log">
@@ -634,20 +635,20 @@ export function SyncPanel({
                 </article>
               ))
             ) : (
-              <div className="empty-state">No sync jobs have been launched yet.</div>
+              <div className="empty-state">{t('sync.emptyHistory')}</div>
             )}
           </div>
 
           <div className="checklist">
-            <h3>Evaluation prep</h3>
+            <h3>{t('sync.evaluationPrep')}</h3>
             <ul>
               <li>
-                Run <code>npm run ingest</code> to write the local sync snapshot.
+                {t('sync.prepIngest')}
               </li>
               <li>
-                Run <code>npm run evaluate</code> to generate the V1 baseline report.
+                {t('sync.prepEvaluate')}
               </li>
-              <li>Keep OpenAI as the baseline provider when comparing retrieval quality.</li>
+              <li>{t('sync.prepProvider')}</li>
             </ul>
           </div>
         </article>
@@ -656,24 +657,24 @@ export function SyncPanel({
       {/* Config view — worker connection read-only */}
       {syncView === 'config' ? (
         <>
-          <article className="panel sync-view-panel" aria-label="Worker configuration">
-            <SectionHeading title="Config" subtitleTooltip="Active worker connection and fallback settings. Edit in Settings → Worker." />
+          <article className="panel sync-view-panel" aria-label={t('sync.workerConfig')}>
+            <SectionHeading title={t('sync.config')} subtitleTooltip={t('sync.configHelp')} />
 
-            <div className="sync-config-pills" aria-label="Worker configuration summary">
-              <div className="sync-config-pill" title="local uses the embedded Vite ops server.">
-                <span className="sync-config-pill-label">Worker mode</span>
+            <div className="sync-config-pills" aria-label={t('sync.configSummary')}>
+              <div className="sync-config-pill" title={t('sync.workerModeHelp')}>
+                <span className="sync-config-pill-label">{t('sync.workerMode')}</span>
                 <strong className="sync-config-pill-value">{workerSettings.workerMode}</strong>
               </div>
-              <div className="sync-config-pill" title="Behavior when the worker is unreachable.">
-                <span className="sync-config-pill-label">Fallback mode</span>
+              <div className="sync-config-pill" title={t('sync.fallbackModeHelp')}>
+                <span className="sync-config-pill-label">{t('sync.fallbackMode')}</span>
                 <strong className="sync-config-pill-value">{workerSettings.workerFallbackMode}</strong>
               </div>
-              <div className="sync-config-pill" title="Request timeout for worker API calls.">
-                <span className="sync-config-pill-label">Timeout</span>
+              <div className="sync-config-pill" title={t('sync.timeoutHelp')}>
+                <span className="sync-config-pill-label">{t('sync.timeout')}</span>
                 <strong className="sync-config-pill-value">{workerSettings.workerTimeoutSeconds}s</strong>
               </div>
-              <div className="sync-config-pill" title="Maximum number of documents Analyze enriches per run.">
-                <span className="sync-config-pill-label">Analyze budget</span>
+              <div className="sync-config-pill" title={t('sync.analyzeBudgetHelp')}>
+                <span className="sync-config-pill-label">{t('sync.analyzeBudget')}</span>
                 <strong className="sync-config-pill-value">{workerSettings.analyzeLimit}</strong>
               </div>
             </div>
@@ -681,32 +682,32 @@ export function SyncPanel({
             {workerSettings.workerMode === 'remote' && workerSettings.workerUrl ? (
               <div className="sync-details-grid">
                 <div className="detail-row">
-                  <span>Worker URL</span>
+                  <span>{t('sync.workerUrl')}</span>
                   <strong className="detail-value-compact">{workerSettings.workerUrl}</strong>
                 </div>
                 <div className="detail-row">
-                  <span>Token</span>
-                  <strong>{workerSettings.workerToken ? '●●●●●●●●' : 'Not set'}</strong>
+                  <span>{t('sync.token')}</span>
+                  <strong>{workerSettings.workerToken ? '●●●●●●●●' : t('sync.notSet')}</strong>
                 </div>
               </div>
             ) : null}
 
             {workerSettings.workerMode === 'local' ? (
               <div className="sync-callout">
-                <p>Running in local mode. Jobs are executed by the embedded Vite ops server at the same origin.</p>
-                <p>Switch to remote mode in <strong>Settings → Worker</strong> to point at a dedicated worker endpoint.</p>
+                <p>{t('sync.localMode')}</p>
+                <p>{t('sync.switchRemote')}</p>
               </div>
             ) : (
               <div className="sync-callout">
-                <p>Running in remote mode. Jobs are dispatched to <strong>{workerSettings.workerUrl || 'the configured worker URL'}</strong>.</p>
-                <p>Update connection settings in <strong>Settings → Worker</strong>.</p>
+                <p>{t('sync.remoteMode', { worker: workerSettings.workerUrl || t('sync.configuredWorker') })}</p>
+                <p>{t('sync.updateWorker')}</p>
               </div>
             )}
           </article>
 
           {/* Recovery panel */}
-          <article className="panel sync-view-panel" aria-label="Recovery">
-            <SectionHeading title="Recovery" subtitleTooltip="Guidance for failed operations and unreachable workers." />
+          <article className="panel sync-view-panel" aria-label={t('sync.recovery')}>
+            <SectionHeading title={t('sync.recovery')} subtitleTooltip={t('sync.recoveryHelp')} />
 
             {failedJobs.length > 0 ? (
               <div className="sync-list">
@@ -714,7 +715,7 @@ export function SyncPanel({
                   <article key={job.id} className="sync-card" title={job.summary}>
                     <div className="source-card-top">
                       <strong>{job.label}</strong>
-                      <Pill tone="danger">failed</Pill>
+                      <Pill tone="danger">{t('sync.failed')}</Pill>
                     </div>
                     <div className="source-meta">
                       <span>{job.finishedAt ? formatUpdatedAt(job.finishedAt) : formatUpdatedAt(job.startedAt)}</span>
@@ -726,14 +727,14 @@ export function SyncPanel({
               </div>
             ) : (
               <div className="sync-callout">
-                <p>No failed jobs in recent history. Recovery guidance will appear here when a job fails.</p>
+                <p>{t('sync.noFailures')}</p>
               </div>
             )}
 
             <div className="sync-callout">
-              <p>If a sync fails, use <strong>Resume Sync</strong> in Operations to restart from the last checkpoint.</p>
-              <p>If the worker is unreachable, check the Worker URL and token in Settings, or switch to local mode.</p>
-              <p>If the worker remains unavailable and the fallback mode is <strong>read_only</strong>, continue in the published corpus until the endpoint is restored.</p>
+              <p>{t('sync.recoverySync')}</p>
+              <p>{t('sync.recoveryWorker')}</p>
+              <p>{t('sync.recoveryFallback')}</p>
             </div>
           </article>
         </>

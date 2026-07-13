@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { CompactPathText, FileLinkIcon, FileTypePill, PathLabel, Pill, SectionHeading } from '../app-ui'
 import { formatUpdatedAt } from '../../lib/deepvault'
 import type { ExplorerRow } from '../../hooks/useAppModel'
+import { t } from '../../i18n'
 
 const EXPLORER_BATCH_SIZE = 10
 const EXPLORER_MAX_VISIBLE = 50
@@ -98,15 +99,15 @@ export function ExplorerPanel({
     <section className={`content-grid explorer-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <article className="panel explorer-list-panel">
         <SectionHeading
-          title="Explorer"
-          subtitleTooltip="Browse the pilot corpus by site, search term, and source details."
+          title={t('explorer.title')}
+          subtitleTooltip={t('explorer.subtitle')}
           actions={
             <>
-              <button type="button" className="secondary-button secondary-button-sm" title="Export the explorer results as JSON" onClick={onExportJson}>
-                Export JSON
+              <button type="button" className="secondary-button secondary-button-sm" title={t('explorer.exportJsonTitle')} onClick={onExportJson}>
+                {t('explorer.exportJson')}
               </button>
-              <button type="button" className="secondary-button secondary-button-sm" title="Export the explorer results as Markdown" onClick={onExportMarkdown}>
-                Export MD
+              <button type="button" className="secondary-button secondary-button-sm" title={t('explorer.exportMarkdownTitle')} onClick={onExportMarkdown}>
+                {t('explorer.exportMarkdown')}
               </button>
             </>
           }
@@ -117,7 +118,7 @@ export function ExplorerPanel({
               key={document.id}
               type="button"
               className={`document-row ${selectedExplorerDoc?.id === document.id ? 'document-row-active' : ''}`}
-              title={`Open ${document.title}`}
+              title={t('explorer.openDocument', { document: document.title })}
               onClick={() => onSelectDocument(document)}
             >
               <div className="document-row-top">
@@ -133,9 +134,9 @@ export function ExplorerPanel({
               </div>
             </button>
           ))}
-          {explorerRows.length === 0 ? <div className="empty-state">No permitted sources matched this search.</div> : null}
+          {explorerRows.length === 0 ? <div className="empty-state">{t('explorer.noPermittedSources')}</div> : null}
           {explorerRows.length > 0 && displayExplorerRows.length === 0 ? (
-            <div className="empty-state">No strong matches found.</div>
+            <div className="empty-state">{t('explorer.noStrongMatches')}</div>
           ) : null}
           {hasMoreExplorerRows ? <div ref={loadMoreSentinelRef} className="document-list-sentinel" aria-hidden="true" /> : null}
         </div>
@@ -157,7 +158,7 @@ export function ExplorerPanel({
               <div className="explorer-detail-scroll">
                 <div className="detail-stack">
                   <div className="detail-row detail-row-site-row">
-                    <span>Site</span>
+                    <span>{t('explorer.site')}</span>
                     <div className="detail-row-site-value">
                       {selectedExplorerDoc.siteUrl ? (
                         <a
@@ -165,37 +166,37 @@ export function ExplorerPanel({
                           href={selectedExplorerDoc.siteUrl}
                           target="_blank"
                           rel="noreferrer"
-                          aria-label={`Open site ${selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}`}
-                          title={`Open site ${selectedExplorerDoc.siteName || selectedExplorerDoc.siteId}`}
+                          aria-label={t('explorer.openSiteLabel', { site: selectedExplorerDoc.siteName || selectedExplorerDoc.siteId })}
+                          title={t('explorer.openSiteLabel', { site: selectedExplorerDoc.siteName || selectedExplorerDoc.siteId })}
                         >
                           <span className="detail-row-site-button-icon" aria-hidden="true">
                             <FileLinkIcon />
                           </span>
-                          <span>Open site</span>
+                          <span>{t('explorer.openSite')}</span>
                         </a>
                       ) : null}
                     </div>
                   </div>
                   <div className="detail-row">
-                    <span>Owner</span>
+                    <span>{t('explorer.owner')}</span>
                     <strong>{selectedExplorerDoc.author}</strong>
                   </div>
                   <div className="detail-row">
-                    <span>Updated</span>
+                    <span>{t('explorer.updated')}</span>
                     <strong>{formatUpdatedAt(selectedExplorerDoc.updatedAt)}</strong>
                   </div>
                   <div className="detail-row">
-                    <span>Access</span>
+                    <span>{t('explorer.access')}</span>
                     <strong>{selectedExplorerDoc.access.join(', ')}</strong>
                   </div>
                   <div className="detail-row">
-                    <span>Tags</span>
+                    <span>{t('explorer.tags')}</span>
                     <strong className="detail-row-tags">{selectedExplorerDoc.tags.join(', ')}</strong>
                   </div>
                 </div>
                 <div className="document-content">
                   <div className="document-content-header">
-                    <h3>Details</h3>
+                    <h3>{t('explorer.details')}</h3>
                     <button
                       type="button"
                       className="text-button text-button-sm"
@@ -203,7 +204,7 @@ export function ExplorerPanel({
                       aria-expanded={showDetails}
                       aria-controls="explorer-details"
                     >
-                      {showDetails ? 'Hide details' : 'Show details'}
+                      {showDetails ? t('explorer.hideDetails') : t('explorer.showDetails')}
                     </button>
                   </div>
                   {showDetails ? (
@@ -218,7 +219,7 @@ export function ExplorerPanel({
                 {hasDistinctSourceExcerpt ? (
                   <div className="document-content">
                     <div className="document-content-header">
-                      <h3>Excerpt</h3>
+                      <h3>{t('explorer.excerpt')}</h3>
                       <button
                         type="button"
                         className="text-button text-button-sm"
@@ -226,7 +227,7 @@ export function ExplorerPanel({
                         aria-expanded={showSourceExcerpt}
                         aria-controls="explorer-source-excerpt"
                       >
-                        {showSourceExcerpt ? 'Hide excerpt' : 'Show excerpt'}
+                        {showSourceExcerpt ? t('explorer.hideExcerpt') : t('explorer.showExcerpt')}
                       </button>
                     </div>
                     {showSourceExcerpt ? (
@@ -244,10 +245,10 @@ export function ExplorerPanel({
           ) : (
             <>
               <SectionHeading
-                title="No visible document"
-                subtitleTooltip="Choose a site with matching results to inspect its details."
+                title={t('explorer.noVisibleDocument')}
+                subtitleTooltip={t('explorer.noVisibleDocumentHint')}
               />
-              <div className="empty-state">No permitted sources match the current site filter.</div>
+              <div className="empty-state">{t('explorer.noSiteSources')}</div>
             </>
           )}
         </article>

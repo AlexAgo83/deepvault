@@ -1,7 +1,7 @@
 ## req_023_complete_semantic_i18n_adoption_across_remaining_application_panels - Complete semantic i18n adoption across remaining application panels
 > From version: 1.5.2
 > Schema version: 1.0
-> Status: Draft
+> Status: Done
 > Understanding: 90%
 > Confidence: 85%
 > Complexity: High

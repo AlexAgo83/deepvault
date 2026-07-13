@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-const allSteps = ['lint', 'typecheck', 'test', 'build', 'e2e', 'evaluate']
+const allSteps = ['lint', 'quality:i18n-copy', 'typecheck', 'test', 'build', 'e2e', 'evaluate']
 const skippedSteps = new Set()
 
 if (process.env.DEEPVAULT_CHECK_SKIP_E2E === '1') {

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { CompactDateTime, PathLabel, Pill, SectionHeading } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 import { warnInvalidStoredValue } from '../../lib/storage-schema'
+import { t } from '../../i18n'
 
 type ArtifactGroup = 'all' | 'type' | 'source'
 type ArtifactFilter = 'all' | 'processed-file' | 'sync-run' | 'generated-answer' | 'analysis' | 'analysis-report'
@@ -96,11 +97,11 @@ function buildFailurePresentation(fallback: string, diagnostics: string[]): { su
 
   if (flattened.some((line) => /invalid_client|AADSTS7000215/i.test(line))) {
     return {
-      summary: 'Microsoft Entra authentication failed: invalid client secret.',
+      summary: t('artifacts.authFailed'),
       diagnostics: [
         ...commandBlocks,
-        'Action required\nUse the client secret value, not the secret ID, in DEEPVAULT_ENTRA_SECRET_VALUE.',
-        'Provider response\nAADSTS7000215: Invalid client secret provided.',
+        t('artifacts.authAction'),
+        t('artifacts.authResponse'),
       ],
     }
   }
@@ -111,7 +112,7 @@ function buildFailurePresentation(fallback: string, diagnostics: string[]): { su
       summary: explicitError.replace(/^Error:\s*/i, '').trim() || fallback,
       diagnostics: [
         ...commandBlocks,
-        `Error\n${explicitError.replace(/^Error:\s*/i, '').trim() || fallback}`,
+        t('artifacts.errorDetail', { detail: explicitError.replace(/^Error:\s*/i, '').trim() || fallback }),
       ],
     }
   }
@@ -122,7 +123,7 @@ function buildFailurePresentation(fallback: string, diagnostics: string[]): { su
       summary: authFailure,
       diagnostics: [
         ...commandBlocks,
-        `Error\n${authFailure}`,
+        t('artifacts.errorDetail', { detail: authFailure }),
       ],
     }
   }
@@ -367,19 +368,19 @@ function buildArtifactRecords(
     analysisProvider: document.analysis?.provider,
     analysisModel: document.analysis?.model,
     derivedOutputs: [
-      document.analysis?.summary ? 'analysis summary' : 'baseline summary',
-      document.analysis?.sections?.length ? `${document.analysis.sections.length} sections` : 'local sections',
-      document.analysis?.keywords?.length ? `${document.analysis.keywords.length} keywords` : 'tags only',
+      document.analysis?.summary ? t('artifacts.analysisSummary') : t('artifacts.baselineSummary'),
+      document.analysis?.sections?.length ? t('artifacts.sectionCount', { count: document.analysis.sections.length }) : t('artifacts.localSections'),
+      document.analysis?.keywords?.length ? t('artifacts.keywordCount', { count: document.analysis.keywords.length }) : t('artifacts.tagsOnly'),
     ],
     diagnostics: [
-      `Kind: ${document.kind}`,
-      `File type: ${inferFileType(document)}`,
-      document.extractionStatus ? `Extraction: ${document.extractionStatus}` : '',
-      document.extractionReason ? `Extraction reason: ${document.extractionReason}` : '',
-      document.extractPath ? `Extract path: ${document.extractPath}` : '',
-      `Source: ${document.source}`,
-      document.analysis?.excludedReason ? `Excluded: ${document.analysis.excludedReason}` : '',
-      document.analysis?.failureReason ? `Failure: ${document.analysis.failureReason}` : '',
+      t('artifacts.kindDetail', { value: document.kind }),
+      t('artifacts.fileTypeDetail', { value: inferFileType(document) }),
+      document.extractionStatus ? t('artifacts.extractionDetail', { value: document.extractionStatus }) : '',
+      document.extractionReason ? t('artifacts.extractionReasonDetail', { value: document.extractionReason }) : '',
+      document.extractPath ? t('artifacts.extractPathDetail', { value: document.extractPath }) : '',
+      t('artifacts.sourceDetail', { value: document.source }),
+      document.analysis?.excludedReason ? t('artifacts.excludedDetail', { value: document.analysis.excludedReason }) : '',
+      document.analysis?.failureReason ? t('artifacts.failureDetail', { value: document.analysis.failureReason }) : '',
     ].filter(Boolean),
   }))
 
@@ -410,13 +411,13 @@ function buildArtifactRecords(
       title: message.artifact?.filename || message.id,
       status: message.artifactStatus || 'ready',
       timestamp: message.createdAt || new Date().toISOString(),
-      sourceLabel: message.provider || 'local',
-      location: message.artifact?.filename || 'generated answer',
+      sourceLabel: message.provider || t('artifacts.local'),
+      location: message.artifact?.filename || t('artifacts.generatedAnswer'),
       summary: message.artifactNotice || message.text,
       diagnostics: [
-        `Format: ${message.artifact?.format || 'n/a'}`,
-        `Provider: ${message.provider || 'local'}`,
-        `Mode: ${message.orchestrationMode || 'local'}`,
+        t('artifacts.formatDetail', { value: message.artifact?.format || t('artifacts.notAvailable') }),
+        t('artifacts.providerDetail', { value: message.provider || t('artifacts.local') }),
+        t('artifacts.modeDetail', { value: message.orchestrationMode || t('artifacts.local') }),
       ],
     }))
 
@@ -426,7 +427,7 @@ function buildArtifactRecords(
       ...item,
       id: `analysis-${item.id}`,
       type: 'analysis' as const,
-      title: `${item.title} analysis`,
+      title: t('artifacts.analysisTitle', { document: item.title }),
       status: item.analysisStatus || item.status,
       sourceLabel: item.sourceLabel,
       location: item.location,
@@ -441,17 +442,17 @@ function buildArtifactRecords(
         {
           id: 'analysis-report-latest',
           type: 'analysis-report' as const,
-          title: 'Latest analysis report',
+          title: t('artifacts.latestReport'),
           status: latestAnalyzeRun.status,
           timestamp: latestAnalyzeRun.finishedAt || latestAnalyzeRun.startedAt,
           sourceLabel: latestAnalyzeRun.label,
           location: 'data/runtime/analyze-report.json',
           summary: latestAnalyzeRun.summary,
           diagnostics: [
-            `Command: ${latestAnalyzeRun.command}`,
-            `Started: ${latestAnalyzeRun.startedAt}`,
-            latestAnalyzeRun.finishedAt ? `Finished: ${latestAnalyzeRun.finishedAt}` : '',
-            `Progress: ${latestAnalyzeRun.progress}%`,
+            t('artifacts.commandDetail', { value: latestAnalyzeRun.command }),
+            t('artifacts.startedDetail', { value: latestAnalyzeRun.startedAt }),
+            latestAnalyzeRun.finishedAt ? t('artifacts.finishedDetail', { value: latestAnalyzeRun.finishedAt }) : '',
+            t('artifacts.progressDetail', { value: latestAnalyzeRun.progress }),
           ].filter(Boolean),
         },
       ]
@@ -460,17 +461,17 @@ function buildArtifactRecords(
           {
             id: 'analysis-report-latest',
             type: 'analysis-report' as const,
-            title: 'Latest analysis report',
+            title: t('artifacts.latestReport'),
             status: 'available',
             timestamp: processedFiles
               .map((item) => item.timestamp)
               .sort((left, right) => new Date(right).getTime() - new Date(left).getTime())[0],
             sourceLabel: 'analyze',
             location: 'data/runtime/analyze-report.json',
-            summary: 'Bounded analysis run summary emitted by the post-ingest analysis command.',
+            summary: t('artifacts.reportSummary'),
             diagnostics: [
-              'Path: data/runtime/analyze-report.json',
-              'Includes scanned, analyzed, excluded, reused, stale, and reason rollups.',
+              t('artifacts.pathDetail', { value: 'data/runtime/analyze-report.json' }),
+              t('artifacts.reportIncludes'),
             ],
           },
         ]
@@ -577,7 +578,7 @@ export function ArtifactsPanel({
 
   const groupedRecords = useMemo(() => {
     if (group === 'all') {
-      return [{ label: 'All artifacts', items: visibleArtifacts }]
+      return [{ label: t('artifacts.allArtifacts'), items: visibleArtifacts }]
     }
 
     const map = new Map<string, ArtifactRecord[]>()
@@ -592,39 +593,39 @@ export function ArtifactsPanel({
     <section className={`content-grid artifacts-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <article className="panel artifacts-panel">
         <SectionHeading
-          title="Artifacts"
-          subtitle="Inspect generated outputs, processed file records, and run provenance."
+          title={t('artifacts.title')}
+          subtitle={t('artifacts.subtitle')}
         />
         <div className="artifacts-toolbar">
           <input
-            aria-label="Artifact search"
+            aria-label={t('artifacts.searchLabel')}
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search artifact, run, source..."
+            placeholder={t('artifacts.searchPlaceholder')}
           />
-          <select aria-label="Artifact filter" value={filter} onChange={(event) => setFilter(event.target.value as ArtifactFilter)}>
-            <option value="all">All</option>
-            <option value="processed-file">Processed files</option>
-            <option value="analysis">Analysis</option>
-            <option value="analysis-report">Analysis reports</option>
-            <option value="sync-run">Runs</option>
-            <option value="generated-answer">Gen. answers</option>
+          <select aria-label={t('artifacts.filterLabel')} value={filter} onChange={(event) => setFilter(event.target.value as ArtifactFilter)}>
+            <option value="all">{t('artifacts.filterAll')}</option>
+            <option value="processed-file">{t('artifacts.filterProcessed')}</option>
+            <option value="analysis">{t('artifacts.filterAnalysis')}</option>
+            <option value="analysis-report">{t('artifacts.filterReports')}</option>
+            <option value="sync-run">{t('artifacts.filterRuns')}</option>
+            <option value="generated-answer">{t('artifacts.filterAnswers')}</option>
           </select>
-          <select aria-label="Artifact grouping" value={group} onChange={(event) => setGroup(event.target.value as ArtifactGroup)}>
-            <option value="all">All</option>
-            <option value="type">By type</option>
-            <option value="source">By source</option>
+          <select aria-label={t('artifacts.groupLabel')} value={group} onChange={(event) => setGroup(event.target.value as ArtifactGroup)}>
+            <option value="all">{t('artifacts.groupAll')}</option>
+            <option value="type">{t('artifacts.groupType')}</option>
+            <option value="source">{t('artifacts.groupSource')}</option>
           </select>
           <label className="artifacts-toolbar-toggle ui-toggle">
             <input
-              aria-label="Reviewed"
+              aria-label={t('artifacts.reviewed')}
               type="checkbox"
               checked={analyzedOnly}
               onChange={(event) => setAnalyzedOnly(event.target.checked)}
             />
             <span className="ui-toggle-switch" aria-hidden="true" />
-            <span>Reviewed</span>
+            <span>{t('artifacts.reviewed')}</span>
           </label>
         </div>
 
@@ -653,7 +654,7 @@ export function ArtifactsPanel({
               </div>
             ))
           ) : (
-            <div className="empty-state">No artifacts match the current filters.</div>
+            <div className="empty-state">{t('artifacts.empty')}</div>
           )}
           {hasMoreArtifacts ? <div ref={loadMoreSentinelRef} className="document-list-sentinel" aria-hidden="true" /> : null}
         </div>
@@ -661,28 +662,28 @@ export function ArtifactsPanel({
 
       {showRightPanel ? (
         <aside id="panel-right" className="panel panel-right artifacts-detail-panel">
-          <SectionHeading title="Processed record" subtitle="Ingestion, analysis, outputs, and diagnostics for the selected artifact." />
+          <SectionHeading title={t('artifacts.recordTitle')} subtitle={t('artifacts.recordSubtitle')} />
           <div className="artifacts-detail-scroll">
             {selectedArtifact ? (
               <div className="detail-stack artifacts-detail-stack">
                 <div className="detail-row">
-                  <span>Identity</span>
+                  <span>{t('artifacts.identity')}</span>
                   <strong>{selectedArtifact.title}</strong>
                 </div>
                 <div className="detail-row">
-                  <span>Status</span>
+                  <span>{t('artifacts.status')}</span>
                   <Pill tone={getTone(selectedArtifact.status)}>{selectedArtifact.status}</Pill>
                 </div>
                 <div className="detail-row">
-                  <span>Updated</span>
+                  <span>{t('artifacts.updated')}</span>
                   <strong><CompactDateTime value={selectedArtifact.timestamp} /></strong>
                 </div>
                 <div className="detail-row">
-                  <span>Source</span>
+                  <span>{t('artifacts.source')}</span>
                   <strong>{selectedArtifact.sourceLabel}</strong>
                 </div>
                 <div className="detail-row">
-                  <span>Location</span>
+                  <span>{t('artifacts.location')}</span>
                   {selectedArtifact.path ? (
                     <PathLabel
                       value={selectedArtifact.path}
@@ -694,7 +695,7 @@ export function ArtifactsPanel({
                 </div>
                 {selectedArtifact.summary ? (
                   <div className="artifacts-detail-block">
-                    <strong>Derived outputs</strong>
+                    <strong>{t('artifacts.derivedOutputs')}</strong>
                     <div className="detail-stack">{renderDetailText(selectedArtifact.summary, `${selectedArtifact.id}-summary`)}</div>
                     {selectedArtifact.derivedOutputs?.length ? (
                       <div className="artifacts-tag-row">
@@ -707,7 +708,7 @@ export function ArtifactsPanel({
                 ) : null}
                 {selectedArtifact.diagnostics?.length ? (
                   <div className="artifacts-detail-block">
-                    <strong>Diagnostics</strong>
+                    <strong>{t('artifacts.diagnostics')}</strong>
                     <div className="detail-stack">
                       {selectedArtifact.diagnostics.map((item) => (
                         <div key={item} className="artifacts-detail-entry">
@@ -719,7 +720,7 @@ export function ArtifactsPanel({
                 ) : null}
               </div>
             ) : (
-              <div className="empty-state">Select an artifact to inspect its processed record.</div>
+              <div className="empty-state">{t('artifacts.selectHint')}</div>
             )}
           </div>
         </aside>

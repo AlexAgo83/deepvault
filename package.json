@@ -17,6 +17,7 @@
     "docker:worker": "node scripts/docker-worker.mjs",
     "docker:stop": "docker stop deepvault-worker-dev",
     "lint": "eslint .",
+    "quality:i18n-copy": "node scripts/quality/check-i18n-copy.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --max-old-space-size=6144 ./node_modules/vitest/vitest.mjs run --configLoader runner",
     "test:coverage": "node --max-old-space-size=6144 ./node_modules/vitest/vitest.mjs run --configLoader runner --coverage",
@@ -32,7 +33,7 @@
     "export:live": "node scripts/run-with-cleanup.mjs tsx scripts/export-live.ts",
     "check": "node scripts/check.mjs",
     "ci:anti-zombie": "node scripts/ci-anti-zombie-check.mjs",
-    "ci:local": "npm run lint && npm run typecheck && npm run test:coverage && npm run build && rtk node --import tsx scripts/evaluate.ts && rtk npx playwright install chromium && rtk npm run e2e && rtk npm run e2e:pwa-refresh"
+    "ci:local": "npm run lint && npm run quality:i18n-copy && npm run typecheck && npm run test:coverage && npm run build && rtk node --import tsx scripts/evaluate.ts && rtk npx playwright install chromium && rtk npm run e2e && rtk npm run e2e:pwa-refresh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
