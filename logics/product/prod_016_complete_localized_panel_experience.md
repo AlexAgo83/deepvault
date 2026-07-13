@@ -2,7 +2,7 @@
 > Date: 2026-07-13
 > Status: Proposed
 > Related request: `req_023_complete_semantic_i18n_adoption_across_remaining_application_panels`
-> Related backlog: `item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome`, `item_094_migrate_explorer_and_artifact_panel_chrome_with_strict_content_boundaries`, `item_095_migrate_assisted_work_ai_view_and_changelog_product_chrome`, `item_096_enforce_panel_catalog_coverage_and_close_the_migration`
+> Related backlog: `item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome`
 > Related task: `task_046_orchestrate_completion_of_panel_localization`
 > Related architecture: (none yet)
 > Reminder: Update status, linked refs, scope, decisions, success signals, and open questions when you edit this doc.
@@ -48,5 +48,5 @@ flowchart LR
 - Contract checks, repository tests, type checks, and production build pass.
 
 # References
-- Product back-reference: `req_023_complete_semantic_i18n_adoption_across_remaining_application_panels`
+- Product back-reference: `item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome`
 - Task back-reference: `task_046_orchestrate_completion_of_panel_localization`

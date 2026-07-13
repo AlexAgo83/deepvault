@@ -2,6 +2,7 @@ import { type FormEvent, type KeyboardEvent, useEffect, useLayoutEffect, useRef,
 import { Message, SectionHeading, SourceCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
 import { downloadTextFile } from '../../lib/file-download'
+import { t } from '../../i18n'
 
 const BISHOP_POPOVER_WIDTH = 320
 const BISHOP_POPOVER_MARGIN = 16
@@ -133,18 +134,18 @@ export function BishopPanel({
     <section className={`content-grid bishop-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <article className="panel chat-panel bishop-chat-panel">
         <SectionHeading
-          title="Bishop"
-          subtitleTooltip="Grounded answers come from the same local retrieval logic used by the explorer."
+          title={t('bishop.title')}
+          subtitleTooltip={t('bishop.subtitle')}
           actions={
             <>
-              <button type="button" className="secondary-button secondary-button-sm" title="Export the current Bishop conversation as JSON" onClick={exportJson}>
-                Export JSON
+              <button type="button" className="secondary-button secondary-button-sm" title={t('bishop.exportJsonTitle')} onClick={exportJson}>
+                {t('bishop.exportJson')}
               </button>
-              <button type="button" className="secondary-button secondary-button-sm" title="Export the current Bishop conversation as Markdown" onClick={exportMarkdown}>
-                Export MD
+              <button type="button" className="secondary-button secondary-button-sm" title={t('bishop.exportMarkdownTitle')} onClick={exportMarkdown}>
+                {t('bishop.exportMarkdown')}
               </button>
-              <button type="button" className="secondary-button secondary-button-sm" title="Clear Bishop conversation history" onClick={clearHistory}>
-                Clear history
+              <button type="button" className="secondary-button secondary-button-sm" title={t('bishop.clearHistoryTitle')} onClick={clearHistory}>
+                {t('bishop.clearHistory')}
               </button>
             </>
           }
@@ -157,28 +158,28 @@ export function BishopPanel({
         <form className="chat-form" onSubmit={onSubmit}>
           <textarea
             id="question"
-            aria-label="Ask a question"
+            aria-label={t('bishop.questionLabel')}
             value={question}
             onChange={(event) => onQuestionChange(event.target.value)}
             onKeyDown={handleQuestionKeyDown}
             rows={4}
-            placeholder="What is the deadline for the compliance audit?"
+            placeholder={t('bishop.questionPlaceholder')}
             disabled={isAsking}
           />
           <div className="chat-form-actions">
-            <div className="chat-note">Enter sends. Shift+Enter adds a new line.</div>
+            <div className="chat-note">{t('bishop.inputHint')}</div>
             <div className="chat-form-submit-group">
-              <label className="chat-context-toggle ui-toggle" title="Keep previous Bishop turns in the prompt">
+              <label className="chat-context-toggle ui-toggle" title={t('bishop.keepContextTitle')}>
                 <input
                   type="checkbox"
                   checked={conversationContextEnabled}
                   onChange={(event) => onConversationContextChange(event.target.checked)}
                 />
                 <span className="ui-toggle-switch" aria-hidden="true" />
-                <span>Keep context</span>
+                <span>{t('bishop.keepContext')}</span>
               </label>
-              <button type="submit" className="primary-button" title="Send the question to Bishop" disabled={isAsking}>
-                {isAsking ? 'Thinking...' : 'Ask bishop'}
+              <button type="submit" className="primary-button" title={t('bishop.sendTitle')} disabled={isAsking}>
+                {isAsking ? t('bishop.thinking') : t('bishop.ask')}
               </button>
             </div>
           </div>
@@ -187,42 +188,42 @@ export function BishopPanel({
 
       {showRightPanel ? (
         <aside id="panel-right" className="panel panel-right bishop-trace-panel">
-          <SectionHeading title="Answer trace" subtitle="Provenance and retrieval diagnostics for the last turn." />
+          <SectionHeading title={t('bishop.traceTitle')} subtitle={t('bishop.traceSubtitle')} />
           <div className="bishop-trace-scroll">
             <div className="detail-stack">
               <div className="detail-row">
-                <span>Status</span>
-                <strong>{selectedMessage.status || 'ready'}</strong>
+                <span>{t('bishop.status')}</span>
+                <strong>{selectedMessage.status || t('bishop.ready')}</strong>
               </div>
               <div className="detail-row">
-                <span>Provider</span>
+                <span>{t('bishop.provider')}</span>
                 <strong>{selectedMessage.provider || provider}</strong>
               </div>
               <div className="detail-row">
-                <span>Orchestration</span>
-                <strong>{selectedMessage.orchestrationMode || 'local'}</strong>
+                <span>{t('bishop.orchestration')}</span>
+                <strong>{selectedMessage.orchestrationMode || t('bishop.local')}</strong>
               </div>
               <div className="detail-row">
-                <span>Chunk count</span>
+                <span>{t('bishop.chunkCount')}</span>
                 <strong>{selectedMessage.chunkCount || 0}</strong>
               </div>
               <div className="detail-row">
-                <span>Token count</span>
+                <span>{t('bishop.tokenCount')}</span>
                 <strong>{selectedMessage.tokenCount || 0}</strong>
               </div>
               <div className="detail-row">
-                <span>Latency</span>
+                <span>{t('bishop.latency')}</span>
                 <strong>{selectedMessage.latencyMs || 0} ms</strong>
               </div>
               <div className="detail-row detail-row-action">
-                <span>Confidence</span>
+                <span>{t('bishop.confidence')}</span>
                 <div className="trace-confidence-group">
                   <div className="trace-confidence-popover">
                     <button
                       type="button"
                       ref={traceButtonRef}
                       className="trace-confidence-button"
-                      title="Show the trace preview"
+                      title={t('bishop.showTrace')}
                       onMouseEnter={openTracePreview}
                       onMouseLeave={() => setShowTracePreview(false)}
                       onFocus={openTracePreview}
@@ -230,7 +231,7 @@ export function BishopPanel({
                       aria-describedby={showTracePreview ? 'bishop-trace-preview' : undefined}
                       disabled={typeof selectedMessage.confidenceScore !== 'number'}
                     >
-                      {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : 'n/a'}
+                      {typeof selectedMessage.confidenceScore === 'number' ? `${selectedMessage.confidenceScore}%` : t('bishop.notAvailable')}
                     </button>
                     {showTracePreview && selectedMessage.providerTracePreview ? (
                       <div
@@ -256,14 +257,14 @@ export function BishopPanel({
                       type="button"
                       ref={needButtonRef}
                       className="trace-confidence-help"
-                      title="Show the improvement hint"
+                      title={t('bishop.showImprovement')}
                       onMouseEnter={openNeedPreview}
                       onMouseLeave={() => setShowNeedPreview(false)}
                       onFocus={openNeedPreview}
                       onBlur={() => setShowNeedPreview(false)}
                       aria-describedby={showNeedPreview ? 'bishop-need-preview' : undefined}
                       disabled={!selectedMessage.improvementHint}
-                      aria-label="Show improvement hint"
+                      aria-label={t('bishop.showImprovement')}
                     >
                       ?
                     </button>
@@ -291,16 +292,16 @@ export function BishopPanel({
             </div>
             {selectedMessage.artifactStatus && selectedMessage.artifactStatus !== 'none' ? (
               <div className="detail-row detail-row-action">
-                <span>Artifact</span>
+                <span>{t('bishop.artifact')}</span>
                 <div className="trace-confidence-group">
                   {selectedMessage.artifact ? (
                     <button
                       type="button"
                       className="secondary-button secondary-button-sm"
-                      title={`Download ${selectedMessage.artifact.filename}`}
+                      title={t('bishop.downloadFile', { file: selectedMessage.artifact.filename })}
                       onClick={handleArtifactDownload}
                     >
-                      Download
+                      {t('bishop.download')}
                     </button>
                   ) : (
                     <strong className="trace-artifact-status">{selectedMessage.artifactNotice || selectedMessage.artifactStatus}</strong>
@@ -310,7 +311,7 @@ export function BishopPanel({
             ) : null}
             <div className="document-content bishop-sources-section">
               <div className="document-content-header">
-                <h3>Details</h3>
+                <h3>{t('bishop.details')}</h3>
                 <button
                   type="button"
                   className="text-button text-button-sm"
@@ -318,7 +319,7 @@ export function BishopPanel({
                   aria-expanded={showSources}
                   aria-controls="bishop-source-list"
                 >
-                  {showSources ? 'Hide' : 'Show'}
+                  {showSources ? t('bishop.hide') : t('bishop.show')}
                 </button>
               </div>
             </div>
@@ -328,7 +329,7 @@ export function BishopPanel({
                   <SourceCard key={source.id} source={source} href={resolveFileHref(source.siteId, source.path, source.webUrl)} />
                 ))}
                 {!selectedMessage.sources?.length ? (
-                  <div className="empty-state">No grounded sources yet. Ask Bishop a question to populate this trace.</div>
+                  <div className="empty-state">{t('bishop.noSources')}</div>
                 ) : null}
               </div>
             ) : null}

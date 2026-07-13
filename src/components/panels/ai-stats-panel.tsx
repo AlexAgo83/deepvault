@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CompactDateTime, PathLabel, Pill, SectionHeading, StatCard } from '../app-ui'
 import type { AppModel } from '../../hooks/useAppModel'
+import { t } from '../../i18n'
 
 type AIViewSection = 'answered' | 'tokens'
 type TokensView = 'trend' | 'timeline'
@@ -116,7 +117,7 @@ function getStatusTone(status: string) {
 }
 
 function formatConfidence(value?: number) {
-  return typeof value === 'number' ? `${value}%` : 'n/a'
+  return typeof value === 'number' ? `${value}%` : t('aiView.notAvailable')
 }
 
 function getPromptForResponse(messages: AppModel['messages'], responseId: string) {
@@ -129,7 +130,7 @@ function getPromptForResponse(messages: AppModel['messages'], responseId: string
   return null
 }
 
-function buildNeedChartSegments(needs: Array<{ hint: string; count: number }>) {
+function buildNeedChartSegments(needs: Array<{ hint: string; count: number }>, distributionKey = 'aiView.needDistribution') {
   const total = needs.reduce((sum, need) => sum + need.count, 0)
   let currentAngle = 0
   const segments = needs.map((need, index) => {
@@ -144,7 +145,9 @@ function buildNeedChartSegments(needs: Array<{ hint: string; count: number }>) {
     gradient: segments.length
       ? `conic-gradient(${segments.map((segment) => `${segment.color} ${segment.start}deg ${segment.end}deg`).join(', ')})`
       : undefined,
-    label: segments.length ? `Need distribution: ${segments.map((segment) => `${segment.hint} ${segment.count}`).join(', ')}` : 'Need distribution unavailable',
+    label: segments.length
+      ? t(distributionKey, { items: segments.map((segment) => `${segment.hint} ${segment.count}`).join(', ') })
+      : t('aiView.distributionUnavailable'),
   }
 }
 
@@ -199,38 +202,38 @@ function AIResponseCard({
         </div>
       </div>
       <div className="ai-response-meta">
-        <span>{message.createdAt ? <CompactDateTime value={message.createdAt} /> : 'recent'}</span>
+        <span>{message.createdAt ? <CompactDateTime value={message.createdAt} /> : t('aiView.recent')}</span>
         {isExpanded ? (
-          <div className="ai-response-source-badges" aria-label="Response source metadata">
-            <Pill>{message.provider || 'local'}</Pill>
-            <Pill>{message.orchestrationMode || 'local'}</Pill>
+          <div className="ai-response-source-badges" aria-label={t('aiView.sourceMetadata')}>
+            <Pill>{message.provider || t('aiView.local')}</Pill>
+            <Pill>{message.orchestrationMode || t('aiView.local')}</Pill>
           </div>
         ) : null}
       </div>
       {prompt ? (
         <div className="ai-response-question">
-          <strong>Question</strong>
+          <strong>{t('aiView.question')}</strong>
           <p>{prompt}</p>
         </div>
       ) : null}
       <div className="ai-response-answer">
-        <strong>Response</strong>
+        <strong>{t('aiView.response')}</strong>
         <p>{message.text}</p>
       </div>
       {message.sources?.length ? (
         <div className="ai-response-sources">
           <div className="message-sources-header">
-            <span>{`Sources (${sourceCount})`}</span>
+            <span>{t('aiView.sources', { count: sourceCount })}</span>
             <button
               type="button"
               className="text-button text-button-sm"
-              aria-label={showSources ? 'Hide sources' : 'Show sources'}
+              aria-label={showSources ? t('aiView.hideSources') : t('aiView.showSources')}
               onClick={(event) => {
                 event.stopPropagation()
                 onToggleSources()
               }}
             >
-              {showSources ? 'Hide' : 'Show'}
+              {showSources ? t('aiView.hide') : t('aiView.show')}
             </button>
           </div>
           {showSources ? (
@@ -248,17 +251,17 @@ function AIResponseCard({
       {message.improvementHint ? (
         <div className="message-need ai-response-need">
           <div className="message-need-head">
-            <strong>What would help next</strong>
+            <strong>{t('aiView.whatHelps')}</strong>
             <button
               type="button"
               className="text-button text-button-sm"
-              aria-label={showNeed ? 'Hide what would help next' : 'Show what would help next'}
+              aria-label={showNeed ? t('aiView.hideWhatHelps') : t('aiView.showWhatHelps')}
               onClick={(event) => {
                 event.stopPropagation()
                 onToggleNeed()
               }}
             >
-              {showNeed ? 'Hide' : 'Show'}
+              {showNeed ? t('aiView.hide') : t('aiView.show')}
             </button>
           </div>
           {showNeed ? <p>{message.improvementHint}</p> : null}
@@ -340,7 +343,7 @@ function AnsweredSection({
           />
         ))
       ) : (
-        <div className="empty-state">Ask Bishop a question to populate the response stats.</div>
+        <div className="empty-state">{t('aiView.emptyResponses')}</div>
       )}
     </div>
   )
@@ -351,7 +354,7 @@ function AnsweredAside({ answeredState }: { answeredState: ReturnType<typeof use
 
   return (
     <aside id="panel-right" className="panel panel-right ai-stats-needs-panel">
-      <SectionHeading title="AI needs" subtitleTooltip="Recurring inputs that would have improved the last answers." />
+      <SectionHeading title={t('aiView.needsTitle')} subtitleTooltip={t('aiView.needsSubtitle')} />
       {sortedNeeds.length ? (
         <div className="ai-needs-scroll">
           <div className="ai-needs-chart-card">
@@ -364,7 +367,7 @@ function AnsweredAside({ answeredState }: { answeredState: ReturnType<typeof use
               >
                 <div className="ai-needs-chart-center">
                   <strong>{needChart.total}</strong>
-                  <span>needs</span>
+                  <span>{t(needChart.total === 1 ? 'aiView.needCount.one' : 'aiView.needCount.other')}</span>
                 </div>
               </div>
             </div>
@@ -382,7 +385,7 @@ function AnsweredAside({ answeredState }: { answeredState: ReturnType<typeof use
           </div>
         </div>
       ) : (
-        <div className="empty-state">No AI needs have been surfaced yet.</div>
+        <div className="empty-state">{t('aiView.emptyNeeds')}</div>
       )}
     </aside>
   )
@@ -409,21 +412,21 @@ function TokensSection({
     <div className="ai-tokens-main">
       <div className="ai-stats-scroll">
         <div className="kpi-grid compact ai-stats-kpi-grid">
-          <StatCard label="Today input" value={aiUsageSummary.todayInput} note="Provider-backed input tokens logged today." />
-          <StatCard label="Today output" value={aiUsageSummary.todayOutput} note="Provider-backed output tokens logged today." />
-          <StatCard label="Today total" value={aiUsageSummary.todayTotal} note="Combined provider-backed token usage for today." />
-          <StatCard label="Answered count" value={aiUsageSummary.answeredCount} note="Completed answered outcomes in the retained history window." />
+          <StatCard label={t('aiView.todayInput')} value={aiUsageSummary.todayInput} note={t('aiView.todayInputNote')} />
+          <StatCard label={t('aiView.todayOutput')} value={aiUsageSummary.todayOutput} note={t('aiView.todayOutputNote')} />
+          <StatCard label={t('aiView.todayTotal')} value={aiUsageSummary.todayTotal} note={t('aiView.todayTotalNote')} />
+          <StatCard label={t('aiView.answeredCount')} value={aiUsageSummary.answeredCount} note={t('aiView.answeredCountNote')} />
         </div>
 
         <div className="detail-stack">
           <div className="artifacts-detail-block tokens-chart-block">
             <div className="tokens-trend-header">
-              <strong>Daily trend</strong>
+              <strong>{t('aiView.dailyTrend')}</strong>
               <button
                 type="button"
                 className={`tokens-view-toggle ${tokensView === 'trend' ? 'tokens-view-toggle-active' : ''}`}
-                title="Bar chart view"
-                aria-label="Show bar chart"
+                title={t('aiView.barChartTitle')}
+                aria-label={t('aiView.showBarChart')}
                 aria-pressed={tokensView === 'trend'}
                 onClick={() => { if (tokensView !== 'trend') onToggleTokensView() }}
               >
@@ -432,8 +435,8 @@ function TokensSection({
               <button
                 type="button"
                 className={`tokens-view-toggle ${tokensView === 'timeline' ? 'tokens-view-toggle-active' : ''}`}
-                title="Timeline view"
-                aria-label="Show timeline graph"
+                title={t('aiView.timelineTitle')}
+                aria-label={t('aiView.showTimeline')}
                 aria-pressed={tokensView === 'timeline'}
                 onClick={() => { if (tokensView !== 'timeline') onToggleTokensView() }}
               >
@@ -443,7 +446,7 @@ function TokensSection({
             {hasDaily ? (
               tokensView === 'timeline' ? (
                 <div className="tokens-chart-surface">
-                  <TokensTimelineGraph items={dailyTimelineItems} gradientId="tl-fill-daily" ariaLabel="Daily token usage timeline" />
+                  <TokensTimelineGraph items={dailyTimelineItems} gradientId="tl-fill-daily" ariaLabel={t('aiView.dailyTimeline')} />
                 </div>
               ) : (
                 <div className="tokens-chart-surface">
@@ -459,18 +462,18 @@ function TokensSection({
                 </div>
               )
             ) : (
-              <div className="empty-state">No provider-backed token events in the last 7 days.</div>
+              <div className="empty-state">{t('aiView.emptyDaily')}</div>
             )}
           </div>
 
           <div className="artifacts-detail-block tokens-chart-block">
             <div className="tokens-trend-header">
-              <strong>Hourly distribution</strong>
+              <strong>{t('aiView.hourlyDistribution')}</strong>
               <button
                 type="button"
                 className={`tokens-view-toggle ${hourlyView === 'trend' ? 'tokens-view-toggle-active' : ''}`}
-                title="Bar chart view"
-                aria-label="Show bar chart"
+                title={t('aiView.barChartTitle')}
+                aria-label={t('aiView.showBarChart')}
                 aria-pressed={hourlyView === 'trend'}
                 onClick={() => setHourlyView('trend')}
               >
@@ -479,8 +482,8 @@ function TokensSection({
               <button
                 type="button"
                 className={`tokens-view-toggle ${hourlyView === 'timeline' ? 'tokens-view-toggle-active' : ''}`}
-                title="Timeline view"
-                aria-label="Show timeline graph"
+                title={t('aiView.timelineTitle')}
+                aria-label={t('aiView.showTimeline')}
                 aria-pressed={hourlyView === 'timeline'}
                 onClick={() => setHourlyView('timeline')}
               >
@@ -490,7 +493,7 @@ function TokensSection({
             {activeHourly.length > 0 ? (
               hourlyView === 'timeline' ? (
                 <div className="tokens-chart-surface">
-                  <TokensTimelineGraph items={hourlyTimelineItems} gradientId="tl-fill-hourly" ariaLabel="Hourly token usage timeline" />
+                  <TokensTimelineGraph items={hourlyTimelineItems} gradientId="tl-fill-hourly" ariaLabel={t('aiView.hourlyTimeline')} />
                 </div>
               ) : (
                 <div className="tokens-chart-surface">
@@ -506,7 +509,7 @@ function TokensSection({
                 </div>
               )
             ) : (
-              <div className="empty-state">No token usage recorded today.</div>
+              <div className="empty-state">{t('aiView.emptyHourly')}</div>
             )}
           </div>
         </div>
@@ -517,11 +520,11 @@ function TokensSection({
 
 function TokensAside({ aiUsageSummary }: { aiUsageSummary: AppModel['aiUsageSummary'] }) {
   const providerNeeds = aiUsageSummary.providerBreakdown.map((entry) => ({ hint: entry.provider, count: entry.total }))
-  const providerChart = buildNeedChartSegments(providerNeeds)
+  const providerChart = buildNeedChartSegments(providerNeeds, 'aiView.providerDistribution')
 
   return (
     <aside id="panel-right" className="panel panel-right ai-stats-needs-panel">
-      <SectionHeading title="Provider split" subtitleTooltip="Bounded token events kept in the local dedicated usage store." />
+      <SectionHeading title={t('aiView.providerSplit')} subtitleTooltip={t('aiView.providerSplitSubtitle')} />
       {aiUsageSummary.providerBreakdown.length ? (
         <div className="ai-needs-scroll">
           <div className="ai-needs-chart-card">
@@ -534,7 +537,7 @@ function TokensAside({ aiUsageSummary }: { aiUsageSummary: AppModel['aiUsageSumm
               >
                 <div className="ai-needs-chart-center">
                   <strong>{providerChart.total}</strong>
-                  <span>tokens</span>
+                  <span>{t(providerChart.total === 1 ? 'aiView.tokenCount.one' : 'aiView.tokenCount.other')}</span>
                 </div>
               </div>
             </div>
@@ -552,7 +555,7 @@ function TokensAside({ aiUsageSummary }: { aiUsageSummary: AppModel['aiUsageSumm
           </div>
         </div>
       ) : (
-        <div className="empty-state">No provider usage split available yet.</div>
+        <div className="empty-state">{t('aiView.emptyProviderSplit')}</div>
       )}
     </aside>
   )
@@ -576,38 +579,38 @@ export function AIStatsPanel({
   return (
     <section className={`ai-view-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <div className="ai-stats-main-column">
-        <article className="panel ai-view-switcher-panel" aria-label="AI View navigation">
+        <article className="panel ai-view-switcher-panel" aria-label={t('aiView.navigation')}>
           <div className="sync-view-switcher">
           <div className="sync-view-switcher-head">
             <div>
-              <h2>AI View</h2>
-              <p>Review recent answered responses or switch to token consumption rollups and provider usage.</p>
+              <h2>{t('aiView.title')}</h2>
+              <p>{t('aiView.description')}</p>
             </div>
           </div>
-          <div className="sync-subnav" aria-label="AI View sections">
+          <div className="sync-subnav" aria-label={t('aiView.sections')}>
             <button type="button" className={`sync-subnav-item ${section === 'answered' ? 'sync-subnav-item-active' : ''}`} onClick={() => setSection('answered')}>
               <span className="sync-subnav-title-row">
                 <span className="sync-subnav-icon" aria-hidden="true"><AnsweredIcon /></span>
-                <span className="sync-subnav-label">Answered</span>
+                <span className="sync-subnav-label">{t('aiView.answered')}</span>
               </span>
-              <span className="sync-subnav-detail">Review recent grounded responses</span>
+              <span className="sync-subnav-detail">{t('aiView.answeredNavDetail')}</span>
             </button>
             <button type="button" className={`sync-subnav-item ${section === 'tokens' ? 'sync-subnav-item-active' : ''}`} onClick={() => setSection('tokens')}>
               <span className="sync-subnav-title-row">
                 <span className="sync-subnav-icon" aria-hidden="true"><TokensIcon /></span>
-                <span className="sync-subnav-label">Tokens</span>
+                <span className="sync-subnav-label">{t('aiView.tokens')}</span>
               </span>
-              <span className="sync-subnav-detail">Daily, hourly, and provider usage</span>
+              <span className="sync-subnav-detail">{t('aiView.tokensNavDetail')}</span>
             </button>
           </div>
           </div>
         </article>
 
-        <article className={`panel ai-stats-panel ${section === 'tokens' ? 'ai-stats-panel-tokens' : ''}`} aria-label="AI View section">
+        <article className={`panel ai-stats-panel ${section === 'tokens' ? 'ai-stats-panel-tokens' : ''}`} aria-label={t('aiView.section')}>
           <SectionHeading
-            title={section === 'answered' ? 'Answered' : 'Tokens'}
-            subtitle={section === 'answered' ? 'Recent grounded response review and recurring quality gaps.' : 'Bounded usage KPIs, trends, and provider splits.'}
-            subtitleTooltip="Review answered responses or inspect token consumption rollups."
+            title={section === 'answered' ? t('aiView.answered') : t('aiView.tokens')}
+            subtitle={section === 'answered' ? t('aiView.answeredSubtitle') : t('aiView.tokensSubtitle')}
+            subtitleTooltip={t('aiView.sectionHelp')}
           />
           {section === 'answered' ? (
             <AnsweredSection messages={messages} resolveFileHref={resolveFileHref} answeredState={answeredState} />

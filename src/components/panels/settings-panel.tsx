@@ -15,15 +15,16 @@ import {
 import { Pill } from '../app-ui'
 import { ConfirmModal } from '../confirm-modal'
 import { SettingsChangelogPanel } from './settings-changelog-panel'
+import { t } from '../../i18n'
 
 type SettingsView = 'runtime' | 'assistant-context' | 'sharepoint' | 'ai-providers' | 'worker'
 
 const SETTINGS_VIEWS: Array<{ id: SettingsView; label: string; detail: string }> = [
-  { id: 'worker', label: 'Worker', detail: 'Worker mode, endpoint, timeout, and fallback' },
-  { id: 'runtime', label: 'Runtime', detail: 'Role, site scope, provider, and data mode' },
-  { id: 'sharepoint', label: 'SharePoint', detail: 'Entra app, tenant, secret, and target sites' },
-  { id: 'assistant-context', label: 'Assistant context', detail: 'Grounded source count, candidate pool, and reused history' },
-  { id: 'ai-providers', label: 'AI providers', detail: 'Browser-scoped model keys and provider readiness' },
+  { id: 'worker', label: t('settings.worker'), detail: t('settings.workerDetail') },
+  { id: 'runtime', label: t('settings.runtime'), detail: t('settings.runtimeDetail') },
+  { id: 'sharepoint', label: t('settings.sharePoint'), detail: t('settings.sharePointDetail') },
+  { id: 'assistant-context', label: t('settings.assistantContext'), detail: t('settings.assistantContextDetail') },
+  { id: 'ai-providers', label: t('settings.aiProviders'), detail: t('settings.aiProvidersDetail') },
 ]
 
 function RuntimeSettingsIcon() {
@@ -83,8 +84,8 @@ function getSettingsViewIcon(view: SettingsView) {
 
 const DEFAULT_WORKER_HEALTH: WorkerHealthState = {
   status: 'local',
-  label: 'Local worker',
-  detail: 'Startup health checks are only required when a remote worker is configured.',
+  label: t('settings.localWorker'),
+  detail: t('settings.localWorkerDetail'),
   tone: 'neutral',
 }
 
@@ -239,22 +240,22 @@ export function SettingsPanel({
       setPendingImport(payload)
     } catch (error) {
       setPendingImport(null)
-      setImportError(error instanceof Error ? error.message : 'Configuration import failed.')
+      setImportError(error instanceof Error ? error.message : t('settings.importFailed'))
     }
   }
 
   return (
     <section className={`settings-grid ${showRightPanel ? '' : 'content-grid-panel-hidden'}`}>
       <div className="settings-main-column">
-        <article className="panel settings-view-switcher" aria-label="Settings View">
+        <article className="panel settings-view-switcher" aria-label={t('settings.navigation')}>
           <div className="sync-view-switcher-head">
             <div>
-              <h2>Settings</h2>
-              <p>Switch between runtime controls, a dedicated assistant-context screen, SharePoint credentials, AI provider keys, and worker configuration from one screen.</p>
+              <h2>{t('settings.title')}</h2>
+              <p>{t('settings.description')}</p>
             </div>
           </div>
 
-          <nav className="settings-subnav" aria-label="Settings View">
+          <nav className="settings-subnav" aria-label={t('settings.navigation')}>
             {availableSettingsViews.map(({ id, label, detail }) => (
               <button
                 key={id}
@@ -275,25 +276,25 @@ export function SettingsPanel({
           </nav>
         </article>
 
-        <article className="panel settings-panel settings-main-panel" aria-label="Settings section">
+        <article className="panel settings-panel settings-main-panel" aria-label={t('settings.section')}>
           <div className="settings-main-scroll">
             {settingsView === 'runtime' ? (
               <section id="settings-runtime-panel" className="settings-section settings-runtime-panel">
-                <h3 className="sr-only">Runtime</h3>
+                <h3 className="sr-only">{t('settings.runtime')}</h3>
 
                 {hostedMode ? (
-                  <div className="settings-hosted-banner" aria-label="Hosted session">
+                  <div className="settings-hosted-banner" aria-label={t('settings.hostedSession')}>
                     <div className="settings-hosted-copy">
                       <div className="settings-hosted-title-row">
-                        <strong>Hosted session</strong>
-                        <Pill tone="accent">Shared</Pill>
+                        <strong>{t('settings.hostedSession')}</strong>
+                        <Pill tone="accent">{t('settings.shared')}</Pill>
                       </div>
-                      <p>{hostedIdentityLabel ? `Signed in as ${hostedIdentityLabel}.` : 'Signed in to the shared Nexus instance.'}</p>
-                      <p>{isOperator ? 'Operator access is active for this session.' : 'Read-only team-member access is active for this session.'}</p>
+                      <p>{hostedIdentityLabel ? t('settings.signedInAs', { identity: hostedIdentityLabel }) : t('settings.signedInShared')}</p>
+                      <p>{isOperator ? t('settings.operatorActive') : t('settings.memberActive')}</p>
                     </div>
                     {canSignOutHostedSession ? (
                       <button type="button" className="secondary-button secondary-button-sm" onClick={() => void onSignOutHostedSession()}>
-                        Sign out
+                        {t('settings.signOut')}
                       </button>
                     ) : null}
                   </div>
@@ -301,28 +302,28 @@ export function SettingsPanel({
 
                 <div className="settings-form-grid settings-runtime-form">
                   <label className="settings-field">
-                    <span>Role</span>
-                    <select value={role} title="Select the active access role" onChange={(event) => onRoleChange(event.target.value as UserRole)}>
+                    <span>{t('settings.role')}</span>
+                    <select value={role} title={t('settings.roleTitle')} onChange={(event) => onRoleChange(event.target.value as UserRole)}>
                       <option value="analyst">analyst</option>
                       <option value="admin">admin</option>
                       <option value="guest">guest</option>
                     </select>
                   </label>
                   <label className="settings-field">
-                    <span>Data mode</span>
+                    <span>{t('settings.dataMode')}</span>
                     <select
                       value={entraSettings.dataMode}
-                      title="Override the app corpus mode and DEEPVAULT_DATA_MODE for ops scripts"
+                      title={t('settings.dataModeTitle')}
                       onChange={(event) => onEntraChange('dataMode', event.target.value)}
                     >
-                      <option value="">env default</option>
+                      <option value="">{t('settings.environmentDefault')}</option>
                       <option value="mock">mock</option>
                       <option value="live">live</option>
                     </select>
                   </label>
                   <label className="settings-field">
-                    <span>Provider</span>
-                    <select value={provider} title="Select the Bishop provider" onChange={(event) => onProviderChange(event.target.value as ProviderId)}>
+                    <span>{t('settings.provider')}</span>
+                    <select value={provider} title={t('settings.providerTitle')} onChange={(event) => onProviderChange(event.target.value as ProviderId)}>
                       {corpusProviders.map((item) => (
                         <option key={item.id} value={item.id}>
                           {item.name}
@@ -331,22 +332,22 @@ export function SettingsPanel({
                     </select>
                   </label>
                   <div className="settings-field settings-scope-field">
-                    <span>Site scope</span>
+                    <span>{t('settings.siteScope')}</span>
                     <div className="site-list">
                       <button
                         type="button"
                         className={`site-chip ${siteFilter === 'all' ? 'site-chip-active' : ''}`}
-                        title="Show all sites"
+                        title={t('settings.allSitesTitle')}
                         onClick={() => onSiteFilterChange('all')}
                       >
-                        All sites
+                        {t('settings.allSites')}
                       </button>
                       {siteSummaries.map((site) => (
                         <button
                           key={site.id}
                           type="button"
                           className={`site-chip ${siteFilter === site.id ? 'site-chip-active' : ''}`}
-                          title={`Filter to ${site.name}`}
+                          title={t('settings.filterSite', { site: site.name })}
                           onClick={() => onSiteFilterChange(site.id)}
                         >
                           {site.name}
@@ -363,19 +364,19 @@ export function SettingsPanel({
               <section className="settings-section">
                 <div className="settings-form-grid">
                   <label className="settings-field">
-                    <span>Keep conversation context</span>
+                    <span>{t('settings.keepContext')}</span>
                     <select
                       value={conversationContextEnabled ? 'enabled' : 'disabled'}
-                      title="Reuse previous Bishop turns in the prompt"
+                      title={t('settings.keepContextTitle')}
                       onChange={(event) => onConversationContextEnabledChange(event.target.value === 'enabled')}
                     >
-                      <option value="enabled">enabled</option>
-                      <option value="disabled">disabled</option>
+                      <option value="enabled">{t('settings.enabled')}</option>
+                      <option value="disabled">{t('settings.disabled')}</option>
                     </select>
                   </label>
 
                   <label className="settings-field">
-                    <span>Grounded sources</span>
+                    <span>{t('settings.groundedSources')}</span>
                     <input
                       type="number"
                       min={1}
@@ -383,11 +384,11 @@ export function SettingsPanel({
                       value={bishopSettings.sourceLimit}
                       onChange={(event) => onBishopChange('sourceLimit', Number(event.target.value) || 1)}
                     />
-                    <small>The final number of sources injected into the grounded prompt.</small>
+                    <small>{t('settings.groundedSourcesHelp')}</small>
                   </label>
 
                   <label className="settings-field">
-                    <span>Candidate pool</span>
+                    <span>{t('settings.candidatePool')}</span>
                     <input
                       type="number"
                       min={bishopSettings.sourceLimit}
@@ -395,11 +396,11 @@ export function SettingsPanel({
                       value={bishopSettings.candidateLimit}
                       onChange={(event) => onBishopChange('candidateLimit', Number(event.target.value) || bishopSettings.sourceLimit)}
                     />
-                    <small>How many candidate documents are ranked before trimming to the final grounded sources.</small>
+                    <small>{t('settings.candidatePoolHelp')}</small>
                   </label>
 
                   <label className="settings-field">
-                    <span>History turns</span>
+                    <span>{t('settings.historyTurns')}</span>
                     <input
                       type="number"
                       min={0}
@@ -407,13 +408,13 @@ export function SettingsPanel({
                       value={bishopSettings.historyTurnLimit}
                       onChange={(event) => onBishopChange('historyTurnLimit', Number(event.target.value) || 0)}
                     />
-                    <small>The number of previous Bishop turns reused when conversation context is enabled.</small>
+                    <small>{t('settings.historyTurnsHelp')}</small>
                   </label>
                 </div>
 
                 <div className="settings-actions">
-                  <button type="button" className="secondary-button" title="Reset Bishop context settings to their defaults" onClick={onClearBishop}>
-                    Reset assistant context
+                  <button type="button" className="secondary-button" title={t('settings.resetContextTitle')} onClick={onClearBishop}>
+                    {t('settings.resetContext')}
                   </button>
                   <span className="settings-actions-filler" aria-hidden="true" />
                 </div>
@@ -422,11 +423,11 @@ export function SettingsPanel({
 
             {settingsView === 'sharepoint' ? (
               <section className="settings-section">
-                <h3 className="sr-only">SharePoint / Entra ID</h3>
+                <h3 className="sr-only">{t('settings.entraTitle')}</h3>
 
                 <div className="settings-form-grid">
                   <label className="settings-field">
-                    <span>App ID</span>
+                    <span>{t('settings.appId')}</span>
                     <input
                       type="text"
                       value={entraSettings.appId}
@@ -438,7 +439,7 @@ export function SettingsPanel({
                   </label>
 
                   <label className="settings-field">
-                    <span>Tenant ID</span>
+                    <span>{t('settings.tenantId')}</span>
                     <input
                       type="text"
                       value={entraSettings.tenantId}
@@ -450,19 +451,19 @@ export function SettingsPanel({
                   </label>
 
                   <label className="settings-field">
-                    <span>Client secret</span>
+                    <span>{t('settings.clientSecret')}</span>
                     <input
                       type="password"
                       value={entraSettings.secretValue}
                       onChange={(event) => onEntraChange('secretValue', event.target.value)}
-                      placeholder="Secret value"
+                      placeholder={t('settings.secretPlaceholder')}
                       autoComplete="off"
                       spellCheck={false}
                     />
                   </label>
 
                   <label className="settings-field">
-                    <span>Site URLs</span>
+                    <span>{t('settings.siteUrls')}</span>
                     <input
                       type="text"
                       value={entraSettings.sites}
@@ -474,12 +475,12 @@ export function SettingsPanel({
                   </label>
 
                   <label className="settings-field">
-                    <span>Site names</span>
+                    <span>{t('settings.siteNames')}</span>
                     <input
                       type="text"
                       value={entraSettings.siteNames}
                       onChange={(event) => onEntraChange('siteNames', event.target.value)}
-                      placeholder="Site Alpha,Site Beta"
+                      placeholder={t('settings.siteNamesPlaceholder')}
                       autoComplete="off"
                       spellCheck={false}
                     />
@@ -487,8 +488,8 @@ export function SettingsPanel({
                 </div>
 
                 <div className="settings-actions">
-                  <button type="button" className="secondary-button" title="Remove stored Entra settings from this browser" onClick={onClearEntra}>
-                    Clear Entra settings
+                  <button type="button" className="secondary-button" title={t('settings.clearEntraTitle')} onClick={onClearEntra}>
+                    {t('settings.clearEntra')}
                   </button>
                   <span className="settings-actions-filler" aria-hidden="true" />
                 </div>
@@ -497,13 +498,13 @@ export function SettingsPanel({
 
             {settingsView === 'ai-providers' && !hostedMode ? (
               <section id="settings-ai-providers-panel" className="settings-section settings-ai-providers-panel">
-                <h3 className="sr-only">AI providers</h3>
+                <h3 className="sr-only">{t('settings.aiProviders')}</h3>
 
                 <div className="settings-form-grid">
                   <label className="settings-field">
-                    <span>OpenAI API key</span>
+                    <span>{t('settings.apiKey', { provider: 'OpenAI' })}</span>
                     <input
-                      aria-label="OpenAI API key"
+                      aria-label={t('settings.apiKey', { provider: 'OpenAI' })}
                       type="password"
                       value={providerSecrets.openaiApiKey}
                       onChange={(event) => onKeyChange('openai', event.target.value)}
@@ -511,13 +512,13 @@ export function SettingsPanel({
                       autoComplete="off"
                       spellCheck={false}
                     />
-                    <small className="settings-warning-text">Stored in plaintext in localStorage on this browser. Local/dev use only.</small>
+                    <small className="settings-warning-text">{t('settings.plaintextWarning')}</small>
                   </label>
 
                   <label className="settings-field">
-                    <span>Gemini API key</span>
+                    <span>{t('settings.apiKey', { provider: 'Gemini' })}</span>
                     <input
-                      aria-label="Gemini API key"
+                      aria-label={t('settings.apiKey', { provider: 'Gemini' })}
                       type="password"
                       value={providerSecrets.geminiApiKey}
                       onChange={(event) => onKeyChange('gemini', event.target.value)}
@@ -525,13 +526,13 @@ export function SettingsPanel({
                       autoComplete="off"
                       spellCheck={false}
                     />
-                    <small className="settings-warning-text">Stored in plaintext in localStorage on this browser. Local/dev use only.</small>
+                    <small className="settings-warning-text">{t('settings.plaintextWarning')}</small>
                   </label>
 
                   <label className="settings-field">
-                    <span>Anthropic API key</span>
+                    <span>{t('settings.apiKey', { provider: 'Anthropic' })}</span>
                     <input
-                      aria-label="Anthropic API key"
+                      aria-label={t('settings.apiKey', { provider: 'Anthropic' })}
                       type="password"
                       value={providerSecrets.anthropicApiKey}
                       onChange={(event) => onKeyChange('anthropic', event.target.value)}
@@ -539,13 +540,13 @@ export function SettingsPanel({
                       autoComplete="off"
                       spellCheck={false}
                     />
-                    <small className="settings-warning-text">Stored in plaintext in localStorage on this browser. Local/dev use only.</small>
+                    <small className="settings-warning-text">{t('settings.plaintextWarning')}</small>
                   </label>
                 </div>
 
                 <div className="settings-actions">
-                  <button type="button" className="secondary-button" title="Remove stored provider API keys from this browser" onClick={onClear}>
-                    Clear stored keys
+                  <button type="button" className="secondary-button" title={t('settings.clearKeysTitle')} onClick={onClear}>
+                    {t('settings.clearKeys')}
                   </button>
                   <span className="settings-actions-filler" aria-hidden="true" />
                 </div>
@@ -554,11 +555,11 @@ export function SettingsPanel({
 
             {settingsView === 'worker' ? (
               <section className="settings-section">
-                <h3 className="sr-only">Worker</h3>
+                <h3 className="sr-only">{t('settings.worker')}</h3>
 
                 <div className="settings-worker-health" role="status" aria-live="polite">
                   <div className="settings-worker-health-head">
-                    <span>Startup health</span>
+                    <span>{t('settings.startupHealth')}</span>
                     <Pill tone={workerHealth.tone}>{workerHealth.label}</Pill>
                   </div>
                   <p>{workerHealth.detail}</p>
@@ -566,10 +567,10 @@ export function SettingsPanel({
 
                 <div className="settings-form-grid">
                   <label className="settings-field">
-                    <span>Worker mode</span>
+                    <span>{t('settings.workerMode')}</span>
                     <select
                       value={workerSettings.workerMode}
-                      title="Local uses the embedded Vite ops server. Remote connects to a dedicated worker endpoint."
+                      title={t('settings.workerModeTitle')}
                       onChange={(event) => onWorkerChange('workerMode', event.target.value as WorkerSettings['workerMode'])}
                     >
                       <option value="local">local</option>
@@ -578,7 +579,7 @@ export function SettingsPanel({
                   </label>
 
                   <label className="settings-field">
-                    <span>Worker URL</span>
+                    <span>{t('settings.workerUrl')}</span>
                     <input
                       type="text"
                       value={workerSettings.workerUrl}
@@ -591,20 +592,20 @@ export function SettingsPanel({
                   </label>
 
                   <label className="settings-field">
-                    <span>Worker token</span>
+                    <span>{t('settings.workerToken')}</span>
                     <input
                       type="password"
                       value={workerSettings.workerToken}
                       disabled={workerSettings.workerMode === 'local'}
                       onChange={(event) => onWorkerChange('workerToken', event.target.value)}
-                      placeholder="Bearer token for remote worker"
+                      placeholder={t('settings.workerTokenPlaceholder')}
                       autoComplete="off"
                       spellCheck={false}
                     />
                   </label>
 
                   <label className="settings-field">
-                    <span>Timeout (s)</span>
+                    <span>{t('settings.timeout')}</span>
                     <input
                       type="number"
                       value={workerSettings.workerTimeoutSeconds}
@@ -615,10 +616,10 @@ export function SettingsPanel({
                   </label>
 
                   <label className="settings-field">
-                    <span>Fallback mode</span>
+                    <span>{t('settings.fallbackMode')}</span>
                     <select
                       value={workerSettings.workerFallbackMode}
-                      title="Behavior when the worker is unreachable. read_only: use last published corpus. block: prevent ops. none: no fallback."
+                      title={t('settings.fallbackModeTitle')}
                       onChange={(event) => onWorkerChange('workerFallbackMode', event.target.value as WorkerSettings['workerFallbackMode'])}
                     >
                       <option value="read_only">read_only</option>
@@ -628,7 +629,7 @@ export function SettingsPanel({
                   </label>
 
                   <label className="settings-field">
-                    <span>Analyze budget</span>
+                    <span>{t('settings.analyzeBudget')}</span>
                     <input
                       type="number"
                       value={workerSettings.analyzeLimit}
@@ -636,23 +637,23 @@ export function SettingsPanel({
                       max={5000}
                       onChange={(event) => onWorkerChange('analyzeLimit', Math.max(1, Number(event.target.value) || 1))}
                     />
-                    <small>Maximum number of documents `Analyze` will enrich in a single run before remaining candidates are marked stale.</small>
+                    <small>{t('settings.analyzeBudgetHelp')}</small>
                   </label>
                 </div>
 
                 <div className="settings-actions">
-                  <button type="button" className="secondary-button" title="Reset worker settings to defaults" onClick={onClearWorker}>
-                    Reset worker settings
+                  <button type="button" className="secondary-button" title={t('settings.resetWorkerTitle')} onClick={onClearWorker}>
+                    {t('settings.resetWorker')}
                   </button>
                   <span className="settings-actions-filler" aria-hidden="true" />
                 </div>
 
                 <div className="settings-transfer-card">
                   <div className="settings-transfer-copy">
-                    <h4>Configuration transfer</h4>
-                    <p>Export your local configuration to a JSON file or import a previously exported file to overwrite the current browser settings.</p>
+                    <h4>{t('settings.transferTitle')}</h4>
+                    <p>{t('settings.transferDescription')}</p>
                     <p className="settings-transfer-warning">
-                      Warning: exported configuration files contain secrets in plaintext and must be handled as sensitive files.
+                      {t('settings.transferWarning')}
                     </p>
                     {importError ? (
                       <p className="settings-transfer-error" role="alert">
@@ -663,17 +664,17 @@ export function SettingsPanel({
 
                   <div className="settings-actions settings-transfer-actions">
                     <button type="button" className="secondary-button" onClick={handleExportConfiguration}>
-                      Export configuration
+                      {t('settings.exportConfiguration')}
                     </button>
                     <button type="button" className="secondary-button" onClick={() => fileInputRef.current?.click()}>
-                      Import configuration
+                      {t('settings.importConfiguration')}
                     </button>
                     <input
                       ref={fileInputRef}
                       hidden
                       type="file"
                       accept="application/json,.json"
-                      aria-label="Import configuration file"
+                      aria-label={t('settings.importFileLabel')}
                       onChange={(event) => void handleImportFile(event)}
                     />
                     <span className="settings-actions-filler" aria-hidden="true" />
@@ -688,10 +689,10 @@ export function SettingsPanel({
       {showRightPanel ? <SettingsChangelogPanel /> : null}
       {pendingImport ? (
         <ConfirmModal
-          title="Import configuration"
-          description="This will overwrite the current browser-stored settings, API keys, Entra values, worker settings, and runtime preferences."
-          warning="The imported file is applied only after confirmation. Existing local values will be replaced."
-          confirmLabel="Import and overwrite"
+          title={t('settings.importTitle')}
+          description={t('settings.importDescription')}
+          warning={t('settings.importWarning')}
+          confirmLabel={t('settings.importConfirm')}
           onConfirm={() => {
             applyImportedConfiguration(pendingImport)
             setPendingImport(null)
@@ -708,6 +709,6 @@ export function SettingsPanel({
     new Promise<string>((resolve, reject) => {
       const reader = new FileReader()
       reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
-      reader.onerror = () => reject(new Error('Configuration import failed: could not read the selected file.'))
+      reader.onerror = () => reject(new Error(t('settings.readFailed')))
       reader.readAsText(file)
     })

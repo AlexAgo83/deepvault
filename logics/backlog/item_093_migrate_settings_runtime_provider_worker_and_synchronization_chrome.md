@@ -1,10 +1,10 @@
 ## item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome - Migrate settings, runtime, provider, worker, and synchronization chrome
 > From version: 1.5.2
 > Schema version: 1.0
-> Status: Ready
+> Status: Done
 > Understanding: 90%
 > Confidence: 85%
-> Progress: 0%
+> Progress: 100%
 > Complexity: High
 > Theme: Internationalization contract adoption
 > Reminder: Update status/understanding/confidence/progress and linked request/task references when you edit this doc.
@@ -54,3 +54,9 @@
 # Priority
 - Priority: High
 - Rationale: Set by scaffold input or defaulted for grooming.
+
+# Tasks
+- `task_046_orchestrate_completion_of_panel_localization`
+
+# Notes
+- Task `task_046_orchestrate_completion_of_panel_localization` was finished via `logics-manager flow finish task` on 2026-07-13.

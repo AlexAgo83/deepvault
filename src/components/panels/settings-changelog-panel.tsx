@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Pill, SectionHeading } from '../app-ui'
 import { getChangelogEntries, parseChangelogMarkdown, type ChangelogEntry } from '../../data/changelogs'
+import { t } from '../../i18n'
 
 function useIntersectionLoad(root: HTMLDivElement | null, target: HTMLElement | null, onVisible: () => void) {
   useEffect(() => {
@@ -294,8 +295,8 @@ function ChangelogCard({ entry, scrollRoot }: { entry: ChangelogEntry; scrollRoo
   return (
     <article ref={setCardElement} className="changelog-card">
       <div className="changelog-card-head">
-        <span className="changelog-card-date" title="Release date">
-          {parsed?.releaseDate ?? 'Release date'}
+        <span className="changelog-card-date" title={t('changelog.releaseDate')}>
+          {parsed?.releaseDate ?? t('changelog.releaseDate')}
         </span>
         <Pill tone="neutral">{entry.version}</Pill>
       </div>
@@ -306,7 +307,7 @@ function ChangelogCard({ entry, scrollRoot }: { entry: ChangelogEntry; scrollRoo
         </div>
       ) : (
         <div className="changelog-card-loading">
-          <span>Scroll to load this release note.</span>
+          <span>{t('changelog.loadHint')}</span>
         </div>
       )}
     </article>
@@ -318,10 +319,10 @@ export function SettingsChangelogPanel() {
   const entries = getChangelogEntries()
 
   return (
-    <aside id="panel-right" className="panel panel-right settings-changelog-panel" aria-label="Release changelogs">
+    <aside id="panel-right" className="panel panel-right settings-changelog-panel" aria-label={t('changelog.panelLabel')}>
       <SectionHeading
-        title="Changelogs"
-        subtitleTooltip="Release notes load only when the cards become visible in this panel."
+        title={t('changelog.title')}
+        subtitleTooltip={t('changelog.subtitle')}
       />
 
       <div className="settings-changelog-scroll" ref={setScrollRoot}>
