@@ -4,7 +4,8 @@ from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 import httpx
-from jose import ExpiredSignatureError, JWTError, jwt
+import jwt
+from jwt import ExpiredSignatureError, PyJWTError
 
 from worker.app.config import Settings
 from worker.app.errors import http_error
@@ -70,7 +71,7 @@ class TokenValidator:
 
         try:
             header = jwt.get_unverified_header(token)
-        except JWTError as exc:
+        except PyJWTError as exc:
             raise self._unauthorized("Token header could not be parsed.") from exc
 
         kid = header.get("kid")
@@ -87,7 +88,7 @@ class TokenValidator:
         try:
             claims = jwt.decode(
                 token,
-                key,
+                jwt.PyJWK(key).key,
                 algorithms=["RS256"],
                 options={
                     "verify_aud": False,
@@ -96,7 +97,7 @@ class TokenValidator:
             )
         except ExpiredSignatureError as exc:
             raise self._unauthorized("Token has expired.") from exc
-        except JWTError as exc:
+        except PyJWTError as exc:
             raise self._unauthorized("Token validation failed.") from exc
 
         audience = claims.get("aud")

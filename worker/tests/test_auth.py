@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import base64
+import hashlib
+import hmac
+import json
 from time import time
 from typing import Dict, Tuple
 
+import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
-from jose import jwt
+import jwt
 
 from worker.app.auth.token_validation import TokenValidator
 from worker.app.config import Settings
@@ -132,6 +137,43 @@ def test_auth_validator_extracts_oid_for_follow_on_middleware(monkeypatch) -> No
 
     assert context.oid == "user-object-id"
     assert context.tid == "tenant-id"
+
+
+def test_auth_validator_rejects_expired_foreign_and_hs256_tokens(monkeypatch) -> None:
+    private_pem, jwk = _build_signing_material()
+    other_pem, _ = _build_signing_material()
+    monkeypatch.setattr(
+        "worker.app.auth.token_validation.httpx.get",
+        lambda *args, **kwargs: _FakeJwksResponse(jwk),
+    )
+    validator = TokenValidator(
+        Settings(
+            WORKER_AUTH_ENABLED=True,
+            ENTRA_TENANT_ID="tenant-id",
+            ENTRA_CLIENT_ID="client-id",
+        )
+    )
+    validator.preload()
+    now = int(time())
+    claims = jwt.decode(_build_token(private_pem), options={"verify_signature": False})
+    expired = jwt.encode({**claims, "exp": now - 60}, private_pem, algorithm="RS256", headers={"kid": "test-kid"})
+    # algorithm confusion: an HS256 token keyed with the public key must not pass as RS256
+    # (PyJWT refuses to build one, so it is signed by hand)
+    public_pem = serialization.load_pem_private_key(private_pem.encode(), None).public_key().public_bytes(
+        serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+    segments = [
+        base64.urlsafe_b64encode(json.dumps(part).encode()).rstrip(b"=")
+        for part in ({"alg": "HS256", "typ": "JWT", "kid": "test-kid"}, claims)
+    ]
+    signing_input = b".".join(segments)
+    signature = base64.urlsafe_b64encode(hmac.new(public_pem, signing_input, hashlib.sha256).digest()).rstrip(b"=")
+    hs256 = (signing_input + b"." + signature).decode()
+
+    for token in (expired, _build_token(other_pem), hs256):
+        with pytest.raises(HTTPException) as caught:
+            validator.validate_token(token)
+        assert caught.value.status_code == 401
 
 
 def test_worker_auth_bypass_preserves_local_dev_mode() -> None:
