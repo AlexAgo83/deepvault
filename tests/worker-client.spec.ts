@@ -91,7 +91,7 @@ describe('createWorkerClient — local mode', () => {
 
   it('openJobEvents returns an EventSource for /api/jobs/:id/events in local mode', () => {
     const mockES = { close: vi.fn(), onmessage: null, onerror: null }
-    vi.stubGlobal('EventSource', vi.fn(() => mockES))
+    vi.stubGlobal('EventSource', vi.fn(function () { return mockES }))
     const client = createWorkerClient(LOCAL_CONFIG)
     const es = client.openJobEvents('job-abc')
     expect(vi.mocked(EventSource)).toHaveBeenCalledWith('/api/jobs/job-abc/events')
