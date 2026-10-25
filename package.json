@@ -36,7 +36,7 @@
     "ci:local": "npm run lint && npm run quality:i18n-copy && npm run typecheck && npm run test:coverage && npm run build && rtk node --import tsx scripts/evaluate.ts && rtk npx playwright install chromium && rtk npm run e2e && rtk npm run e2e:pwa-refresh"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.88.0",
+    "@anthropic-ai/sdk": "^0.91.1",
     "@azure/msal-browser": "^5.7.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
