@@ -496,7 +496,7 @@ describe('DeepVault app', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -552,7 +552,7 @@ describe('DeepVault app', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -589,7 +589,7 @@ describe('DeepVault app', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -659,7 +659,7 @@ describe('DeepVault app', () => {
   })
 
   it('confirms and starts evaluate from the control panel', async () => {
-    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('EventSource', vi.fn(function () { return ({ onmessage: null, onerror: null, close: vi.fn() }) }))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ jobId: 'test-evaluate' }),
@@ -690,7 +690,7 @@ describe('DeepVault app', () => {
     const startTime = new Date('2026-01-01T00:00:00.000Z')
     vi.setSystemTime(startTime)
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -718,7 +718,7 @@ describe('DeepVault app', () => {
   })
 
   it('confirms and starts resume live export from the control panel', async () => {
-    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('EventSource', vi.fn(function () { return ({ onmessage: null, onerror: null, close: vi.fn() }) }))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ jobId: 'test-export-resume' }),
@@ -738,7 +738,7 @@ describe('DeepVault app', () => {
   })
 
   it('confirms and starts live export from the control panel', async () => {
-    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('EventSource', vi.fn(function () { return ({ onmessage: null, onerror: null, close: vi.fn() }) }))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ jobId: 'test-export-live' }),

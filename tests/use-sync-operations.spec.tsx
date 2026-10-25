@@ -33,7 +33,7 @@ describe('useSyncOperations', () => {
   })
 
   it('runRefresh is a no-op when a job is already running', async () => {
-    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('EventSource', vi.fn(function () { return ({ onmessage: null, onerror: null, close: vi.fn() }) }))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ jobId: 'job-running' }),
@@ -52,7 +52,7 @@ describe('useSyncOperations', () => {
   })
 
   it('does not start a second job while one is already running', async () => {
-    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('EventSource', vi.fn(function () { return ({ onmessage: null, onerror: null, close: vi.fn() }) }))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ jobId: 'job-1' }),
@@ -116,7 +116,7 @@ describe('useSyncOperations', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -165,7 +165,7 @@ describe('useSyncOperations', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -272,7 +272,7 @@ describe('useSyncOperations', () => {
       json: () => Promise.resolve({ jobId: 'job-env-scope' }),
     })
     vi.stubGlobal('fetch', fetchMock)
-    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('EventSource', vi.fn(function () { return ({ onmessage: null, onerror: null, close: vi.fn() }) }))
 
     const { result } = renderHook(() => useSyncOperations({
       ...DEFAULT_OPTIONS,
@@ -407,7 +407,7 @@ describe('useSyncOperations', () => {
   })
 
   it('starts publish analysis with the dedicated command header', async () => {
-    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('EventSource', vi.fn(function () { return ({ onmessage: null, onerror: null, close: vi.fn() }) }))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       status: 201,
@@ -427,7 +427,7 @@ describe('useSyncOperations', () => {
   })
 
   it('shows the analyze budget in the analyze command header', async () => {
-    vi.stubGlobal('EventSource', vi.fn(() => ({ onmessage: null, onerror: null, close: vi.fn() })))
+    vi.stubGlobal('EventSource', vi.fn(function () { return ({ onmessage: null, onerror: null, close: vi.fn() }) }))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       status: 201,
@@ -459,7 +459,7 @@ describe('useSyncOperations', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -537,7 +537,7 @@ describe('useSyncOperations', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -614,7 +614,7 @@ describe('useSyncOperations', () => {
       startedAt: '2026-04-16T10:00:00.000Z',
     }))
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -647,7 +647,7 @@ describe('useSyncOperations', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -713,7 +713,7 @@ describe('useSyncOperations', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
@@ -766,7 +766,7 @@ describe('useSyncOperations', () => {
 
     let mockEs: MockEventSource | null = null
 
-    vi.stubGlobal('EventSource', vi.fn(() => {
+    vi.stubGlobal('EventSource', vi.fn(function () {
       mockEs = { onmessage: null, onerror: null, close: vi.fn() }
       return mockEs
     }))
