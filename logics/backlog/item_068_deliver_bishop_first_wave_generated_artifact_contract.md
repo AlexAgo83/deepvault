@@ -21,7 +21,7 @@
 
 ```mermaid
 %% logics-kind: backlog
-%% logics-signature: backlog|deliver-bishop-first-wave-generated-arti|deliver-bishop-first-wave-generated-arti|bishop-could-answer-grounded-questions-b|ac1-explicit-artifact-requests-for-suppo
+%% logics-signature: backlog|deliver-bishop-first-wave-generated-arti|req-000-v0-bootstrap-and-initial-foundat|bishop-could-answer-grounded-questions-b|ac1-explicit-artifact-requests-for-suppo
 flowchart TD
     Request[Deliver Bishop first-wave generated artifa] --> Problem[Bishop could answer grounded questions but]
     Problem --> Scope[Deliver Bishop first-wave generated artifa]
@@ -81,3 +81,6 @@ flowchart TD
 
 # Links
 - Primary task(s): `task_036_orchestrate_bishop_generated_document_artifacts`
+
+# Validation
+- Operator cleanup 2026-11-12: retrospective platform context is `req_000_v0_bootstrap_and_initial_foundations`. The existing Derived from product brief remains the delivery source; no follow-up work is planned.

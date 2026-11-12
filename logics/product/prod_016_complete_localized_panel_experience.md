@@ -1,6 +1,6 @@
 ## prod_016_complete_localized_panel_experience - Complete localized panel experience
 > Date: 2026-07-13
-> Status: Proposed
+> Status: Settled
 > Related request: `req_023_complete_semantic_i18n_adoption_across_remaining_application_panels`
 > Related backlog: `item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome`
 > Related task: `task_046_orchestrate_completion_of_panel_localization`
@@ -50,3 +50,9 @@ flowchart LR
 # References
 - Product back-reference: `item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome`
 - Task back-reference: `task_046_orchestrate_completion_of_panel_localization`
+
+# Operator cleanup 2026-11-12
+
+Semantic panel localization and the copy guard are delivered in src/i18n, panel components and scripts/quality/check-i18n-copy.mjs; see commit b2f2730.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

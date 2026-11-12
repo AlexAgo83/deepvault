@@ -1,6 +1,6 @@
 ## adr_007_local_companion_app_architecture_for_explorer_and_chat - DeepVault - Navy architecture for explorer and chat
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Accepted
 > Drivers: Reduce `DeepVault - Gordon` dependency for the first release, keep the explorer and chat experience under our control, and reuse the same backend for later channels.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
@@ -56,3 +56,9 @@ When the product is ready, add Teams as an extra surface without rewriting inges
 - Build the `DeepVault - Navy` shell and route structure
 - Wire explorer, chat, and sync status to shared backend endpoints
 - Keep `DeepVault - Gordon` integration as a later channel adapter
+
+# Operator cleanup 2026-11-12
+
+The React app hosts Explorer, Bishop and sync views over shared worker APIs; Teams remains outside the delivered scope (src/components/app-shell.tsx; ef2d539, 05918f8).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

@@ -9,6 +9,7 @@
 > Complexity: Low
 > Theme: Robustness / Operational
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Problem
 
@@ -53,3 +54,7 @@ flowchart TD
 - Surfaced the dedicated worker availability state inside the Settings worker screen with an explicit startup-health card, covering reachable, degraded, unreachable, local, and misconfigured states.
 - Kept the per-panel `ErrorBoundary` isolation in `src/components/app-shell.tsx` and added `tests/app-shell-error-boundary.spec.tsx` to prove that a crashing Explorer panel falls back locally while the rest of the shell remains usable.
 - Added `tests/app-worker-health.spec.tsx` to verify the startup remote health check hits `/api/health` with the configured bearer token and renders the resulting availability indicator in Settings.
+
+# AC Traceability
+- request-AC5 -> This backlog slice. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
+- request-AC6 -> This backlog slice. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.

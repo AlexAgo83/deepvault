@@ -1,6 +1,6 @@
 ## adr_011_observability_audit_and_answer_traceability - Observability, audit, and answer traceability
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Accepted
 > Drivers: Make ingestion and chat behavior inspectable, preserve source provenance, and support debugging and governance.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_005_v1_runtime_config_and_operations.md`, `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md`
@@ -58,3 +58,9 @@ Introduce richer dashboards only if the pilot proves they are necessary.
 - Define the log schema for ingestion and retrieval events
 - Decide which observability fields should be visible in the UI
 - Add retention and redaction rules for sensitive traces
+
+# Operator cleanup 2026-11-12
+
+Run history, provider traces and answer provenance are implemented in src/hooks/useSyncOperations.ts, worker/app/services/bishop_service.py and worker/app/access_log.py (8e36205, 05918f8).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

@@ -10,6 +10,7 @@
 > Theme: Performance / Maintainability
 > Cancelled by: `logics/architecture/adr_035_python_fastapi_as_the_worker_runtime.md` — the bundled mock corpus (`src/data/corpus.ts`) is removed from the browser entirely. The browser always fetches the corpus from the Python worker (`GET /api/corpus`). There is no corpus to lazy-load.
 > Reminder: This item is cancelled. Do not implement.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Problem
 
@@ -38,3 +39,6 @@
 - `rtk npm run build`
 - `rtk npm run e2e -- tests/e2e/offline.spec.ts tests/e2e/live-mode.spec.ts`
 - `rtk npm run check`
+
+# AC Traceability
+- request-AC7 -> This backlog slice. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.

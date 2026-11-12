@@ -9,6 +9,7 @@
 > Complexity: High
 > Theme: Data / Worker / Corpus
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 ```mermaid
 %% logics-kind: backlog
@@ -60,3 +61,9 @@ flowchart LR
 - Extended worker extraction beyond text-like files by downloading bounded binary content and extracting OOXML body text for DOCX/PPTX/XLSX, with optional PDF text extraction through `pypdf`.
 - Patched `GraphClient` to follow Microsoft Graph content download redirects, with focused test coverage proving extract downloads use `follow_redirects=True`.
 - `rtk python3 -m pytest worker/tests/test_live_export_service.py` passed with coverage for successful text extract, metadata-only unsupported source, and empty text download classified as unreadable.
+
+# AC Traceability
+- request-AC1 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC2 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC5 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC6 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.

@@ -9,6 +9,7 @@
 > Complexity: Low
 > Theme: Operational / Quality
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:53:30
 
 # Problem
 
@@ -62,3 +63,9 @@ flowchart LR
 - The anti-zombie guard now lives in `scripts/ci-anti-zombie-check.mjs` and fails when browser runtime code reintroduces banned imports or legacy `/api/worker/` paths.
 - Local validation is complete with `rtk npm run ci:anti-zombie`, `rtk npm run typecheck`, `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`, `rtk python3 -m pytest worker/tests -q`, and `rtk python3 scripts/worker-contract-smoke.py`.
 - GitHub Actions run `24609268556` on `main` completed successfully with distinct `frontend`, `worker`, and `contracts` jobs green; `e2e` remained optional and untriggered as designed.
+
+# AC Traceability
+- request-AC4 -> This backlog slice. Proof: Reviewed 2026-11-12: scoring and publication evidence is in worker/scoring.py and scripts/publish-analyzed-corpus.ts; CI and HTTP smoke contracts are in .github/workflows/ci.yml and scripts/worker-contract-smoke.py; configuration transfer is in src/lib/settings-transfer.ts. Existing task_041 reports document the delivered waves and historical CI run; current tenant behavior and merged-commit GitHub CI still require operator verification.
+- request-AC5 -> This backlog slice. Proof: Reviewed 2026-11-12: scoring and publication evidence is in worker/scoring.py and scripts/publish-analyzed-corpus.ts; CI and HTTP smoke contracts are in .github/workflows/ci.yml and scripts/worker-contract-smoke.py; configuration transfer is in src/lib/settings-transfer.ts. Existing task_041 reports document the delivered waves and historical CI run; current tenant behavior and merged-commit GitHub CI still require operator verification.
+- request-AC5A -> HTTP contract smoke. Proof: .github/workflows/ci.yml runs scripts/worker-contract-smoke.py against health and config/mode.
+- request-AC5B -> Migration guard. Proof: .github/workflows/ci.yml runs scripts/ci-anti-zombie-check.mjs.

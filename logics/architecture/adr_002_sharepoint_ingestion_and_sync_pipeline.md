@@ -1,6 +1,6 @@
 ## adr_002_sharepoint_ingestion_and_sync_pipeline - SharePoint ingestion and sync pipeline
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Support one or more SharePoint sites, keep the pilot configurable, and allow both manual and scheduled refreshes.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `item_001_v1_sharepoint_ingestion_and_sync_pipeline`
@@ -58,3 +58,9 @@ Expose a manual trigger before introducing scheduled automation.
 - Define sync state storage
 - Implement crawl ordering and retries
 - Add manual refresh and scheduler hooks
+
+# Operator cleanup 2026-11-12
+
+Graph baseline/delta export and checkpoints exist, but the proposed scheduled refresh service is absent; current jobs are operator-triggered (worker/app/services/live_export_service.py and jobs_service.py; 101de05).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

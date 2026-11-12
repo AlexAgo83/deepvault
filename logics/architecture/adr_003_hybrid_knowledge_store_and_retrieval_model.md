@@ -1,6 +1,6 @@
 ## adr_003_hybrid_knowledge_store_and_retrieval_model - Hybrid knowledge store and retrieval model
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Accepted
 > Drivers: Support document, list, page, and metadata indexing while keeping source traceability for future LLM answers.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`
@@ -60,3 +60,9 @@ Backfill the hybrid store from the first pilot crawl.
 - Define storage schema for source objects and chunks
 - Add ranking and citation fields
 - Decide whether embeddings are stored now or later
+
+# Operator cleanup 2026-11-12
+
+Source-linked records, normalized metadata and section/chunk context are implemented by scripts/ingest.ts, src/lib/runtime-types.ts and worker/app/services/live_export_service.py (26100fe, de0fe3c).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

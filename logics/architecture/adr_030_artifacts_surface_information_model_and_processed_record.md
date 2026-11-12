@@ -6,6 +6,18 @@
 > Related backlog: `logics/backlog/item_070_ship_artifacts_inspection_surface.md`
 > Related task: `logics/tasks/task_038_orchestrate_artifacts_visualization_surface_for_generated_outputs.md`
 > Reminder: Update status, linked refs, decision rationale, consequences, migration plan, and follow-up work when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:55:18
+
+# Overview
+
+Read-only artifacts inspection.
+
+```mermaid
+flowchart LR
+    Outputs[Files analysis runs and answers] --> Records[Processed records]
+    Records --> List[Artifacts list]
+    List --> Detail[Identity provenance and diagnostics]
+```
 
 # Decision
 - Introduce a dedicated top-level `Artifacts` tab with global list-plus-detail inspection.

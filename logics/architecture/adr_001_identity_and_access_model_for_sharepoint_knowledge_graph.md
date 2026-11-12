@@ -1,6 +1,6 @@
 ## adr_001_identity_and_access_model_for_sharepoint_knowledge_graph - Identity and access model for SharePoint knowledge graph
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Separate autonomous ingestion from user-aware chat access, preserve auditability, and keep future Teams integration governed.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: (none in current repo scope)
@@ -59,3 +59,9 @@ Introduce Teams bot authentication after the core access checks are in place.
 - Build a permission-check service for chat access
 - Define token refresh and secret storage rules
 - Add Teams bot auth and identity mapping
+
+# Operator cleanup 2026-11-12
+
+The worker uses Entra authentication and corpus role access, rather than the proposed per-user Microsoft source authorization and Teams identity path (worker/app/services/bishop_service.py; adr_034, 05918f8).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

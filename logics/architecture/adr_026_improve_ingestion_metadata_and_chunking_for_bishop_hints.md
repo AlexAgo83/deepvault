@@ -1,6 +1,6 @@
 ## adr_026_improve_ingestion_metadata_and_chunking_for_bishop_hints - Improve ingestion metadata and chunking for Bishop hints
 > Date: 2026-04-14
-> Status: Proposed
+> Status: Accepted
 > Drivers: Preserve richer source context during ingestion, improve retrieval relevance, reduce generic Bishop hints, and keep the pipeline local-first and permission-aware.
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md`, `logics/backlog/item_067_lock_corpus_metadata_contract_and_required_fields.md`
@@ -60,3 +60,9 @@ Keep the changes additive and versioned so older corpus data can still be interp
 - Decide which metadata fields are mandatory versus optional in the first wave.
 - Add or update tests for corpus loading, retrieval relevance, and Bishop hint generation.
 - Confirm the chunk metadata remains compact enough for the current storage and retrieval layout.
+
+# Operator cleanup 2026-11-12
+
+Structural metadata, section-aware chunking and retrieval hints are implemented in scripts/ingest.ts and src/lib/corpus-grounding.ts (26100fe); worker extraction adds real body-text artifacts (de0fe3c).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

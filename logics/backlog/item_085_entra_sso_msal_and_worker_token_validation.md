@@ -9,6 +9,7 @@
 > Complexity: High
 > Theme: Security / Architecture
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Problem
 
@@ -65,3 +66,7 @@ flowchart LR
 - Worker API calls attach the hosted bearer token for corpus, bishop, and sync/job endpoints while preserving the existing local worker-token path for local development.
 - The Python worker now validates Entra JWTs locally against cached tenant JWKS on startup, enforces `401 Unauthorized` on protected `/api/*` routes when auth is enabled, and exposes `oid` / `tid` claims to downstream middleware.
 - Local development remains unchanged when `WORKER_AUTH_ENABLED=false`: no MSAL bootstrap is activated and worker routes remain reachable without a bearer token.
+
+# AC Traceability
+- request-AC2 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC5 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.

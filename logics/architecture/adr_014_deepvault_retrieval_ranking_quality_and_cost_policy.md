@@ -1,6 +1,6 @@
 ## adr_014_deepvault_retrieval_ranking_quality_and_cost_policy - DeepVault retrieval ranking quality and cost policy
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Keep retrieval permission-safe, make answer quality measurable, and keep token and inference cost under control as the corpus grows.
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 > Related backlog: `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`
@@ -130,3 +130,9 @@ If context assembly reaches the token budget before 20 chunks, the lowest-scorin
 - Run the evaluation set from `task_008` against V1 defaults and record scores.
 - Capture weight and budget overrides in a config block so they can change without code.
 - Revisit the policy when a new content type or site shape becomes common.
+
+# Operator cleanup 2026-11-12
+
+Current scoring uses weighted lexical fields and bounded enrichment boosts, rather than the proposed cosine-vector 40/30/20/10 policy (worker/scoring.py; a9ae5af, adr_032).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

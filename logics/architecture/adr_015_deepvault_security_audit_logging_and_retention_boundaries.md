@@ -1,6 +1,6 @@
 ## adr_015_deepvault_security_audit_logging_and_retention_boundaries - DeepVault security audit logging and retention boundaries
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Preserve trust and debuggability without leaking secrets, personal data, or unnecessary content into logs and traces.
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 > Related backlog: `logics/backlog/item_005_v1_runtime_config_and_operations.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
@@ -60,3 +60,9 @@ Use shorter retention for local debug output and longer, governed retention for 
 - Define the audit event schema and redaction rules.
 - Decide which records are user visible versus backend only.
 - Add environment-specific retention defaults for local and hosted runtimes.
+
+# Operator cleanup 2026-11-12
+
+The shipped access log records authenticated HTTP requests with daily rotation and 30-day retention, rather than the proposed full source/retrieval audit schema (worker/app/access_log.py; adr_034, 05918f8).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

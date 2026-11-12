@@ -3,6 +3,7 @@
 > Understanding: 95%
 > Confidence: 93%
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+> Status: Archived
 
 # Overview
 This spec defines the concrete data structures used by DeepVault across all storage layers.
@@ -258,3 +259,9 @@ If a new field is needed that does not exist in the V1 schema, add it as a nulla
 - `logics/architecture/adr_015_deepvault_security_audit_logging_and_retention_boundaries.md`
 - `logics/architecture/adr_016_deepvault_persistence_and_storage_layout.md`
 - `logics/tasks/task_007_v2_operations_runbook_and_release_readiness.md`
+
+# Operator cleanup 2026-11-12
+
+The proposed SQLite/Azure relational and vector storage layout is replaced by the JSON/file-based worker runtime (worker/app/infra/runtime_store.py; adr_035).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

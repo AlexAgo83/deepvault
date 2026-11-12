@@ -9,6 +9,7 @@
 > Complexity: Low
 > Theme: Product / UX
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Problem
 
@@ -63,3 +64,8 @@ flowchart LR
 - Sign-out now clears the MSAL browser session via logout redirect while leaving local mode unchanged.
 - Hosted non-operators no longer see operator-only surfaces: the Artifacts tab is removed from navigation, direct navigation is redirected away, and Sync job-control buttons are hidden in favor of a read-only explanation.
 - Hosted mode hides the AI provider key inputs entirely, while local mode preserves the existing API-key workflow and panel layout.
+
+# AC Traceability
+- request-AC6 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC9 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC10 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.

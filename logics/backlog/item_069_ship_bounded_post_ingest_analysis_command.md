@@ -8,6 +8,7 @@
 > Complexity: Medium
 > Theme: Product / Architecture
 > Reminder: Update status, understanding, confidence, progress, and linked request/task references whenever delivery observability or validation evidence changes.
+> Indicators reviewed: 2026-11-12 10:55:41
 
 # Problem
 ```mermaid
@@ -53,3 +54,6 @@ flowchart LR
 - The CLI now logs periodic progress and elapsed-time checkpoints during analyze runs, reducing ambiguity when a 200-document provider-backed batch is still legitimately working.
 - Successful analyze runs with actual provider tokens now append a deduplicated local AI usage event, so the AI stats panel reflects analysis token consumption too.
 - Wave 4 validation set: 9 behavioral tests covering all exclusion types, selection reasons, budget cap, cross-run reuse, and token reporting mode. All ACs covered.
+
+# Validation
+- Operator cleanup 2026-11-12: retrospective platform context is `req_000_v0_bootstrap_and_initial_foundations`. The existing Derived from product brief remains the delivery source; no follow-up work is planned.

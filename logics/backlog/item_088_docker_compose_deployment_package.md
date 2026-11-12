@@ -9,6 +9,7 @@
 > Complexity: Medium
 > Theme: Infrastructure / Operations
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 ```mermaid
 %% logics-kind: backlog
@@ -62,3 +63,6 @@ flowchart LR
 - Kill and recreate worker container → `data/runtime/corpus-published.json` still present
 - Windows Docker Desktop: `docker compose up -d` on startup → Nexus accessible at configured local network URL
 - Manual smoke test: team member browser → URL → corpus loaded → Bishop query → answer received
+
+# AC Traceability
+- request-AC1 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.

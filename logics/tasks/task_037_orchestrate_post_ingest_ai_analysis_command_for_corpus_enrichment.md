@@ -8,6 +8,7 @@
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references whenever analysis runtime observability or validation expectations change.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Context
 - Orchestrate the full delivery program for `prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment`.
@@ -31,7 +32,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-post-ingest-ai-analysis-comm|prod-010-post-ingest-ai-analysis-command|1-lock-the-first-wave-analysis|run-rtk-npm-run-typecheck-and
+%% logics-signature: task|orchestrate-post-ingest-ai-analysis-comm|item-069-ship-bounded-post-ingest-analys|1-wave-1-lock-the-first-wave|run-rtk-npm-run-typecheck-for
 stateDiagram-v2
     state "prod_010_post_ingest_ai_analysis_command" as Product
     state "1. Lock the first-wave analysis contract" as Scope
@@ -49,18 +50,18 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Wave 1 — lock the first-wave `analysis` block contract, processing states, exclusion policy, and reanalysis rules from `prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment`.
-- [ ] 2. Wave 1 — create or update the linked backlog / architecture refs needed to formalize the command boundary, the additive analysis block, and the downstream usage contract.
-- [ ] 3. Wave 2 — implement the bounded post-ingest analysis command with deterministic candidate selection, additive persistence, and explicit exclusion reasons.
-- [ ] 4. Wave 2 — keep baseline corpus behavior intact when the analysis path is unavailable, excluded, or failed.
-- [ ] 5. Wave 2 — add validation coverage for reanalysis triggers, exclusion handling, failure states, and additive output shape.
-- [ ] 6. Wave 3 — integrate analysis-aware summary/section usage into retrieval and Bishop without replacing raw evidence grounding.
-- [ ] 7. Wave 3 — expose document-level analysis status clearly enough to diagnose weak sources and downstream behavior.
-- [ ] 8. Wave 4 — add a difficult-file validation set and bounded budget metrics so the command can be judged on quality and cost, not only on data shape.
-- [ ] 9. Update linked Logics docs during each wave, not only at final closure.
-- [ ] CHECKPOINT: leave each wave commit-ready before moving to the next one.
-- [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
-- [ ] FINAL: close the orchestration task only when the first-wave analysis command is documented, validated, and safe to run routinely.
+- [x] 1. Wave 1 — lock the first-wave `analysis` block contract, processing states, exclusion policy, and reanalysis rules from `prod_010_add_a_post_ingest_ai_analysis_command_for_corpus_enrichment`.
+- [x] 2. Wave 1 — create or update the linked backlog / architecture refs needed to formalize the command boundary, the additive analysis block, and the downstream usage contract.
+- [x] 3. Wave 2 — implement the bounded post-ingest analysis command with deterministic candidate selection, additive persistence, and explicit exclusion reasons.
+- [x] 4. Wave 2 — keep baseline corpus behavior intact when the analysis path is unavailable, excluded, or failed.
+- [x] 5. Wave 2 — add validation coverage for reanalysis triggers, exclusion handling, failure states, and additive output shape.
+- [x] 6. Wave 3 — integrate analysis-aware summary/section usage into retrieval and Bishop without replacing raw evidence grounding.
+- [x] 7. Wave 3 — expose document-level analysis status clearly enough to diagnose weak sources and downstream behavior.
+- [x] 8. Wave 4 — add a difficult-file validation set and bounded budget metrics so the command can be judged on quality and cost, not only on data shape.
+- [x] 9. Update linked Logics docs during each wave, not only at final closure.
+- [x] CHECKPOINT: leave each wave commit-ready before moving to the next one.
+- [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
+- [x] FINAL: close the orchestration task only when the first-wave analysis command is documented, validated, and safe to run routinely.
 
 # Delivery checkpoints
 - After Wave 1: the first-wave `analysis` contract and state model are frozen.
@@ -104,11 +105,11 @@ stateDiagram-v2
 - Run `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text` after updating linked Logics docs.
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered for the shipped wave.
-- [ ] Validation commands executed and results captured.
-- [ ] Linked product / backlog / architecture docs updated during the wave.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status moved to `Done` only when the bounded analysis command is complete, validated, and explicitly integrated into downstream usage.
+- [x] Scope implemented and acceptance criteria covered for the shipped wave.
+- [x] Validation commands executed and results captured.
+- [x] Linked product / backlog / architecture docs updated during the wave.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status moved to `Done` only when the bounded analysis command is complete, validated, and explicitly integrated into downstream usage.
 
 # Report
 - `npm run analyze` now ships and writes additive `document.analysis` blocks to `data/runtime/analyzed-corpus.json`.

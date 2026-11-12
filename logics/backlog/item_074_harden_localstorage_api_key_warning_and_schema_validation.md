@@ -9,6 +9,7 @@
 > Complexity: Low
 > Theme: Security / Robustness
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Problem
 
@@ -54,3 +55,7 @@ flowchart TD
 - Introduced shared `localStorage` parsing helpers in `src/lib/storage-schema.ts` so invalid JSON or invalid object shapes now produce a clean fallback state plus a diagnostic `console.warn`, instead of relying on bare `JSON.parse()` behavior.
 - Applied validation to the critical persistence reads in `useProviderSecrets`, `useEntraSettings`, `useWorkerSettings`, `useBishopSettings`, `useBishopConversation`, and the persisted artifact filter/group state in `artifacts-panel`.
 - Added regression coverage for both the warning UI and invalid-storage fallback paths in `tests/settings-panel.spec.tsx`, `tests/use-provider-secrets.spec.tsx`, `tests/use-worker-settings.spec.ts`, `tests/use-entra-settings.spec.ts`, and `tests/use-bishop-conversation.spec.tsx`.
+
+# AC Traceability
+- request-AC3 -> This backlog slice. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
+- request-AC4 -> This backlog slice. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.

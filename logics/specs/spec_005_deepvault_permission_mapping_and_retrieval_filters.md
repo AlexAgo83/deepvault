@@ -3,6 +3,7 @@
 > Understanding: 95%
 > Confidence: 93%
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+> Status: Archived
 
 # Overview
 This spec defines how SharePoint permissions are translated into retrieval filters at query time.
@@ -154,3 +155,9 @@ Rules:
 - `logics/specs/spec_004_deepvault_data_schema_and_storage_contracts.md`
 - `logics/specs/spec_002_deepvault_bishop_chat_flow_and_answer_quality.md`
 - `logics/tasks/task_002_v1_ingestion_sync_and_retrieval_hardening.md`
+
+# Operator cleanup 2026-11-12
+
+Microsoft site/library permission resolution and TTL caching are not implemented; the current Bishop service filters using corpus roles (worker/app/services/bishop_service.py).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

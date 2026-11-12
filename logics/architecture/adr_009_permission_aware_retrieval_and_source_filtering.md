@@ -1,6 +1,6 @@
 ## adr_009_permission_aware_retrieval_and_source_filtering - Permission-aware retrieval and source filtering
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Prevent unauthorized SharePoint content from reaching the LLM context, keep chat answers aligned with Microsoft user rights, and preserve source trust.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`
@@ -89,3 +89,9 @@ Item-level filtering enters scope only after V1 is stable and the pilot shows th
 - Implement the permission cache with the TTLs defined above
 - Add audit log entries for denied retrievals (exclusion count, not item IDs)
 - Design item-level filtering when the pilot confirms the need
+
+# Operator cleanup 2026-11-12
+
+Role-based corpus access is implemented, but Microsoft site/library permission resolution, TTL caches and hidden denial identities are not (worker/app/services/bishop_service.py; adr_034).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

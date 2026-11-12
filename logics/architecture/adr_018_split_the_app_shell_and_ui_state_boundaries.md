@@ -1,6 +1,6 @@
 ## adr_018_split_the_app_shell_and_ui_state_boundaries - Split the app shell and UI state boundaries
 > Date: 2026-04-11
-> Status: Proposed
+> Status: Accepted
 > Drivers: Keep the React shell thin, isolate async loading from rendering, and make explorer and Bishop state easier to test.
 > Related request: `logics/request/req_011_audit_de_dette_technique_et_cleanup_structurel.md`
 > Related backlog: `logics/backlog/item_038_refactor_app_shell_and_ui_state.md`
@@ -47,3 +47,9 @@ Move shell-level state into focused hooks where practical, keep presentation in 
 # Follow-up work
 - Refactor the shell components.
 - Add or update tests for the split boundaries.
+
+# Operator cleanup 2026-11-12
+
+Shell state and presentation are separated into src/hooks and src/components/app-shell-chrome.tsx, with granular panel boundaries in app-shell.tsx (8724342, f912a21).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

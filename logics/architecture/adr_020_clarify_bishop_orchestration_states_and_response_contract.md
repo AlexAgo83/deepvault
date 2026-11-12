@@ -1,6 +1,6 @@
 ## adr_020_clarify_bishop_orchestration_states_and_response_contract - Clarify Bishop orchestration states and response contract
 > Date: 2026-04-11
-> Status: Proposed
+> Status: Accepted
 > Drivers: Make grounded-only, fallback, and remote orchestration states explicit so answer traces and evaluations stay trustworthy.
 > Related request: `logics/request/req_011_audit_de_dette_technique_et_cleanup_structurel.md`
 > Related backlog: `logics/backlog/item_040_clarify_bishop_orchestration_contract.md`
@@ -21,7 +21,7 @@ flowchart LR
 ```
 
 # Context
-`src/lib/bishop.ts` currently returns a blended orchestration result that is practical but ambiguous. The UI and tests infer too much from defaults. The contract needs to be clearer before any remote orchestration path expands.
+`src/lib/bishop-orchestration.ts` currently returns a blended orchestration result that is practical but ambiguous. The UI and tests infer too much from defaults. The contract needs to be clearer before any remote orchestration path expands.
 
 # Decision
 Use explicit outcome states and carry those states through the orchestration result. Keep the fallback answer available, but make the provenance of that answer visible in the contract.
@@ -47,3 +47,9 @@ Use explicit outcome states and carry those states through the orchestration res
 # Follow-up work
 - Update Bishop orchestration helpers.
 - Adjust UI trace rendering if needed.
+
+# Operator cleanup 2026-11-12
+
+Explicit grounded-only, remote and fallback outcomes and provider traces are implemented in src/lib/bishop-orchestration.ts and worker/app/services/bishop_service.py (436370a, ef2d539).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

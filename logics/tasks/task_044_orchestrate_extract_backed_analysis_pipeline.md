@@ -9,6 +9,7 @@
 > Complexity: High
 > Theme: Data / Worker / Analysis
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Context
 
@@ -69,6 +70,12 @@ stateDiagram-v2
 - After Wave 3: analysis no longer produces substantive summaries from placeholder source/path text. Validation: `rtk npm run test -- tests/analyze-corpus.spec.ts`, `rtk python3 -m pytest worker/tests/test_jobs.py`, and `rtk npm run typecheck`.
 
 # AC Traceability
+- request-AC1 -> This task. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC2 -> This task. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC3 -> This task. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC4 -> This task. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC5 -> This task. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC6 -> This task. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
 
 - AC1 (`item_089`) -> Wave 1. Worker writes extract artifacts for supported documents.
 - AC2 (`item_090`) -> Wave 2. Corpus documents expose extraction quality and validation accepts the new contract.

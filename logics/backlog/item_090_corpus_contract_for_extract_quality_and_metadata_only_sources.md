@@ -9,6 +9,7 @@
 > Complexity: Medium
 > Theme: Data Contract / Retrieval / Artifacts
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 ```mermaid
 %% logics-kind: backlog
@@ -59,3 +60,7 @@ flowchart LR
 - Artifact diagnostics now show extraction state, reason, and extract path for processed documents.
 - Retrieval and Bishop source assembly keep metadata-only documents visible while replacing placeholder snippets with the document summary or title.
 - Validation passed: `rtk npm run test -- tests/corpus.spec.ts tests/artifacts-panel.spec.tsx tests/deepvault.spec.ts`, `rtk python3 -m pytest worker/tests/test_bishop.py`, and `rtk npm run typecheck`.
+
+# AC Traceability
+- request-AC3 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC6 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.

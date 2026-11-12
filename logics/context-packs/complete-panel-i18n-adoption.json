@@ -10,10 +10,7 @@
       "kind": "product",
       "linked_refs": {
         "item": [
-          "item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome",
-          "item_094_migrate_explorer_and_artifact_panel_chrome_with_strict_content_boundaries",
-          "item_095_migrate_assisted_work_ai_view_and_changelog_product_chrome",
-          "item_096_enforce_panel_catalog_coverage_and_close_the_migration"
+          "item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome"
         ],
         "prod": [
           "prod_016_complete_localized_panel_experience"
@@ -27,7 +24,7 @@
       },
       "path": "logics/product/prod_016_complete_localized_panel_experience.md",
       "ref": "prod_016_complete_localized_panel_experience",
-      "status": "Proposed",
+      "status": "Settled",
       "title": "Complete localized panel experience"
     }
   ],
@@ -38,6 +35,11 @@
         "skip when": "The change is unrelated to this scaffolded request chain.",
         "summary": "Complete semantic i18n adoption across remaining application panels",
         "use when": "You need to implement or review the scaffolded workflow for Complete semantic i18n adoption across remaining application panels."
+      },
+      "execution_table": "",
+      "executions": {
+        "older_count": 0,
+        "rows": []
       },
       "kind": "request",
       "linked_refs": {
@@ -57,7 +59,7 @@
       "path": "logics/request/req_023_complete_semantic_i18n_adoption_across_remaining_application_panels.md",
       "ref": "req_023_complete_semantic_i18n_adoption_across_remaining_application_panels",
       "schema_version": "1.0",
-      "status": "Draft",
+      "status": "Done",
       "title": "Complete semantic i18n adoption across remaining application panels"
     },
     {
@@ -66,6 +68,11 @@
         "skip when": "The change belongs to another backlog slice.",
         "summary": "Migrate settings, runtime, provider, worker, and synchronization chrome",
         "use when": "Implementing the scaffolded slice for Migrate settings, runtime, provider, worker, and synchronization chrome."
+      },
+      "execution_table": "",
+      "executions": {
+        "older_count": 0,
+        "rows": []
       },
       "kind": "backlog",
       "linked_refs": {
@@ -85,7 +92,7 @@
       "path": "logics/backlog/item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome.md",
       "ref": "item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome",
       "schema_version": "1.0",
-      "status": "Ready",
+      "status": "Done",
       "title": "Migrate settings, runtime, provider, worker, and synchronization chrome"
     },
     {
@@ -94,6 +101,11 @@
         "skip when": "The change belongs to another backlog slice.",
         "summary": "Migrate explorer and artifact panel chrome with strict content boundaries",
         "use when": "Implementing the scaffolded slice for Migrate explorer and artifact panel chrome with strict content boundaries."
+      },
+      "execution_table": "",
+      "executions": {
+        "older_count": 0,
+        "rows": []
       },
       "kind": "backlog",
       "linked_refs": {
@@ -113,7 +125,7 @@
       "path": "logics/backlog/item_094_migrate_explorer_and_artifact_panel_chrome_with_strict_content_boundaries.md",
       "ref": "item_094_migrate_explorer_and_artifact_panel_chrome_with_strict_content_boundaries",
       "schema_version": "1.0",
-      "status": "Ready",
+      "status": "Done",
       "title": "Migrate explorer and artifact panel chrome with strict content boundaries"
     },
     {
@@ -122,6 +134,11 @@
         "skip when": "The change belongs to another backlog slice.",
         "summary": "Migrate assisted-work, AI view, and changelog product chrome",
         "use when": "Implementing the scaffolded slice for Migrate assisted-work, AI view, and changelog product chrome."
+      },
+      "execution_table": "",
+      "executions": {
+        "older_count": 0,
+        "rows": []
       },
       "kind": "backlog",
       "linked_refs": {
@@ -141,7 +158,7 @@
       "path": "logics/backlog/item_095_migrate_assisted_work_ai_view_and_changelog_product_chrome.md",
       "ref": "item_095_migrate_assisted_work_ai_view_and_changelog_product_chrome",
       "schema_version": "1.0",
-      "status": "Ready",
+      "status": "Done",
       "title": "Migrate assisted-work, AI view, and changelog product chrome"
     },
     {
@@ -150,6 +167,11 @@
         "skip when": "The change belongs to another backlog slice.",
         "summary": "Enforce panel catalog coverage and close the migration",
         "use when": "Implementing the scaffolded slice for Enforce panel catalog coverage and close the migration."
+      },
+      "execution_table": "",
+      "executions": {
+        "older_count": 0,
+        "rows": []
       },
       "kind": "backlog",
       "linked_refs": {
@@ -169,15 +191,48 @@
       "path": "logics/backlog/item_096_enforce_panel_catalog_coverage_and_close_the_migration.md",
       "ref": "item_096_enforce_panel_catalog_coverage_and_close_the_migration",
       "schema_version": "1.0",
-      "status": "Ready",
+      "status": "Done",
       "title": "Enforce panel catalog coverage and close the migration"
     },
     {
+      "ai_context": {},
+      "execution_table": "",
+      "executions": {
+        "older_count": 0,
+        "rows": []
+      },
+      "kind": "product",
+      "linked_refs": {
+        "item": [
+          "item_093_migrate_settings_runtime_provider_worker_and_synchronization_chrome"
+        ],
+        "prod": [
+          "prod_016_complete_localized_panel_experience"
+        ],
+        "req": [
+          "req_023_complete_semantic_i18n_adoption_across_remaining_application_panels"
+        ],
+        "task": [
+          "task_046_orchestrate_completion_of_panel_localization"
+        ]
+      },
+      "path": "logics/product/prod_016_complete_localized_panel_experience.md",
+      "ref": "prod_016_complete_localized_panel_experience",
+      "schema_version": "1.0",
+      "status": "Settled",
+      "title": "Complete localized panel experience"
+    },
+    {
       "ai_context": {
-        "keywords": "scaffolded-task, request-chain-scaffold, orchestration",
+        "keywords": "i18n, semantic-catalog, panels, content-boundary, static-guard",
         "skip when": "Working on one isolated sibling slice.",
-        "summary": "Orchestrate completion of panel localization",
-        "use when": "Coordinating implementation of a scaffolded request chain."
+        "summary": "Complete semantic localization across the remaining application panels and enforce the product-copy boundary.",
+        "use when": "Reviewing the completed panel localization wave or its regression guard."
+      },
+      "execution_table": "",
+      "executions": {
+        "older_count": 0,
+        "rows": []
       },
       "kind": "task",
       "linked_refs": {
@@ -200,16 +255,16 @@
       "path": "logics/tasks/task_046_orchestrate_completion_of_panel_localization.md",
       "ref": "task_046_orchestrate_completion_of_panel_localization",
       "schema_version": "1.0",
-      "status": "Ready",
+      "status": "Done",
       "title": "Orchestrate completion of panel localization"
     }
   ],
   "estimates": {
-    "char_count": 7255,
+    "char_count": 8174,
     "companion_doc_count": 1,
-    "doc_count": 6
+    "doc_count": 7
   },
-  "generated_at": "2026-07-13T10:14:19Z",
+  "generated_at": "2026-11-12T10:56:05Z",
   "handoff": {
     "companion_doc_count": 1,
     "enabled": true,
@@ -222,6 +277,34 @@
       "task_046_orchestrate_completion_of_panel_localization"
     ],
     "validation_summary_count": 1
+  },
+  "i18n": {
+    "actions": [
+      "Keep catalogs valid with logics-manager i18n validate in the project quality gate."
+    ],
+    "applicable": true,
+    "catalogs": {
+      "en": 420
+    },
+    "configured": true,
+    "contract": {
+      "applicability": "applicable",
+      "catalog": {
+        "path": "src/i18n/{locale}.json"
+      },
+      "default_locale": "en",
+      "fallback_locale": "en",
+      "locales": [
+        "en"
+      ],
+      "schema_version": "1.0",
+      "source_locale": "en"
+    },
+    "contract_path": "logics/i18n/contract.json",
+    "findings": [],
+    "next_action": "The i18n contract is valid.",
+    "ok": true,
+    "state": "valid"
   },
   "mode": "summary-only",
   "profile": "deep",
@@ -257,13 +340,21 @@
       "logics-manager release validate <version>"
     ],
     "state": "not_configured",
-    "target_version": null
+    "target_id": null,
+    "target_version": null,
+    "targets": []
   },
   "validation_summary": [
     {
       "items": [
-        "- Run `python3 -m logics_manager lint --require-status`.",
-        "- Run scaffold command tests."
+        "- `python3 -m logics_manager i18n validate` (using the local Logics Manager source): passed.",
+        "- `npm run lint`: passed.",
+        "- `npm run quality:i18n-copy`: passed for seven panel files, including the guard self-check.",
+        "- `npm run typecheck`: passed.",
+        "- `npm test -- --reporter=dot`: passed, 44 files and 327 tests.",
+        "- `npm run build`: passed, including service-worker generation.",
+        "- Targeted `logics-manager flow validate task_046_orchestrate_completion_of_panel_localization`: passed with zero findings.",
+        "- Repository-wide historical lint and audit findings outside this request remain separate workflow debt and do not invalidate the targeted request chain."
       ],
       "path": "logics/tasks/task_046_orchestrate_completion_of_panel_localization.md",
       "ref": "task_046_orchestrate_completion_of_panel_localization"

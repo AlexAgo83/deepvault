@@ -1,6 +1,6 @@
 ## adr_016_deepvault_persistence_and_storage_layout - DeepVault persistence and storage layout
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Keep the local and hosted runtimes simple, make derived content durable without duplicating SharePoint, and keep audit, secrets, and retrieval state in the right stores.
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
 > Related backlog: `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`
@@ -63,3 +63,9 @@ For hosted production, prefer Azure Blob Storage, Azure SQL or managed Postgres,
 - Specify the exact Azure services for blobs, relational state, retrieval index, and audit.
 - Define what is persisted locally versus only in hosted production.
 - Document any migration steps needed when the retrieval engine changes.
+
+# Operator cleanup 2026-11-12
+
+Persistence uses JSON corpus files, runtime artifacts and job metadata, rather than SQLite plus Azure SQL/Blob/Search/Key Vault (worker/app/infra/runtime_store.py; adr_035, ad47f0c).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

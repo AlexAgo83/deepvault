@@ -1,6 +1,6 @@
 ## adr_004_teams_bot_architecture_for_llm_chat - DeepVault - Gordon architecture for LLM chat
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Deliver the chatbot through `DeepVault - Gordon`, keep identity governed, and verify user access before invoking the LLM.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: (none in current repo scope)
@@ -51,3 +51,9 @@ Keep a web chat option open for later, but do not require it yet.
 - Register the `DeepVault - Gordon` app and bot
 - Define message schema and response templates
 - Add moderation, logging, and rate limiting
+
+# Operator cleanup 2026-11-12
+
+Teams-first bot delivery is absent; the shipped channel is the React Bishop client and Python worker (adr_007, adr_034; ef2d539, 05918f8).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

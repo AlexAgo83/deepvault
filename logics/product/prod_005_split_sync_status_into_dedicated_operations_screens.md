@@ -1,6 +1,6 @@
 ## prod_005_split_sync_status_into_dedicated_operations_screens - Split Sync Status into dedicated operations screens
 > Date: 2026-04-14
-> Status: Proposed
+> Status: Settled
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md`
 > Related task: `logics/tasks/task_028_split_sync_status_into_dedicated_operations_screens.md`
@@ -69,3 +69,9 @@ The current experience also makes it harder to tell which surface is the default
 # Open questions
 - Decision note: use explicit routes for the first iteration so deep links, keyboard navigation, and summary-to-detail handoff stay predictable.
 - Decision note: keep the top-level screen ordering as Status, Operations, History, and Config, with Recovery grouped under Config.
+
+# Operator cleanup 2026-11-12
+
+Status, Operations, History and Config views with hash deep links and recovery in Config are delivered in src/components/panels/sync-panel.tsx; see commit dc94df5.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

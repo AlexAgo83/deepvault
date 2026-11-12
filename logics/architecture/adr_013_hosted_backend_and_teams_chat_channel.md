@@ -1,6 +1,6 @@
 ## adr_013_hosted_backend_and_teams_chat_channel - Hosted backend and Teams chat channel
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Move the product to a reusable backend service, support governed Microsoft identity at scale, make `DeepVault - Gordon` the primary chatbot channel, and keep the production runtime aligned with Azure-first hosting.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: (none in current repo scope)
@@ -64,3 +64,9 @@ Deploy the hosted backend on Azure first; if cost or operational constraints bec
 - Define the Azure resource split for backend, storage, and secrets
 - Specify the `DeepVault - Gordon` bot registration and auth flow
 - Decide whether the local app remains a supported client
+
+# Operator cleanup 2026-11-12
+
+The shipped hosted model uses Caddy and the Python worker on a shared machine; Azure/Render provisioning and a Teams bot channel are absent (docker-compose.yml, Caddyfile; adr_034, 94d9b99).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

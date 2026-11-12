@@ -1,6 +1,6 @@
 ## adr_012_local_companion_runtime_for_explorer_and_chat - DeepVault - Navy runtime for explorer and chat
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Ship a fast local-only validation surface for the first pilot, avoid hosting and channel complexity, and keep the chatbot usable while the backend is still in development.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
@@ -59,3 +59,9 @@ When the hosted backend begins, move the backend behind a hosted service while k
 - Define the local runtime process model and startup flow
 - Decide whether local storage is embedded or file-based
 - Define the minimum local auth model
+
+# Operator cleanup 2026-11-12
+
+The proposed single local web service and minimal Entra local auth were replaced by Vite plus a separate Python worker with local auth bypass (vite.config.ts, worker/app/config.py; adr_035, 05918f8).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

@@ -8,6 +8,7 @@
 > Complexity: High
 > Theme: Architecture / Product / Operational
 > Reminder: Update status, understanding, confidence, and linked backlog or task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:55:18
 
 # Needs
 
@@ -58,7 +59,7 @@ flowchart TD
 - [x] All users confirmed to have Microsoft 365 accounts with internet access from the local network.
 - [x] In/out scope is defined.
 - [x] Acceptance criteria are testable.
-- [ ] Backlog items to be created before starting.
+- [x] Backlog items to be created before starting.
 - [x] Dependencies identified: `req_018` and `req_019` should land first as cleanup/consolidation waves, but `item_072` itself is cancelled by `adr_035` and is not a prerequisite.
 
 # Scope
@@ -129,3 +130,7 @@ flowchart TD
 - `item_086` is now closed: job-control routes enforce `OPERATOR_ALLOWLIST`, `/api/config/mode` can surface `isOperator` for authenticated hosted requests, and the worker writes structured access logs under `data/logs/` with daily file rollover and 30-day retention cleanup.
 - `item_087` is now closed: hosted mode shows the authenticated session in the UI, hides API key inputs, removes operator-only surfaces for non-operators, and preserves the previous local-development behavior.
 - The request remains open only for the deployment packaging wave (`item_088`).
+
+# Operator cleanup 2026-11-12
+
+Backlog items 080 through 088 already exist and delivery commits 05918f8 and 94d9b99 implement the remaining hosted waves. Earlier text saying the request remained open for packaging is historical. No work is planned; tenant SSO and production deployment remain external verification, not a new delivery claim.
