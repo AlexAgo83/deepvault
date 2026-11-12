@@ -1,6 +1,6 @@
 ## adr_024_split_sync_status_into_dedicated_operations_screens - Split Sync Status into dedicated operations screens
 > Date: 2026-04-14
-> Status: Proposed
+> Status: Accepted
 > Drivers: Reduce panel overload, preserve a concise summary surface, make operational screens first-class, keep state terminology consistent across the app.
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_060_split_sync_status_into_dedicated_operations_screens.md`
@@ -62,3 +62,9 @@ Use the same state vocabulary across screens so the app feels like one system ra
 - Keep the screen ordering as Status, Operations, History, and Config, with Recovery nested under Config.
 - Align the screen split with the existing app shell and the Sync panel summary.
 - Add UI tests that prove the summary screen and the dedicated screens stay in sync.
+
+# Operator cleanup 2026-11-12
+
+Hash-addressed Status, Operations, History and Config views with recovery under Config are implemented in src/components/panels/sync-panel.tsx (dc94df5).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

@@ -1,6 +1,6 @@
 ## prod_003_navigation_and_runtime_control_clarity - Navigation and runtime control clarity
 > Date: 2026-04-11
-> Status: Proposed
+> Status: Superseded
 > Related request: req_012_add_leading_icons_to_navigation, req_013_move_site_selector_into_runtime, req_014_move_runtime_under_sync_status
 > Related backlog: item_043_add_leading_icons_to_navigation, item_044_move_site_selector_into_runtime, item_045_move_runtime_under_sync_status
 > Related task: task_017_orchestrate_navigation_and_runtime_ui_changes
@@ -62,3 +62,9 @@ Users need to find primary navigation faster and understand the active runtime s
 
 # Open questions
 - Should the runtime panel be visually nested under Sync status or presented as a distinct subsection within it?
+
+# Operator cleanup 2026-11-12
+
+Runtime controls now belong to Settings, as recorded in adr_022 and implemented in src/components/app-shell.tsx; the proposed placement under Sync is no longer current.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

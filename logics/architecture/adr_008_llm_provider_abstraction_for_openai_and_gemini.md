@@ -1,6 +1,6 @@
 ## adr_008_llm_provider_abstraction_for_openai_and_gemini - LLM provider abstraction for OpenAI and Gemini
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Keep the chat backend provider-agnostic, use the keys already configured in the environment, and allow quality or cost trade-offs without changing the UI.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `item_007_v1_llm_provider_abstraction_for_openai_and_gemini`
@@ -70,3 +70,9 @@ Start with OpenAI as primary. Keep Gemini configured but inactive by default. En
 - Define the provider contract and response schema
 - Add primary/fallback selection in the backend
 - Measure quality and latency across OpenAI and Gemini against the pilot evaluation set
+
+# Operator cleanup 2026-11-12
+
+Provider selection now includes Anthropic and explicit local fallback; the proposed OpenAI-to-Gemini automatic fallback policy is not the implemented contract (worker/app/services/bishop_service.py; adr_017, d3c00b7).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

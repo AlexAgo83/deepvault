@@ -1,6 +1,6 @@
 ## prod_000_sharepoint_knowledge_graph_product_vision - SharePoint knowledge graph product vision
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Settled
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_000_v1_graph_discovery_and_pilot_scope.md`, `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_002_v1_hybrid_knowledge_store_and_retrieval.md`, `logics/backlog/item_003_v1_explorer_ui_for_sharepoint_navigation.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`, `logics/backlog/item_006_v1_local_companion_app_for_explorer_and_chat.md`, `logics/backlog/item_007_v1_llm_provider_abstraction_for_openai_and_gemini.md`, `logics/backlog/item_008_v1_local_explorer_shell_and_navigation.md`, `logics/backlog/item_009_v1_local_chat_surface_and_answer_flow.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`
 > Related task: `logics/tasks/task_005_v1_local_development_and_validation_milestone.md`
@@ -129,3 +129,9 @@ Users need a way to find content, understand what is available, and later ask na
 - First local validation surface: explorer, then chat, then sync status.
 - LLM provider choice: OpenAI primary, Gemini fallback.
 - Observability split: surface crawl progress, last refresh, and answer provenance; keep sensitive detail backend-only.
+
+# Operator cleanup 2026-11-12
+
+The local SharePoint explorer, ingestion, provider selection and source-backed Bishop experience are delivered in src/components/app-shell.tsx and worker/app/services/bishop_service.py; see commits 101de05 and 05918f8.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

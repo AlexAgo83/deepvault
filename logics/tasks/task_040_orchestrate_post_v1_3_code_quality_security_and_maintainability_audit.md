@@ -9,6 +9,7 @@
 > Complexity: High
 > Theme: Quality / Security / Maintainability
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Context
 
@@ -75,6 +76,13 @@ stateDiagram-v2
 - ~~After Wave 5~~ — Cancelled (adr_035).
 
 # AC Traceability
+- request-AC1 -> This task. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
+- request-AC2 -> This task. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
+- request-AC3 -> This task. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
+- request-AC4 -> This task. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
+- request-AC5 -> This task. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
+- request-AC6 -> This task. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
+- request-AC7 -> This task. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.
 
 - ~~AC1 (req_018) → Wave 1~~ — Cancelled (adr_035).
 - AC2 (req_018) → Wave 2. Reduce `app-shell.tsx` below 800 lines. Proof: file size and passing E2E.
@@ -135,3 +143,7 @@ stateDiagram-v2
 - Wave 4 is now complete: `useWorkerHealth` adds the non-blocking startup `/api/health` probe for configured remote workers, and the Settings worker screen now surfaces the resulting availability state directly to the operator.
 - Wave 4 validation also proves panel-level isolation at the app shell boundary through `tests/app-shell-error-boundary.spec.tsx`, in addition to the direct `ErrorBoundary` unit test coverage.
 - Final validation for the completed task passed with `rtk npm run check`, including lint, typecheck, the full unit/integration suite, build, E2E, and evaluation.
+
+# Operator cleanup 2026-11-12
+
+AC1 and AC7 were cancelled by adr_035. Optional AC8 CSS modularization was not shipped and is not planned. The completed DoD refers to the required scope after these dispositions, not to delivery of cancelled or optional work.

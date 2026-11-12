@@ -1,6 +1,6 @@
 ## prod_006_improve_ingestion_metadata_and_chunking_for_bishop_hints - Improve ingestion metadata and chunking for Bishop hints
 > Date: 2026-04-14
-> Status: Proposed
+> Status: Settled
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_062_improve_corpus_metadata_chunking_and_bishop_hints.md`
 > Related task: `logics/tasks/task_030_improve_corpus_metadata_chunking_and_bishop_hints.md`
@@ -63,3 +63,9 @@ Operators need the retrieval layer to carry more document context without changi
 # Open questions
 - Decision note: required fields in the first wave are `schemaVersion`, `generatedAt`, `source`, `documents[*].id`, `siteId`, `kind`, `title`, `path`, `webUrl`, and `updatedAt`.
 - Keep `author`, `sections`, `fileType`, `chunkMetadata`, and `retrievalSignals` optional extensions unless a later contract review promotes them.
+
+# Operator cleanup 2026-11-12
+
+Section-aware metadata, chunking and improved hints are delivered in scripts/ingest.ts and src/lib/corpus-grounding.ts; see commit 26100fe and extraction follow-ups de0fe3c and 0b179b6.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

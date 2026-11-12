@@ -1,6 +1,6 @@
 ## adr_023_split_execution_runtime_from_the_app_and_share_corpus_artifacts - Split execution runtime from the app and share corpus artifacts
 > Date: 2026-04-14
-> Status: Proposed
+> Status: Accepted
 > Drivers: Make ingestion, live export, and evaluate run on a dedicated worker while the app becomes a client of shared corpus artifacts, run history, and config. Keep the worker operable from both CLI and web app, and allow the worker endpoint or host to be configured when it runs on another machine. Preserve explicit control, security, versioning, and audit boundaries so the split stays operable.
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
@@ -312,3 +312,9 @@ This keeps the execution path reusable in Docker or on a dedicated machine, whil
 - Define the default retention window for manifests, checkpoints, and telemetry.
 - Define the schema evolution and migration policy for incompatible corpus or manifest versions.
 - Split app-side inspection features from worker-side execution features in the backlog.
+
+# Operator cleanup 2026-11-12
+
+The app/CLI worker boundary, durable job artifacts and read-only fallback are delivered in worker/app/services/jobs_service.py, worker/cli/commands and src/lib/worker-client.ts (ad47f0c, 6dc714f). ADRs 034 and 035 refine hosting, authentication and the Python runtime.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

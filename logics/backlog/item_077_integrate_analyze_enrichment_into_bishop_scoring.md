@@ -9,6 +9,7 @@
 > Complexity: Medium
 > Theme: Product / Quality
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:53:30
 
 # Problem
 
@@ -56,3 +57,8 @@ flowchart LR
 - Scoring now normalizes both the shipped analyze confidence scale (`55..95`) and older ratio-style payloads (`0..1`), closing the contract gap between analyze output and retrieval weighting.
 - `worker/tests/test_scoring.py` now covers unenriched, high-confidence, low-confidence, and ratio-compatibility cases.
 - Validation completed: `rtk python3 -m pytest worker/tests/test_scoring.py -q`, `rtk npm run typecheck`, and `rtk npm run evaluate`.
+
+# AC Traceability
+- request-AC1 -> This backlog slice. Proof: Reviewed 2026-11-12: scoring and publication evidence is in worker/scoring.py and scripts/publish-analyzed-corpus.ts; CI and HTTP smoke contracts are in .github/workflows/ci.yml and scripts/worker-contract-smoke.py; configuration transfer is in src/lib/settings-transfer.ts. Existing task_041 reports document the delivered waves and historical CI run; current tenant behavior and merged-commit GitHub CI still require operator verification.
+- request-AC2 -> This backlog slice. Proof: Reviewed 2026-11-12: scoring and publication evidence is in worker/scoring.py and scripts/publish-analyzed-corpus.ts; CI and HTTP smoke contracts are in .github/workflows/ci.yml and scripts/worker-contract-smoke.py; configuration transfer is in src/lib/settings-transfer.ts. Existing task_041 reports document the delivered waves and historical CI run; current tenant behavior and merged-commit GitHub CI still require operator verification.
+- request-AC3 -> This backlog slice. Proof: Reviewed 2026-11-12: scoring and publication evidence is in worker/scoring.py and scripts/publish-analyzed-corpus.ts; CI and HTTP smoke contracts are in .github/workflows/ci.yml and scripts/worker-contract-smoke.py; configuration transfer is in src/lib/settings-transfer.ts. Existing task_041 reports document the delivered waves and historical CI run; current tenant behavior and merged-commit GitHub CI still require operator verification.

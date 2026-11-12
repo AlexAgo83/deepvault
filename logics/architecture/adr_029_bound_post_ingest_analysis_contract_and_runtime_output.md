@@ -7,6 +7,20 @@
 > Related backlog: `logics/backlog/item_069_ship_bounded_post_ingest_analysis_command.md`, `logics/backlog/item_091_analyze_pipeline_uses_extract_backed_text.md`
 > Related task: `logics/tasks/task_037_orchestrate_post_ingest_ai_analysis_command_for_corpus_enrichment.md`, `logics/tasks/task_044_orchestrate_extract_backed_analysis_pipeline.md`
 > Reminder: Updated for extract-backed analysis input; keep status, linked refs, decision rationale, consequences, migration plan, and follow-up work in sync when analysis input or runtime reports change.
+> Indicators reviewed: 2026-11-12 10:55:18
+
+# Overview
+
+Extract-backed analysis contract.
+
+```mermaid
+flowchart LR
+    Extracts[Durable text extracts] --> Select[Eligible body text]
+    Select --> Analyze[Bounded analysis]
+    Analyze --> Snapshot[Additive analyzed corpus]
+    Snapshot --> Publish[Validated publication]
+    Publish --> Retrieval[Fresh enrichment or baseline fallback]
+```
 
 # Decision
 - Add an optional `document.analysis` block with versioned additive fields instead of overwriting the baseline document contract.

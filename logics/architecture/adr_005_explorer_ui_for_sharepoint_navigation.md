@@ -1,6 +1,6 @@
 ## adr_005_explorer_ui_for_sharepoint_navigation - Explorer UI for SharePoint navigation
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Accepted
 > Drivers: Give users a lightweight way to browse sites and content while validating ingestion quality.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `item_003_v1_explorer_ui_for_sharepoint_navigation`
@@ -57,3 +57,9 @@ Expand the explorer only when the underlying content model is reliable.
 - Define explorer routes and API payloads
 - Build tree navigation and preview components
 - Add search and filtering later
+
+# Operator cleanup 2026-11-12
+
+The read-only Explorer navigation, search and previews are implemented in src/components/panels/explorer-panel.tsx and corpus view helpers (b9006d6, f912a21).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

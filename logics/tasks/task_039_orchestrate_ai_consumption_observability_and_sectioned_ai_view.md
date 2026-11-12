@@ -8,6 +8,7 @@
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Context
 - Orchestrate the full delivery program for `prod_012_add_ai_consumption_observability_and_sectioned_ai_view`.
@@ -31,7 +32,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-ai-consumption-observabilit|prod-012-add-ai-consumption-observabilit|1-lock-the-first-wave-usage|run-rtk-npm-run-typecheck-and
+%% logics-signature: task|orchestrate-ai-consumption-observability|item-071-ship-ai-usage-store-and-section|1-wave-1-lock-the-first-wave|run-rtk-npm-run-typecheck-for
 stateDiagram-v2
     state "prod_012_ai_consumption_observability" as Product
     state "1. Lock the first-wave usage contract" as Scope
@@ -49,18 +50,18 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Wave 1 — lock the first-wave usage-event schema, local dedicated storage, retention assumptions, and `Answered` / `Tokens` section split from `prod_012_add_ai_consumption_observability_and_sectioned_ai_view`.
-- [ ] 2. Wave 1 — create or update the linked backlog / architecture refs needed to formalize token event logging, rollup logic, and privacy-aware observability boundaries.
-- [ ] 3. Wave 2 — implement per-response input/output token logging, provider-backed vs local event separation, and daily/hourly rollup logic.
-- [ ] 4. Wave 2 — keep partial usage events explicit instead of fabricating split values when a provider reports only totals.
-- [ ] 5. Wave 2 — add validation coverage for dedicated usage storage, rollups, local/no-provider outcomes, and partial usage data.
-- [ ] 6. Wave 3 — deliver the sectioned `AI View` with a settings-like section switcher and preserve the qualitative answer-review flow under `Answered`.
-- [ ] 7. Wave 3 — deliver the `Tokens` section with first-wave KPIs, a daily trend view, an hourly distribution view, and provider-level summaries.
-- [ ] 8. Wave 4 — harden empty/error/retention states and capture the explicit follow-up boundary for estimated cost and per-model breakdowns.
-- [ ] 9. Update linked Logics docs during each wave, not only at final closure.
-- [ ] CHECKPOINT: leave each wave commit-ready before moving to the next one.
-- [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
-- [ ] FINAL: close the orchestration task only when the first-wave usage contract, rollups, and sectioned AI View are documented, validated, and clearly bounded.
+- [x] 1. Wave 1 — lock the first-wave usage-event schema, local dedicated storage, retention assumptions, and `Answered` / `Tokens` section split from `prod_012_add_ai_consumption_observability_and_sectioned_ai_view`.
+- [x] 2. Wave 1 — create or update the linked backlog / architecture refs needed to formalize token event logging, rollup logic, and privacy-aware observability boundaries.
+- [x] 3. Wave 2 — implement per-response input/output token logging, provider-backed vs local event separation, and daily/hourly rollup logic.
+- [x] 4. Wave 2 — keep partial usage events explicit instead of fabricating split values when a provider reports only totals.
+- [x] 5. Wave 2 — add validation coverage for dedicated usage storage, rollups, local/no-provider outcomes, and partial usage data.
+- [x] 6. Wave 3 — deliver the sectioned `AI View` with a settings-like section switcher and preserve the qualitative answer-review flow under `Answered`.
+- [x] 7. Wave 3 — deliver the `Tokens` section with first-wave KPIs, a daily trend view, an hourly distribution view, and provider-level summaries.
+- [x] 8. Wave 4 — harden empty/error/retention states and capture the explicit follow-up boundary for estimated cost and per-model breakdowns.
+- [x] 9. Update linked Logics docs during each wave, not only at final closure.
+- [x] CHECKPOINT: leave each wave commit-ready before moving to the next one.
+- [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
+- [x] FINAL: close the orchestration task only when the first-wave usage contract, rollups, and sectioned AI View are documented, validated, and clearly bounded.
 
 # Delivery checkpoints
 - After Wave 1: the first-wave token-event model, storage boundary, and section split are frozen.
@@ -104,11 +105,11 @@ stateDiagram-v2
 - Run `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text` after updating linked Logics docs.
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered for the shipped wave.
-- [ ] Validation commands executed and results captured.
-- [ ] Linked product / backlog / architecture docs updated during the wave.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status moved to `Done` only when the first-wave usage contract, rollups, and sectioned AI View are complete, validated, and clearly bounded.
+- [x] Scope implemented and acceptance criteria covered for the shipped wave.
+- [x] Validation commands executed and results captured.
+- [x] Linked product / backlog / architecture docs updated during the wave.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status moved to `Done` only when the first-wave usage contract, rollups, and sectioned AI View are complete, validated, and clearly bounded.
 
 # Report
 - The app now persists bounded local usage events with explicit `provider`, `partial`, and `local` usage kinds.

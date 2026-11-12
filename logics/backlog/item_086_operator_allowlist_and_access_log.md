@@ -9,6 +9,7 @@
 > Complexity: Low
 > Theme: Security / Operations
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Problem
 
@@ -62,3 +63,9 @@ flowchart LR
 - `GET /api/config/mode` accepts an optional bearer token and reports `isOperator` from the validated `oid`, so the browser can adapt hosted UI without inspecting claims itself.
 - Validated requests now emit structured JSON access-log lines under `data/logs/access-YYYY-MM-DD.json` with daily file rollover by filename and automatic 30-day retention cleanup.
 - Local development remains unchanged when `WORKER_AUTH_ENABLED=false`: operator gating is bypassed and no bearer token is required.
+
+# AC Traceability
+- request-AC5 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC6 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC7 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC8 -> This backlog slice. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.

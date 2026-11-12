@@ -8,6 +8,7 @@
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Context
 - Orchestrate the full delivery program for `prod_011_add_an_artifacts_visualization_surface_for_generated_outputs`.
@@ -31,7 +32,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-artifacts-visualization-sur|prod-011-add-an-artifacts-visualization-|1-lock-the-first-wave-artifacts|run-rtk-npm-run-typecheck-and
+%% logics-signature: task|orchestrate-artifacts-visualization-surf|item-070-ship-artifacts-inspection-surfa|1-wave-1-lock-the-first-wave|run-rtk-npm-run-typecheck-for
 stateDiagram-v2
     state "prod_011_artifacts_visualization_surface" as Product
     state "1. Lock the artifact model and wave scope" as Scope
@@ -49,18 +50,18 @@ stateDiagram-v2
 ```
 
 # Plan
-- [ ] 1. Wave 1 — lock the first-wave artifact taxonomy, grouping/filter model, and processed SharePoint file record scope from `prod_011_add_an_artifacts_visualization_surface_for_generated_outputs`.
-- [ ] 2. Wave 1 — create or update the linked backlog / architecture refs needed to formalize artifact families, source provenance, and read-only detail inspection.
-- [ ] 3. Wave 2 — implement the top-level `Artifacts` surface with a global generated-output view, compact filters, and first-wave artifact categories.
-- [ ] 4. Wave 2 — keep the first-wave surface inspection-first and avoid turning it into a file manager or execution panel.
-- [ ] 5. Wave 2 — add validation coverage for grouping, filtering, empty states, and artifact category visibility.
-- [ ] 6. Wave 3 — implement the processed SharePoint file record with ingestion state, analysis state, derived outputs, provenance, and diagnostics.
-- [ ] 7. Wave 3 — make the detail flow usable for explaining weak Bishop behavior without requiring raw file inspection.
-- [ ] 8. Wave 4 — harden traceability, edge states, and future expansion points for analysis artifacts and additional generated-output families.
-- [ ] 9. Update linked Logics docs during each wave, not only at final closure.
-- [ ] CHECKPOINT: leave each wave commit-ready before moving to the next one.
-- [ ] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
-- [ ] FINAL: close the orchestration task only when the first-wave Artifacts surface and processed-file record are documented, validated, and clearly bounded.
+- [x] 1. Wave 1 — lock the first-wave artifact taxonomy, grouping/filter model, and processed SharePoint file record scope from `prod_011_add_an_artifacts_visualization_surface_for_generated_outputs`.
+- [x] 2. Wave 1 — create or update the linked backlog / architecture refs needed to formalize artifact families, source provenance, and read-only detail inspection.
+- [x] 3. Wave 2 — implement the top-level `Artifacts` surface with a global generated-output view, compact filters, and first-wave artifact categories.
+- [x] 4. Wave 2 — keep the first-wave surface inspection-first and avoid turning it into a file manager or execution panel.
+- [x] 5. Wave 2 — add validation coverage for grouping, filtering, empty states, and artifact category visibility.
+- [x] 6. Wave 3 — implement the processed SharePoint file record with ingestion state, analysis state, derived outputs, provenance, and diagnostics.
+- [x] 7. Wave 3 — make the detail flow usable for explaining weak Bishop behavior without requiring raw file inspection.
+- [x] 8. Wave 4 — harden traceability, edge states, and future expansion points for analysis artifacts and additional generated-output families.
+- [x] 9. Update linked Logics docs during each wave, not only at final closure.
+- [x] CHECKPOINT: leave each wave commit-ready before moving to the next one.
+- [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
+- [x] FINAL: close the orchestration task only when the first-wave Artifacts surface and processed-file record are documented, validated, and clearly bounded.
 
 # Delivery checkpoints
 - After Wave 1: the artifact model, categories, and processed-record scope are frozen.
@@ -103,11 +104,11 @@ stateDiagram-v2
 - Run `rtk python3 logics/skills/logics-doc-linter/scripts/logics_lint.py --require-status --format text` after updating linked Logics docs.
 
 # Definition of Done (DoD)
-- [ ] Scope implemented and acceptance criteria covered for the shipped wave.
-- [ ] Validation commands executed and results captured.
-- [ ] Linked product / backlog / architecture docs updated during the wave.
-- [ ] Each completed wave left a commit-ready checkpoint.
-- [ ] Status moved to `Done` only when the first-wave Artifacts surface and processed-file record are complete, validated, and clearly bounded.
+- [x] Scope implemented and acceptance criteria covered for the shipped wave.
+- [x] Validation commands executed and results captured.
+- [x] Linked product / backlog / architecture docs updated during the wave.
+- [x] Each completed wave left a commit-ready checkpoint.
+- [x] Status moved to `Done` only when the first-wave Artifacts surface and processed-file record are complete, validated, and clearly bounded.
 
 # Report
 - The app now ships a top-level `Artifacts` surface with filtering, grouping, and list-plus-detail inspection.

@@ -1,6 +1,6 @@
 ## adr_021_harden_live_export_and_checkpoint_boundaries - Harden live export and checkpoint boundaries
 > Date: 2026-04-11
-> Status: Proposed
+> Status: Accepted
 > Drivers: Make live export, checkpointing, and resume behavior easier to reason about and safer to operate.
 > Related request: `logics/request/req_011_audit_de_dette_technique_et_cleanup_structurel.md`
 > Related backlog: `logics/backlog/item_041_harden_live_export_and_checkpoint_handling.md`
@@ -47,3 +47,9 @@ Keep the export flow modular enough that auth, export, and persistence can evolv
 # Follow-up work
 - Split the script orchestration and persistence concerns.
 - Add coverage for checkpoint and resume behavior.
+
+# Operator cleanup 2026-11-12
+
+Graph access, export orchestration and checkpoint persistence have separate boundaries in scripts/deepvault-graph.ts, scripts/export-live.ts and scripts/live-export-state.ts; worker export preserves resume behavior (101de05).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

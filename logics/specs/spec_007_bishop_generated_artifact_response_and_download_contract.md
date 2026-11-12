@@ -4,6 +4,7 @@
 > Confidence: 93%
 > Related backlog: `logics/backlog/item_068_deliver_bishop_first_wave_generated_artifact_contract.md`
 > Related architecture: `logics/architecture/adr_028_bound_bishop_generated_artifact_response_and_download_contract.md`
+> Status: Settled
 
 # Overview
 This spec defines the first shipped Bishop artifact contract. It covers when an artifact is requested, which formats are supported, how the response shape carries artifact state, how the UI exposes download affordances, and when the in-app path must stop and defer richer formats.
@@ -131,3 +132,9 @@ The in-app Bishop path stops at small text-like artifacts. Defer to a worker-bac
 # References
 - `logics/product/prod_009_enable_bishop_generated_document_artifacts.md`
 - `logics/architecture/adr_028_bound_bishop_generated_artifact_response_and_download_contract.md`
+
+# Operator cleanup 2026-11-12
+
+The bounded first-wave generated artifact and download contract is delivered in src/hooks/useBishopConversation.ts and src/lib/file-download.ts; see task_036 and commit 8921a31.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

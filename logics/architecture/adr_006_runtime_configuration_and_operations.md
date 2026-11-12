@@ -1,6 +1,6 @@
 ## adr_006_runtime_configuration_and_operations - Runtime configuration and operations
 > Date: 2026-04-12
-> Status: Proposed
+> Status: Superseded
 > Drivers: Keep runtime secrets easy to manage locally, protect secrets, and leave room for future scale and governance.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`, `logics/request/req_015_architecture_robustness_and_product_improvements.md`
 > Related backlog: `logics/backlog/item_005_v1_runtime_config_and_operations.md`, `logics/backlog/item_010_v1_local_sync_status_and_operational_view.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`
@@ -63,3 +63,9 @@ Keep the current secret model compatible with that future migration.
 - Add config validation on startup
 - Plan a future admin/config UI if site management becomes user-facing
 - Keep the browser-local provider-key Settings surface aligned with future secret-backed config so local testing stays simple without changing the runtime contract
+
+# Operator cleanup 2026-11-12
+
+Environment configuration exists, but the proposed Azure secret-store and Functions scheduling model was replaced by local/hosted worker configuration and Caddy deployment (worker/app/config.py; adr_034, 94d9b99).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

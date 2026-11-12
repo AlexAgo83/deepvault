@@ -8,6 +8,7 @@
 > Complexity: Medium
 > Theme: Product / Architecture
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:55:41
 
 # Problem
 - `AI View` mixed response review with consumption visibility and had no dedicated retained token event history.
@@ -30,3 +31,6 @@
 # Validation evidence
 - `rtk npm run test -- tests/ai-stats-panel.spec.tsx tests/use-bishop-conversation.spec.tsx tests/app.spec.tsx`
 - `rtk npm run check`
+
+# Validation
+- Operator cleanup 2026-11-12: retrospective platform context is `req_000_v0_bootstrap_and_initial_foundations`. The existing Derived from product brief remains the delivery source; no follow-up work is planned.

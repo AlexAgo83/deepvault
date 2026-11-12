@@ -3,6 +3,7 @@
 > Understanding: 93%
 > Confidence: 90%
 > Related request: `logics/request/req_001_v1_local_hardening_and_scope_evolution.md`
+> Status: Archived
 
 # Overview
 The pilot needs a repeatable way to add adjacent SharePoint sites and judge whether the retrieval path is still good.
@@ -106,3 +107,9 @@ Ranking weights (defined in ADR 014) must not be changed before the evaluation b
 - `logics/architecture/adr_002_sharepoint_ingestion_and_sync_pipeline.md`
 - `logics/architecture/adr_010_sharepoint_sync_orchestration_and_refresh_policy.md`
 - `logics/architecture/adr_014_deepvault_retrieval_ranking_quality_and_cost_policy.md`
+
+# Operator cleanup 2026-11-12
+
+The proposed permission onboarding log and Graph permission gate are not implemented by worker live export; retain this historical specification without scheduling delivery.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

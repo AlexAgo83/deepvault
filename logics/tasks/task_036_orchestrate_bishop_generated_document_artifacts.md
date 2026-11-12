@@ -8,6 +8,7 @@
 > Complexity: High
 > Theme: Product / Architecture
 > Reminder: Update status/understanding/confidence/progress and linked product/backlog/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:55:41
 
 # Context
 - Orchestrate the full delivery program for `prod_009_enable_bishop_generated_document_artifacts`.
@@ -31,7 +32,7 @@
 
 ```mermaid
 %% logics-kind: task
-%% logics-signature: task|orchestrate-bishop-generated-document-ar|prod-009-enable-bishop-generated-document|1-lock-the-first-wave-artifact|run-rtk-npm-run-typecheck-and
+%% logics-signature: task|orchestrate-bishop-generated-document-ar|item-068-deliver-bishop-first-wave-gener|1-wave-1-lock-the-first|run-rtk-npm-run-typecheck-for
 stateDiagram-v2
     state "prod_009_enable_bishop_generated_document" as Product
     state "1. Lock the first-wave artifact scope" as Scope
@@ -125,3 +126,4 @@ stateDiagram-v2
 - Validation:
   - `rtk npm run test -- tests/bishop.spec.ts tests/app-ui.spec.tsx tests/bishop-panel.spec.tsx tests/use-bishop-conversation.spec.tsx tests/file-download.spec.ts`
   - `rtk npm run typecheck`
+- Operator cleanup 2026-11-12: req_000_v0_bootstrap_and_initial_foundations is the retrospective platform umbrella context for this product-driven delivery. The original product brief remains the delivery source; no follow-up work is planned.

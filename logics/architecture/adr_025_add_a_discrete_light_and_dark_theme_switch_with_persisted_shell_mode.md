@@ -1,6 +1,6 @@
 ## adr_025_add_a_discrete_light_and_dark_theme_switch_with_persisted_shell_mode - Add a discrete light and dark theme switch with persisted shell mode
 > Date: 2026-04-14
-> Status: Proposed
+> Status: Accepted
 > Drivers: Keep the shell visually compact, persist the user's appearance preference locally, apply the theme consistently across the app, and avoid backend dependency.
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_063_add_persisted_sidebar_theme_switch.md`
@@ -58,3 +58,9 @@ Treat system appearance as a first-load fallback only, not as a continuously ove
 - Honor system appearance only on first launch when no preference exists, then keep the persisted mode authoritative.
 - Verify the existing shell tokens cover every modal and panel surface.
 - Add automated coverage for persisted mode, first-load fallback, and shell-wide styling.
+
+# Operator cleanup 2026-11-12
+
+Persisted theme selection and first-load system fallback are implemented in src/hooks/useTheme.ts with the sidebar control in app-shell-chrome.tsx (0cbe490).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

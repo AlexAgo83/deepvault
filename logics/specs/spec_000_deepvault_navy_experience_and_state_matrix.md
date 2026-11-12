@@ -3,6 +3,7 @@
 > Understanding: 94%
 > Confidence: 92%
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+> Status: Settled
 
 # Overview
 `DeepVault - Navy` is the local browsing surface for SharePoint content.
@@ -78,3 +79,9 @@ The spec covers the navigation states, detail states, and operational states tha
 - `logics/architecture/adr_007_local_companion_app_architecture_for_explorer_and_chat.md`
 - `logics/architecture/adr_009_permission_aware_retrieval_and_source_filtering.md`
 - `logics/architecture/adr_012_local_companion_runtime_for_explorer_and_chat.md`
+
+# Operator cleanup 2026-11-12
+
+The local Explorer states and responsive navigation are delivered in src/components/panels/explorer-panel.tsx and app-shell.tsx (8724342, b9006d6).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

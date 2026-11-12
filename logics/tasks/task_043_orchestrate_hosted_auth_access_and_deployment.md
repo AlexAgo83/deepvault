@@ -9,6 +9,7 @@
 > Complexity: High
 > Theme: Security / Product / Operations
 > Reminder: Update status/understanding/confidence/progress and linked request/backlog references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:55:18
 
 # Context
 
@@ -65,7 +66,7 @@ stateDiagram-v2
 - [x] CHECKPOINT: leave Wave 3 commit-ready and verify hosted-vs-local UI parity in focused tests or E2E coverage.
 - [x] 7. Wave 4 — package the stack with `docker-compose.yml`, `Caddyfile`, `.env.example`, and an operator runbook covering install, update, health checks, and operator provisioning.
 - [x] 7a. Wave 4 — standardize the first-wave Windows runtime path on `C:\\deepvault-nexus\\data\\runtime` and keep Caddy as the only documented reverse-proxy path for the hosted package.
-- [ ] 8. Wave 4 — smoke-test the Windows Docker Desktop flow: startup, worker restart, persistent runtime data, hosted browser access. (Pending operator validation on target machine.)
+- [x] 8. Wave 4 — disposition recorded: the target Windows Docker Desktop smoke test was not performed. Not planned, operator cleanup 2026-11-12. No target-machine validation success is claimed.
 - [x] GATE: do not close a wave until the relevant automated tests and linked docs are updated.
 - [x] FINAL: update request, backlog, product, architecture, and task docs once the hosted auth/access/deployment waves are closed.
 
@@ -88,6 +89,16 @@ stateDiagram-v2
 - Wave 4 is complete. `docker-compose.yml` (caddy + worker services with health check), `Caddyfile` (static file serving + `/api/*` reverse proxy), `.env.example` (all required env vars documented), `.dockerignore`, and `docs/deployment-guide.md` (full operator runbook) are committed. Dockerfile updated to use repo-root build context so `worker.*` module paths resolve correctly. Smoke test on Windows Docker Desktop is the remaining operator-side validation.
 
 # AC Traceability
+- request-AC1 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC2 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC3 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC4 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC5 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC6 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC7 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC8 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC9 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
+- request-AC10 -> This task. Proof: Operator review 2026-11-12: hosted implementation is present in worker/app/auth, worker/app/access_log.py, src/hooks/useHostedAuth.ts and docker-compose.yml (05918f8, 94d9b99). Existing task_043 reports record local validation; actual tenant SSO, network deployment and merged-commit CI require human verification.
 
 - AC1 (item_085) -> Wave 1. Hosted mode is protected by MSAL + JWKS token validation with local-dev bypass preserved. Proof: auth flow behavior and worker validation coverage.
 - AC2 (item_086) -> Wave 2. Operator-only endpoints enforce `OPERATOR_ALLOWLIST`, and validated requests emit structured access logs. Proof: `403` tests and log files.

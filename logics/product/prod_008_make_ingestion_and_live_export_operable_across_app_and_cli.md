@@ -1,6 +1,6 @@
 ## prod_008_make_ingestion_and_live_export_operable_across_app_and_cli - Make ingestion and live export operable across app and CLI
 > Date: 2026-04-14
-> Status: Proposed
+> Status: Settled
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_059_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
 > Related task: `logics/tasks/task_027_establish_worker_boundary_and_cli_parity_with_shared_corpus_artifacts.md`
@@ -60,3 +60,9 @@ The same operational model should be understandable whether the user is in the a
 # Open questions
 - Decision note: surface effective config read-only in the first wave, and limit editable controls to the operational inputs that are already explicit in the worker/client contract.
 - Keep richer editing affordances for a later iteration once the worker boundary and fallback rules are stable.
+
+# Operator cleanup 2026-11-12
+
+The agreed first wave of read-only effective configuration, job inspection and app/CLI parity is delivered in worker/cli/commands and src/components/panels/sync-panel.tsx; see commits dc94df5 and ad47f0c. Richer configuration editing is not planned.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

@@ -9,6 +9,7 @@
 > Complexity: Medium
 > Theme: Maintainability
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Problem
 
@@ -53,3 +54,6 @@ flowchart LR
 - `src/components/app-shell.tsx` now owns the app-state orchestration only and is reduced to 478 lines.
 - Navigation chrome, topbar interactions, and toolbar rendering moved into `src/components/app-shell-chrome.tsx` so the shell stays below the backlog threshold without changing layout behavior.
 - Validation passed with `rtk npm run typecheck`, `rtk npm run test -- tests/app.spec.tsx`, `rtk npm run e2e`, and the full `rtk npm run check` gate.
+
+# AC Traceability
+- request-AC2 -> This backlog slice. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.

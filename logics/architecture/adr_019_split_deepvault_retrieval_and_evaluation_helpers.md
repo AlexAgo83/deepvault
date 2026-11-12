@@ -1,6 +1,6 @@
 ## adr_019_split_deepvault_retrieval_and_evaluation_helpers - Split DeepVault retrieval and evaluation helpers
 > Date: 2026-04-11
-> Status: Proposed
+> Status: Accepted
 > Drivers: Keep retrieval tuning isolated from evaluation helpers, and make the scoring code easier to reason about and reuse.
 > Related request: `logics/request/req_011_audit_de_dette_technique_et_cleanup_structurel.md`
 > Related backlog: `logics/backlog/item_039_split_deepvault_retrieval_and_evaluation_helpers.md`
@@ -47,3 +47,9 @@ Separate the helper responsibilities into stable, small modules. Keep the public
 # Follow-up work
 - Split the module into cohesive files.
 - Update or add tests around the new seams.
+
+# Operator cleanup 2026-11-12
+
+Corpus ranking, view and evaluation helpers are separate modules with compatibility exports in src/lib/deepvault.ts (914f25f, f912a21).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

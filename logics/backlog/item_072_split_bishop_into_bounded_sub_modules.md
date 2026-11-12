@@ -10,6 +10,7 @@
 > Theme: Maintainability
 > Cancelled by: `logics/architecture/adr_035_python_fastapi_as_the_worker_runtime.md` — `bishop.ts` is removed from the browser bundle entirely. All bishop orchestration and LLM adapters move to the Python FastAPI worker (`worker/bishop.py`). Splitting the TypeScript module is no longer needed.
 > Reminder: This item is cancelled. Do not implement.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 # Problem
 
@@ -39,3 +40,6 @@
 - `rtk npm run test -- tests/bishop.spec.ts`
 - `rtk npm run typecheck`
 - `rtk npm run check`
+
+# AC Traceability
+- request-AC1 -> This backlog slice. Proof: Operator review 2026-11-12: required shell/storage/health/boundary work is delivered (src/components/app-shell.tsx, src/lib/storage-schema.ts, src/hooks/useWorkerHealth.ts). AC1 and AC7 were cancelled by adr_035; optional AC8 CSS migration is not planned and is not claimed as delivered.

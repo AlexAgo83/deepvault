@@ -1,6 +1,6 @@
 ## adr_010_sharepoint_sync_orchestration_and_refresh_policy - SharePoint sync orchestration and refresh policy
 > Date: 2026-04-10
-> Status: Proposed
+> Status: Superseded
 > Drivers: Keep pilot sites current without overloading Graph, support manual and scheduled refreshes, and make source changes observable.
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
 > Related backlog: `logics/backlog/item_001_v1_sharepoint_ingestion_and_sync_pipeline.md`, `logics/backlog/item_005_v1_runtime_config_and_operations.md`
@@ -107,3 +107,9 @@ When `SYNC_CADENCE_HOURS` is set, the backend generates the CRON expression dyna
 - Implement the per-source sync state model with watermarks and checkpoint fields
 - Wire `SYNC_CADENCE_HOURS` into the Azure Functions timer trigger for V2
 - Add sync run summary to the operator observability view
+
+# Operator cleanup 2026-11-12
+
+Timestamp delta export and manual jobs are implemented, but daily Azure Functions scheduling and the proposed sync trigger endpoint are absent (worker/app/services/live_export_service.py and worker/app/routes/jobs.py; 101de05).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

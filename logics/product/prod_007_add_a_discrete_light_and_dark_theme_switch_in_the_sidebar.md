@@ -1,6 +1,6 @@
 ## prod_007_add_a_discrete_light_and_dark_theme_switch_in_the_sidebar - Add a discrete light and dark theme switch in the sidebar
 > Date: 2026-04-14
-> Status: Proposed
+> Status: Settled
 > Related request: `logics/request/req_017_implement_the_full_app_worker_corpus_and_shell_plan.md`
 > Related backlog: `logics/backlog/item_063_add_persisted_sidebar_theme_switch.md`
 > Related task: `logics/tasks/task_031_add_persisted_sidebar_theme_switch.md`
@@ -59,3 +59,9 @@ The experience should feel native to the shell, not like a settings form bolted 
 
 # Open questions
 - Decision note: follow system appearance only on first launch when there is no stored preference, then keep the persisted user choice authoritative.
+
+# Operator cleanup 2026-11-12
+
+The sidebar theme control and persisted first-load system fallback are delivered in src/hooks/useTheme.ts and src/components/app-shell-chrome.tsx; see commit 0cbe490.
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.

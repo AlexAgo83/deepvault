@@ -9,6 +9,7 @@
 > Complexity: High
 > Theme: Analysis / Worker / Quality
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:54:03
 
 ```mermaid
 %% logics-kind: backlog
@@ -60,3 +61,8 @@ flowchart LR
 - Worker-backed analyze uses the same extract-first input selection and excludes `metadata_only` / `unreadable` placeholder rows conservatively.
 - Analyze reports now include `extractionQuality` counts for `full_text`, `partial_text`, `metadata_only`, `unreadable`, and `unknown`.
 - Validation passed: `rtk npm run test -- tests/analyze-corpus.spec.ts`, `rtk python3 -m pytest worker/tests/test_jobs.py`, and `rtk npm run typecheck`.
+
+# AC Traceability
+- request-AC4 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC5 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.
+- request-AC6 -> This backlog slice. Proof: Operator review 2026-11-12: extraction and analysis code is delivered in worker/app/services/live_export_service.py, worker/app/services/jobs_service.py and scripts/analyze-corpus.ts (e30b845, 9023afb, 0b179b6, de0fe3c); worker/tests/test_live_export_service.py and worker/tests/test_jobs.py cover extraction and fallback.

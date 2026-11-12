@@ -9,6 +9,7 @@
 > Complexity: Low
 > Theme: Product / Operational
 > Reminder: Update status, understanding, confidence, progress and linked request/task references when you edit this doc.
+> Indicators reviewed: 2026-11-12 10:53:30
 
 # Problem
 
@@ -57,3 +58,8 @@ flowchart LR
 - Shared transfer logic now lives in `src/lib/settings-transfer.ts`, which normalizes and validates import payloads before the UI applies them.
 - Validation completed with `rtk npm run test -- tests/settings-panel.spec.tsx`, `rtk npm run typecheck`, and `DEEPVAULT_CHECK_SKIP_E2E=1 DEEPVAULT_CHECK_SKIP_EVALUATE=1 rtk npm run check`.
 - `rtk npm run evaluate` was rerun separately and still passes after the Settings changes. Full `rtk npm run check` remains partially blocked in the sandbox because `e2e` preview binding and sandboxed `tsx` IPC are not permitted locally.
+
+# AC Traceability
+- request-AC6 -> This backlog slice. Proof: Reviewed 2026-11-12: scoring and publication evidence is in worker/scoring.py and scripts/publish-analyzed-corpus.ts; CI and HTTP smoke contracts are in .github/workflows/ci.yml and scripts/worker-contract-smoke.py; configuration transfer is in src/lib/settings-transfer.ts. Existing task_041 reports document the delivered waves and historical CI run; current tenant behavior and merged-commit GitHub CI still require operator verification.
+- request-AC7 -> This backlog slice. Proof: Reviewed 2026-11-12: scoring and publication evidence is in worker/scoring.py and scripts/publish-analyzed-corpus.ts; CI and HTTP smoke contracts are in .github/workflows/ci.yml and scripts/worker-contract-smoke.py; configuration transfer is in src/lib/settings-transfer.ts. Existing task_041 reports document the delivered waves and historical CI run; current tenant behavior and merged-commit GitHub CI still require operator verification.
+- request-AC8 -> This backlog slice. Proof: Reviewed 2026-11-12: scoring and publication evidence is in worker/scoring.py and scripts/publish-analyzed-corpus.ts; CI and HTTP smoke contracts are in .github/workflows/ci.yml and scripts/worker-contract-smoke.py; configuration transfer is in src/lib/settings-transfer.ts. Existing task_041 reports document the delivered waves and historical CI run; current tenant behavior and merged-commit GitHub CI still require operator verification.

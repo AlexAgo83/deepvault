@@ -3,6 +3,7 @@
 > Understanding: 95%
 > Confidence: 93%
 > Related request: `logics/request/req_000_v0_bootstrap_and_initial_foundations.md`
+> Status: Archived
 
 # Overview
 This spec defines the prompt template structure and context assembly strategy used by the DeepVault chat backend.
@@ -244,3 +245,9 @@ If a user successfully extracts the system prompt or causes the model to follow 
 - `logics/specs/spec_004_deepvault_data_schema_and_storage_contracts.md`
 - `logics/specs/spec_005_deepvault_permission_mapping_and_retrieval_filters.md`
 - `logics/tasks/task_008_v1_retrieval_evaluation_set_and_quality_gates.md`
+
+# Operator cleanup 2026-11-12
+
+The proposed cl100k_base budget and tagged source prompt are not the current worker prompt contract (worker/app/services/bishop_service.py; adr_035).
+
+No follow-up work is planned. Earlier rollout steps and open questions are retained as historical context.
